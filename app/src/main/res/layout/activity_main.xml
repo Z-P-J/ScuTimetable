@@ -1,195 +1,84 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/main_background"
-    >
+    android:background="@drawable/main_background">
+
+    <include
+        android:id="@+id/layout_progress"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        layout="@layout/layout_dialog_loading"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linearLayout">
+        android:layout_above="@id/middle"
+        android:orientation="vertical" >
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
+        <ImageView
+            android:layout_width="55dip"
+            android:layout_height="55dip"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/project_detail_cir" />
+
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
+            android:layout_marginTop="5dip"
+            android:gravity="center"
+            android:text="川大课表"
+            android:textColor="#ffffff"
+            android:textSize="24sp" />
 
-            <Button
-                android:id="@+id/button1"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-
-                android:background="#00ffffff"
-                android:text="周一"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="#90000000"
-                />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-
-                android:background="#90ffffff"
-                android:text="周二"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="#000"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-
-            <Button
-                android:id="@+id/button3"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-
-                android:background="#90ffffff"
-                android:text="周三"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="#000"
-                />
-
-        </LinearLayout>
-
-
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-
-                android:background="#90ffffff"
-                android:text="周四"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="#000"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-
-            <Button
-                android:id="@+id/button5"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-
-                android:background="#90ffffff"
-                android:text="周五"/>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="#000"
-                />
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-
-            <Button
-                android:id="@+id/button6"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-
-                android:background="#90ffffff"
-                android:text="周六"
-                />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="#000"
-                />
-
-        </LinearLayout>
-
-
-
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-
-            <Button
-                android:id="@+id/button7"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:background="#90ffffff"
-                android:text="周日"
-                />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="#000"
-                />
-
-        </LinearLayout>
-
+            android:gravity="center"
+            android:text="海纳百川，有容乃大"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/middle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" >
+
+        <include
+            android:id="@+id/input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/input_layout" >
+
+        </include>
 
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
-    </android.support.v4.view.ViewPager>
-</LinearLayout>
+
+
+        <TextView
+            android:id="@+id/main_btn_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/input_layout"
+            android:layout_centerInParent="true"
+            android:background="@drawable/text_bg"
+            android:gravity="center"
+            android:paddingBottom="4dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="4dp"
+            android:text="登录"
+            android:textColor="#ffffff"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>
