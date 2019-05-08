@@ -16,3 +16,7 @@
     ### 更新内容：1.重写软件，更换包名为com.scu.timetable
     ###          2.全新登录界面，全新课表展示界面呢
     ###          3.修复由于川大教务系统更换后无法登录的问题
+### v1.1.0截图
+![avi](screenshots/screenshot1.png)
+![avi](screenshots/screenshot2.png)
+    

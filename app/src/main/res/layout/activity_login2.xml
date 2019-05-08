@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main2">
+    android:background="@drawable/background_login">
 
     <include
         android:id="@+id/layout_progress"
@@ -23,7 +23,7 @@
             android:layout_width="55dip"
             android:layout_height="55dip"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/main" />
+            android:src="@drawable/main3" />
 
         <TextView
             android:layout_width="match_parent"
