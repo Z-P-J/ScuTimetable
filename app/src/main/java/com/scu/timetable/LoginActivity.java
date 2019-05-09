@@ -2,9 +2,6 @@ package com.scu.timetable;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +9,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,7 +19,6 @@ import android.widget.Toast;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.DateUtil;
-import com.scu.timetable.utils.JellyInterpolator;
 import com.scu.timetable.utils.SubjectUtil;
 import com.scu.timetable.utils.UAHelper;
 import com.scu.timetable.utils.content.SPHelper;
@@ -65,7 +60,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login2);
+        setContentView(R.layout.activity_login);
 //        Toast.makeText(this, "" + SubjectUtil.hasJsonFile(this), Toast.LENGTH_SHORT).show();
         handler.postDelayed(new Runnable() {
             @Override

@@ -17,6 +17,5 @@
     ###          2.全新登录界面，全新课表展示界面呢
     ###          3.修复由于川大教务系统更换后无法登录的问题
 ### v1.1.0截图
-![avi](screenshots/screenshot1.png)
-![avi](screenshots/screenshot2.png)
+![screenshot1](screenshots/screenshot1.png) ![screenshot2](screenshots/screenshot2.png)
     
