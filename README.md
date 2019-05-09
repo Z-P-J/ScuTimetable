@@ -3,8 +3,8 @@
 
 # 截图
 <div>
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot1.png" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot2.png" height="330" width="190">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot1.png" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot2.png" height="660" width="380">
  </div>
 
 
