@@ -17,8 +17,8 @@
 <!--        android:networkSecurityConfig="@xml/security_config"-->
 
         <activity
-            android:name=".LoginActivity2"
-            android:theme="@style/AppThemeTransparent">
+            android:name=".LoginActivity"
+            android:theme="@style/Transparent_Theme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -27,7 +27,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppThemeTransparent">
 
         </activity>
 

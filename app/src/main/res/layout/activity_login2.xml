@@ -16,7 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/middle"
+        android:layout_above="@id/layout_middle"
         android:orientation="vertical" >
 
         <ImageView
@@ -44,10 +44,12 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/middle"
+        android:id="@+id/layout_middle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" >
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        >
 
         <include
             android:id="@+id/input_layout"

@@ -1,4 +1,4 @@
-package com.scu.timetable;
+package com.scu.timetable.utils;
 
 import android.app.Activity;
 
@@ -6,18 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityCollector {
-    public static List<Activity> activities = new ArrayList<Activity>();
+
+    private static final List<Activity> ACTIVITIES = new ArrayList<Activity>();
 
     public static void addActivity(Activity activity) {
-        activities.add(activity);
+        ACTIVITIES.add(activity);
     }
 
     public static void removeActivity(Activity activity) {
-        activities.remove(activity);
+        ACTIVITIES.remove(activity);
     }
 
     public static void finishAll() {
-        for (Activity activity : activities) {
+        for (Activity activity : ACTIVITIES) {
             activity.finish();
         }
     }

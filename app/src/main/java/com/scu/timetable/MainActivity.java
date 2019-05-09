@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.scu.timetable.model.MySubject;
+import com.scu.timetable.utils.ActivityCollector;
 import com.scu.timetable.utils.SubjectUtil;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zhuangfei.timetable.TimetableView;
@@ -22,6 +23,9 @@ import com.zhuangfei.timetable.view.WeekView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author 25714
+ */
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     //控件
