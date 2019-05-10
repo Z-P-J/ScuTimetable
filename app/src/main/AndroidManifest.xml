@@ -5,38 +5,45 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:allowBackup="true"
         android:name=".Application"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppThemeNoActionbar"
-        android:usesCleartextTraffic="true"
-        >
-<!--        android:networkSecurityConfig="@xml/security_config"-->
+        android:usesCleartextTraffic="true">
+
+        <receiver android:name=".ui.widget.TimetableWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+<!--                <action android:name="com.scu.timetable.login.success" />-->
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/timetable_widget_info" />
+        </receiver> <!-- android:networkSecurityConfig="@xml/security_config" -->
 
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/Transparent_Theme">
+            android:theme="@style/Transparent_Theme"
+            android:launchMode="singleTask"
+            >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
 
+        </activity>
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppThemeTransparent">
 
         </activity>
-
-<!--        <activity android:name=".MainActivity2">-->
-
-<!--        </activity>-->
-
     </application>
 
 </manifest>

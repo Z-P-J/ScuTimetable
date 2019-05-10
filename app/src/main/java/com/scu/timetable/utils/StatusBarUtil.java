@@ -30,7 +30,7 @@ public class StatusBarUtil {
         }
     }
 
-    public static void transparencyBar(Activity activity) {
+    private static void transparencyBar(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = activity.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
@@ -49,22 +49,22 @@ public class StatusBarUtil {
         }
     }
 
-    public static void StatusBarDarkMode(Activity activity, int type) {
+    public static void statusbardarkmode(Activity activity, int type) {
         if (type == 1) {
             MIUISetStatusBarLightMode(activity, false);
         } else if (type == 2) {
-            FlymeSetStatusBarLightMode(activity.getWindow(), false);
+            flymesetstatusbarlightmode(activity.getWindow(), false);
         } else if (type == 3) {
             activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
         }
     }
 
-    public static int StatusBarLightMode(Activity activity) {
+    public static int statusbarlightmode(Activity activity) {
         int result = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (MIUISetStatusBarLightMode(activity, true)) {
                 result = 1;
-            } else if (FlymeSetStatusBarLightMode(activity.getWindow(), true)) {
+            } else if (flymesetstatusbarlightmode(activity.getWindow(), true)) {
                 result = 2;
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -72,15 +72,15 @@ public class StatusBarUtil {
             }
         }
 //        return result;
-//        StatusBarLightMode(activity, result);
+//        statusbarlightmode(activity, result);
         return result;
     }
 
-    public static void StatusBarLightMode(Activity activity, int type) {
+    public static void statusbarlightmode(Activity activity, int type) {
         if (type == 1) {
             MIUISetStatusBarLightMode(activity, true);
         } else if (type == 2) {
-            FlymeSetStatusBarLightMode(activity.getWindow(), true);
+            flymesetstatusbarlightmode(activity.getWindow(), true);
         } else if (type == 3) {
             activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
@@ -95,7 +95,7 @@ public class StatusBarUtil {
      * @param dark   是否把状态栏文字及图标颜色设置为深色
      * @return boolean 成功执行返回true
      */
-    public static boolean FlymeSetStatusBarLightMode(Window window, boolean dark) {
+    public static boolean flymesetstatusbarlightmode(Window window, boolean dark) {
         boolean result = false;
         if (window != null) {
             try {
@@ -117,7 +117,7 @@ public class StatusBarUtil {
                 window.setAttributes(lp);
                 result = true;
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
         return result;
@@ -126,7 +126,7 @@ public class StatusBarUtil {
     /**
      * 需要MIUIV6以上
      *
-     * @param activity
+     * @param activity the activity
      * @param dark     是否把状态栏文字及图标颜色设置为深色
      * @return boolean 成功执行返回true
      */
@@ -157,7 +157,7 @@ public class StatusBarUtil {
                     }
                 }
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
         return result;

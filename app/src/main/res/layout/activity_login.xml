@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/layout_progress"
-        android:layout_width="130dp"
+        android:layout_width="260dp"
         android:layout_height="180dp"
         layout="@layout/layout_dialog_loading"
         android:layout_centerInParent="true"

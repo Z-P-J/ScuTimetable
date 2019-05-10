@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.zhuangfei.android_timetableview.sample.R;
@@ -26,7 +27,6 @@ import java.util.List;
  * 周次选择栏自定义View.
  * 每一项均为PerWeekView<br/>
  */
-
 public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
 
     private static final String TAG = "WeekView";

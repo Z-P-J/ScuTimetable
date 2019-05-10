@@ -1,6 +1,5 @@
 package com.zhuangfei.timetable.listener;
 
-import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhuangfei.timetable.TimetableView;
+import com.zhuangfei.timetable.TimetableWrapper;
 import com.zhuangfei.timetable.model.Schedule;
 
 import java.util.List;
@@ -200,5 +200,6 @@ public interface ISchedule {
 
     interface OnConfigHandleListener{
         void onParseConfig(String key, String value, TimetableView mView);
+        void onParseConfig(String key, String value, TimetableWrapper mView);
     }
 }

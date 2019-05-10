@@ -6,15 +6,44 @@ android {
         applicationId "com.scu.timetable"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 2
-        versionName "1.1.0"
+        versionCode 3
+        versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
+            // Zipalign优化
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+//        release {
+//            debuggable false
+//            // 混淆
+//            minifyEnabled true
+//
+//            // Zipalign优化
+//            zipAlignEnabled true
+//            // 移除无用的resource文件
+//            shrinkResources false
+//
+//
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.config
+//        }
+//
+//        debug {
+////            debuggable false
+//            // 混淆
+//            minifyEnabled true
+//            // Zipalign优化
+//            zipAlignEnabled false
+//            // 移除无用的resource文件
+//            shrinkResources false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
     }
     compileOptions {
         sourceCompatibility = 1.8
@@ -37,4 +66,5 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'com.wang.avi:library:2.1.3'
     implementation project(':TimetableView')
+    implementation project(':easydialog')
 }

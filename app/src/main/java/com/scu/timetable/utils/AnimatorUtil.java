@@ -7,11 +7,12 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 
 /**
  * @author 25714
  */
-public class AnimatorUtil {
+public final class AnimatorUtil {
 
     private AnimatorUtil() {
 
@@ -137,6 +138,20 @@ public class AnimatorUtil {
 
             }
         });
+    }
+
+    private static final class JellyInterpolator extends LinearInterpolator {
+        private float factor;
+
+        JellyInterpolator() {
+            this.factor = 0.15f;
+        }
+
+        @Override
+        public float getInterpolation(float input) {
+            return (float) (Math.pow(2, -10 * input)
+                    * Math.sin((input - factor / 4) * (2 * Math.PI) / factor) + 1);
+        }
     }
 
 }

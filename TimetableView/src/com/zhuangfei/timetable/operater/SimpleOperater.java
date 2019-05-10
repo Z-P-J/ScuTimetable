@@ -76,7 +76,9 @@ public class SimpleOperater extends AbsOperater {
      * @param attrs
      */
     protected void initAttr(AttributeSet attrs) {
-        if (attrs == null) return;
+        if (attrs == null) {
+            return;
+        }
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.TimetableView);
         int curWeek = ta.getInteger(R.styleable.TimetableView_cur_week, 1);
         String curTerm = ta.getString(R.styleable.TimetableView_cur_term);
@@ -512,6 +514,7 @@ public class SimpleOperater extends AbsOperater {
     /**
      * 设置周末的可见性
      */
+    @Override
     public void setWeekendsVisiable(boolean isShow) {
         if (isShow) {
             if (panels != null && panels.length > 6) {

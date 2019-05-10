@@ -92,6 +92,13 @@ public class MySubject implements ScheduleEnable {
         return term;
     }
 
+    public MySubject(int start, int day) {
+        this.start = start;
+        this.step = 1;
+        this.day = day;
+        this.name = "";
+    }
+
     public MySubject(String term, String name, String room, String teacher, List<Integer> weekList, int start, int step, int day, int colorRandom, String time) {
         super();
         this.term = term;
@@ -140,6 +147,10 @@ public class MySubject implements ScheduleEnable {
 
     public int getStart() {
         return start;
+    }
+
+    public int getEnd() {
+        return start + step -1;
     }
 
     public void setStart(int start) {

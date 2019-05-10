@@ -13,10 +13,10 @@
 //import android.widget.LinearLayout;
 //import android.widget.TextView;
 //
-//import com.scu.timetable.BaseActivity;
+//import com.scu.timetable.base.BaseActivity;
 //import com.scu.timetable.R;
 //import com.scu.timetable.utils.content.SPHelper;
-//import com.scu.timetable.view.LoadingDialogFragment;
+//import com.scu.timetable.ui.view.LoadingDialogFragment;
 //import com.wang.avi.AVLoadingIndicatorView;
 //
 //public class UIHelper {

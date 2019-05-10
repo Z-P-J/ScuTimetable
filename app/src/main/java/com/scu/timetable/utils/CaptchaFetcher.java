@@ -11,7 +11,7 @@ import com.bumptech.glide.request.RequestOptions;
 /**
  * @author 25714
  */
-public class CaptchaFetcher {
+public final class CaptchaFetcher {
 
     private static final RequestOptions OPTIONS = new RequestOptions()
             .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -31,7 +31,7 @@ public class CaptchaFetcher {
                 new LazyHeaders.Builder()
                         .addHeader("Cookie", cookie)
                         .addHeader("Referer", REFERER)
-                        .addHeader("User-Agent", UAHelper.UA)
+                        .addHeader("User-Agent", TimetableHelper.UA)
                         .build()
         );
     }

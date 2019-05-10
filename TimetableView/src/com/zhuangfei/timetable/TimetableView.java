@@ -115,7 +115,9 @@ public class TimetableView extends LinearLayout {
     }
 
     public ISchedule.OnConfigHandleListener onConfigHandleListener() {
-        if(onConfigHandleListener==null) onConfigHandleListener=new OnConfigHandleAdapter();
+        if(onConfigHandleListener==null) {
+            onConfigHandleListener=new OnConfigHandleAdapter();
+        }
         return onConfigHandleListener;
     }
 
@@ -134,7 +136,9 @@ public class TimetableView extends LinearLayout {
     }
 
     public AbsOperater operater(){
-        if(operater==null) operater=new SimpleOperater();
+        if(operater==null) {
+            operater=new SimpleOperater();
+        }
         return operater;
     }
 
@@ -183,8 +187,11 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public TimetableView itemTextColor(int color, boolean isThisWeek) {
-        if (isThisWeek) itemTextColorWithThisWeek = color;
-        else itemTextColorWithNotThis = color;
+        if (isThisWeek) {
+            itemTextColorWithThisWeek = color;
+        } else {
+            itemTextColorWithNotThis = color;
+        }
         return this;
     }
 
@@ -466,8 +473,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public ISchedule.OnSpaceItemClickListener onSpaceItemClickListener() {
-        if (onSpaceItemClickListener == null)
+        if (onSpaceItemClickListener == null) {
             onSpaceItemClickListener = new OnSpaceItemClickAdapter();
+        }
         return onSpaceItemClickListener;
     }
 
@@ -488,8 +496,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public ISchedule.OnFlaglayoutClickListener onFlaglayoutClickListener() {
-        if (onFlaglayoutClickListener == null)
+        if (onFlaglayoutClickListener == null) {
             onFlaglayoutClickListener = new OnFlaglayoutClickAdapter();
+        }
         return onFlaglayoutClickListener;
     }
 
@@ -500,9 +509,13 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public TimetableView curWeek(int curWeek) {
-        if (curWeek < 1) this.curWeek = 1;
-        else if (curWeek > 25) this.curWeek = 25;
-        else this.curWeek = curWeek;
+        if (curWeek < 1) {
+            this.curWeek = 1;
+        } else if (curWeek > 25) {
+            this.curWeek = 25;
+        } else {
+            this.curWeek = curWeek;
+        }
         onBind(curWeek);
         return this;
     }
@@ -515,10 +528,11 @@ public class TimetableView extends LinearLayout {
      */
     public TimetableView curWeek(String startTime) {
         int week = ScheduleSupport.timeTransfrom(startTime);
-        if (week == -1)
+        if (week == -1) {
             curWeek(1);
-        else
+        } else {
             curWeek(week);
+        }
         onBind(week);
         return this;
     }
@@ -558,7 +572,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public List<Schedule> dataSource() {
-        if (dataSource == null) dataSource = new ArrayList<>();
+        if (dataSource == null) {
+            dataSource = new ArrayList<>();
+        }
         return dataSource;
     }
 
@@ -617,7 +633,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public ISchedule.OnItemBuildListener onItemBuildListener() {
-        if (onItemBuildListener == null) onItemBuildListener = new OnItemBuildAdapter();
+        if (onItemBuildListener == null) {
+            onItemBuildListener = new OnItemBuildAdapter();
+        }
         return onItemBuildListener;
     }
 
@@ -627,7 +645,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public ISchedule.OnItemClickListener onItemClickListener() {
-        if (onItemClickListener == null) onItemClickListener = new OnItemClickAdapter();
+        if (onItemClickListener == null) {
+            onItemClickListener = new OnItemClickAdapter();
+        }
         return onItemClickListener;
     }
 
@@ -662,8 +682,11 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public TimetableView corner(int corner, boolean isThisWeek) {
-        if (isThisWeek) thisWeekCorner = corner;
-        else nonThisWeekCorner = corner;
+        if (isThisWeek) {
+            thisWeekCorner = corner;
+        } else {
+            nonThisWeekCorner = corner;
+        }
         return this;
     }
 
@@ -885,7 +908,9 @@ public class TimetableView extends LinearLayout {
      */
     public void updateFlaglayout() {
         flagLayout().setBackgroundColor(flagBgcolor());
-        if (!isShowFlaglayout()) hideFlaglayout();
+        if (!isShowFlaglayout()) {
+            hideFlaglayout();
+        }
     }
 
     public void showView(){

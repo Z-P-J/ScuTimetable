@@ -6,9 +6,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class DateUtil {
+public final class DateUtil {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+
+    private static final String[] WEEK_DAYS = { "周日", "周一", "周二", "周三", "周四", "周五", "周六" };
 
     private DateUtil() {
 
@@ -29,6 +31,22 @@ public class DateUtil {
             }
             return null;
         }
+    }
+
+    public static int dayOfWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
+    public static String dayOfWeekStr() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        return dayOfWeekStr(calendar.get(Calendar.DAY_OF_WEEK) - 1);
+    }
+
+    public static String dayOfWeekStr(int index) {
+        return WEEK_DAYS[index];
     }
 
     public static int computeWeek(Date startDate, Date endDate) {

@@ -15,11 +15,13 @@
         android:layout_height="wrap_content"
         />
 
-    <com.zhuangfei.timetable.TimetableView
+    <LinearLayout
         android:id="@+id/id_timetableView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#00ffffff">
-    </com.zhuangfei.timetable.TimetableView>
+        android:background="#00ffffff"
+        android:orientation="vertical">
+
+    </LinearLayout>
 
 </LinearLayout>

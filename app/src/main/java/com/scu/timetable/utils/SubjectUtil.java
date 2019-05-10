@@ -16,6 +16,9 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author 25714
+ */
 public class SubjectUtil {
 
     private static final String FILE_NAME = "timetable.json";
@@ -36,9 +39,9 @@ public class SubjectUtil {
         return false;
     }
 
-    public static String readFromJson(Context context, String fileNmae) throws FileNotFoundException {
+    private static String readFromJson(Context context) throws FileNotFoundException {
         FileInputStream inStream = null;
-        inStream = context.openFileInput(fileNmae);
+        inStream = context.openFileInput(FILE_NAME);
         //输出到内存
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         int len = 0;
@@ -57,7 +60,7 @@ public class SubjectUtil {
     public static List<MySubject> getSubjects(Context context) {
         List<MySubject> mySubjectList = new ArrayList<>();
         try {
-            String json = SubjectUtil.readFromJson(context, FILE_NAME);
+            String json = SubjectUtil.readFromJson(context);
             JSONObject jsonObject = new JSONObject(json).getJSONArray("dateList").getJSONObject(0);
             JSONArray jsonArray = jsonObject.getJSONArray("selectCourseList");
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -88,7 +91,7 @@ public class SubjectUtil {
         outStream.close();
     }
 
-    public static List<Integer> getWeekList(String weeksString) {
+    private static List<Integer> getWeekList(String weeksString) {
         Log.d("getWeekList", "weeksString=" + weeksString);
         List<Integer> weekList = new ArrayList<>();
         if (weeksString == null || weeksString.length() == 0) {

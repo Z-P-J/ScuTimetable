@@ -4,5 +4,5 @@
     android:versionCode="27"
     android:versionName="2.0.7" >
 
-    <uses-sdk android:targetSdkVersion="19" />
+    <uses-sdk android:targetSdkVersion="28" />
 </manifest>

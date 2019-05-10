@@ -4,14 +4,12 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,8 +18,9 @@ import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.DateUtil;
 import com.scu.timetable.utils.SubjectUtil;
-import com.scu.timetable.utils.UAHelper;
+import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.content.SPHelper;
+import com.scu.timetable.base.BaseHandlerActivity;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -33,7 +32,7 @@ import java.util.Date;
 /**
  * @author 25714
  */
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseHandlerActivity implements View.OnClickListener {
 
     private EditText userName;
     private EditText password;
@@ -43,45 +42,39 @@ public class LoginActivity extends BaseActivity {
 
     private String cookie;
 
-    private TextView mBtnLogin;
-
     private View progress;
-
-    private View mInputLayout;
-
-    private LinearLayout mName, mPsw;
 
     private TextView msgText;
 
     private RelativeLayout middleLayout;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-//        Toast.makeText(this, "" + SubjectUtil.hasJsonFile(this), Toast.LENGTH_SHORT).show();
-        handler.postDelayed(new Runnable() {
+        //发送广播。更新桌面插件
+        postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (SPHelper.getBoolean("logined", false) && SubjectUtil.hasJsonFile(LoginActivity.this)) {
-                    String date = SPHelper.getString("current_date", "");
-                    if (!date.isEmpty()) {
-                        Date oldDate = DateUtil.parse(date);
-                        int weeks = DateUtil.computeWeek(oldDate, new Date());
-                        int currentWeek = SPHelper.getInt("currrent_weak", 1);
-                        SPHelper.putInt("currrent_weak", currentWeek + weeks);
-                    } else {
-                        SPHelper.putString("current_date", DateUtil.currentDate());
-                    }
+                if (TimetableHelper.isLogined(LoginActivity.this)) {
+                    updateWidget(true);
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
                 } else {
+                    updateWidget(false);
                     initView();
+                    getCookie();
                 }
             }
         }, 1000);
 
+    }
+
+    private void updateWidget(boolean isLogined) {
+        Intent intent = new Intent();
+        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+        intent.putExtra("islogined", isLogined);
+        getApplicationContext().sendBroadcast(intent);
     }
 
     public void initView() {
@@ -89,85 +82,25 @@ public class LoginActivity extends BaseActivity {
 //        middleLayout.setVisibility(View.VISIBLE);
         AnimatorUtil.showViewAnimator(middleLayout, 1000);
 
+        TextView mBtnLogin = findViewById(R.id.main_btn_login);
+        mBtnLogin.setOnClickListener(this);
 
-        mBtnLogin = findViewById(R.id.main_btn_login);
         progress = findViewById(R.id.layout_progress);
-        mInputLayout = findViewById(R.id.input_layout);
-        mName = findViewById(R.id.input_user_name);
-        mPsw = findViewById(R.id.input_password);
         msgText = findViewById(R.id.id_tv_loading_dialog_text);
         userName = findViewById(R.id.user_name);
         password = findViewById(R.id.password);
         captcha = findViewById(R.id.captcha);
         captchaImg = findViewById(R.id.img_captcha);
-        captchaImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!TextUtils.isEmpty(cookie)) {
-                    CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
-                }
-            }
-        });
+        captchaImg.setOnClickListener(this);
+
+        TextView changeCaptcha = findViewById(R.id.change_captcha);
+        changeCaptcha.setOnClickListener(this);
+
         //http://202.115.47.141/img/captcha.jpg?60
 
         userName.setText(SPHelper.getString("user_name", ""));
-        this.password.setText(SPHelper.getString("password", ""));
+        password.setText(SPHelper.getString("password", ""));
 
-//        userName.setText("2017141461383");
-//        this.password.setText("095711");
-        mBtnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (progress.getVisibility() == View.VISIBLE) {
-                    return;
-                }
-                if (userName.getText().toString().isEmpty() || password.getText().toString().isEmpty() || captcha.getText().toString().isEmpty()) {
-                    Toast.makeText(LoginActivity.this, "请填写好账号信息。", Toast.LENGTH_SHORT).show();
-//                    UIHelper.openLoadingDialogFragment(LoginActivity.this, "登录中...");
-//                    handler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            UIHelper.closeLoadingDialogFragment();
-//                        }
-//                    }, 5000);
-                } else {
-//                    float mWidth = mBtnLogin.getMeasuredWidth();
-//                    float mHeight = mBtnLogin.getMeasuredHeight();
-
-                    mName.setVisibility(View.INVISIBLE);
-                    mPsw.setVisibility(View.INVISIBLE);
-
-//                    hideLoginLayoutAnimator(mInputLayout, mWidth, mHeight);
-                    AnimatorUtil.hideViewAnimator(middleLayout, 500, new AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            progress.setVisibility(View.VISIBLE);
-                            AnimatorUtil.shakeAnimator(progress, 1000);
-                            middleLayout.setVisibility(View.INVISIBLE);
-                            msgText.setText("登录中...");
-                            login();
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    });
-
-                }
-            }
-        });
-        getCookie();
     }
 
     private void getCookie() {
@@ -177,7 +110,7 @@ public class LoginActivity extends BaseActivity {
                 try {
                     Connection.Response response = Jsoup.connect("http://202.115.47.141/login")
                             .followRedirects(false)
-                            .userAgent(UAHelper.UA)
+                            .userAgent(TimetableHelper.UA)
                             .ignoreContentType(true)
                             .execute();
                     Log.d("body=", "" + response.body());
@@ -187,13 +120,13 @@ public class LoginActivity extends BaseActivity {
                     Log.d("cookie", "cookie=" + cookie);
                     Message msg = new Message();
                     msg.what = 2;
-                    handler.sendMessage(msg);
+                    sendMessage(msg);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Message msg = new Message();
                     msg.obj = e.getMessage();
                     msg.what = 1;
-                    handler.sendMessage(msg);
+                    sendMessage(msg);
                 }
             }
         }).start();
@@ -207,11 +140,12 @@ public class LoginActivity extends BaseActivity {
                     Connection.Response response = Jsoup.connect("http://202.115.47.141/j_spring_security_check")
                             .method(Connection.Method.POST)
                             .header("Cookie", cookie)
-                            .userAgent(UAHelper.UA)
+                            .userAgent(TimetableHelper.UA)
                             .header("Referer", "http://202.115.47.141/login")
                             .data("j_username", userName.getText().toString())
                             .data("j_password", password.getText().toString())
                             .data("j_captcha", captcha.getText().toString())
+                            .ignoreHttpErrors(true)
 //                            .followRedirects(false)
                             .execute();
                     Log.d("response.statusCode()=", "" + response.statusCode());
@@ -219,11 +153,12 @@ public class LoginActivity extends BaseActivity {
                     if (response.statusCode() != 200 || response.body().contains("badCredentials")) {
                         Message msg = new Message();
                         msg.what = 3;
-                        handler.sendMessage(msg);
+                        sendMessage(msg);
+                        return;
                     } else {
                         Message msg = new Message();
                         msg.what = 4;
-                        handler.sendMessage(msg);
+                        sendMessage(msg);
                         Document document = Jsoup.parse(response.body());
                         Elements elements = document.select("li");
                         String text = elements.select(".light-red").get(0).select("a").get(0).text();
@@ -242,7 +177,7 @@ public class LoginActivity extends BaseActivity {
 
                         response = Jsoup.connect("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
                                 .method(Connection.Method.POST)
-                                .userAgent(UAHelper.UA)
+                                .userAgent(TimetableHelper.UA)
                                 .ignoreContentType(true)
                                 .header("Cookie", cookie)
                                 .header("Referer", "http://202.115.47.141/student/courseSelect/calendarSemesterCurriculum/index")
@@ -256,7 +191,7 @@ public class LoginActivity extends BaseActivity {
                             msg = new Message();
                             msg.obj = json;
                             msg.what = 5;
-                            handler.sendMessage(msg);
+                            sendMessage(msg);
                         }
                     }
                 } catch (Exception e) {
@@ -266,34 +201,106 @@ public class LoginActivity extends BaseActivity {
         }.start();
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-                String sessionId1 = (String) msg.obj;
-                Toast.makeText(LoginActivity.this, "erroe=" + sessionId1, Toast.LENGTH_SHORT).show();
-            } else if (msg.what == 2) {
-                Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
-                SPHelper.putString("cookie", cookie);
-                CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
-            } else if (msg.what == 3) {
-                Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-            } else if (msg.what == 4) {
-                Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
-                msgText.setText("获取课表信息中...");
-                SPHelper.putString("user_name", userName.getText().toString());
-                SPHelper.putString("password", password.getText().toString());
-            } else if (msg.what == 5) {
-                String json = (String) msg.obj;
-                try {
-                    SubjectUtil.writeToJson(LoginActivity.this, json);
-                    SPHelper.putBoolean("logined", true);
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    e.printStackTrace();
+    @Override
+    protected void handleMessage(Message msg) {
+        if (msg.what == 1) {
+            String sessionId1 = (String) msg.obj;
+            Toast.makeText(LoginActivity.this, "erroe=" + sessionId1, Toast.LENGTH_SHORT).show();
+        } else if (msg.what == 2) {
+            Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
+            SPHelper.putString("cookie", cookie);
+            CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
+        } else if (msg.what == 3) {
+            Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+            AnimatorUtil.hideViewAnimator(progress, 500, new AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
                 }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progress.setVisibility(View.GONE);
+                    AnimatorUtil.showViewAnimator(middleLayout, 500);
+                    captcha.setText("");
+                    CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+
+        } else if (msg.what == 4) {
+            Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
+            msgText.setText("获取课表信息中...");
+            SPHelper.putString("user_name", userName.getText().toString());
+            SPHelper.putString("password", password.getText().toString());
+        } else if (msg.what == 5) {
+            String json = (String) msg.obj;
+            try {
+                SubjectUtil.writeToJson(LoginActivity.this, json);
+                SPHelper.putBoolean("logined", true);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                //发送广播。更新桌面插件
+                updateWidget(true);
+                finish();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
-    };
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.change_captcha || id == R.id.img_captcha) {
+            if (!TextUtils.isEmpty(cookie)) {
+                CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
+            }
+        } else if (id == R.id.main_btn_login) {
+            if (progress.getVisibility() == View.VISIBLE) {
+                return;
+            }
+            if (userName.getText().toString().isEmpty() || password.getText().toString().isEmpty() || captcha.getText().toString().isEmpty()) {
+                Toast.makeText(LoginActivity.this, "请输入正确的信息", Toast.LENGTH_SHORT).show();
+            } else {
+                SPHelper.putString("user_name", userName.getText().toString());
+                SPHelper.putString("password", password.getText().toString());
+                AnimatorUtil.hideViewAnimator(middleLayout, 500, new AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        progress.setVisibility(View.VISIBLE);
+                        AnimatorUtil.shakeAnimator(progress, 1000);
+                        middleLayout.setVisibility(View.INVISIBLE);
+                        msgText.setText("登录中...");
+                        login();
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+
+            }
+        }
+    }
 }

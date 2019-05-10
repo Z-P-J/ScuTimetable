@@ -127,4 +127,7 @@
     <color name="app_course_chooseweek_bg">#80E2F7F6</color>
     <color name="app_course_chooseweek_bg2">#80F1FFFE</color>
     <color name="app_course_chooseweek_lightbg">#90B7F5F2</color>
+<!--    <color name="app_course_chooseweek_bg">#00ffffff</color>-->
+<!--    <color name="app_course_chooseweek_bg2">#00ffffff</color>-->
+<!--    <color name="app_course_chooseweek_lightbg">#00ffffff</color>-->
 </resources>

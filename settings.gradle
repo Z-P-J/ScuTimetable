@@ -1,1 +1,1 @@
-include ':app', ':TimetableView'
+include ':app', ':TimetableView', ':easydialog'

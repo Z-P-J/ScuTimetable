@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1.0">
+    <ImageView
+        android:id="@+id/course_widget_4_4_course_view_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+    <TextView
+        android:textSize="10dp"
+        android:textColor="@color/white"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:id="@+id/course_widget_4_4_course_view_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="2dp" />
+</FrameLayout>
+

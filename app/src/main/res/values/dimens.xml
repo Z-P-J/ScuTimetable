@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+Refer to App Widget Documentation for margin information
+http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
+    -->
+    <dimen name="widget_margin">8dp</dimen>
+
+
+
+
+
+
+
+        <dimen name="activity_vertical_margin">16dp</dimen>
+        <dimen name="ad_wall_bottom_layout_height">108dp</dimen>
+        <dimen name="ali_auth_space_10">10dp</dimen>
+        <dimen name="ali_auth_space_160">160dp</dimen>
+        <dimen name="ali_auth_space_20">20dp</dimen>
+        <dimen name="ali_auth_space_300">300dp</dimen>
+        <dimen name="ali_auth_titlebar_height">44dp</dimen>
+        <dimen name="alphabet_size">12dp</dimen>
+        <dimen name="answer_sdk_title_bar_height">43dp</dimen>
+        <dimen name="bqmm_keyboard_network_error_text_size">18sp</dimen>
+        <dimen name="bqmm_preload_package_name_text_size">18sp</dimen>
+        <dimen name="bqmm_refresh_button_text_size">14sp</dimen>
+        <dimen name="bqmm_reload_button_text_size">14sp</dimen>
+        <dimen name="bqmm_shop_network_error_text_size">18sp</dimen>
+        <dimen name="bqmm_sort_button_text_size">20sp</dimen>
+        <dimen name="bqmm_title_text_size">19sp</dimen>
+        <dimen name="bqmm_titlebar_height">55dp</dimen>
+        <dimen name="camera_bottom_height">140dp</dimen>
+        <dimen name="chat_image_corner_radius">12dp</dimen>
+        <dimen name="community_tab_padding">15dp</dimen>
+        <dimen name="community_tab_text_padding">24dp</dimen>
+        <dimen name="controller_bar_text_size">10dp</dimen>
+        <dimen name="countdown_txv_drawable_padding">8dp</dimen>
+        <dimen name="countdown_txv_name_drawable_padding">2dp</dimen>
+        <dimen name="course_4_4_botton_layout_height">36dp</dimen>
+        <dimen name="course_4_4_section_width">20dp</dimen>
+        <dimen name="course_4_4_view_text_size">10dp</dimen>
+        <dimen name="course_4_4_week_bar_height">36dp</dimen>
+        <dimen name="course_text_size_14">7dp</dimen>
+        <dimen name="course_text_size_16">8dp</dimen>
+        <dimen name="course_week_cell_height">59dp</dimen>
+        <dimen name="course_week_grid_height">50dp</dimen>
+        <dimen name="course_week_selector_height">85dp</dimen>
+        <dimen name="design_appbar_elevation">4dp</dimen>
+        <dimen name="design_bottom_navigation_active_item_max_width">168dp</dimen>
+        <dimen name="design_bottom_navigation_active_text_size">14sp</dimen>
+        <dimen name="design_bottom_navigation_elevation">8dp</dimen>
+        <dimen name="design_bottom_navigation_height">56dp</dimen>
+        <dimen name="design_bottom_navigation_item_max_width">96dp</dimen>
+        <dimen name="design_bottom_navigation_item_min_width">56dp</dimen>
+        <dimen name="design_bottom_navigation_margin">8dp</dimen>
+        <dimen name="design_bottom_navigation_shadow_height">1dp</dimen>
+        <dimen name="design_bottom_navigation_text_size">12sp</dimen>
+        <dimen name="design_bottom_sheet_modal_elevation">16dp</dimen>
+        <dimen name="design_bottom_sheet_peek_height_min">64dp</dimen>
+        <dimen name="design_fab_border_width">0.5dp</dimen>
+        <dimen name="design_fab_elevation">6dp</dimen>
+        <dimen name="design_fab_image_size">24dp</dimen>
+        <dimen name="design_fab_size_mini">40dp</dimen>
+        <dimen name="design_fab_size_normal">56dp</dimen>
+        <dimen name="design_fab_translation_z_pressed">6dp</dimen>
+        <dimen name="design_navigation_elevation">16dp</dimen>
+        <dimen name="design_navigation_icon_padding">32dp</dimen>
+        <dimen name="design_navigation_icon_size">24dp</dimen>
+        <dimen name="design_navigation_padding_bottom">8dp</dimen>
+        <dimen name="design_navigation_separator_vertical_padding">8dp</dimen>
+        <dimen name="design_snackbar_elevation">6dp</dimen>
+        <dimen name="design_snackbar_padding_horizontal">12dp</dimen>
+        <dimen name="design_snackbar_padding_vertical">14dp</dimen>
+        <dimen name="design_snackbar_text_size">14sp</dimen>
+        <dimen name="design_tab_max_width">264dp</dimen>
+        <dimen name="design_tab_text_size">14sp</dimen>
+        <dimen name="design_tab_text_size_2line">12sp</dimen>
+        <dimen name="dialog_bottom_margin">10dp</dimen>
+        <dimen name="dialog_btn_close_right_margin">10dp</dimen>
+        <dimen name="dialog_btn_close_top_margin">10dp</dimen>
+        <dimen name="dialog_left_margin">10dp</dimen>
+        <dimen name="dialog_right_margin">10dp</dimen>
+        <dimen name="dialog_title_height">30dp</dimen>
+        <dimen name="dialog_title_logo_left_margin">5dp</dimen>
+        <dimen name="dialog_top_margin">30dp</dimen>
+        <dimen name="face_size">22dp</dimen>
+        <dimen name="feed_content_font_size">16dp</dimen>
+        <dimen name="grid_item_height">70dp</dimen>
+        <dimen name="grid_item_padding_left">20dp</dimen>
+        <dimen name="header_footer_left_right_padding">24dp</dimen>
+        <dimen name="header_footer_top_bottom_padding">12dp</dimen>
+        <dimen name="height_album_cover">255dp</dimen>
+        <dimen name="hot_user_icon_size">60dp</dimen>
+        <dimen name="indicator_corner_radius">12dp</dimen>
+        <dimen name="indicator_internal_padding">4dp</dimen>
+        <dimen name="indicator_right_padding">10dp</dimen>
+        <dimen name="item_padding_left">20dp</dimen>
+        <dimen name="item_padding_left_feed">20dp</dimen>
+        <dimen name="item_padding_right">20dp</dimen>
+        <dimen name="item_padding_right_feed">20dp</dimen>
+        <dimen name="list_padding">10dp</dimen>
+        <dimen name="login_register_bottom_txv_size">16dp</dimen>
+        <dimen name="main_tabbar_height">55dp</dimen>
+        <dimen name="main_tabbar_paddingTop">6dp</dimen>
+        <dimen name="nav_btn_share_padding_bottom">8dp</dimen>
+        <dimen name="nav_btn_share_padding_top">8dp</dimen>
+        <dimen name="nav_btn_start_padding_bottom">0dp</dimen>
+        <dimen name="nearby_school_item_margin">15dp</dimen>
+        <dimen name="nearby_school_item_width">85dp</dimen>
+        <dimen name="page_left_right_margin">20dp</dimen>
+        <dimen name="page_top_margin">15dp</dimen>
+        <dimen name="pager_tag_height">44dp</dimen>
+        <dimen name="playground_padding_sub">13dp</dimen>
+        <dimen name="playground_recommend_img_size">75dp</dimen>
+        <dimen name="playground_recommend_offset">15dp</dimen>
+        <dimen name="qrcode_share_save_text_size">18dp</dimen>
+        <dimen name="school_acty_time_size">7dp</dimen>
+        <dimen name="search_bar_group_height">44dp</dimen>
+        <dimen name="search_content_height">30dp</dimen>
+        <dimen name="shadow_width">15dp</dimen>
+        <dimen name="slidingmenu_offset">80dp</dimen>
+        <dimen name="super_content_margin">10dp</dimen>
+        <dimen name="super_content_margin_right">27dp</dimen>
+        <dimen name="super_left_item_width">50dp</dimen>
+        <dimen name="super_left_tip_width">50dp</dimen>
+        <dimen name="super_margin_left">10dp</dimen>
+        <dimen name="syllabus_copy_name_size">5dp</dimen>
+        <dimen name="timeline_content_text_size">16dp</dimen>
+        <dimen name="timeline_controlbar_height">36dp</dimen>
+        <dimen name="title_bar_height">44dp</dimen>
+        <dimen name="title_bar_padding">15dp</dimen>
+        <dimen name="topic_head_height">337dp</dimen>
+        <dimen name="topic_head_image_height">150dp</dimen>
+        <dimen name="topic_head_managers_height">50dp</dimen>
+        <dimen name="topic_head_tab_height">40dp</dimen>
+        <dimen name="treehole_comment_avatar_width">40dp</dimen>
+        <dimen name="treehole_comment_item_margin">0dp</dimen>
+        <dimen name="ucrop_default_crop_frame_stoke_width">1dp</dimen>
+        <dimen name="ucrop_default_crop_grid_stoke_width">1dp</dimen>
+        <dimen name="ucrop_default_crop_rect_corner_touch_area_line_length">10dp</dimen>
+        <dimen name="ucrop_default_crop_rect_corner_touch_threshold">10dp</dimen>
+        <dimen name="ucrop_default_crop_rect_min_size">50dp</dimen>
+        <dimen name="ucrop_height_crop_aspect_ratio_text">40dp</dimen>
+        <dimen name="ucrop_height_divider_shadow">3dp</dimen>
+        <dimen name="ucrop_height_horizontal_wheel_progress_line">20dp</dimen>
+        <dimen name="ucrop_height_wrapper_controls">64dp</dimen>
+        <dimen name="ucrop_height_wrapper_states">72dp</dimen>
+        <dimen name="ucrop_margin_horizontal_wheel_progress_line">10dp</dimen>
+        <dimen name="ucrop_margit_top_widget_text">10sp</dimen>
+        <dimen name="ucrop_padding_crop_frame">0dp</dimen>
+        <dimen name="ucrop_progress_size">30dp</dimen>
+        <dimen name="ucrop_size_dot_scale_text_view">8dp</dimen>
+        <dimen name="ucrop_size_wrapper_rotate_button">50dp</dimen>
+        <dimen name="ucrop_text_size_widget_text">13sp</dimen>
+        <dimen name="ucrop_width_horizontal_wheel_progress_line">2dp</dimen>
+        <dimen name="umeng_socialize_pad_window_height">350dp</dimen>
+        <dimen name="umeng_socialize_pad_window_width">580dp</dimen>
+        <dimen name="underline_height">1px</dimen>
+        <dimen name="user_page_info_height">255dp</dimen>
+        <dimen name="user_page_menu_height">0dp</dimen>
+        <dimen name="viewpager_tabs_header_height">40dp</dimen>
+        <dimen name="week_view_section_text_size">12dp</dimen>
+
+</resources>

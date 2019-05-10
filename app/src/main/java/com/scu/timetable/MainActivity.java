@@ -11,10 +11,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.scu.timetable.model.MySubject;
-import com.scu.timetable.utils.ActivityCollector;
+import com.scu.timetable.base.ActivityCollector;
 import com.scu.timetable.utils.SubjectUtil;
 import com.scu.timetable.utils.content.SPHelper;
+import com.scu.timetable.base.BaseActivity;
 import com.zhuangfei.timetable.TimetableView;
+import com.zhuangfei.timetable.TimetableWrapper;
 import com.zhuangfei.timetable.listener.ISchedule;
 import com.zhuangfei.timetable.listener.IWeekView;
 import com.zhuangfei.timetable.model.Schedule;
@@ -29,7 +31,7 @@ import java.util.List;
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     //控件
-    TimetableView mTimetableView;
+    TimetableWrapper mTimetableView;
     WeekView mWeekView;
 
     LinearLayout layout;
@@ -66,12 +68,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mWeekView.source(mySubjects).showView();
         mTimetableView.source(mySubjects)
                 .isShowWeekends(false)
-                .callback(new ISchedule.OnScrollViewBuildListener() {
-                    @Override
-                    public View getScrollView(LayoutInflater mInflate) {
-                        return mInflate.inflate(R.layout.custom_myscrollview, null, false);
-                    }
-                })
+//                .callback(new ISchedule.OnScrollViewBuildListener() {
+//                    @Override
+//                    public View getScrollView(LayoutInflater mInflate) {
+//                        return mInflate.inflate(R.layout.custom_myscrollview, null, false);
+//                    }
+//                })
                 .showView();
     }
 
@@ -81,7 +83,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void initTimetableView() {
         //获取控件
         mWeekView = findViewById(R.id.id_weekview);
-        mTimetableView = findViewById(R.id.id_timetableView);
+        mTimetableView = new TimetableWrapper(this, findViewById(R.id.id_timetableView));
 
         //设置周次选择属性
         mWeekView.curWeek(currentWeek)
@@ -105,7 +107,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 .showView();
 
         mTimetableView.curWeek(currentWeek)
-                .curTerm("大三下学期")
+                .curTerm("大二下学期")
                 .callback(new ISchedule.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, List<Schedule> scheduleList) {
@@ -178,11 +180,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      * @param beans
      */
     protected void display(List<Schedule> beans) {
-        String str = "";
+        StringBuilder str = new StringBuilder();
         for (Schedule bean : beans) {
-            str += bean.getName() + "," + bean.getWeekList().toString() + "," + bean.getStart() + "," + bean.getStep() + "\n";
+            str.append(bean.getName()).append(",").append(bean.getWeekList().toString()).append(",").append(bean.getStart()).append(",").append(bean.getStep()).append("\n");
         }
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, str.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
