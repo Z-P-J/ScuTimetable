@@ -32,5 +32,5 @@
     更新内容：1.增加桌面插件，方便快捷的查看课表
              2.其他优化
 ### v1.2.0截图
-![screenshot3](screenshots/screenshot4.jpg) ![screenshot4](screenshots/screenshot3.jpg)
+![screenshot3](screenshots/screenshot4.png) ![screenshot4](screenshots/screenshot3.png)
     
