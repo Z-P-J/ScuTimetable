@@ -195,7 +195,13 @@ public interface ISchedule {
         /**
          * 更新日期时回调
          */
-        void onUpdateDate(int curWeek,int targetWeek);
+        void onUpdateDate(int curWeek,int targetWeek, boolean sundayIsFirstDay, boolean isShowWeekends);
+
+        void setSundayIsFirstDay(boolean sundayIsFirstDay);
+
+        void setShowWeekends(boolean showWeekends);
+
+        void setBackground(int background);
     }
 
     interface OnConfigHandleListener{

@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:id="@+id/id_root"
-    android:background="@color/app_white"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -22,6 +21,7 @@
     </LinearLayout>
 
     <HorizontalScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:scrollbars="none"

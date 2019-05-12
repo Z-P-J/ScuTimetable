@@ -5,7 +5,11 @@
       <module fileurl="file://$PROJECT_DIR$/ScuTimetable.iml" filepath="$PROJECT_DIR$/ScuTimetable.iml" />
       <module fileurl="file://$PROJECT_DIR$/TimetableView/TimetableView.iml" filepath="$PROJECT_DIR$/TimetableView/TimetableView.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/easydialog/easydialog.iml" filepath="$PROJECT_DIR$/easydialog/easydialog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dialoglib/dialoglib.iml" filepath="$PROJECT_DIR$/dialoglib/dialoglib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" filepath="$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/popupmenuview/popupmenuview.iml" filepath="$PROJECT_DIR$/popupmenuview/popupmenuview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/switchbutton/switchbutton.iml" filepath="$PROJECT_DIR$/switchbutton/switchbutton.iml" />
     </modules>
   </component>
 </project>

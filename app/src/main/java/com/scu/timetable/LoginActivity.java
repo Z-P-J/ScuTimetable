@@ -14,20 +14,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.scu.timetable.ui.activity.BaseHandlerActivity;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.DateUtil;
-import com.scu.timetable.utils.SubjectUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.content.SPHelper;
-import com.scu.timetable.base.BaseHandlerActivity;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-
-import java.util.Date;
 
 /**
  * @author 25714
@@ -79,6 +76,7 @@ public class LoginActivity extends BaseHandlerActivity implements View.OnClickLi
 
     public void initView() {
         middleLayout = findViewById(R.id.layout_middle);
+
 //        middleLayout.setVisibility(View.VISIBLE);
         AnimatorUtil.showViewAnimator(middleLayout, 1000);
 
@@ -167,8 +165,8 @@ public class LoginActivity extends BaseHandlerActivity implements View.OnClickLi
                         text = text.substring(1, text.indexOf("周"));
                         Log.d("text", "text=" + text);
                         int currentWeek = Integer.parseInt(text);
-                        SPHelper.putInt("currrent_weak", currentWeek);
-                        SPHelper.putString("currrent_data", DateUtil.currentDate());
+                        TimetableHelper.setCurrentWeek(currentWeek);
+                        TimetableHelper.setCurrentDate(DateUtil.currentDate());
 
                         //通过以下链接可获取当前学期code
                         //http://202.115.47.141/main/academicInfo
@@ -203,7 +201,9 @@ public class LoginActivity extends BaseHandlerActivity implements View.OnClickLi
 
     @Override
     protected void handleMessage(Message msg) {
-        if (msg.what == 1) {
+        if (msg.what == -1) {
+            String errorMsg = (String) msg.obj;
+        } else if (msg.what == 1) {
             String sessionId1 = (String) msg.obj;
             Toast.makeText(LoginActivity.this, "erroe=" + sessionId1, Toast.LENGTH_SHORT).show();
         } else if (msg.what == 2) {
@@ -245,7 +245,7 @@ public class LoginActivity extends BaseHandlerActivity implements View.OnClickLi
         } else if (msg.what == 5) {
             String json = (String) msg.obj;
             try {
-                SubjectUtil.writeToJson(LoginActivity.this, json);
+                TimetableHelper.writeToJson(LoginActivity.this, json);
                 SPHelper.putBoolean("logined", true);
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:checked="false"
+        android:checkable="true"
+        android:id="@+id/nav_findpassword"
+        android:icon="@drawable/ic_event_note_black_24dp"
+        android:title="显示周末">
+    </item>
+
+    <item
+        android:id="@+id/nav_recycle"
+        android:checked="true"
+        android:checkable="true"
+        android:icon="@drawable/ic_assignment_late_black_24dp"
+        android:title="显示时间">
+
+    </item>
+
+    <item
+        android:id="@+id/nav_new_folder"
+        android:checked="true"
+        android:checkable="true"
+        android:icon="@drawable/ic_account_box_black_24dp"
+        android:title="显示非本周课程">
+    </item>
+
+    <item
+        android:icon="@drawable/ic_lock_black_24dp"
+        android:title="修改当前周">
+
+    </item>
+
+    <item
+        android:id="@+id/nav_category"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="设置">
+
+    </item>
+</menu>

@@ -25,5 +25,5 @@ public abstract class AbsOperater {
 
     public LinearLayout getDateLayout(){return null;};
 
-    public void setWeekendsVisiable(boolean isShow){};
+    public void setWeekendsVisiable(boolean isShow, boolean sundayIsFirstDay){};
 }

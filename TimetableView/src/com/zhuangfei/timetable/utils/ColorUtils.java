@@ -20,7 +20,7 @@ public class ColorUtils {
     public static int alphaColor(int color, float alpha) {
         Log.d("alphaColor", "alpha=" + alpha);
         if (alpha == 1.0f) {
-            alpha = 0.5f;
+            alpha = 0.8f;
         }
         int a = Math.min(255, Math.max(0, (int) (alpha * 255))) << 24;
         int rgb = 0x00ffffff & color;

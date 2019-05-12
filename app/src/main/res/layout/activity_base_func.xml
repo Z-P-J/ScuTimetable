@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -7,21 +7,130 @@
     android:fitsSystemWindows="true"
     >
 
-    <include layout="@layout/header_base_func" />
-
-    <com.zhuangfei.timetable.view.WeekView
-        android:id="@+id/id_weekview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
     <LinearLayout
-        android:id="@+id/id_timetableView"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#00ffffff"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
+
+        <include layout="@layout/header_base_func" />
+
+        <com.zhuangfei.timetable.view.WeekView
+            android:id="@+id/id_weekview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <com.zhuangfei.timetable.TimetableView
+            android:id="@+id/id_timetableView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00ffffff">
+
+        </com.zhuangfei.timetable.TimetableView>
 
     </LinearLayout>
 
-</LinearLayout>
+    <android.support.v7.widget.CardView
+        android:id="@+id/test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="#00ffffff"
+        android:layout_gravity="center"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:cardUseCompatPadding="true"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="5dp"
+        >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="#aaffffff"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:text="离散数学"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="老师：zpj"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="地点：二基楼"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="时间：8:15- 9:00 第1 - 2节"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1 - 17周"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="课序号：100"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="课程号：99"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    />
+
+                <TextView
+                    android:id="@+id/content"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+
+
+
+    </android.support.v7.widget.CardView>
+
+
+
+</FrameLayout>

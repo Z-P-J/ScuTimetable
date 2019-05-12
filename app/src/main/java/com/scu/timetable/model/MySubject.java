@@ -20,7 +20,7 @@ public class MySubject implements ScheduleEnable {
     /**
      * 课程名
      */
-    private String name;
+    private String courseName;
 
     //无用数据
     private String time;
@@ -64,6 +64,40 @@ public class MySubject implements ScheduleEnable {
 
     private String url;
 
+    private String courseProperties;
+
+    private String teachingBuilding;
+
+    private String classroom;
+
+    private String coureNumber;
+
+    private String coureSequenceNumber;
+
+    private String campusName;
+
+    private String weekDescription;
+
+    private String examType;
+
+    private String courseCategory;
+
+    private String restrictedCondition;
+
+    private String programPlan;
+
+    private String studyMode;
+
+    private String unit;
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
     public void setUrl(String url) {
         this.url = url;
     }
@@ -96,29 +130,29 @@ public class MySubject implements ScheduleEnable {
         this.start = start;
         this.step = 1;
         this.day = day;
-        this.name = "";
+        this.courseName = "";
     }
 
-    public MySubject(String term, String name, String room, String teacher, List<Integer> weekList, int start, int step, int day, int colorRandom, String time) {
-        super();
-        this.term = term;
-        this.name = name;
-        this.room = room;
-        this.teacher = teacher;
-        this.weekList = weekList;
-        this.start = start;
-        this.step = step;
-        this.day = day;
-        this.colorRandom = colorRandom;
-        this.time = time;
+//    public MySubject(String term, String courseName, String room, String teacher, List<Integer> weekList, int start, int step, int day, int colorRandom, String time) {
+//        super();
+//        this.term = term;
+//        this.courseName = courseName;
+//        this.room = room;
+//        this.teacher = teacher;
+//        this.weekList = weekList;
+//        this.start = start;
+//        this.step = step;
+//        this.day = day;
+//        this.colorRandom = colorRandom;
+//        this.time = time;
+//    }
+
+    public String getCourseName() {
+        return courseName;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public String getRoom() {
@@ -181,11 +215,107 @@ public class MySubject implements ScheduleEnable {
         this.colorRandom = colorRandom;
     }
 
+    public String getCourseProperties() {
+        return courseProperties;
+    }
+
+    public void setCourseProperties(String courseProperties) {
+        this.courseProperties = courseProperties;
+    }
+
+    public String getTeachingBuilding() {
+        return teachingBuilding;
+    }
+
+    public void setTeachingBuilding(String teachingBuilding) {
+        this.teachingBuilding = teachingBuilding;
+    }
+
+    public String getClassroom() {
+        return classroom;
+    }
+
+    public void setClassroom(String classroom) {
+        this.classroom = classroom;
+    }
+
+    public String getCoureNumber() {
+        return coureNumber;
+    }
+
+    public void setCoureNumber(String coureNumber) {
+        this.coureNumber = coureNumber;
+    }
+
+    public String getCoureSequenceNumber() {
+        return coureSequenceNumber;
+    }
+
+    public void setCoureSequenceNumber(String coureSequenceNumber) {
+        this.coureSequenceNumber = coureSequenceNumber;
+    }
+
+    public String getCampusName() {
+        return campusName;
+    }
+
+    public void setCampusName(String campusName) {
+        this.campusName = campusName;
+    }
+
+    public String getWeekDescription() {
+        return weekDescription;
+    }
+
+    public void setWeekDescription(String weekDescription) {
+        this.weekDescription = weekDescription;
+    }
+
+    public String getExamType() {
+        return examType;
+    }
+
+    public void setExamType(String examType) {
+        this.examType = examType;
+    }
+
+    public String getCourseCategory() {
+        return courseCategory;
+    }
+
+    public void setCourseCategory(String courseCategory) {
+        this.courseCategory = courseCategory;
+    }
+
+    public String getRestrictedCondition() {
+        return restrictedCondition;
+    }
+
+    public void setRestrictedCondition(String restrictedCondition) {
+        this.restrictedCondition = restrictedCondition;
+    }
+
+    public String getProgramPlan() {
+        return programPlan;
+    }
+
+    public void setProgramPlan(String programPlan) {
+        this.programPlan = programPlan;
+    }
+
+    public String getStudyMode() {
+        return studyMode;
+    }
+
+    public void setStudyMode(String studyMode) {
+        this.studyMode = studyMode;
+    }
+
     @Override
     public Schedule getSchedule() {
         Schedule schedule = new Schedule();
         schedule.setDay(getDay());
-        schedule.setName(getName());
+        schedule.setName(getCourseName());
         schedule.setRoom(getRoom());
         schedule.setStart(getStart());
         schedule.setStep(getStep());
@@ -194,6 +324,7 @@ public class MySubject implements ScheduleEnable {
         schedule.setColorRandom(2);
         schedule.putExtras(EXTRAS_ID, getId());
         schedule.putExtras(EXTRAS_AD_URL, getUrl());
+        schedule.setScheduleEnable(this);
         return schedule;
     }
 
@@ -203,5 +334,32 @@ public class MySubject implements ScheduleEnable {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "MySubject{" +
+                "\n\rid=" + id +
+                "\n\rcourseName='" + courseName + '\'' +
+                "\n\rtime='" + time + '\'' +
+                "\n\rroom='" + room + '\'' +
+                "\n\rteacher='" + teacher + '\'' +
+                "\n\rstart=" + start +
+                "\n\rstep=" + step +
+                "\n\rday=" + day +
+                "\n\rterm='" + term + '\'' +
+                "\n\rcourseProperties='" + courseProperties + '\'' +
+                "\n\rteachingBuilding='" + teachingBuilding + '\'' +
+                "\n\rclassroom='" + classroom + '\'' +
+                "\n\rcoureNumber='" + coureNumber + '\'' +
+                "\n\rcoureSequenceNumber='" + coureSequenceNumber + '\'' +
+                "\n\rcampusName='" + campusName + '\'' +
+                "\n\rweekDescription='" + weekDescription + '\'' +
+                "\n\rexamType='" + examType + '\'' +
+                "\n\rcourseCategory='" + courseCategory + '\'' +
+                "\n\rrestrictedCondition='" + restrictedCondition + '\'' +
+                "\n\rprogramPlan='" + programPlan + '\'' +
+                "\n\rstudyMode='" + studyMode + '\'' +
+                "\n}";
     }
 }

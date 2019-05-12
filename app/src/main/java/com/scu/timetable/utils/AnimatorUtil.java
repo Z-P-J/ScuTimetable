@@ -5,9 +5,16 @@ import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
+import android.content.Context;
+import android.os.Build;
+import android.support.v7.widget.CardView;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 /**
  * @author 25714
@@ -140,6 +147,86 @@ public final class AnimatorUtil {
         });
     }
 
+    public static void circleAnimator(final View view, int x, int y, int duration) {
+        //隐藏
+
+        if (view.getVisibility() == View.VISIBLE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                final Animator animatorHide = ViewAnimationUtils.createCircularReveal(view,
+                        x,
+                        y,
+                        //确定元的半径（算长宽的斜边长，这样半径不会太短也不会很长效果比较舒服）
+                        (float) Math.hypot(view.getWidth(), view.getHeight()),
+                        0);
+                animatorHide.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                animatorHide.setDuration(duration);
+                animatorHide.start();
+            } else {
+                view.setVisibility(View.GONE);
+            }
+            view.setEnabled(false);
+        }
+        //显示
+        else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                final Animator animator = ViewAnimationUtils.createCircularReveal(view,
+                        x,
+                        y,
+                        0,
+                        (float) Math.hypot(view.getWidth(), view.getHeight()));
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                view.setVisibility(View.VISIBLE);
+                if (view.getVisibility() == View.VISIBLE) {
+                    animator.setDuration(duration);
+                    animator.start();
+                    view.setEnabled(true);
+                }
+            } else {
+                view.setVisibility(View.VISIBLE);
+                view.setEnabled(true);
+            }
+        }
+    }
+
     private static final class JellyInterpolator extends LinearInterpolator {
         private float factor;
 
@@ -152,6 +239,11 @@ public final class AnimatorUtil {
             return (float) (Math.pow(2, -10 * input)
                     * Math.sin((input - factor / 4) * (2 * Math.PI) / factor) + 1);
         }
+    }
+
+    public static int dip2px(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5);
     }
 
 }

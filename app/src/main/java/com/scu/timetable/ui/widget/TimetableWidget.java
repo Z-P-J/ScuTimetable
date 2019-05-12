@@ -78,7 +78,7 @@ public class TimetableWidget extends AppWidgetProvider {
         }
         //如果可以显示课表
         if (showTimetable(context)) {
-            Toast.makeText(context, "showTimetable", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "showTimetable", Toast.LENGTH_SHORT).show();
             widgtHelper.showTimetable(remoteViews, R.id.course_widget_4_4_course_layout);
             widgtHelper.showTimetableWeekBar(remoteViews, R.id.course_widget_4_4_week_bar);
 //            clickToLoginActivity(context);
@@ -91,12 +91,10 @@ public class TimetableWidget extends AppWidgetProvider {
 
     private boolean showTimetable(Context ctx) {
         if (TimetableHelper.isLogined(ctx)) {
-            Log.d("showTimetable", "1111111111111111111111");
             this.remoteViews.setViewVisibility(R.id.widget_llyt_no_course, View.INVISIBLE);
             this.remoteViews.setViewVisibility(R.id.course_widget_4_4_week_course, View.VISIBLE);
             return true;
         } else {
-            Log.d("showTimetable", "2222222222222222222222");
             clickToLoginActivity(ctx, R.id.widget_btn_enter_treehole);
             this.remoteViews.setViewVisibility(R.id.widget_btn_enter_treehole, View.VISIBLE);
             this.remoteViews.setTextViewText(R.id.widget_btn_enter_treehole, ctx.getResources().getString(R.string.goto_login));
@@ -121,7 +119,9 @@ public class TimetableWidget extends AppWidgetProvider {
 //    }
 
     private void clickToLoginActivity(Context context, int i) {
-        this.remoteViews.setOnClickPendingIntent(i, PendingIntent.getActivity(context, 17, new Intent(context, LoginActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        this.remoteViews.setOnClickPendingIntent(i, PendingIntent.getActivity(context, 17,intent, PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
     @Override

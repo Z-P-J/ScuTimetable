@@ -13,6 +13,7 @@
         android:textColor="@color/white"
         android:textSize="18sp"
         android:layout_marginStart="10dp"
+        android:textStyle="bold"
         />
 
     <LinearLayout
@@ -28,13 +29,17 @@
             android:layout_height="wrap_content"
             android:text="课程表"
             android:textColor="#ffffff"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:drawableEnd="@drawable/ic_expand_more_white_24dp"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="选择周次"
             android:textColor="#eeffffff"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            android:visibility="gone"
+            />
     </LinearLayout>
 
     <Button
@@ -48,13 +53,15 @@
         android:layout_height="wrap_content"/>
 
     <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:id="@+id/settins"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:padding="6dp"
         android:src="@drawable/ic_settings_black_24dp"
         android:tint="@color/white"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_margin="13dp"
+        android:layout_margin="7dp"
         />
 
 </RelativeLayout>

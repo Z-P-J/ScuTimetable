@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="10dp"
+    >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            >
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_event_note_black_24dp"
+                android:tint="@color/colorPrimary"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="备注"
+                android:layout_centerVertical="true"
+                android:textColor="@color/colorPrimary"
+                android:layout_toEndOf="@id/icon"
+                android:layout_toStartOf="@id/btn_save"
+                />
+
+            <ImageView
+                android:gravity="end"
+                android:id="@+id/btn_save"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_save_black_24dp"
+                android:tint="@color/colorPrimary"
+                android:layout_toStartOf="@id/btn_close"
+                android:background="@drawable/bg_selector"
+                android:clickable="true"
+                android:focusable="true"
+                />
+
+            <ImageView
+                android:gravity="end"
+                android:id="@+id/btn_close"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="6dp"
+                android:src="@drawable/ic_close_black_24dp"
+                android:tint="@color/colorPrimary"
+                android:layout_alignParentEnd="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/bg_selector"
+                />
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_style"
+            android:padding="5dp"
+            android:hint="添加备注"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:maxEms="10"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:ellipsize="end"
+            android:text=""
+            android:lines="5"
+            android:gravity="start"
+            />
+
+    </LinearLayout>
+
+
+
+</android.support.v7.widget.CardView>

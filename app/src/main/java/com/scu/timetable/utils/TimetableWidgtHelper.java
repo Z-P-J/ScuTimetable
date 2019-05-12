@@ -13,8 +13,6 @@ import android.widget.RemoteViews;
 import com.scu.timetable.MainActivity;
 import com.scu.timetable.R;
 import com.scu.timetable.model.MySubject;
-import com.scu.timetable.utils.DateUtil;
-import com.scu.timetable.utils.SubjectUtil;
 import com.zhuangfei.timetable.model.ScheduleColorPool;
 
 import java.util.ArrayList;
@@ -40,12 +38,12 @@ public class TimetableWidgtHelper {
 
     public TimetableWidgtHelper(Context context, int i) {
         this.context = context;
-        mySubjects = getColorReflect(SubjectUtil.getSubjects(context));
+        mySubjects = getColorReflect(TimetableHelper.getSubjects(context));
         if (mySubjects.isEmpty()) {
             return;
         }
         colorPool = new ScheduleColorPool(context);
-        init();
+        initSubjects();
     }
 
     private List<MySubject> getColorReflect(List<MySubject> schedules) {
@@ -62,10 +60,10 @@ public class TimetableWidgtHelper {
             MySubject mySubject = schedules.get(i);
             //计算课程颜色
             int color;
-            if (colorMap.containsKey(mySubject.getName())) {
-                color = colorMap.get(mySubject.getName());
+            if (colorMap.containsKey(mySubject.getCourseName())) {
+                color = colorMap.get(mySubject.getCourseName());
             } else {
-                colorMap.put(mySubject.getName(), colorCount);
+                colorMap.put(mySubject.getCourseName(), colorCount);
                 color = colorCount;
                 colorCount++;
             }
@@ -75,7 +73,7 @@ public class TimetableWidgtHelper {
         return schedules;
     }
 
-    private void init() {
+    private void initSubjects() {
         subjectSparseArray.clear();
         for (int i = 0; i < 7; i++) {
             List<MySubject> mySubjectList = new ArrayList<>(12);
@@ -86,9 +84,8 @@ public class TimetableWidgtHelper {
         }
         for (MySubject mySubject : mySubjects) {
             int day = mySubject.getDay();
-            List<MySubject> mySubjectList = subjectSparseArray.get(day);
+            List<MySubject> mySubjectList = subjectSparseArray.get(day - 1);
             int start = mySubject.getStart();
-
             mySubjectList.set(start - 1, mySubject);
         }
 
@@ -96,7 +93,7 @@ public class TimetableWidgtHelper {
             List<MySubject> mySubjectList = subjectSparseArray.get(i);
             for (int j = mySubjectList.size() - 1; j >= 0; j--) {
                 MySubject mySubject = mySubjectList.get(j);
-                if (!TextUtils.isEmpty(mySubject.getName())) {
+                if (!TextUtils.isEmpty(mySubject.getCourseName())) {
                     int start = mySubject.getStart();
                     int end = mySubject.getEnd();
                     for (int k = end; k > start; k--) {
@@ -112,13 +109,13 @@ public class TimetableWidgtHelper {
         this.res = i;
         remoteViews.removeAllViews(i);
         //初始化节数
-        on();
-        oh();
+        initSlideBar();
+        initColumns();
         return this.remoteViews;
     }
 
     //初始化节数侧边栏
-    private void on() {
+    private void initSlideBar() {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.course_widget_4_4_section_colum);
         int i = 1;
         while (i < 13) {
@@ -152,18 +149,18 @@ public class TimetableWidgtHelper {
     }
 
     //初始化课程显示的每列
-    private void oh() {
+    private void initColumns() {
         for (int i = 1; i <= 7; i++) {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.course_widget_4_4_day_colum);
             List<MySubject> mySubjectList = subjectSparseArray.get(i - 1);
             for (MySubject mySubject : mySubjectList) {
                 RemoteViews remoteViews1 = new RemoteViews(context.getPackageName(), getCourseViewRes(mySubject.getStep()));
-                if (TextUtils.isEmpty(mySubject.getName())) {
+                if (TextUtils.isEmpty(mySubject.getCourseName())) {
                     remoteViews1.setInt(R.id.course_widget_4_4_course_view_img, "setBackgroundColor", Color.TRANSPARENT);
                     remoteViews1.setTextViewText(R.id.course_widget_4_4_course_view_text, "");
                 } else {
                     remoteViews1.setInt(R.id.course_widget_4_4_course_view_img, "setBackgroundColor", colorPool.getColorAutoWithAlpha(mySubject.getColorRandom(), 0.8f));
-                    remoteViews1.setTextViewText(R.id.course_widget_4_4_course_view_text, mySubject.getRoom() + "@" + mySubject.getName());
+                    remoteViews1.setTextViewText(R.id.course_widget_4_4_course_view_text, mySubject.getRoom() + "@" + mySubject.getCourseName());
                 }
                 remoteViews.addView(R.id.course_widget_4_4_day_colum, remoteViews1);
             }

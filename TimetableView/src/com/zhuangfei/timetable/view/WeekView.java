@@ -7,9 +7,12 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zhuangfei.android_timetableview.sample.R;
 import com.zhuangfei.timetable.listener.IWeekView;
@@ -27,13 +30,15 @@ import java.util.List;
  * 周次选择栏自定义View.
  * 每一项均为PerWeekView<br/>
  */
-public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
+public class WeekView extends LinearLayout implements WeekViewEnable<WeekView>, ViewTreeObserver.OnGlobalLayoutListener {
 
     private static final String TAG = "WeekView";
     LayoutInflater mInflate;
 
     //周次的容器
     LinearLayout container;
+
+    private HorizontalScrollView scrollView;
 
     //跟布局
     LinearLayout root;
@@ -163,7 +168,9 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
      */
     @Override
     public WeekView data(List<Schedule> scheduleList) {
-        if (scheduleList == null) return null;
+        if (scheduleList == null) {
+            return null;
+        }
         this.dataSource = scheduleList;
         return this;
     }
@@ -175,7 +182,9 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
      */
     @Override
     public List<Schedule> dataSource() {
-        if (dataSource == null) dataSource = new ArrayList<>();
+        if (dataSource == null) {
+            dataSource = new ArrayList<>();
+        }
         return dataSource;
     }
 
@@ -188,8 +197,10 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
     private void initView() {
         mInflate.inflate(R.layout.view_weekview, this);
         container = findViewById(R.id.id_weekview_container);
+        scrollView = findViewById(R.id.scroll_view);
         root = findViewById(R.id.id_root);
         leftlayout = findViewById(R.id.id_weekview_leftlayout);
+//        root.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
     /**
@@ -238,12 +249,13 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
                 }
             });
 
+            perLayout.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
             layouts.add(perLayout);
             textViews.add(bottomText);
             container.addView(view);
         }
         if (curWeek > 0 && curWeek <= layouts.size()) {
-            layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
+            layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_current));
         }
         return this;
     }
@@ -268,11 +280,11 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
             } else {
                 textViews.get(i).setText("");
             }
-            layouts.get(i).setBackgroundColor(getContext().getResources().getColor(R.color.app_course_chooseweek_bg));
+//            layouts.get(i).setBackgroundColor(getContext().getResources().getColor(R.color.app_course_chooseweek_bg));
         }
 
         if (curWeek > 0 && curWeek <= layouts.size()) {
-            layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
+            layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_current));
         }
         return this;
     }
@@ -281,8 +293,9 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
      * 重置背景色
      */
     public void resetBackground() {
-        layouts.get(preIndex - 1).setBackgroundColor(getContext().getResources().getColor(R.color.app_course_chooseweek_bg));
-        layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
+        layouts.get(preIndex - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
+//        layouts.get(preIndex - 1).setBackgroundColor(getContext().getResources().getColor(R.color.app_course_chooseweek_bg));
+        layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_current));
     }
 
     /**
@@ -301,9 +314,20 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
     @Override
     public WeekView isShow(boolean isShow) {
         if (isShow) {
+            root.getViewTreeObserver().addOnGlobalLayoutListener(this);
             root.setVisibility(VISIBLE);
+//            View itemView = container.getChildAt(curWeek - 1);
+//            int itemWidth = itemView.getWidth();
+//            int scrollViewWidth = scrollView.getMeasuredWidth();
+//            Log.d("itemWidth", "itemWidth=" + itemWidth);
+//            Log.d("scrollViewWidth", "scrollViewWidth=" + scrollViewWidth);
+//            scrollView.smoothScrollTo(itemView.getLeft() - (scrollViewWidth / 2 - itemWidth / 2), 0);
         } else {
+            root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             root.setVisibility(GONE);
+            if (layouts != null) {
+                resetBackground();
+            }
         }
         return this;
     }
@@ -315,7 +339,17 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView> {
      */
     @Override
     public boolean isShowing() {
-        if (root.getVisibility() == GONE) return false;
-        return true;
+        return root.getVisibility() != GONE;
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        Toast.makeText(getContext(), "onGlobalLayout", Toast.LENGTH_SHORT).show();
+        View itemView = container.getChildAt(curWeek - 1);
+        int itemWidth = itemView.getWidth();
+        int scrollViewWidth = scrollView.getMeasuredWidth();
+        Log.d("itemWidth", "itemWidth=" + itemWidth);
+        Log.d("scrollViewWidth", "scrollViewWidth=" + scrollViewWidth);
+        scrollView.smoothScrollTo(itemView.getLeft() - (scrollViewWidth / 2 - itemWidth / 2), 0);
     }
 }

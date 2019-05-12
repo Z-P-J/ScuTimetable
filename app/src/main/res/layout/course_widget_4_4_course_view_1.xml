@@ -11,7 +11,7 @@
     <TextView
         android:textSize="10dp"
         android:textColor="@color/white"
-        android:ellipsize="end"
+        android:ellipsize="marquee"
         android:gravity="center_horizontal"
         android:id="@+id/course_widget_4_4_course_view_text"
         android:layout_width="match_parent"
@@ -19,6 +19,7 @@
         android:layout_marginLeft="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginRight="2dp"
-        android:layout_marginBottom="2dp" />
+        android:layout_marginBottom="2dp"
+        />
 </FrameLayout>
 

@@ -58,6 +58,7 @@ public class TimetableWrapper {
     private Context context;
 
     // 当前周、学期、课程数据源
+    private boolean sundayIsFirstDay = true;
     private int curWeek = 1;
     private String curTerm = "Term";
     private List<Schedule> dataSource = null;
@@ -370,7 +371,7 @@ public class TimetableWrapper {
      */
     public ISchedule.OnDateBuildListener onDateBuildListener() {
         if (onDateBuildListener == null) {
-            onDateBuildListener = new OnDateBuildAapter();
+            onDateBuildListener = new OnDateBuildAapter(null);
         }
         return onDateBuildListener;
     }
@@ -945,6 +946,15 @@ public class TimetableWrapper {
 
     public String configName() {
         return this.configName;
+    }
+
+    public TimetableWrapper setSundayIsFirstDay(boolean sundayIsFirstDay) {
+        this.sundayIsFirstDay = sundayIsFirstDay;
+        return this;
+    }
+
+    public boolean getSundayIsFirstDay() {
+        return sundayIsFirstDay;
     }
 
 }

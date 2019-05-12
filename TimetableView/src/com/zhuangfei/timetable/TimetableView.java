@@ -41,8 +41,9 @@ import java.util.List;
  * {@link #updateSlideView()}
  * {@link #updateDateView()}
  * {@link #updateView()}
- *
+ * <p>
  * 文档参考 https://github.com/zfman/TimetableView/wiki/%E6%9C%80%E6%96%B0%E6%96%87%E6%A1%A3
+ *
  * @author Administrator
  * @see AbsOperater
  * @see SimpleOperater
@@ -57,12 +58,13 @@ public class TimetableView extends LinearLayout {
     protected AttributeSet attrs;
 
     // 当前周、学期、课程数据源
+    private boolean sundayIsFirstDay = true;
     private int curWeek = 1;
     private String curTerm = "Term";
     private List<Schedule> dataSource = null;
 
     //默认的本地配置名称
-    private String configName="default_schedule_config";
+    private String configName = "default_schedule_config";
 
     //上边距、左边距、项高度
     private int marTop, marLeft, itemHeight;
@@ -94,18 +96,27 @@ public class TimetableView extends LinearLayout {
     private int itemTextColorWithThisWeek = Color.WHITE;//本周
     private int itemTextColorWithNotThis = Color.WHITE;//非本周
 
-    private boolean isShowWeekends=true;
+    private boolean isShowWeekends = true;
 
     //监听器
-    private ISchedule.OnWeekChangedListener onWeekChangedListener;//周次改变监听
-    private ISchedule.OnScrollViewBuildListener onScrollViewBuildListener;//替换滚动布局构建监听
-    private ISchedule.OnDateBuildListener onDateBuildListener;//日期栏构建监听
-    private ISchedule.OnItemClickListener onItemClickListener;//课程表item点击监听
-    private ISchedule.OnItemLongClickListener onItemLongClickListener;//课程表item长按监听
-    private ISchedule.OnItemBuildListener onItemBuildListener;//课程表item构建监听
-    private ISchedule.OnSlideBuildListener onSlideBuildListener;//侧边栏构建监听
-    private ISchedule.OnSpaceItemClickListener onSpaceItemClickListener;//空白格子点击监听
-    private ISchedule.OnFlaglayoutClickListener onFlaglayoutClickListener;//旗标布局点击监听
+    //周次改变监听
+    private ISchedule.OnWeekChangedListener onWeekChangedListener;
+    //替换滚动布局构建监听
+    private ISchedule.OnScrollViewBuildListener onScrollViewBuildListener;
+    //日期栏构建监听
+    private ISchedule.OnDateBuildListener onDateBuildListener;
+    //课程表item点击监听
+    private ISchedule.OnItemClickListener onItemClickListener;
+    //课程表item长按监听
+    private ISchedule.OnItemLongClickListener onItemLongClickListener;
+    //课程表item构建监听
+    private ISchedule.OnItemBuildListener onItemBuildListener;
+    //侧边栏构建监听
+    private ISchedule.OnSlideBuildListener onSlideBuildListener;
+    //空白格子点击监听
+    private ISchedule.OnSpaceItemClickListener onSpaceItemClickListener;
+    //旗标布局点击监听
+    private ISchedule.OnFlaglayoutClickListener onFlaglayoutClickListener;
     private ISchedule.OnConfigHandleListener onConfigHandleListener;
 
 
@@ -115,14 +126,15 @@ public class TimetableView extends LinearLayout {
     }
 
     public ISchedule.OnConfigHandleListener onConfigHandleListener() {
-        if(onConfigHandleListener==null) {
-            onConfigHandleListener=new OnConfigHandleAdapter();
+        if (onConfigHandleListener == null) {
+            onConfigHandleListener = new OnConfigHandleAdapter();
         }
         return onConfigHandleListener;
     }
 
     /**
      * 是否显示周末
+     *
      * @param isShowWeekends
      * @return
      */
@@ -135,15 +147,15 @@ public class TimetableView extends LinearLayout {
         return isShowWeekends;
     }
 
-    public AbsOperater operater(){
-        if(operater==null) {
-            operater=new SimpleOperater();
+    public AbsOperater operater() {
+        if (operater == null) {
+            operater = new SimpleOperater();
         }
         return operater;
     }
 
     public TimetableView operater(AbsOperater operater) {
-        operater.init(context,attrs,this);
+        operater.init(context, attrs, this);
         this.operater = operater;
         return this;
     }
@@ -344,7 +356,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public ISchedule.OnItemLongClickListener onItemLongClickListener() {
-        if (onItemLongClickListener == null) onItemLongClickListener = new OnItemLongClickAdapter();
+        if (onItemLongClickListener == null) {
+            onItemLongClickListener = new OnItemLongClickAdapter();
+        }
         return onItemLongClickListener;
     }
 
@@ -365,7 +379,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public ISchedule.OnDateBuildListener onDateBuildListener() {
-        if (onDateBuildListener == null) onDateBuildListener = new OnDateBuildAapter();
+        if (onDateBuildListener == null) {
+            onDateBuildListener = new OnDateBuildAapter(this);
+        }
         return onDateBuildListener;
     }
 
@@ -375,7 +391,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public ISchedule.OnWeekChangedListener onWeekChangedListener() {
-        if (onWeekChangedListener == null) onWeekChangedListener = new OnWeekChangedAdapter();
+        if (onWeekChangedListener == null) {
+            onWeekChangedListener = new OnWeekChangedAdapter();
+        }
         return onWeekChangedListener;
     }
 
@@ -408,8 +426,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public ISchedule.OnScrollViewBuildListener onScrollViewBuildListener() {
-        if (onScrollViewBuildListener == null)
+        if (onScrollViewBuildListener == null) {
             onScrollViewBuildListener = new OnScrollViewBuildAdapter();
+        }
         return onScrollViewBuildListener;
     }
 
@@ -441,7 +460,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public ISchedule.OnSlideBuildListener onSlideBuildListener() {
-        if (onSlideBuildListener == null) onSlideBuildListener = new OnSlideBuildAdapter();
+        if (onSlideBuildListener == null) {
+            onSlideBuildListener = new OnSlideBuildAdapter();
+        }
         return onSlideBuildListener;
     }
 
@@ -518,6 +539,15 @@ public class TimetableView extends LinearLayout {
         }
         onBind(curWeek);
         return this;
+    }
+
+    public TimetableView setSundayIsFirstDay(boolean sundayIsFirstDay) {
+        this.sundayIsFirstDay = sundayIsFirstDay;
+        return this;
+    }
+
+    public boolean getSundayIsFirstDay() {
+        return sundayIsFirstDay;
     }
 
     /**
@@ -697,7 +727,9 @@ public class TimetableView extends LinearLayout {
      * @return
      */
     public int corner(boolean isThisWeek) {
-        if (isThisWeek) return thisWeekCorner;
+        if (isThisWeek) {
+            return thisWeekCorner;
+        }
         return nonThisWeekCorner;
     }
 
@@ -728,7 +760,9 @@ public class TimetableView extends LinearLayout {
      * @see ScheduleColorPool
      */
     public ScheduleColorPool colorPool() {
-        if (colorPool == null) colorPool = new ScheduleColorPool(context);
+        if (colorPool == null) {
+            colorPool = new ScheduleColorPool(context);
+        }
         return colorPool;
     }
 
@@ -811,8 +845,8 @@ public class TimetableView extends LinearLayout {
     public TimetableView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        this.attrs=attrs;
-        operater().init(context,attrs,this);
+        this.attrs = attrs;
+        operater().init(context, attrs, this);
     }
 
     /**
@@ -882,7 +916,7 @@ public class TimetableView extends LinearLayout {
      * @param isCurWeek 是否强制设置为本周
      */
     public void changeWeek(int week, boolean isCurWeek) {
-        operater().changeWeek(week,isCurWeek);
+        operater().changeWeek(week, isCurWeek);
     }
 
     /**
@@ -891,7 +925,7 @@ public class TimetableView extends LinearLayout {
      * @param week
      */
     public void changeWeekOnly(int week) {
-        operater().changeWeek(week,false);
+        operater().changeWeek(week, false);
     }
 
     /**
@@ -900,7 +934,7 @@ public class TimetableView extends LinearLayout {
      * @param week
      */
     public void changeWeekForce(int week) {
-        operater().changeWeek(week,true);
+        operater().changeWeek(week, true);
     }
 
     /**
@@ -913,16 +947,16 @@ public class TimetableView extends LinearLayout {
         }
     }
 
-    public void showView(){
+    public void showView() {
         operater().showView();
     }
 
-    public TimetableView configName(String configName){
-        this.configName=configName;
+    public TimetableView configName(String configName) {
+        this.configName = configName;
         return this;
     }
 
-    public String configName(){
+    public String configName() {
         return this.configName;
     }
 }

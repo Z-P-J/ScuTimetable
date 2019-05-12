@@ -1,1 +1,8 @@
-include ':app', ':TimetableView', ':easydialog'
+include ':app',
+        ':TimetableView',
+//        ':easydialog',
+        ':dialoglib',
+        ':lsettingviewlibrary',
+        ':popupmenuview',
+        ':library',
+        ':switchbutton'

@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,13 +38,14 @@ public class ScheduleSupport {
      * @param curWeek    当前周数
      * @return 当周日期集合，共8个元素，第一个为月份（高亮日期的月份），之后7个为周一至周日的日期
      */
-    public static List<String> getDateStringFromWeek(int curWeek, int targetWeek) {
+    public static List<String> getDateStringFromWeek(int curWeek, int targetWeek, boolean sundayIsFirstDay) {
         Calendar calendar = Calendar.getInstance();
-        if (targetWeek == curWeek)
-            return getDateStringFromCalendar(calendar);
+        if (targetWeek == curWeek) {
+            return getDateStringFromCalendar(calendar, sundayIsFirstDay);
+        }
         int amount = targetWeek - curWeek;
         calendar.add(Calendar.WEEK_OF_YEAR, amount);
-        return getDateStringFromCalendar(calendar);
+        return getDateStringFromCalendar(calendar, sundayIsFirstDay);
     }
 
     /**
@@ -52,12 +54,13 @@ public class ScheduleSupport {
      * @param calendar 周一的日期
      * @return 当周日期数组
      */
-    private static List<String> getDateStringFromCalendar(Calendar calendar) {
+    private static List<String> getDateStringFromCalendar(Calendar calendar, boolean sundayIsFirstDay) {
         List<String> dateList = new ArrayList<>();
-        while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+        int firstDay = sundayIsFirstDay ? Calendar.SUNDAY : Calendar.MONDAY;
+        while (calendar.get(Calendar.DAY_OF_WEEK) != firstDay) {
             calendar.add(Calendar.DAY_OF_MONTH, -1);
         }
-        calendar.setFirstDayOfWeek(Calendar.MONDAY);
+        calendar.setFirstDayOfWeek(firstDay);
         dateList.add((calendar.get(Calendar.MONTH) + 1) + "");
         for (int i = 0; i < 7; i++) {
             dateList.add(calendar.get(Calendar.DAY_OF_MONTH) + "");
@@ -71,9 +74,11 @@ public class ScheduleSupport {
      *
      * @return 8个元素的集合，第一个为月份，之后7个依次为周一-周日
      */
-    public static List<String> getWeekDate() {
+    public static List<String> getWeekDate(boolean sundayIsFirstDay) {
         Calendar calendar1 = Calendar.getInstance();
-        calendar1.setFirstDayOfWeek(Calendar.MONDAY);
+        if (!sundayIsFirstDay) {
+            calendar1.setFirstDayOfWeek(Calendar.MONDAY);
+        }
 
         int dayOfWeek = calendar1.get(Calendar.DAY_OF_WEEK);// 获得当前日期是一个星期的第几天
         if (1 == dayOfWeek) {
@@ -123,10 +128,10 @@ public class ScheduleSupport {
      * @return
      */
     public static int timeTransfrom(String startTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         try {
             long start = sdf.parse(startTime).getTime();
-            long end = new Date().getTime();
+            long end = System.currentTimeMillis();
             long seconds = (end - start) / 1000;
             long day = seconds / (24 * 3600);
             int week = (int) (Math.floor(day / 7) + 1);
@@ -148,7 +153,9 @@ public class ScheduleSupport {
      * @return colorRandom属性已有值
      */
     public static List<Schedule> getColorReflect(List<Schedule> schedules) {
-        if (schedules == null || schedules.size() == 0) return null;
+        if (schedules == null || schedules.size() == 0) {
+            return null;
+        }
 
         //保存课程名、颜色的对应关系
         Map<String, Integer> colorMap = new HashMap<>();
@@ -192,7 +199,9 @@ public class ScheduleSupport {
     public static List<Schedule> transform(List<? extends ScheduleEnable> dataSource) {
         List<Schedule> data = new ArrayList<>();
         for (int i = 0; i < dataSource.size(); i++) {
-            if (dataSource.get(i) != null) data.add(dataSource.get(i).getSchedule());
+            if (dataSource.get(i) != null) {
+                data.add(dataSource.get(i).getSchedule());
+            }
         }
         return data;
     }
@@ -206,14 +215,17 @@ public class ScheduleSupport {
      */
     public static List<Schedule>[] splitSubjectWithDay(List<Schedule> dataSource) {
         List<Schedule>[] data = new ArrayList[7];
-        if (dataSource == null) return data;
+        if (dataSource == null) {
+            return data;
+        }
         for (int i = 0; i < data.length; i++) {
             data[i] = new ArrayList<>();
         }
         for (int i = 0; i < dataSource.size(); i++) {
             Schedule bean = dataSource.get(i);
-            if (bean.getDay() != -1)
+            if (bean.getDay() != -1) {
                 data[bean.getDay() - 1].add(bean);
+            }
         }
         sortList(data);
         return data;
@@ -263,11 +275,14 @@ public class ScheduleSupport {
      */
     public static List<Schedule> findSubjects(Schedule subject, List<Schedule> data) {
         List<Schedule> result = new ArrayList<>();
-        if(subject==null||data==null) return result;
+        if (subject == null || data == null) {
+            return result;
+        }
         for (int i = 0; i < data.size(); i++) {
             Schedule bean = data.get(i);
-            if (bean.getStart() >= subject.getStart() && bean.getStart() < (subject.getStart() + subject.getStep()))
+            if (bean.getStart() >= subject.getStart() && bean.getStart() < (subject.getStart() + subject.getStep())) {
                 result.add(data.get(i));
+            }
         }
         return result;
     }
@@ -278,8 +293,9 @@ public class ScheduleSupport {
      * @param data
      */
     public static void sortList(List<Schedule>[] data) {
-        for (int i = 0; i < data.length; i++)
-            sortList(data[i]);
+        for (List<Schedule> datum : data) {
+            sortList(datum);
+        }
     }
 
     public static void sortList(List<Schedule> data) {
@@ -306,8 +322,7 @@ public class ScheduleSupport {
      */
     public static boolean isThisWeek(Schedule subject, int cur_week) {
         List<Integer> weekList = subject.getWeekList();
-        if (weekList.indexOf(cur_week) != -1) return true;
-        return false;
+        return weekList.indexOf(cur_week) != -1;
     }
 
     /**
@@ -318,36 +333,42 @@ public class ScheduleSupport {
      * @return
      */
     public static List<Schedule> fliterSchedule(List<Schedule> data, int curWeek, boolean isShowNotCurWeek) {
-        if (data == null) return new ArrayList<>();
+        if (data == null) {
+            return new ArrayList<>();
+        }
         Set<Schedule> result = new HashSet<>();
 
-        if(!isShowNotCurWeek){
-            List<Schedule> filter=new ArrayList<>();
-            for(int i=0;i<data.size();i++){
-                Schedule s=data.get(i);
-                if(ScheduleSupport.isThisWeek(s,curWeek)) filter.add(s);
+        if (!isShowNotCurWeek) {
+            List<Schedule> filter = new ArrayList<>();
+            for (int i = 0; i < data.size(); i++) {
+                Schedule s = data.get(i);
+                if (ScheduleSupport.isThisWeek(s, curWeek)) {
+                    filter.add(s);
+                }
             }
-            data=filter;
+            data = filter;
         }
-        if(data.size()>=1){
+        if (data.size() >= 1) {
             result.add(data.get(0));
         }
         for (int i = 1; i < data.size(); i++) {
             Schedule s = data.get(i);
-            boolean is=true;
+            boolean is = true;
             for (int j = 0; j < i; j++) {
                 Schedule s2 = data.get(j);
-                if(s.getStart()>=s2.getStart()&&s.getStart()<=(s2.getStart()+s2.getStep()-1)){
-                    is=false;
-                    if(isThisWeek(s2,curWeek)){
+                if (s.getStart() >= s2.getStart() && s.getStart() <= (s2.getStart() + s2.getStep() - 1)) {
+                    is = false;
+                    if (isThisWeek(s2, curWeek)) {
                         break;
-                    }else if(isThisWeek(s,curWeek)){
+                    } else if (isThisWeek(s, curWeek)) {
                         result.remove(s2);
                         result.add(s);
                     }
                 }
             }
-            if(is) result.add(s);
+            if (is) {
+                result.add(s);
+            }
         }
         List<Schedule> list = new ArrayList<>(result);
         sortList(list);

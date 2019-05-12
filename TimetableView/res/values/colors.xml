@@ -124,10 +124,11 @@
     <color name="app_course_line">#E4EBEE</color>
 
     <color name="app_refresh_black">#333333</color>
-    <color name="app_course_chooseweek_bg">#80E2F7F6</color>
-    <color name="app_course_chooseweek_bg2">#80F1FFFE</color>
-    <color name="app_course_chooseweek_lightbg">#90B7F5F2</color>
-<!--    <color name="app_course_chooseweek_bg">#00ffffff</color>-->
-<!--    <color name="app_course_chooseweek_bg2">#00ffffff</color>-->
-<!--    <color name="app_course_chooseweek_lightbg">#00ffffff</color>-->
+<!--    <color name="app_course_chooseweek_bg">#E2F7F6</color>-->
+<!--    <color name="app_course_chooseweek_bg2">#F1FFFE</color>-->
+<!--    <color name="app_course_chooseweek_lightbg">#90B7F5F2</color>-->
+    <color name="app_course_chooseweek_bg">#00ffffff</color>
+    <color name="app_course_chooseweek_bg2">#00ffffff</color>
+    <color name="app_course_chooseweek_lightbg">#80ffffff</color>
+    <color name="app_course_chooseweek_lightbg2">#ddffffff</color>
 </resources>

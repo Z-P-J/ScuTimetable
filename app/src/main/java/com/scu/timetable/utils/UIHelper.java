@@ -13,7 +13,7 @@
 //import android.widget.LinearLayout;
 //import android.widget.TextView;
 //
-//import com.scu.timetable.base.BaseActivity;
+//import com.scu.timetable.ui.activity.BaseActivity;
 //import com.scu.timetable.R;
 //import com.scu.timetable.utils.content.SPHelper;
 //import com.scu.timetable.ui.view.LoadingDialogFragment;

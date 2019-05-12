@@ -203,7 +203,7 @@ public class SimpleOperater2 extends AbsOperater2 {
         layout.setLayoutParams(lp);
 
         boolean isThisWeek = ScheduleSupport.isThisWeek(subject, curWeek);
-        TextView textView = view.findViewById(R.id.id_course_item_course);
+        final TextView textView = view.findViewById(R.id.id_course_item_course);
         TextView countTextView = view.findViewById(R.id.id_course_item_count);
         textView.setText(wrapper.onItemBuildListener().getItemText(subject, isThisWeek));
 
@@ -535,7 +535,7 @@ public class SimpleOperater2 extends AbsOperater2 {
                 dateLayout.addView(v);
             }
         }
-        wrapper.onDateBuildListener().onUpdateDate(wrapper.curWeek(), wrapper.curWeek());
+        wrapper.onDateBuildListener().onUpdateDate(wrapper.curWeek(), wrapper.curWeek(), wrapper.getSundayIsFirstDay(), wrapper.isShowWeekends());
         wrapper.onDateBuildListener().onHighLight();
     }
 

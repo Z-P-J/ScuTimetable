@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppThemeNoActionbar"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true"
+        >
 
         <receiver android:name=".ui.widget.TimetableWidget">
             <intent-filter>
@@ -28,7 +30,6 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@style/Transparent_Theme"
-            android:launchMode="singleTask"
             >
 
             <intent-filter>
@@ -44,6 +45,7 @@
             android:theme="@style/AppThemeTransparent">
 
         </activity>
+
     </application>
 
 </manifest>

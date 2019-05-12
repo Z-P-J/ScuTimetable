@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LSettingView">
+        <attr name="leftText" format="string"/>
+        <attr name="leftIcon" format="integer"/>
+        <attr name="rightIcon" format="integer"/>
+        <attr name="LtextSize" format="float"/>
+        <attr name="LtextColor" format="color"/>
+        <attr name="isShowUnderLine" format="boolean"/>
+        <attr name="showInfoBtn" format="boolean"/>
+        <attr name="leftIconSize" format="dimension"/>
+        <attr name="leftTextMarginLeft" format="dimension"/>
+        <attr name="rightStyle" format="enum">
+            <enum name="iconShow" value="0"/>
+            <enum name="iconHide" value="1"/>
+            <enum name="iconCheck" value="2"/>
+            <enum name="iconSwitch" value="3"/>
+        </attr>
+        <attr name="isShowRightText" format="boolean"/>
+        <attr name="rightText" format="string"/>
+        <attr name="rightTextSize" format="float"/>
+        <attr name="rightTextColor" format="color"/>
+    </declare-styleable>
+</resources>
