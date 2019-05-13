@@ -295,19 +295,28 @@ public class SimpleOperater extends AbsOperater {
             }
         }
 
+        if (mView.getSundayIsFirstDay() && !mView.isShowWeekends()) {
+            day -= 1;
+        }
         if (day == -1) {
             return;
         }
 
         // 判断点击的是第几节课，1：第1节
         final int start = (int) Math.ceil((y / (mView.itemHeight() + mView.marTop())));
+
         if (!checkPosition(day, start)) {
+            Log.d("day", "day=" + day);
+            Log.d("start", "start=" + start);
+
             mView.onSpaceItemClickListener().onSpaceItemClick(day, start);
         }
         final int finalDay = day;
         flagLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("finalDay", "finalDay=" + finalDay);
+                Log.d("start", "start=" + start);
                 mView.onFlaglayoutClickListener().onFlaglayoutClick(finalDay, start);
             }
         });

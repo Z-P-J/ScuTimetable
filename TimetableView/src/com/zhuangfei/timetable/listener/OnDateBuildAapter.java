@@ -121,24 +121,51 @@ public class OnDateBuildAapter implements ISchedule.OnDateBuildListener {
         //一周第一天是否为星期天
         boolean isFirstSunday = (now.getFirstDayOfWeek() == Calendar.SUNDAY);
         int weekDay = now.get(Calendar.DAY_OF_WEEK);
-        //若一周第一天为星期天，则-1
-//        weekDay = weekDay - 1;
-        if (!timetableView.getSundayIsFirstDay()) {
-            if (weekDay == 1) {
+
+//        if (timetableView.getSundayIsFirstDay()) {
+//            if (!timetableView.isShowWeekends()) {
+//                weekDay = weekDay - 1;
+//                if (weekDay == 0) {
+//                    weekDay = 7;
+//                }
+//            }
+//            activeDateBackground(weekDay);
+//            return;
+//        } else {
+//            weekDay = weekDay - 1;
+//            if (weekDay == 0) {
+//                weekDay = 7;
+//            }
+//            activeDateBackground(weekDay);
+//        }
+
+        if (!timetableView.isShowWeekends() || !timetableView.getSundayIsFirstDay()) {
+            weekDay = weekDay - 1;
+            if (weekDay == 0) {
                 weekDay = 7;
             }
         }
+
+
+        //若一周第一天为星期天，则-1
+//        weekDay = weekDay - 1;
+//        if (!timetableView.getSundayIsFirstDay()) {
+//            weekDay = weekDay - 1;
+//            if (weekDay == 0) {
+//                weekDay = 7;
+//            }
+//        }
 //        if (isFirstSunday) {
 //            weekDay = weekDay - 1;
 //            if (weekDay == 0) {
 //                weekDay = 7;
 //            }
 //        }
-        if (!timetableView.isShowWeekends()
-                && timetableView.getSundayIsFirstDay()
-                && (weekDay == 1 || weekDay == 7)) {
-            return;
-        }
+//        if (!timetableView.isShowWeekends()
+//                && timetableView.getSundayIsFirstDay()
+//                && (weekDay == 1 || weekDay == 7)) {
+//            return;
+//        }
         activeDateBackground(weekDay);
     }
 
