@@ -32,6 +32,11 @@
     </item>
 
     <item
+        android:icon="@drawable/ic_refresh_black_24dp"
+        android:title="刷新课表">
+    </item>
+
+    <item
         android:id="@+id/nav_category"
         android:icon="@drawable/ic_settings_black_24dp"
         android:title="设置">

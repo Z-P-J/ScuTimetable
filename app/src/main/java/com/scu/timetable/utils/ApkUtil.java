@@ -4,10 +4,11 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+public final class ApkUtil {
 
-public class ApkUtil {
+    private ApkUtil() {
+
+    }
 
     public static synchronized String getVersionName(Context context){
         String versionName = "1.0.0";

@@ -22,8 +22,10 @@ import com.scu.timetable.ui.activity.ActivityCollector;
 import com.scu.timetable.ui.activity.BaseActivity;
 import com.scu.timetable.ui.fragment.SettingsDialogFragment;
 import com.scu.timetable.utils.AnimatorUtil;
+import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.StatusBarUtil;
 import com.scu.timetable.utils.TimetableHelper;
+import com.scu.timetable.utils.content.SPHelper;
 import com.zhuangfei.timetable.TimetableView;
 import com.zhuangfei.timetable.listener.ISchedule;
 import com.zhuangfei.timetable.listener.IWeekView;
@@ -236,6 +238,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                         onWeekLeftLayoutClicked();
                                         break;
                                     case 4:
+                                        QianxunDialog.with(MainActivity.this)
+                                                .setDialogView(R.layout.layout_refresh)
+                                                .setBuildChildListener(new IDialog.OnBuildListener() {
+                                                    @Override
+                                                    public void onBuildChildView(IDialog dialog, View view, int layoutRes) {
+                                                        ImageView imgCatpcha = view.findViewById(R.id.img_captcha);
+                                                        CaptchaFetcher.fetchcaptcha(SPHelper.getString("cookie", ""), imgCatpcha);
+                                                    }
+                                                })
+                                                .show();
+                                        break;
+                                    case 5:
                                         SettingsDialogFragment dialogFragment = new SettingsDialogFragment();
                                         dialogFragment.setOnDismissListener(new SettingsDialogFragment.OnDismissListener() {
                                             @Override
@@ -261,8 +275,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                         });
                                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                                         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                                        dialogFragment.show(fragmentTransaction, "test");
-
+                                        dialogFragment.show(fragmentTransaction, "setting");
                                         break;
                                     default:
 
