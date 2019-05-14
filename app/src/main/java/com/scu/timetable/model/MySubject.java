@@ -90,6 +90,16 @@ public class MySubject implements ScheduleEnable {
 
     private String unit;
 
+    private String note = "";
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
     public String getUnit() {
         return unit;
     }

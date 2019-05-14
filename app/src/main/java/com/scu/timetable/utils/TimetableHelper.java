@@ -45,7 +45,7 @@ public final class TimetableHelper {
 
     }
 
-    public static boolean hasJsonFile(Context context) {
+    private static boolean hasJsonFile(Context context) {
         File filesDir = context.getFilesDir();
         if (filesDir.exists()) {
             for (File file : filesDir.listFiles()) {
@@ -109,6 +109,10 @@ public final class TimetableHelper {
                     String courseNumber = object.getString("coureNumber");
                     String courseSequenceNumber = object.getString("coureSequenceNumber");
                     String executiveEducationPlanNumber = object.getString("executiveEducationPlanNumber");
+                    String note = "";
+                    if (object.has("note")) {
+                        note = object.getString("note");
+                    }
 
 //                    MySubject mySubject = new MySubject("2018-2019学年春", name, room, attendClassTeacher, getWeekList(object.getString("weekDescription")), start, step, day, -1, null);
                     MySubject mySubject = new MySubject();
@@ -135,6 +139,7 @@ public final class TimetableHelper {
                     mySubject.setProgramPlan(programPlanName);
                     mySubject.setStudyMode(studyModeName);
                     mySubject.setUnit("" + unit);
+                    mySubject.setNote(note);
                     mySubjectList.add(mySubject);
                 }
             }
@@ -197,6 +202,44 @@ public final class TimetableHelper {
         return false;
     }
 
+    public static boolean saveNote(Context context, MySubject subject, String note) {
+        try {
+            String json = readFromJson(context);
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray jsonArray = jsonObject.getJSONArray("dateList")
+                    .getJSONObject(0)
+                    .getJSONArray("selectCourseList");
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                String attendClassTeacher = jsonArray.getJSONObject(i).getString("attendClassTeacher");
+                String name = jsonArray.getJSONObject(i).getString("courseName");
+                if (subject.getTeacher().equals(attendClassTeacher) && subject.getCourseName().equals(name)) {
+                    JSONArray array = jsonArray.getJSONObject(i).getJSONArray("timeAndPlaceList");
+                    for (int j = 0; j < array.length(); j++) {
+                        JSONObject object = array.getJSONObject(j);
+                        int start = object.getInt("classSessions");
+                        int step = object.getInt("continuingSession");
+                        int day = object.getInt("classDay");
+                        day = day + 1;
+                        if (day == 8) {
+                            day = 1;
+                        }
+                        if (subject.getDay() == day && subject.getStart() == start && subject.getStep() == step) {
+                            object.put("note", note);
+                            writeToJson(context, jsonObject.toString());
+                            return true;
+                        }
+                    }
+                }
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void openChangeCurrentWeekDialog(Context context, DialogInterface.OnClickListener onClickListener) {
         final String[] items = new String[20];
         for (int i = 0; i < 20; i++) {
@@ -239,7 +282,7 @@ public final class TimetableHelper {
         SPHelper.putString("current_date", date);
     }
 
-    public static String getCurrentDate() {
+    private static String getCurrentDate() {
         return SPHelper.getString("current_date", "");
     }
 

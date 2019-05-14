@@ -49,7 +49,7 @@ public class LoginActivity extends BaseHandlerActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //发送广播。更新桌面插件
+
         postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -68,6 +68,7 @@ public class LoginActivity extends BaseHandlerActivity implements View.OnClickLi
     }
 
     private void updateWidget(boolean isLogined) {
+        //发送广播。更新桌面插件
         Intent intent = new Intent();
         intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
         intent.putExtra("islogined", isLogined);
@@ -123,7 +124,7 @@ public class LoginActivity extends BaseHandlerActivity implements View.OnClickLi
                     e.printStackTrace();
                     Message msg = new Message();
                     msg.obj = e.getMessage();
-                    msg.what = 1;
+                    msg.what = -1;
                     sendMessage(msg);
                 }
             }
@@ -152,7 +153,6 @@ public class LoginActivity extends BaseHandlerActivity implements View.OnClickLi
                         Message msg = new Message();
                         msg.what = 3;
                         sendMessage(msg);
-                        return;
                     } else {
                         Message msg = new Message();
                         msg.what = 4;
@@ -194,49 +194,49 @@ public class LoginActivity extends BaseHandlerActivity implements View.OnClickLi
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Message msg = new Message();
+                    msg.obj = e.getMessage();
+                    msg.what = -1;
+                    sendMessage(msg);
                 }
             }
         }.start();
+    }
+
+    private void onError() {
+        AnimatorUtil.hideViewAnimator(progress, 500, new AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) { }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                progress.setVisibility(View.GONE);
+                AnimatorUtil.showViewAnimator(middleLayout, 500);
+                captcha.setText("");
+                CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) { }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) { }
+        });
     }
 
     @Override
     protected void handleMessage(Message msg) {
         if (msg.what == -1) {
             String errorMsg = (String) msg.obj;
-        } else if (msg.what == 1) {
-            String sessionId1 = (String) msg.obj;
-            Toast.makeText(LoginActivity.this, "erroe=" + sessionId1, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "错误信息：" + errorMsg, Toast.LENGTH_SHORT).show();
+            onError();
         } else if (msg.what == 2) {
             Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
             SPHelper.putString("cookie", cookie);
             CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
         } else if (msg.what == 3) {
             Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-            AnimatorUtil.hideViewAnimator(progress, 500, new AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    progress.setVisibility(View.GONE);
-                    AnimatorUtil.showViewAnimator(middleLayout, 500);
-                    captcha.setText("");
-                    CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-
+            onError();
         } else if (msg.what == 4) {
             Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
             msgText.setText("获取课表信息中...");
@@ -254,6 +254,7 @@ public class LoginActivity extends BaseHandlerActivity implements View.OnClickLi
                 finish();
             } catch (Exception e) {
                 e.printStackTrace();
+                onError();
             }
         }
     }

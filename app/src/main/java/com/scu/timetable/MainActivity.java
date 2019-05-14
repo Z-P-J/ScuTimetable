@@ -262,7 +262,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 .show(view);
     }
 
-    private void showSubjectPopupView(View view, MySubject mySubject) {
+    private void showSubjectPopupView(final View view, final MySubject mySubject) {
         CustomPopupMenuView.with(MainActivity.this, R.layout.layout_subject_detail)
                 .setOrientation(LinearLayout.VERTICAL)
 //                .setBackgroundAlpha(MainActivity.this, 0.9f)
@@ -295,14 +295,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 @Override
                                 public void onClick(View v) {
                                     popupMenuView.dismiss();
-                                    showSubjectNote();
+                                    showSubjectNote(mySubject);
                                 }
                             });
                         })
                 .show(view);
     }
 
-    private void showSubjectNote() {
+    private void showSubjectNote(final MySubject subject) {
         QianxunDialog.with(MainActivity.this)
                 .setDialogView(R.layout.layout_subject_note)
                 .setBuildChildListener(new IDialog.OnBuildListener() {
@@ -311,11 +311,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         ImageView btnClose = view.findViewById(R.id.btn_close);
                         ImageView btnSave = view.findViewById(R.id.btn_save);
                         AppCompatEditText editText = view.findViewById(R.id.edit_text);
-                        editText.setText("哈哈哈哈或或或或或或或或或或或或或或或或或或或或或或或或或或或或或");
+                        editText.setText(subject.getNote());
                         btnClose.setOnClickListener(v -> dialog.dismiss());
                         btnSave.setOnClickListener(v -> {
                             //todo 保存备注
-                            dialog.dismiss();
+                            String note = editText.getText().toString();
+                            if (TimetableHelper.saveNote(MainActivity.this, subject, note)) {
+                                dialog.dismiss();
+                                Toast.makeText(MainActivity.this, "保存成功！", Toast.LENGTH_SHORT).show();
+                                subject.setNote(note);
+                            } else {
+                                Toast.makeText(MainActivity.this, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
+                            }
                         });
                     }
                 })
