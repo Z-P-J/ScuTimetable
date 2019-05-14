@@ -312,18 +312,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         ImageView btnSave = view.findViewById(R.id.btn_save);
                         AppCompatEditText editText = view.findViewById(R.id.edit_text);
                         editText.setText("哈哈哈哈或或或或或或或或或或或或或或或或或或或或或或或或或或或或或");
-                        btnClose.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.dismiss();
-                            }
-                        });
-                        btnSave.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //todo 保存备注
-                                dialog.dismiss();
-                            }
+                        btnClose.setOnClickListener(v -> dialog.dismiss());
+                        btnSave.setOnClickListener(v -> {
+                            //todo 保存备注
+                            dialog.dismiss();
                         });
                     }
                 })
