@@ -62,7 +62,7 @@
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dip"
+                android:layout_marginLeft="10dp"
                 android:background="#00000000"
                 android:hint="密码"
                 android:inputType="textPassword"

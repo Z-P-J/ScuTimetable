@@ -7,6 +7,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
+import com.scu.timetable.utils.content.SPHelper;
 
 /**
  * @author 25714
@@ -39,6 +40,13 @@ public final class CaptchaFetcher {
     public static void fetchcaptcha(String cookie, ImageView imageView) {
         Glide.with(imageView.getContext())
                 .load(getUrl(cookie))
+                .apply(OPTIONS)
+                .into(imageView);
+    }
+
+    public static void fetchcaptcha(ImageView imageView) {
+        Glide.with(imageView.getContext())
+                .load(getUrl(SPHelper.getString("cookie", "")))
                 .apply(OPTIONS)
                 .into(imageView);
     }

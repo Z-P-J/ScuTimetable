@@ -238,44 +238,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                         onWeekLeftLayoutClicked();
                                         break;
                                     case 4:
-                                        QianxunDialog.with(MainActivity.this)
-                                                .setDialogView(R.layout.layout_refresh)
-                                                .setBuildChildListener(new IDialog.OnBuildListener() {
-                                                    @Override
-                                                    public void onBuildChildView(IDialog dialog, View view, int layoutRes) {
-                                                        ImageView imgCatpcha = view.findViewById(R.id.img_captcha);
-                                                        CaptchaFetcher.fetchcaptcha(SPHelper.getString("cookie", ""), imgCatpcha);
-                                                    }
-                                                })
-                                                .show();
+                                        showRefreshDialog();
                                         break;
                                     case 5:
-                                        SettingsDialogFragment dialogFragment = new SettingsDialogFragment();
-                                        dialogFragment.setOnDismissListener(new SettingsDialogFragment.OnDismissListener() {
-                                            @Override
-                                            public void onDismiss(DialogInterface dialog) {
-                                                Toast.makeText(MainActivity.this, "SettingsDialogFragment", Toast.LENGTH_SHORT).show();
-                                                boolean sundayIsFirstDay = TimetableHelper.sundayIsFirstDay();
-                                                boolean showWeekends = TimetableHelper.isShowWeekendsOrin();
-                                                boolean showNotCurWeek = TimetableHelper.isShowNotCurWeek();
-                                                boolean showTime = TimetableHelper.isShowTime();
-                                                int currentWeek = TimetableHelper.getCurrentWeek();
-                                                if (sundayIsFirstDay != mTimetableView.getSundayIsFirstDay()
-                                                        || showWeekends != mTimetableView.isShowWeekends()
-                                                        || showNotCurWeek != mTimetableView.isShowNotCurWeek()
-                                                        || currentWeek != mTimetableView.curWeek()) {
-                                                    mTimetableView.curWeek(currentWeek)
-                                                            .setSundayIsFirstDay(sundayIsFirstDay)
-                                                            .isShowWeekends(showWeekends)
-                                                            .isShowNotCurWeek(showNotCurWeek)
-                                                            .updateView();
-                                                }
-                                                toggleTime(showTime);
-                                            }
-                                        });
-                                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                                        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                                        dialogFragment.show(fragmentTransaction, "setting");
+                                        showSettingDialogFragment();
                                         break;
                                     default:
 
@@ -362,6 +328,58 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     }
                 })
                 .show();
+    }
+
+    private void showRefreshDialog() {
+        QianxunDialog.with(MainActivity.this)
+                .setDialogView(R.layout.layout_refresh)
+                .setBuildChildListener(new IDialog.OnBuildListener() {
+                    @Override
+                    public void onBuildChildView(IDialog dialog, View view, int layoutRes) {
+                        ImageView imgCatpcha = view.findViewById(R.id.img_captcha);
+                        CaptchaFetcher.fetchcaptcha(imgCatpcha);
+                        ImageView btnClose = view.findViewById(R.id.btn_close);
+                        btnClose.setOnClickListener(v -> dialog.dismiss());
+                        TextView changeCatpcha = view.findViewById(R.id.change_captcha);
+                        changeCatpcha.setOnClickListener(v -> CaptchaFetcher.fetchcaptcha(imgCatpcha));
+                        TextView btnRefresh = view.findViewById(R.id.btn_refresh);
+                        btnRefresh.setOnClickListener(v -> {
+                            //todo refresh
+                            Toast.makeText(MainActivity.this, "todo refresh", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        });
+                    }
+                })
+                .show();
+    }
+
+    private void showSettingDialogFragment() {
+        SettingsDialogFragment dialogFragment = new SettingsDialogFragment();
+        dialogFragment.setOnDismissListener(new SettingsDialogFragment.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Toast.makeText(MainActivity.this, "SettingsDialogFragment", Toast.LENGTH_SHORT).show();
+                boolean sundayIsFirstDay = TimetableHelper.sundayIsFirstDay();
+                boolean showWeekends = TimetableHelper.isShowWeekendsOrin();
+                boolean showNotCurWeek = TimetableHelper.isShowNotCurWeek();
+                boolean showTime = TimetableHelper.isShowTime();
+                int currentWeek = TimetableHelper.getCurrentWeek();
+                if (sundayIsFirstDay != mTimetableView.getSundayIsFirstDay()
+                        || showWeekends != mTimetableView.isShowWeekends()
+                        || showNotCurWeek != mTimetableView.isShowNotCurWeek()
+                        || currentWeek != mTimetableView.curWeek()) {
+                    mTimetableView.curWeek(currentWeek)
+                            .setSundayIsFirstDay(sundayIsFirstDay)
+                            .isShowWeekends(showWeekends)
+                            .isShowNotCurWeek(showNotCurWeek)
+                            .updateView();
+                }
+                toggleTime(showTime);
+            }
+        });
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        dialogFragment.show(fragmentTransaction, "setting");
     }
 
     private void toggleTime(boolean showTime) {
