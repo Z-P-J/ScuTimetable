@@ -7,7 +7,7 @@ import android.os.StrictMode;
 import com.scu.timetable.utils.content.SPHelper;
 
 /**
- * @author 25714
+ * @author Z-P-J
  */
 public class Application extends android.app.Application {
 

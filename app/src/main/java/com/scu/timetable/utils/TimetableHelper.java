@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author 25714
+ * @author Z-P-J
  */
 public final class TimetableHelper {
 

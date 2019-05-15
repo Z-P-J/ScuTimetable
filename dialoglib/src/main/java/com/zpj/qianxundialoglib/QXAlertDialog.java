@@ -3,9 +3,10 @@ package com.zpj.qianxundialoglib;
 import android.content.Context;
 
 /**
- * @author 25714
+ * @author Z-P-J
+ * @date 2019/5/15 23:10
  */
-public final class QXAlertDialog {
+public class QXAlertDialog {
 
     private Context context;
 

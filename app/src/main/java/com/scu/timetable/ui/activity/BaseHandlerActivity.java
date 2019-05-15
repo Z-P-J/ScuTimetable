@@ -6,7 +6,7 @@ import android.os.Message;
 import java.lang.ref.WeakReference;
 
 /**
- * @author 25714
+ * @author Z-P-J
  * 将Handler封装进Activity
  */
 public abstract class BaseHandlerActivity extends BaseActivity {

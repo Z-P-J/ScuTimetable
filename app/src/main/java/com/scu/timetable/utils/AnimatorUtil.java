@@ -17,7 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 /**
- * @author 25714
+ * @author Z-P-J
  */
 public final class AnimatorUtil {
 

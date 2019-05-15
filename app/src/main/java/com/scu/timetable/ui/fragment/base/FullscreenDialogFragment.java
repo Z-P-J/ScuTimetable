@@ -15,7 +15,7 @@ import com.labo.kaji.swipeawaydialog.support.v4.SwipeAwayDialogFragment;
 import com.scu.timetable.R;
 
 /**
- * @author 25714
+ * @author Z-P-J
  */
 public class FullscreenDialogFragment extends SwipeAwayDialogFragment {
 

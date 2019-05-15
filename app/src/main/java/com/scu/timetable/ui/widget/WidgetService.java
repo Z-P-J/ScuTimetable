@@ -14,7 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * @author 25714
+ * @author Z-P-J
  */
 public class WidgetService extends Service {
 

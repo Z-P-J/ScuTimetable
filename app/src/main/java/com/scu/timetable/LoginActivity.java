@@ -27,7 +27,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 /**
- * @author 25714
+ * @author Z-P-J
  */
 public final class LoginActivity extends BaseHandlerActivity implements View.OnClickListener {
 

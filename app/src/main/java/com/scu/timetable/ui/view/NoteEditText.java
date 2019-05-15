@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * @author 25714
+ * @author Z-P-J
  */
 public class NoteEditText extends AppCompatEditText {
 

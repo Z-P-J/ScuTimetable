@@ -10,7 +10,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.scu.timetable.utils.content.SPHelper;
 
 /**
- * @author 25714
+ * @author Z-P-J
  */
 public final class CaptchaFetcher {
 
