@@ -3,5 +3,6 @@
     android:orientation="vertical"
     android:id="@+id/course_widget_4_4_section_colum"
     android:layout_width="20dp"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    />
 

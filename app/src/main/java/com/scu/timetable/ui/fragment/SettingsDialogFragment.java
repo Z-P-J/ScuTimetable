@@ -27,6 +27,7 @@ import com.scu.timetable.utils.ApkUtil;
 import com.scu.timetable.utils.FastBlur;
 import com.scu.timetable.utils.TextUtil;
 import com.scu.timetable.utils.TimetableHelper;
+import com.scu.timetable.utils.TimetableWidgtHelper2;
 import com.zpj.popupmenuview.CustomPopupMenuView;
 
 public class SettingsDialogFragment extends FullscreenDialogFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
@@ -112,6 +113,10 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
 
         LSettingItem itemChangeCurrentWeek = view.findViewById(R.id.item_change_current_week);
         itemChangeCurrentWeek.setmOnLSettingItemClick(this);
+
+        LSettingItem itemWidgetSmartShowWeekends = view.findViewById(R.id.item_widget_smart_show_weekends);
+        itemWidgetSmartShowWeekends.setChecked(TimetableWidgtHelper2.isSmartShowWeekends());
+        itemWidgetSmartShowWeekends.setmOnLSettingItemClick(this);
 
         TextView appVersion = view.findViewById(R.id.app_version);
         appVersion.setText("V" + ApkUtil.getVersionName(getContext()));
@@ -227,6 +232,8 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
             TimetableHelper.toggleShowTime();
         } else if (id == R.id.item_change_current_week) {
             TimetableHelper.openChangeCurrentWeekDialog(getContext(), null);
+        } else if (id == R.id.item_widget_smart_show_weekends) {
+            TimetableWidgtHelper2.toggleSmartShowWeekends(getContext());
         }
 
         Toast.makeText(getContext(), "" + isChecked, Toast.LENGTH_SHORT).show();

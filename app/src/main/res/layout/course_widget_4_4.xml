@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <RelativeLayout
         android:orientation="vertical"
         android:id="@+id/course_widget_4_4_week_course"
@@ -30,13 +31,11 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/course_widget_4_4_course_layout"
-
                 android:background="@drawable/widget_4x4bg_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/course_widget_4_4_week_bar" />
-
-<!--            android:background="@drawable/windget_4x4bg_mid"-->
+<!--            android:background="@drawable/widget_4x4bg_bottom"-->
 
         </RelativeLayout>
 
@@ -120,6 +119,7 @@
         </RelativeLayout>
 
     </RelativeLayout>
+
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/widget_llyt_no_course"
@@ -173,4 +173,5 @@
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
+
 </RelativeLayout>

@@ -46,6 +46,10 @@
 
         </activity>
 
+        <service android:name=".ui.widget.WidgetService">
+
+        </service>
+
     </application>
 
 </manifest>
