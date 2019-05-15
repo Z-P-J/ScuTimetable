@@ -130,7 +130,7 @@ public class OnSlideBuildAdapter implements ISchedule.OnSlideBuildListener {
     @Override
     public void onInit(LinearLayout layout, float alpha) {
         this.alpha = alpha;
-        int alphaColor = ColorUtils.alphaColor(background, alpha);
+//        int alphaColor = ColorUtils.alphaColor(background, alpha);
         if (layout != null) {
             layout.setBackgroundColor(background);
         }

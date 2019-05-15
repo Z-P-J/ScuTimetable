@@ -351,5 +351,6 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView>, 
         Log.d("itemWidth", "itemWidth=" + itemWidth);
         Log.d("scrollViewWidth", "scrollViewWidth=" + scrollViewWidth);
         scrollView.smoothScrollTo(itemView.getLeft() - (scrollViewWidth / 2 - itemWidth / 2), 0);
+        root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
     }
 }

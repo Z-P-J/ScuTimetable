@@ -87,7 +87,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         layout.setOnClickListener(this);
         initTimetableView();
 
-        requestData();
+        initData();
     }
 
     private void toggleTitle(boolean tag) {
@@ -99,10 +99,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
-    /**
-     * 2秒后刷新界面，模拟网络请求
-     */
-    private void requestData() {
+    private void initData() {
         mySubjects = TimetableHelper.getSubjects(this);
         mWeekView.source(mySubjects).showView();
         mTimetableView.source(mySubjects)
@@ -314,7 +311,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         editText.setText(subject.getNote());
                         btnClose.setOnClickListener(v -> dialog.dismiss());
                         btnSave.setOnClickListener(v -> {
-                            //todo 保存备注
                             String note = editText.getText().toString();
                             if (TimetableHelper.saveNote(MainActivity.this, subject, note)) {
                                 dialog.dismiss();
@@ -382,15 +378,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void toggleTime(boolean showTime) {
-        if (showTime) {
-            OnSlideBuildAdapter listener = (OnSlideBuildAdapter) mTimetableView.onSlideBuildListener();
-            listener.setTimes(TimetableHelper.TIMES_1)
-                    .setTimeTextColor(Color.BLACK);
-            mTimetableView.updateSlideView();
-        } else {
-            mTimetableView.callback((ISchedule.OnSlideBuildListener) null);
-            mTimetableView.updateSlideView();
-        }
+        OnSlideBuildAdapter listener = (OnSlideBuildAdapter) mTimetableView.onSlideBuildListener();
+        listener.setTimes(showTime ? TimetableHelper.TIMES_1 : null);
+        mTimetableView.updateSlideView();
     }
 
     /**
