@@ -264,6 +264,11 @@ public class QianxunDialog extends QianxunBaseDialog implements IDialog {
         return this;
     }
 
+    public QianxunDialog setPositiveButtonTextColor(int color) {
+        params.positiveStrColor = color;
+        return this;
+    }
+
     /**
      * 设置左侧按钮
      *
@@ -288,6 +293,11 @@ public class QianxunDialog extends QianxunBaseDialog implements IDialog {
         return this;
     }
 
+    public QianxunDialog setNegativeButtonTextColor(int color) {
+        params.negativeStrColor = color;
+        return this;
+    }
+
     /**
      * 设置默认dialog的title
      *
@@ -299,6 +309,11 @@ public class QianxunDialog extends QianxunBaseDialog implements IDialog {
         return this;
     }
 
+    public QianxunDialog setTitleTextColor(int color) {
+        params.titleTextColor = color;
+        return this;
+    }
+
     /**
      * 设置默认dialog的内容
      *
@@ -307,6 +322,11 @@ public class QianxunDialog extends QianxunBaseDialog implements IDialog {
      */
     public QianxunDialog setContent(CharSequence content) {
         params.contentStr = content;
+        return this;
+    }
+
+    public QianxunDialog setContentTextColor(int color) {
+        params.contentTextColor = color;
         return this;
     }
 

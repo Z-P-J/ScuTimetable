@@ -224,12 +224,13 @@ public class SimpleOperater extends AbsOperater {
             gd.setCornerRadius(mView.corner(false));
         }
 
-        textView.setBackgroundDrawable(gd);
+        textView.setBackground(gd);
         mView.onItemBuildListener().onItemUpdate(layout, textView, countTextView, subject, gd);
 
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                flagLayout.setVisibility(View.GONE);
                 List<Schedule> result = ScheduleSupport.findSubjects(subject, originData);
                 mView.onItemClickListener().onItemClick(v, result);
             }
@@ -238,6 +239,7 @@ public class SimpleOperater extends AbsOperater {
         textView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                flagLayout.setVisibility(View.GONE);
                 mView.onItemLongClickListener().onLongClick(view, subject.getDay(), subject.getStart());
                 return true;
             }
@@ -313,9 +315,9 @@ public class SimpleOperater extends AbsOperater {
 //        if (mView.getSundayIsFirstDay() && !mView.isShowWeekends()) {
 //            day -= 1;
 //        }
-        if (day == -1) {
-            return;
-        }
+//        if (day == -1) {
+//            return;
+//        }
 
         // 判断点击的是第几节课，1：第1节
         final int start = (int) Math.ceil((y / (mView.itemHeight() + mView.marTop())));
@@ -336,6 +338,7 @@ public class SimpleOperater extends AbsOperater {
                 Log.d("finalDay", "finalDay=" + finalDay);
                 Log.d("start", "start=" + start);
                 timer.cancel();
+                timer.start();
                 mView.onFlaglayoutClickListener().onFlaglayoutClick(finalDay, start);
             }
         });

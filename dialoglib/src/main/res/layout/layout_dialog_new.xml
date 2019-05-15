@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_parent"
     android:layout_width="match_parent"
@@ -79,7 +80,6 @@
                 android:gravity="center"
                 android:minHeight="44dp"
                 android:text="取消"
-                android:textColor="#f7595a"
                 android:textSize="17sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -97,6 +97,7 @@
                 android:textSize="17sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
+
         </LinearLayout>
     </LinearLayout>
 

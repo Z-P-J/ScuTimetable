@@ -29,7 +29,7 @@ import org.jsoup.select.Elements;
 /**
  * @author 25714
  */
-public class LoginActivity extends BaseHandlerActivity implements View.OnClickListener {
+public final class LoginActivity extends BaseHandlerActivity implements View.OnClickListener {
 
     private EditText userName;
     private EditText password;

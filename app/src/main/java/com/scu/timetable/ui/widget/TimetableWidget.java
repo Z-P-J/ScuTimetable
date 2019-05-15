@@ -6,10 +6,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.scu.timetable.utils.TimetableWidgtHelper2;
+import com.scu.timetable.utils.TimetableWidgtHelper;
 
 public class TimetableWidget extends AppWidgetProvider {
 
@@ -37,7 +36,7 @@ public class TimetableWidget extends AppWidgetProvider {
 //                refreshViews(context);
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 int [] appIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, TimetableWidget.class));
-                appWidgetManager.updateAppWidget(appIds, TimetableWidgtHelper2.refreshViews(context));
+                appWidgetManager.updateAppWidget(appIds, TimetableWidgtHelper.refreshViews(context));
             }
         }
         super.onReceive(context, intent);
@@ -48,7 +47,7 @@ public class TimetableWidget extends AppWidgetProvider {
         for (int i : iArr) {
 //            refreshViews(context);
 //            appWidgetManager.updateAppWidget(i, this.remoteViews);
-            appWidgetManager.updateAppWidget(i, TimetableWidgtHelper2.refreshViews(context));
+            appWidgetManager.updateAppWidget(i, TimetableWidgtHelper.refreshViews(context));
         }
     }
 
@@ -108,7 +107,7 @@ public class TimetableWidget extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int i, Bundle bundle) {
 //        initView(context);;
 //        appWidgetManager.updateAppWidget(i, this.remoteViews);
-        appWidgetManager.updateAppWidget(i, TimetableWidgtHelper2.refreshViews(context));
+        appWidgetManager.updateAppWidget(i, TimetableWidgtHelper.refreshViews(context));
     }
 
 }

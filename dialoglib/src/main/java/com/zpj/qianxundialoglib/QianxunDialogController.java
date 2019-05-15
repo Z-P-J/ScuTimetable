@@ -1,6 +1,7 @@
 package com.zpj.qianxundialoglib;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -36,9 +37,13 @@ public class QianxunDialogController {
     private String positiveStr;//右边按钮文字
     private String negativeStr;//左边按钮文字
     private boolean showBtnLeft, showBtnRight;
+    int titleTextColor;
+    int contentTextColor;
+    int positiveStrColor;
+    int negativeStrColor;
 
 
-    private Button btn_ok, btn_cancel;
+    private Button btnOk, btnCancel;
 
     QianxunDialogController(IDialog dialog) {
         mDialog = new WeakReference<>(dialog);
@@ -80,7 +85,7 @@ public class QianxunDialogController {
         return cancelable;
     }
 
-    public void setDialogView(View dialogView) {
+    private void setDialogView(View dialogView) {
         this.dialogView = dialogView;
     }
 
@@ -88,38 +93,44 @@ public class QianxunDialogController {
         return dialogView;
     }
 
-    public void setChildView(View view) {
+    void setChildView(View view) {
         setDialogView(view);
         dealDefaultDialog(mPositiveButtonListener, mNegativeButtonListener, titleStr,
-                contentStr, showBtnLeft, negativeStr, showBtnRight, positiveStr);
+                contentStr, showBtnLeft, negativeStr, showBtnRight, positiveStr, titleTextColor, contentTextColor, positiveStrColor, negativeStrColor);
     }
 
-    void dealDefaultDialog(IDialog.OnClickListener positiveBtnListener, IDialog.OnClickListener negativeBtnListener, String titleStr, CharSequence contentStr,
-                           boolean showBtnLeft, String negativeStr, boolean showBtnRight, String positiveStr) {
-        if (dialogView == null) return;
+    private void dealDefaultDialog(IDialog.OnClickListener positiveBtnListener, IDialog.OnClickListener negativeBtnListener, String titleStr, CharSequence contentStr,
+                                   boolean showBtnLeft, String negativeStr, boolean showBtnRight, String positiveStr, int titleTextColor, int contentTextColor, int positiveStrColor, int negativeStrColor) {
+        if (dialogView == null) {
+            return;
+        }
         this.mNegativeButtonListener = negativeBtnListener;
         this.mPositiveButtonListener = positiveBtnListener;
-        btn_ok = (Button) dialogView.findViewById(R.id.btn_ok);
-        btn_cancel = (Button) dialogView.findViewById(R.id.btn_cancel);
-        if (btn_ok != null && !TextUtils.isEmpty(positiveStr)) {
-            btn_ok.setVisibility(showBtnRight ? View.VISIBLE : View.GONE);
-            btn_ok.setText(positiveStr);
-            btn_ok.setOnClickListener(mButtonHandler);
+        btnOk = dialogView.findViewById(R.id.btn_ok);
+        btnCancel = dialogView.findViewById(R.id.btn_cancel);
+        if (btnOk != null && !TextUtils.isEmpty(positiveStr)) {
+            btnOk.setVisibility(showBtnRight ? View.VISIBLE : View.GONE);
+            btnOk.setText(positiveStr);
+            btnOk.setOnClickListener(mButtonHandler);
+            btnOk.setTextColor(positiveStrColor);
         }
-        if (btn_cancel != null) {
-            btn_cancel.setVisibility(showBtnLeft ? View.VISIBLE : View.GONE);
-            btn_cancel.setText(negativeStr);
-            btn_cancel.setOnClickListener(mButtonHandler);
+        if (btnCancel != null) {
+            btnCancel.setVisibility(showBtnLeft ? View.VISIBLE : View.GONE);
+            btnCancel.setText(negativeStr);
+            btnCancel.setOnClickListener(mButtonHandler);
+            btnCancel.setTextColor(negativeStrColor);
         }
-        TextView tv_title = (TextView) dialogView.findViewById(R.id.dialog_title);
-        TextView tv_content = (TextView) dialogView.findViewById(R.id.dialog_content);
-        if (tv_title != null) {
-            tv_title.setVisibility(TextUtils.isEmpty(titleStr) ? View.GONE : View.VISIBLE);
-            tv_title.setText(titleStr);
+        TextView tvTitle = dialogView.findViewById(R.id.dialog_title);
+        TextView tvContent = dialogView.findViewById(R.id.dialog_content);
+        if (tvTitle != null) {
+            tvTitle.setVisibility(TextUtils.isEmpty(titleStr) ? View.GONE : View.VISIBLE);
+            tvTitle.setText(titleStr);
+            tvTitle.setTextColor(titleTextColor);
         }
-        if (tv_content != null) {
-            tv_content.setVisibility(TextUtils.isEmpty(contentStr) ? View.GONE : View.VISIBLE);
-            tv_content.setText(contentStr);
+        if (tvContent != null) {
+            tvContent.setVisibility(TextUtils.isEmpty(contentStr) ? View.GONE : View.VISIBLE);
+            tvContent.setText(contentStr);
+            tvContent.setTextColor(contentTextColor);
         }
 
     }
@@ -127,14 +138,14 @@ public class QianxunDialogController {
     private final View.OnClickListener mButtonHandler = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (view == btn_cancel) {
+            if (view == btnCancel) {
                 if (mDialog.get() == null) {
                     return;
                 }
                 if (mNegativeButtonListener != null) {
                     mNegativeButtonListener.onClick(mDialog.get());
                 }
-            } else if (view == btn_ok) {
+            } else if (view == btnOk) {
                 if (mDialog.get() == null) {
                     return;
                 }
@@ -158,12 +169,21 @@ public class QianxunDialogController {
         Context context;
         IDialog.OnClickListener positiveBtnListener;
         IDialog.OnClickListener negativeBtnListener;
-        String titleStr;//默认标题
-        CharSequence contentStr;//默认内容
-        String positiveStr;//右边按钮文字
-        String negativeStr;//左边按钮文字
+        //默认标题
+        String titleStr;
+        int titleTextColor = Color.BLACK;
+        //默认内容
+        CharSequence contentStr;
+        int contentTextColor = Color.BLACK;
+        //右边按钮文字
+        String positiveStr;
+        int positiveStrColor = Color.BLACK;
+        //左边按钮文字
+        String negativeStr;
+        int negativeStrColor = Color.BLACK;
         boolean showBtnLeft = true, showBtnRight = true;
-        int animRes;//Dialog动画style
+        //Dialog动画style
+        int animRes;
 
         void apply(QianxunDialogController controller) {
             controller.dimAmount = dimAmount;
@@ -179,6 +199,10 @@ public class QianxunDialogController {
             controller.showBtnRight = showBtnRight;
             controller.mPositiveButtonListener = positiveBtnListener;
             controller.mNegativeButtonListener = negativeBtnListener;
+            controller.titleTextColor = titleTextColor;
+            controller.contentTextColor = contentTextColor;
+            controller.negativeStrColor = negativeStrColor;
+            controller.positiveStrColor = positiveStrColor;
             if (layoutRes > 0) {
                 controller.setLayoutRes(layoutRes);
             } else if (dialogView != null) {

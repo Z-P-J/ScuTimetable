@@ -9,7 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +27,11 @@ import com.scu.timetable.utils.ApkUtil;
 import com.scu.timetable.utils.FastBlur;
 import com.scu.timetable.utils.TextUtil;
 import com.scu.timetable.utils.TimetableHelper;
-import com.scu.timetable.utils.TimetableWidgtHelper2;
+import com.scu.timetable.utils.TimetableWidgtHelper;
+import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.popupmenuview.CustomPopupMenuView;
+import com.zpj.qianxundialoglib.IDialog;
+import com.zpj.qianxundialoglib.QianxunDialog;
 
 public class SettingsDialogFragment extends FullscreenDialogFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
 
@@ -113,12 +116,15 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         itemChangeCurrentWeek.setmOnLSettingItemClick(this);
 
         LSettingItem itemWidgetSmartShowWeekends = view.findViewById(R.id.item_widget_smart_show_weekends);
-        itemWidgetSmartShowWeekends.setChecked(TimetableWidgtHelper2.isSmartShowWeekends());
+        itemWidgetSmartShowWeekends.setChecked(TimetableWidgtHelper.isSmartShowWeekends());
         itemWidgetSmartShowWeekends.setmOnLSettingItemClick(this);
         smartShowWeekends.setmOnBtnInfoClick(v -> showInfoPopupView(v,
                 "关于桌面插件的智能显示周末",
                 "桌面插件默认开启智能显示周末")
         );
+
+        CardView btnLogout = view.findViewById(R.id.btn_logout);
+        btnLogout.setOnClickListener(this);
 
         TextView appVersion = view.findViewById(R.id.app_version);
         appVersion.setText("V" + ApkUtil.getVersionName(getContext()));
@@ -212,6 +218,26 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         int id = v.getId();
         if (id == R.id.btn_back) {
             dismiss();
+        } else if (id == R.id.btn_logout){
+            QianxunDialog.with(getContext())
+                    .setTitle("注销登录！")
+                    .setTitleTextColor(Color.RED)
+                    .setContent("注销后需重新登录才能查看课表，确认注销？")
+                    .setNegativeButton(new IDialog.OnClickListener() {
+                        @Override
+                        public void onClick(IDialog dialog) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton(new IDialog.OnClickListener() {
+                        @Override
+                        public void onClick(IDialog dialog) {
+                            SPHelper.putBoolean("logined", false);
+                            dismiss();
+                        }
+                    })
+                    .setPositiveButtonTextColor(Color.RED)
+                    .show();
         }
     }
 
@@ -235,7 +261,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         } else if (id == R.id.item_change_current_week) {
             TimetableHelper.openChangeCurrentWeekDialog(getContext(), null);
         } else if (id == R.id.item_widget_smart_show_weekends) {
-            TimetableWidgtHelper2.toggleSmartShowWeekends(getContext());
+            TimetableWidgtHelper.toggleSmartShowWeekends(getContext());
         }
 
         Toast.makeText(getContext(), "" + isChecked, Toast.LENGTH_SHORT).show();

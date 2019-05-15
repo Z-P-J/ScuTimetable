@@ -4,7 +4,7 @@
     <!-- 边框颜色值 -->
     <item>
         <shape>
-            <solid android:color="#c8cacc" />
+            <solid android:color="#eec8cacc" />
             <corners android:bottomLeftRadius="10dp" />
         </shape>
     </item>
@@ -15,7 +15,7 @@
         android:right="0.5dp"
         android:top="0.5dp">
         <shape>
-            <solid android:color="#eff1f4" />
+            <solid android:color="#eeeff1f4" />
             <corners android:bottomLeftRadius="10dp" />
             <padding
                 android:bottom="15dp"

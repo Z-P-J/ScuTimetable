@@ -1,16 +1,14 @@
 package com.scu.timetable;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.view.menu.MenuBuilder;
-import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -45,7 +43,7 @@ import java.util.List;
 /**
  * @author 25714
  */
-public class MainActivity extends BaseActivity implements View.OnClickListener {
+public final class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private Drawable expandMoreDrawable;
     private Drawable expandLessDrawable;
@@ -353,6 +351,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 Toast.makeText(MainActivity.this, "SettingsDialogFragment", Toast.LENGTH_SHORT).show();
+                if (!SPHelper.getBoolean("logined", false)) {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    finish();
+                    return;
+                }
                 boolean sundayIsFirstDay = TimetableHelper.sundayIsFirstDay();
                 boolean showWeekends = TimetableHelper.isShowWeekendsOrin();
                 boolean showNotCurWeek = TimetableHelper.isShowNotCurWeek();

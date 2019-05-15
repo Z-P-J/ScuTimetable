@@ -8,7 +8,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.scu.timetable.utils.TimetableWidgtHelper2;
+import com.scu.timetable.utils.TimetableWidgtHelper;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,7 +31,7 @@ public class WidgetService extends Service {
             public void run() {
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
                 int [] appIds = appWidgetManager.getAppWidgetIds(new ComponentName(getApplicationContext(), TimetableWidget.class));
-                appWidgetManager.updateAppWidget(appIds, TimetableWidgtHelper2.refreshViews(getApplicationContext()));
+                appWidgetManager.updateAppWidget(appIds, TimetableWidgtHelper.refreshViews(getApplicationContext()));
                 Log.d("MainActivity", "定时器开始了");
             }
         }, 0, 86400000);

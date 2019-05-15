@@ -15,7 +15,11 @@ import java.lang.reflect.Method;
 /**
  * @author 25714
  */
-public class StatusBarUtil {
+public final class StatusBarUtil {
+
+    private StatusBarUtil() {
+
+    }
 
     public static void setStatusBarColor(Activity activity, int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -2,7 +2,11 @@ package com.scu.timetable.utils;
 
 import android.graphics.Bitmap;
 
-public class FastBlur {
+public final class FastBlur {
+
+    private FastBlur() {
+
+    }
 
     public static Bitmap doBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
 

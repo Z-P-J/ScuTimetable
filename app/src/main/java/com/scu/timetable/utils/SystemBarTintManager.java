@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  * translucent system UI modes.
  *
  */
-public class SystemBarTintManager {
+public final class SystemBarTintManager {
 
     static {
         // Android allows a system property to override the presence of the navigation bar.
