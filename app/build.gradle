@@ -72,5 +72,5 @@ dependencies {
     implementation project(':dialoglib')
     implementation project(':lsettingviewlibrary')
     implementation project(':popupmenuview')
-    implementation project(':library')
+    implementation project(':swipeawaydialog')
 }

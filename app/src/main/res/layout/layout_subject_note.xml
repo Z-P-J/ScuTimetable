@@ -30,6 +30,7 @@
                 />
 
             <TextView
+                android:id="@+id/note_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="备注"
@@ -69,14 +70,14 @@
 
         </RelativeLayout>
 
-        <android.support.v7.widget.AppCompatEditText
+        <com.scu.timetable.ui.view.NoteEditText
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_style"
-            android:padding="5dp"
+            android:padding="10dp"
             android:hint="添加备注"
-            android:textColor="#000000"
+            android:textColor="@color/grey"
             android:textSize="16sp"
             android:maxEms="10"
             android:maxLines="5"

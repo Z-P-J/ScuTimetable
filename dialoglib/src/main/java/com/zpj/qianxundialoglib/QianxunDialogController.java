@@ -1,7 +1,7 @@
 package com.zpj.qianxundialoglib;
 
-import android.app.FragmentManager;
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -128,12 +128,16 @@ public class QianxunDialogController {
         @Override
         public void onClick(View view) {
             if (view == btn_cancel) {
-                if (mDialog.get() == null) return;
+                if (mDialog.get() == null) {
+                    return;
+                }
                 if (mNegativeButtonListener != null) {
                     mNegativeButtonListener.onClick(mDialog.get());
                 }
             } else if (view == btn_ok) {
-                if (mDialog.get() == null) return;
+                if (mDialog.get() == null) {
+                    return;
+                }
                 if (mPositiveButtonListener != null) {
                     mPositiveButtonListener.onClick(mDialog.get());
                 }

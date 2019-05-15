@@ -3,6 +3,7 @@ package com.zpj.popupmenuview;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.v7.view.menu.MenuBuilder;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
@@ -289,8 +290,13 @@ public class OptionMenuView extends LinearLayout implements PopLayout.OnBulgeCha
         if (v.getTag() != null) {
             try {
                 int position = Integer.parseInt((String) v.getTag());
+                OptionMenu menu = mOptionMenus.get(position);
+                if (menu.isEnable()) {
+                    menu.toggle();
+                }
+
                 if (mMenuClickListener != null && position >= 0 && position < mOptionMenus.size()) {
-                    mMenuClickListener.onOptionMenuClick(position, mOptionMenus.get(position));
+                    mMenuClickListener.onOptionMenuClick(position, menu);
                 }
             } catch (Exception e) {
                 Log.d(TAG, e.getMessage(), e);

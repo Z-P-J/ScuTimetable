@@ -2,7 +2,6 @@ package com.zpj.qianxundialoglib.base;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -18,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.labo.kaji.swipeawaydialog.support.v4.SwipeAwayDialogFragment;
 import com.zpj.qianxundialoglib.manager.QianxunDialogsManager;
 
 /**
@@ -25,7 +25,7 @@ import com.zpj.qianxundialoglib.manager.QianxunDialogsManager;
  * mqcoder90@gmail.com
  */
 
-public abstract class QianxunBaseDialog extends DialogFragment {
+public abstract class QianxunBaseDialog extends SwipeAwayDialogFragment {
     private View view = null;
 
     @Nullable
@@ -65,7 +65,9 @@ public abstract class QianxunBaseDialog extends DialogFragment {
     public void onStart() {
         super.onStart();
         Window window = getDialog().getWindow();
-        if (window == null) return;
+        if (window == null) {
+            return;
+        }
         //设置背景色透明
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         //设置Dialog动画效果

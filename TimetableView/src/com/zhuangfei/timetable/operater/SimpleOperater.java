@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.CountDownTimer;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.zhuangfei.timetable.utils.ScreenUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 /**
  * 课表业务操作者，TimetableView中只涉及属性的设置，方法的具体实现在这里.
@@ -273,6 +275,17 @@ public class SimpleOperater extends AbsOperater {
         }
     }
 
+    private CountDownTimer timer = new CountDownTimer(5000, 5000) {
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            flagLayout.setVisibility(View.GONE);
+        }
+    };
 
     /**
      * 点击panel时的事件响应
@@ -280,6 +293,8 @@ public class SimpleOperater extends AbsOperater {
     protected void onPanelClicked(View view, float y) {
         if (mView.isShowFlaglayout()) {
             flagLayout.setVisibility(View.VISIBLE);
+            timer.cancel();
+            timer.start();
         } else {
             flagLayout.setVisibility(View.GONE);
         }
@@ -295,9 +310,9 @@ public class SimpleOperater extends AbsOperater {
             }
         }
 
-        if (mView.getSundayIsFirstDay() && !mView.isShowWeekends()) {
-            day -= 1;
-        }
+//        if (mView.getSundayIsFirstDay() && !mView.isShowWeekends()) {
+//            day -= 1;
+//        }
         if (day == -1) {
             return;
         }
@@ -308,8 +323,11 @@ public class SimpleOperater extends AbsOperater {
         if (!checkPosition(day, start)) {
             Log.d("day", "day=" + day);
             Log.d("start", "start=" + start);
-
-            mView.onSpaceItemClickListener().onSpaceItemClick(day, start);
+            int index = day;
+            if (mView.getSundayIsFirstDay() && !mView.isShowWeekends()) {
+                index -= 1;
+            }
+            mView.onSpaceItemClickListener().onSpaceItemClick(index, start);
         }
         final int finalDay = day;
         flagLayout.setOnClickListener(new View.OnClickListener() {
@@ -317,6 +335,7 @@ public class SimpleOperater extends AbsOperater {
             public void onClick(View view) {
                 Log.d("finalDay", "finalDay=" + finalDay);
                 Log.d("start", "start=" + start);
+                timer.cancel();
                 mView.onFlaglayoutClickListener().onFlaglayoutClick(finalDay, start);
             }
         });
@@ -435,9 +454,24 @@ public class SimpleOperater extends AbsOperater {
 
         //排序、填充课程
         ScheduleSupport.sortList(data);
-        for (int i = 0; i < panels.length; i++) {
-            panels[i].removeAllViews();
-            addToLayout(panels[i], data[i], mView.curWeek());
+
+        if (!mView.isShowWeekends()) {
+            if (mView.getSundayIsFirstDay()) {
+                for (int i = 1; i < panels.length - 1; i++) {
+                    panels[i].removeAllViews();
+                    addToLayout(panels[i], data[i], mView.curWeek());
+                }
+            } else {
+                for (int i = 0; i < panels.length - 2; i++) {
+                    panels[i].removeAllViews();
+                    addToLayout(panels[i], data[i], mView.curWeek());
+                }
+            }
+        } else {
+            for (int i = 0; i < panels.length; i++) {
+                panels[i].removeAllViews();
+                addToLayout(panels[i], data[i], mView.curWeek());
+            }
         }
     }
 
@@ -548,9 +582,12 @@ public class SimpleOperater extends AbsOperater {
     @Override
     public void setWeekendsVisiable(boolean isShow, boolean sundayIsFirstDay) {
         int indexOfSunday = 0;
+        int otherIndexOfSunday = 5;
         if (!sundayIsFirstDay) {
             indexOfSunday = 5;
+            otherIndexOfSunday = 0;
         }
+        panels[otherIndexOfSunday].setVisibility(View.VISIBLE);
         if (isShow) {
             if (panels != null && panels.length > 6) {
                 panels[indexOfSunday].setVisibility(View.VISIBLE);
@@ -559,6 +596,7 @@ public class SimpleOperater extends AbsOperater {
         } else {
             if (panels != null && panels.length > 6) {
                 panels[indexOfSunday].setVisibility(View.GONE);
+
                 panels[6].setVisibility(View.GONE);
             }
         }

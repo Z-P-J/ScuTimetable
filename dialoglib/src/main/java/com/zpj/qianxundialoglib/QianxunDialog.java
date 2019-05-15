@@ -1,12 +1,13 @@
 package com.zpj.qianxundialoglib;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -37,7 +38,7 @@ public class QianxunDialog extends QianxunBaseDialog implements IDialog {
             throw new IllegalArgumentException("Context must be Activity");
         }
         params = new QianxunDialogController.QianxunParams();
-        params.fragmentManager = ((Activity) context).getFragmentManager();
+        params.fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
         params.context = context;
         return new QianxunDialog();
     }

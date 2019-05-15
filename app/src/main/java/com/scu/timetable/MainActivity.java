@@ -9,8 +9,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -91,12 +93,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void toggleTitle(boolean tag) {
-//        int resId = tag ? R.drawable.ic_expand_more_white_24dp : R.drawable.ic_expand_less_white_24dp;
-//
-//        Drawable expand = getResources().getDrawable(resId);
-//        expand.setBounds(1, 1, 10, 10);
         titleTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, tag ? expandMoreDrawable : expandLessDrawable, null);
-
     }
 
     private void initData() {
@@ -166,13 +163,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         view.getLocationOnScreen(location);
                         testX = location[0] + width / 2;
                         testY = location[1] + height / 2 - StatusBarUtil.getStatusBarHeight(MainActivity.this);
-//                        testX = left + width / 2;
-//                        testY = top + height / 2;
-                        Toast.makeText(MainActivity.this, testX + "  " + testY, Toast.LENGTH_SHORT).show();
                         MySubject mySubject = (MySubject) scheduleList.get(0).getScheduleEnable();
 //                        AnimatorUtil.circleAnimator(test, testX, testY, 500);
                         display(scheduleList);
-
                         showSubjectPopupView(view, mySubject);
                     }
                 })
@@ -196,7 +189,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void showMenu(View view) {
         CustomPopupMenuView.with(this, R.layout.layout_menu)
                 .setOrientation(LinearLayout.VERTICAL)
-                .setBackgroundAlpha(MainActivity.this, 0.8f, 300)
+                .setBackgroundAlpha(MainActivity.this, 0.8f, 200)
                 .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
 //                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_X, 350, 100, 0)
 //                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_Y, 350, -100, 0)
@@ -220,15 +213,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 popupMenuView.dismiss();
                                 switch (index) {
                                     case 0:
-                                        mTimetableView.isShowWeekends(!menu.isChecked()).updateView();
+                                        mTimetableView.isShowWeekends(menu.isChecked()).updateView();
                                         TimetableHelper.toggleShowWeekends();
                                         break;
                                     case 1:
-                                        toggleTime(!menu.isChecked());
+                                        toggleTime(menu.isChecked());
                                         TimetableHelper.toggleShowTime();
                                         break;
                                     case 2:
-                                        mTimetableView.isShowNotCurWeek(!menu.isChecked()).updateView();
+                                        mTimetableView.isShowNotCurWeek(menu.isChecked()).updateView();
                                         TimetableHelper.toggleShowNotCurWeek();
                                         break;
                                     case 3:
@@ -284,16 +277,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             String sessions = "第" + mySubject.getStart() + " - " + mySubject.getEnd() + "节";
                             classTime.setText(mySubject.getWeekDescription() + "\n" + sessions);
 
+                            if (!TextUtils.isEmpty(mySubject.getNote())) {
+                                itemView.findViewById(R.id.layout_note).setVisibility(View.VISIBLE);
+                                ((TextView)itemView.findViewById(R.id.note_text)).setText(mySubject.getNote());
+                            }
+
 //                            courseSequenceNum.setText(mySubject.getCoureSequenceNumber());
 //                            courseNum.setText(mySubject.getCoureNumber());
 
                             ImageView note = itemView.findViewById(R.id.subject_note);
-                            note.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    popupMenuView.dismiss();
-                                    showSubjectNote(mySubject);
-                                }
+                            note.setOnClickListener(v -> {
+                                popupMenuView.dismiss();
+                                showSubjectNote(mySubject);
                             });
                         })
                 .show(view);
@@ -305,10 +300,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 .setBuildChildListener(new IDialog.OnBuildListener() {
                     @Override
                     public void onBuildChildView(IDialog dialog, View view, int layoutRes) {
+                        TextView noteTitle = view.findViewById(R.id.note_title);
                         ImageView btnClose = view.findViewById(R.id.btn_close);
                         ImageView btnSave = view.findViewById(R.id.btn_save);
-                        AppCompatEditText editText = view.findViewById(R.id.edit_text);
+                        EditText editText = view.findViewById(R.id.edit_text);
+
+                        noteTitle.setText(subject.getCourseName() + "的备注");
                         editText.setText(subject.getNote());
+                        editText.setSelection(subject.getNote().length());
                         btnClose.setOnClickListener(v -> dialog.dismiss());
                         btnSave.setOnClickListener(v -> {
                             String note = editText.getText().toString();
@@ -398,34 +397,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      * 对话框修改当前周次
      */
     protected void onWeekLeftLayoutClicked() {
-//        final String[] items = new String[20];
-//        int itemCount = mWeekView.itemCount();
-//        for (int i = 0; i < itemCount; i++) {
-//            items[i] = "第" + (i + 1) + "周";
-//        }
-//        target = -1;
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("设置当前周");
-//        builder.setSingleChoiceItems(items, mTimetableView.curWeek() - 1,
-//                new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        target = i;
-//                    }
-//                });
-//        builder.setPositiveButton("设置为当前周", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                if (target != -1) {
-//                    mWeekView.curWeek(target + 1).updateView();
-//                    mTimetableView.changeWeekForce(target + 1);
-//                    TimetableHelper.setCurrentWeek(target + 1);
-//                }
-//            }
-//        });
-//        builder.setNegativeButton("取消", null);
-//        builder.create().show();
-
         TimetableHelper.openChangeCurrentWeekDialog(this, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -452,7 +423,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         int id =view.getId();
-        if (id == R.id.id_layout) {//如果周次选择已经显示了，那么将它隐藏，更新课程、日期
+        //如果周次选择已经显示了，那么将它隐藏，更新课程、日期
+        if (id == R.id.id_layout) {
             //否则，显示
             if (mWeekView.isShowing()) {
                 hideWeekView();
@@ -481,7 +453,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void showWeekView() {
         toggleTitle(false);
         mWeekView.isShow(true);
-//        titleTextView.setTextColor(Color.RED);
     }
 
     @Override

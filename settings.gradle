@@ -4,5 +4,5 @@ include ':app',
         ':dialoglib',
         ':lsettingviewlibrary',
         ':popupmenuview',
-        ':library',
+        ':swipeawaydialog',
         ':switchbutton'

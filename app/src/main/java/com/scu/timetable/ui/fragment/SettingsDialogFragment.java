@@ -38,8 +38,6 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
 
     private OnDismissListener onDismissListener;
 
-    private LSettingItem itemShowWeekends;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,7 +81,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
                 "默认星期天为周一。不排除有些人喜欢讲星期一作为周一，所以天骄设置星期一为周一的选项。")
         );
 
-        itemShowWeekends = view.findViewById(R.id.item_show_weekends);
+        LSettingItem itemShowWeekends = view.findViewById(R.id.item_show_weekends);
         itemShowWeekends.setChecked(TimetableHelper.isShowWeekendsOrin());
         if (TimetableHelper.isSmartShowWeekends()) {
             itemShowWeekends.setEnable(false);
@@ -117,6 +115,10 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         LSettingItem itemWidgetSmartShowWeekends = view.findViewById(R.id.item_widget_smart_show_weekends);
         itemWidgetSmartShowWeekends.setChecked(TimetableWidgtHelper2.isSmartShowWeekends());
         itemWidgetSmartShowWeekends.setmOnLSettingItemClick(this);
+        smartShowWeekends.setmOnBtnInfoClick(v -> showInfoPopupView(v,
+                "关于桌面插件的智能显示周末",
+                "桌面插件默认开启智能显示周末")
+        );
 
         TextView appVersion = view.findViewById(R.id.app_version);
         appVersion.setText("V" + ApkUtil.getVersionName(getContext()));

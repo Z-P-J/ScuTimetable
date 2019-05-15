@@ -261,36 +261,13 @@ public class CustomPopupMenuView extends PopupView implements BaseOptionMenuView
     public void dismiss() {
 //        Toast.makeText(activity, "dismiss", Toast.LENGTH_SHORT).show();
 //        setBackgroundAlpha(activity, 1.0f);
-//        super.dismiss();
+        super.dismiss();
         if (animatorSetForDialogDismiss.isRunning()) {
             return;
         }
         if (animatorSetForDialogDismiss != null && objectAnimatorsForDialogDismiss != null && objectAnimatorsForDialogDismiss.size() > 0) {
             animatorSetForDialogDismiss.playTogether(objectAnimatorsForDialogDismiss);
             animatorSetForDialogDismiss.start();
-            animatorSetForDialogDismiss.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    CustomPopupMenuView.super.dismiss();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-        } else {
-            super.dismiss();
         }
     }
 
