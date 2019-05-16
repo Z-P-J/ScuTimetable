@@ -23,7 +23,9 @@ import com.scu.timetable.ui.activity.BaseActivity;
 import com.scu.timetable.ui.fragment.SettingsDialogFragment;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
+import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.StatusBarUtil;
+import com.scu.timetable.utils.TextUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zhuangfei.timetable.TimetableView;
@@ -335,10 +337,42 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                         TextView changeCatpcha = view.findViewById(R.id.change_captcha);
                         changeCatpcha.setOnClickListener(v -> CaptchaFetcher.fetchcaptcha(imgCatpcha));
                         TextView btnRefresh = view.findViewById(R.id.btn_refresh);
+                        EditText captchaEdit = view.findViewById(R.id.captcha);
                         btnRefresh.setOnClickListener(v -> {
                             //todo refresh
-                            Toast.makeText(MainActivity.this, "todo refresh", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
+//                            Toast.makeText(MainActivity.this, "todo refresh", Toast.LENGTH_SHORT).show();
+//                            dialog.dismiss();
+                            String captcha = captchaEdit.getText().toString();
+                            if (TextUtils.isEmpty(captcha)) {
+                                Toast.makeText(MainActivity.this, "验证码为空！", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            LoginUtil.with()
+                                    .setCallback(new LoginUtil.Callback() {
+                                        @Override
+                                        public void onGetCookie(String cookie) { }
+
+                                        @Override
+                                        public void onLoginSuccess() {
+
+                                        }
+
+                                        @Override
+                                        public void onLoginFailed() {
+
+                                        }
+
+                                        @Override
+                                        public void onLoginError(String errorMsg) {
+
+                                        }
+
+                                        @Override
+                                        public void onGetTimetable(String json) {
+
+                                        }
+                                    })
+                                    .login(captcha);
                         });
                     }
                 })

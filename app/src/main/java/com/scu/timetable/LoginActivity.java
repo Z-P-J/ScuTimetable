@@ -4,9 +4,7 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,22 +12,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.scu.timetable.ui.activity.BaseHandlerActivity;
+import com.scu.timetable.ui.activity.BaseActivity;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
-import com.scu.timetable.utils.DateUtil;
+import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.content.SPHelper;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
 /**
  * @author Z-P-J
+ * @date 2019
  */
-public final class LoginActivity extends BaseHandlerActivity implements View.OnClickListener {
+public final class LoginActivity extends BaseActivity implements View.OnClickListener, LoginUtil.Callback {
 
     private EditText userName;
     private EditText password;
@@ -50,7 +44,7 @@ public final class LoginActivity extends BaseHandlerActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        postDelayed(new Runnable() {
+        LoginUtil.with().postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (TimetableHelper.isLogined(LoginActivity.this)) {
@@ -60,7 +54,10 @@ public final class LoginActivity extends BaseHandlerActivity implements View.OnC
                 } else {
                     updateWidget(false);
                     initView();
-                    getCookie();
+//                    getCookie();
+                    LoginUtil.with()
+                            .setCallback(LoginActivity.this)
+                            .getCookie();
                 }
             }
         }, 1000);
@@ -102,106 +99,106 @@ public final class LoginActivity extends BaseHandlerActivity implements View.OnC
 
     }
 
-    private void getCookie() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Connection.Response response = Jsoup.connect("http://202.115.47.141/login")
-                            .followRedirects(false)
-                            .userAgent(TimetableHelper.UA)
-                            .ignoreContentType(true)
-                            .execute();
-                    Log.d("body=", "" + response.body());
-                    Log.d("headers", response.headers().toString());
-//                    Set-Cookie=JSESSIONID=bcaJAyI5zQLik_Df2jtQw
-                    cookie = response.header("Set-Cookie");
-                    Log.d("cookie", "cookie=" + cookie);
-                    Message msg = new Message();
-                    msg.what = 2;
-                    sendMessage(msg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Message msg = new Message();
-                    msg.obj = e.getMessage();
-                    msg.what = -1;
-                    sendMessage(msg);
-                }
-            }
-        }).start();
-    }
-
-    private void login() {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Connection.Response response = Jsoup.connect("http://202.115.47.141/j_spring_security_check")
-                            .method(Connection.Method.POST)
-                            .header("Cookie", cookie)
-                            .userAgent(TimetableHelper.UA)
-                            .header("Referer", "http://202.115.47.141/login")
-                            .data("j_username", userName.getText().toString())
-                            .data("j_password", password.getText().toString())
-                            .data("j_captcha", captcha.getText().toString())
-                            .ignoreHttpErrors(true)
+//    private void getCookie() {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Connection.Response response = Jsoup.connect("http://202.115.47.141/login")
 //                            .followRedirects(false)
-                            .execute();
-                    Log.d("response.statusCode()=", "" + response.statusCode());
-                    Log.d("body=", "" + response.body());
-                    if (response.statusCode() != 200 || response.body().contains("badCredentials")) {
-                        Message msg = new Message();
-                        msg.what = 3;
-                        sendMessage(msg);
-                    } else {
-                        Message msg = new Message();
-                        msg.what = 4;
-                        sendMessage(msg);
-                        Document document = Jsoup.parse(response.body());
-                        Elements elements = document.select("li");
-                        String text = elements.select(".light-red").get(0).select("a").get(0).text();
-                        Log.d("text", "text=" + text);
-                        text = text.substring(text.indexOf("第"));
-                        text = text.substring(1, text.indexOf("周"));
-                        Log.d("text", "text=" + text);
-                        int currentWeek = Integer.parseInt(text);
-                        TimetableHelper.setCurrentWeek(currentWeek);
-                        TimetableHelper.setCurrentDate(DateUtil.currentDate());
-
-                        //通过以下链接可获取当前学期code
-                        //http://202.115.47.141/main/academicInfo
-
-                        //http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback
-
-                        response = Jsoup.connect("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
-                                .method(Connection.Method.POST)
-                                .userAgent(TimetableHelper.UA)
-                                .ignoreContentType(true)
-                                .header("Cookie", cookie)
-                                .header("Referer", "http://202.115.47.141/student/courseSelect/calendarSemesterCurriculum/index")
-                                .data("planCode", "2018-2019-2-1")
-                                .execute();
-
-                        Log.d("课程信息", "" + response.body());
-
-                        String json = response.body().trim();
-                        if (json.startsWith("{\"allUnits\"")) {
-                            msg = new Message();
-                            msg.obj = json;
-                            msg.what = 5;
-                            sendMessage(msg);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Message msg = new Message();
-                    msg.obj = e.getMessage();
-                    msg.what = -1;
-                    sendMessage(msg);
-                }
-            }
-        }.start();
-    }
+//                            .userAgent(TimetableHelper.UA)
+//                            .ignoreContentType(true)
+//                            .execute();
+//                    Log.d("body=", "" + response.body());
+//                    Log.d("headers", response.headers().toString());
+////                    Set-Cookie=JSESSIONID=bcaJAyI5zQLik_Df2jtQw
+//                    cookie = response.header("Set-Cookie");
+//                    Log.d("cookie", "cookie=" + cookie);
+//                    Message msg = new Message();
+//                    msg.what = 2;
+//                    sendMessage(msg);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Message msg = new Message();
+//                    msg.obj = e.getMessage();
+//                    msg.what = -1;
+//                    sendMessage(msg);
+//                }
+//            }
+//        }).start();
+//    }
+//
+//    private void login() {
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Connection.Response response = Jsoup.connect("http://202.115.47.141/j_spring_security_check")
+//                            .method(Connection.Method.POST)
+//                            .header("Cookie", cookie)
+//                            .userAgent(TimetableHelper.UA)
+//                            .header("Referer", "http://202.115.47.141/login")
+//                            .data("j_username", userName.getText().toString())
+//                            .data("j_password", password.getText().toString())
+//                            .data("j_captcha", captcha.getText().toString())
+//                            .ignoreHttpErrors(true)
+////                            .followRedirects(false)
+//                            .execute();
+//                    Log.d("response.statusCode()=", "" + response.statusCode());
+//                    Log.d("body=", "" + response.body());
+//                    if (response.statusCode() != 200 || response.body().contains("badCredentials")) {
+//                        Message msg = new Message();
+//                        msg.what = 3;
+//                        sendMessage(msg);
+//                    } else {
+//                        Message msg = new Message();
+//                        msg.what = 4;
+//                        sendMessage(msg);
+//                        Document document = Jsoup.parse(response.body());
+//                        Elements elements = document.select("li");
+//                        String text = elements.select(".light-red").get(0).select("a").get(0).text();
+//                        Log.d("text", "text=" + text);
+//                        text = text.substring(text.indexOf("第"));
+//                        text = text.substring(1, text.indexOf("周"));
+//                        Log.d("text", "text=" + text);
+//                        int currentWeek = Integer.parseInt(text);
+//                        TimetableHelper.setCurrentWeek(currentWeek);
+//                        TimetableHelper.setCurrentDate(DateUtil.currentDate());
+//
+//                        //通过以下链接可获取当前学期code
+//                        //http://202.115.47.141/main/academicInfo
+//
+//                        //http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback
+//
+//                        response = Jsoup.connect("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
+//                                .method(Connection.Method.POST)
+//                                .userAgent(TimetableHelper.UA)
+//                                .ignoreContentType(true)
+//                                .header("Cookie", cookie)
+//                                .header("Referer", "http://202.115.47.141/student/courseSelect/calendarSemesterCurriculum/index")
+//                                .data("planCode", "2018-2019-2-1")
+//                                .execute();
+//
+//                        Log.d("课程信息", "" + response.body());
+//
+//                        String json = response.body().trim();
+//                        if (json.startsWith("{\"allUnits\"")) {
+//                            msg = new Message();
+//                            msg.obj = json;
+//                            msg.what = 5;
+//                            sendMessage(msg);
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Message msg = new Message();
+//                    msg.obj = e.getMessage();
+//                    msg.what = -1;
+//                    sendMessage(msg);
+//                }
+//            }
+//        }.start();
+//    }
 
     private void onError() {
         AnimatorUtil.hideViewAnimator(progress, 500, new AnimatorListener() {
@@ -224,40 +221,40 @@ public final class LoginActivity extends BaseHandlerActivity implements View.OnC
         });
     }
 
-    @Override
-    protected void handleMessage(Message msg) {
-        if (msg.what == -1) {
-            String errorMsg = (String) msg.obj;
-            Toast.makeText(this, "错误信息：" + errorMsg, Toast.LENGTH_SHORT).show();
-            onError();
-        } else if (msg.what == 2) {
-            Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
-            SPHelper.putString("cookie", cookie);
-            CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
-        } else if (msg.what == 3) {
-            Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-            onError();
-        } else if (msg.what == 4) {
-            Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
-            msgText.setText("获取课表信息中...");
-            SPHelper.putString("user_name", userName.getText().toString());
-            SPHelper.putString("password", password.getText().toString());
-        } else if (msg.what == 5) {
-            String json = (String) msg.obj;
-            try {
-                TimetableHelper.writeToJson(LoginActivity.this, json);
-                SPHelper.putBoolean("logined", true);
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                //发送广播。更新桌面插件
-                updateWidget(true);
-                finish();
-            } catch (Exception e) {
-                e.printStackTrace();
-                onError();
-            }
-        }
-    }
+//    @Override
+//    protected void handleMessage(Message msg) {
+//        if (msg.what == -1) {
+//            String errorMsg = (String) msg.obj;
+//            Toast.makeText(this, "错误信息：" + errorMsg, Toast.LENGTH_SHORT).show();
+//            onError();
+//        } else if (msg.what == 2) {
+//            Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
+//            SPHelper.putString("cookie", cookie);
+//            CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
+//        } else if (msg.what == 3) {
+//            Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+//            onError();
+//        } else if (msg.what == 4) {
+//            Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
+//            msgText.setText("获取课表信息中...");
+//            SPHelper.putString("user_name", userName.getText().toString());
+//            SPHelper.putString("password", password.getText().toString());
+//        } else if (msg.what == 5) {
+//            String json = (String) msg.obj;
+//            try {
+//                TimetableHelper.writeToJson(LoginActivity.this, json);
+//                SPHelper.putBoolean("logined", true);
+//                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                startActivity(intent);
+//                //发送广播。更新桌面插件
+//                updateWidget(true);
+//                finish();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                onError();
+//            }
+//        }
+//    }
 
     @Override
     public void onClick(View v) {
@@ -287,7 +284,14 @@ public final class LoginActivity extends BaseHandlerActivity implements View.OnC
                         AnimatorUtil.shakeAnimator(progress, 1000);
                         middleLayout.setVisibility(View.INVISIBLE);
                         msgText.setText("登录中...");
-                        login();
+//                        login();
+                        LoginUtil.with()
+                                .setCallback(LoginActivity.this)
+                                .login(
+                                        userName.getText().toString(),
+                                        password.getText().toString(),
+                                        captcha.getText().toString()
+                                );
                     }
 
                     @Override
@@ -302,6 +306,49 @@ public final class LoginActivity extends BaseHandlerActivity implements View.OnC
                 });
 
             }
+        }
+    }
+
+    @Override
+    public void onGetCookie(String cookie) {
+        this.cookie = cookie;
+        Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
+        CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
+    }
+
+    @Override
+    public void onLoginSuccess() {
+        Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
+        msgText.setText("获取课表信息中...");
+        SPHelper.putString("user_name", userName.getText().toString());
+        SPHelper.putString("password", password.getText().toString());
+    }
+
+    @Override
+    public void onLoginFailed() {
+        Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+        onError();
+    }
+
+    @Override
+    public void onLoginError(String errorMsg) {
+        Toast.makeText(this, "错误信息：" + errorMsg, Toast.LENGTH_SHORT).show();
+        onError();
+    }
+
+    @Override
+    public void onGetTimetable(String json) {
+        try {
+            TimetableHelper.writeToJson(LoginActivity.this, json);
+            SPHelper.putBoolean("logined", true);
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            //发送广播。更新桌面插件
+            updateWidget(true);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+            onError();
         }
     }
 }
