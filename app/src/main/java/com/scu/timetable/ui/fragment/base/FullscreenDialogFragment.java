@@ -1,6 +1,5 @@
 package com.scu.timetable.ui.fragment.base;
 
-import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -11,8 +10,7 @@ import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.labo.kaji.swipeawaydialog.support.v4.SwipeAwayDialogFragment;
-import com.scu.timetable.R;
+import com.labo.kaji.swipeawaydialog.SwipeAwayDialogFragment;
 
 /**
  * @author Z-P-J
@@ -26,7 +24,7 @@ public class FullscreenDialogFragment extends SwipeAwayDialogFragment {
             getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
         Window dialogWindow = getDialog().getWindow();
-        dialogWindow.setWindowAnimations(R.style.pop_animation);
+
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         dialogWindow.setGravity(Gravity.CENTER);
         DisplayMetrics dm = new DisplayMetrics();

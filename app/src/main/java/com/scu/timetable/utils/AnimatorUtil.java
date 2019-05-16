@@ -8,10 +8,14 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.FloatRange;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -225,6 +229,44 @@ public final class AnimatorUtil {
                 view.setEnabled(true);
             }
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static Animator createCircularRevealInAnim(@NonNull final View target, int centerX, int centerY) {
+        int x = target.getMeasuredWidth();
+        int y = target.getMeasuredHeight();
+        int r = (int) Math.sqrt(Math.pow(Math.max(centerX, x - centerX), 2) + Math.pow(Math.max(centerY, y - centerY), 2));
+        Animator animator = ViewAnimationUtils.createCircularReveal(target, centerX, centerY, 0, r);
+        animator.setInterpolator(new DecelerateInterpolator());
+        return animator;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static Animator createCircularRevealInAnim(@NonNull final View target,
+                                                      @FloatRange(from = 0, to = 1) float centerPercentX,
+                                                      @FloatRange(from = 0, to = 1) float centerPercentY) {
+        int centerX = (int) (target.getMeasuredWidth() * centerPercentX);
+        int centerY = (int) (target.getMeasuredHeight() * centerPercentY);
+        return createCircularRevealInAnim(target, centerX, centerY);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static Animator createCircularRevealOutAnim(@NonNull final View target, int centerX, int centerY) {
+        int x = target.getMeasuredWidth();
+        int y = target.getMeasuredHeight();
+        int r = (int) Math.sqrt(Math.pow(Math.max(centerX, x - centerX), 2) + Math.pow(Math.max(centerY, y - centerY), 2));
+        Animator animator = ViewAnimationUtils.createCircularReveal(target, centerX, centerY, r, 0);
+        animator.setInterpolator(new DecelerateInterpolator());
+        return animator;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static Animator createCircularRevealOutAnim(@NonNull final View target,
+                                                       @FloatRange(from = 0, to = 1) float centerPercentX,
+                                                       @FloatRange(from = 0, to = 1) float centerPercentY) {
+        int centerX = (int) (target.getMeasuredWidth() * centerPercentX);
+        int centerY = (int) (target.getMeasuredHeight() * centerPercentY);
+        return createCircularRevealOutAnim(target, centerX, centerY);
     }
 
     private static final class JellyInterpolator extends LinearInterpolator {

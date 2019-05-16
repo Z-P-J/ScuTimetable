@@ -20,6 +20,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.deadline.statebutton.StateButton;
 import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
@@ -123,7 +124,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
                 "桌面插件默认开启智能显示周末")
         );
 
-        CardView btnLogout = view.findViewById(R.id.btn_logout);
+        StateButton btnLogout = view.findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(this);
 
         TextView appVersion = view.findViewById(R.id.app_version);
@@ -171,7 +172,6 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
     }
 
     private void showInfoPopupView(View view, final String title, final String content) {
-
         CustomPopupMenuView.with(getContext(), R.layout.layout_text)
                 .setOrientation(LinearLayout.VERTICAL)
 //                .setBackgroundAlpha(getActivity(), 0.9f)

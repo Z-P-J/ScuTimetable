@@ -16,8 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
-import com.labo.kaji.swipeawaydialog.support.v4.SwipeAwayDialogFragment;
+import com.labo.kaji.swipeawaydialog.SwipeAwayDialogFragment;
 import com.zpj.qianxundialoglib.manager.QianxunDialogsManager;
 
 /**
@@ -26,7 +27,14 @@ import com.zpj.qianxundialoglib.manager.QianxunDialogsManager;
  */
 
 public abstract class QianxunBaseDialog extends SwipeAwayDialogFragment {
+
     private View view = null;
+
+    @Nullable
+    @Override
+    public View getView() {
+        return view;
+    }
 
     @Nullable
     @Override
@@ -39,26 +47,35 @@ public abstract class QianxunBaseDialog extends SwipeAwayDialogFragment {
             //调用方直接传入view
             view = getDialogView();
         }
+
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         Dialog dialog = getDialog();
         if (dialog != null) {
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             //如果isCancelable()是false 则会屏蔽物理返回键
-            dialog.setCancelable(isCancelable());
+//            dialog.setCancelable(isCancelable());
             //如果isCancelableOutside()为false 点击屏幕外Dialog不会消失；反之会消失
-            dialog.setCanceledOnTouchOutside(isCancelableOutside());
+//            dialog.setCanceledOnTouchOutside(isCancelableOutside());
             //如果isCancelable()设置的是false 会屏蔽物理返回键
             dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
                 @Override
                 public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                    return keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN && !isCancelable();
+                    boolean flag = keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN;
+                    Toast.makeText(getContext(), "" + isCancelable(), Toast.LENGTH_SHORT).show();
+                    if (flag && isCancelable()) {
+                        getDialog().setOnKeyListener(null);
+                        dismiss();
+                    }
+                    return flag;
                 }
             });
         }
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -100,10 +117,6 @@ public abstract class QianxunBaseDialog extends SwipeAwayDialogFragment {
     protected abstract int getLayoutRes();
 
     protected abstract View getDialogView();
-
-    protected boolean isCancelableOutside() {
-        return true;
-    }
 
     protected int getDialogWidth() {
         return WindowManager.LayoutParams.WRAP_CONTENT;
@@ -156,6 +169,16 @@ public abstract class QianxunBaseDialog extends SwipeAwayDialogFragment {
             return point.y;
         }
         return 0;
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
     }
 
     @Override

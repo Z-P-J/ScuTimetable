@@ -1,6 +1,8 @@
 package com.zpj.qianxundialoglib;
 
+import android.animation.Animator;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -10,7 +12,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 
 import com.zpj.dialoglib.R;
 import com.zpj.qianxundialoglib.base.QianxunBaseDialog;
@@ -64,7 +68,7 @@ public class QianxunDialog extends QianxunBaseDialog implements IDialog {
     }
 
     @Override
-    protected boolean isCancelableOutside() {
+    public boolean isCanceledOnTouchOutside() {
         return controller.isCancelableOutside();
     }
 
@@ -100,11 +104,16 @@ public class QianxunDialog extends QianxunBaseDialog implements IDialog {
     }
 
     @Override
+    public Dialog getDialog() {
+        return super.getDialog();
+    }
+
+    @Override
     public void dismiss() {
-        super.dismiss();
         if (controller != null) {
             controller = null;
         }
+        super.dismiss();
     }
 
     /**

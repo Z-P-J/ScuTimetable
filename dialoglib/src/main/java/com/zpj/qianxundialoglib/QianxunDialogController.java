@@ -26,7 +26,7 @@ public class QianxunDialogController {
     private float dimAmount = 0.2f;
     private int gravity = Gravity.CENTER;
     private boolean isCancelableOutside = true;
-    private boolean cancelable;
+    private boolean cancelable = true;
     private int animRes;
     private View dialogView;
     private IDialog.OnClickListener mPositiveButtonListener;
@@ -164,7 +164,7 @@ public class QianxunDialogController {
         float dimAmount = 0.2f;
         public int gravity = Gravity.CENTER;
         boolean isCancelableOutside = true;
-        boolean cancelable = false;
+        boolean cancelable = true;
         View dialogView;
         Context context;
         IDialog.OnClickListener positiveBtnListener;

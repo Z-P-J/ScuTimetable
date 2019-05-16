@@ -157,9 +157,9 @@ public class CustomPopupMenuView extends PopupView implements BaseOptionMenuView
         ObjectAnimator animator = ObjectAnimator.ofFloat(mPopLayout, propertyName, values)
                 .setDuration(duration);
         if (isShow) {
-            objectAnimatorsForDialogShow.add(animator);
+            objectAnimatorsForDialogShow.add(AnimHelper.createDelayedZoomInAnim(mPopLayout, 1f, 0f));
         } else {
-            objectAnimatorsForDialogDismiss.add(animator);
+            objectAnimatorsForDialogDismiss.add(AnimHelper.createDelayedZoomOutAnim(mPopLayout, 1f, 0f));
         }
         return this;
     }
@@ -224,7 +224,7 @@ public class CustomPopupMenuView extends PopupView implements BaseOptionMenuView
     @Override
     public void show(View anchor, Rect frame, Point origin) {
         onDialogShowing();
-        setAnimationStyle(R.style.popup_menu_view_anim_right_and_top);
+        setAnimationStyle(R.style.pop_animation);
         mOptionMenuView.notifyMenusChange();
         super.show(anchor, frame, origin);
     }
