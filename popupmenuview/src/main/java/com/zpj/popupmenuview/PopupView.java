@@ -180,6 +180,8 @@ public class PopupView extends PopupWindow {
     private Point getOffset(Rect frame, Rect rect, int x, int y) {
         Rect rt = new Rect(rect);
         rt.offset(x - rt.centerX(), y - rt.centerY());
+        Log.d("getOffset", "frame=" + frame.toString());
+        Log.d("getOffset", "rt=" + rt.toString());
         if (!frame.contains(rt)) {
             int offsetX = 0, offsetY = 0;
             if (rt.bottom > frame.bottom) {
@@ -187,12 +189,18 @@ public class PopupView extends PopupWindow {
             } else if (rt.top < frame.top) {
                 offsetY = frame.top - rt.top;
             }
+            offsetX = Math.max(frame.bottom - rt.bottom, frame.top - rt.top);
+            Log.d("getOffset", "offsetY111111111=" + (frame.bottom - rt.bottom));
+            Log.d("getOffset", "offsetY2222222222=" + (frame.top - rt.top));
 
             if (rt.right > frame.right) {
                 offsetX = frame.right - rt.right;
             } else if (rt.left < frame.left) {
                 offsetX = frame.left - rt.left;
             }
+
+            Log.d("getOffset", "offsetX1111111111=" + (frame.right - rt.right));
+            Log.d("getOffset", "offsetX2222222222=" + (frame.left - rt.left));
 
             Log.d("getOffset", "offsetX=" + offsetX);
             Log.d("getOffset", "offsetY=" + offsetY);

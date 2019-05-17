@@ -8,7 +8,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.URLSpan;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -20,6 +25,7 @@ import com.scu.timetable.model.MySubject;
 import com.scu.timetable.ui.widget.TimetableWidget;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zhuangfei.timetable.model.ScheduleColorPool;
+import com.zhuangfei.timetable.utils.ScreenUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +70,15 @@ public final class TimetableWidgtHelper {
 //            }
             initSubjects();
             showTimetable(context, R.id.course_widget_4_4_course_layout);
-            showTimetableWeekBar(context, R.id.course_widget_4_4_week_bar);
+
+            if (!isTransparentMode()) {
+                remoteViews.setViewVisibility(R.id.course_widget_4_4_week_bar, View.VISIBLE);
+                showTimetableWeekBar(context, R.id.course_widget_4_4_week_bar);
+                remoteViews.setInt(R.id.course_widget_4_4_course_layout, "setBackgroundResource", R.drawable.widget_4x4bg_bottom);
+            } else {
+                remoteViews.setViewVisibility(R.id.course_widget_4_4_week_bar, View.GONE);
+                remoteViews.setInt(R.id.course_widget_4_4_course_layout, "setBackgroundColor", Color.TRANSPARENT);
+            }
             remoteViews.setTextViewText(R.id.cur_week, "第" + TimetableHelper.getCurrentWeek() + "周");
             return remoteViews;
         }
@@ -93,7 +107,7 @@ public final class TimetableWidgtHelper {
     }
 
     public static void toggleTransparentMode(Context context) {
-        SPHelper.putBoolean("widget_transparent_mode", !isSmartShowWeekends());
+        SPHelper.putBoolean("widget_transparent_mode", !isTransparentMode());
         update(context);
     }
 
@@ -185,7 +199,9 @@ public final class TimetableWidgtHelper {
         res = i;
         remoteViews.removeAllViews(i);
         //初始化节数
-        initSlideBar(context);
+        if (!isTransparentMode()) {
+            initSlideBar(context);
+        }
         initColumns(context);
     }
 
@@ -243,8 +259,25 @@ public final class TimetableWidgtHelper {
                     remoteViews1.setInt(R.id.course_widget_4_4_course_view_img, "setBackgroundColor", Color.TRANSPARENT);
                     remoteViews1.setTextViewText(R.id.course_widget_4_4_course_view_text, "");
                 } else {
-                    remoteViews1.setInt(R.id.course_widget_4_4_course_view_img, "setBackgroundColor", colorPool.getColorAutoWithAlpha(mySubject.getColorRandom(), 0.8f));
-                    remoteViews1.setTextViewText(R.id.course_widget_4_4_course_view_text, mySubject.getRoom() + "@" + mySubject.getCourseName());
+                    int color = colorPool.getColorAutoWithAlpha(mySubject.getColorRandom(), 0.8f);
+                    remoteViews1.setInt(R.id.course_widget_4_4_course_view_img, "setBackgroundColor", color);
+                    if (isTransparentMode()) {
+                        remoteViews1.setViewVisibility(R.id.title, View.VISIBLE);
+                        remoteViews1.setTextColor(R.id.title, color);
+                        String title = DateUtil.dayOfWeekStr(mySubject.getDay() - 1) + mySubject.getStart() + "-" + mySubject.getEnd() + "节";
+//                        if (mySubject.getStart() >= 10) {
+//                            title = title + "第" + mySubject.getStart() + "节";
+//                        } else {
+//                            title = title + mySubject.getStart() + "-" + mySubject.getEnd() + "节";
+//                        }
+                        remoteViews1.setTextViewText(R.id.title, title);
+                    }
+                    String room = mySubject.getRoom();
+//                    SpannableString sp = new SpannableString(room + "@" + mySubject.getCourseName());
+//                    // 设置超链接
+//                    sp.setSpan(new AbsoluteSizeSpan(ScreenUtils.dip2px(context, 12)), 0, room.length(),
+//                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    remoteViews1.setTextViewText(R.id.course_widget_4_4_course_view_text,  Html.fromHtml("<b><tt>" + room + "</tt></b>@" + mySubject.getCourseName()));
                 }
                 colum.addView(R.id.course_widget_4_4_day_colum, remoteViews1);
             }

@@ -175,7 +175,7 @@
                         />
 
                     <com.leon.lib.settingview.LSettingItem
-                        android:id="@+id/transparent_mode"
+                        android:id="@+id/item_widget_transparent_mode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:isShowUnderLine="false"

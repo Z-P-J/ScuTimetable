@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="1dp"
+    >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:text="周一3-4节"
+        android:gravity="center"
+        android:background="#ffffff"
+        android:visibility="gone"
+        android:maxLines="1"
+        android:ellipsize="end"
+        />
+
+    <ImageView
+        android:id="@+id/course_widget_4_4_course_view_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title"
+        />
+
+    <TextView
+        android:textSize="10sp"
+        android:textColor="@color/white"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:id="@+id/course_widget_4_4_course_view_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="2dp"
+        android:layout_below="@id/title"
+        />
+</RelativeLayout>
+

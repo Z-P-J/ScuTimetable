@@ -3,23 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1.0">
-    <ImageView
-        android:id="@+id/course_widget_4_4_course_view_img"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-    <TextView
-        android:textSize="10dp"
-        android:textColor="@color/white"
-        android:ellipsize="marquee"
-        android:gravity="center_horizontal"
-        android:id="@+id/course_widget_4_4_course_view_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="2dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginBottom="2dp"
-        />
+
+<!--    <TextView-->
+<!--        android:id="@+id/title"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="20dp"-->
+<!--        android:textSize="12sp"-->
+<!--        android:text="周一3-4节"-->
+<!--        android:gravity="center"-->
+<!--        android:background="@color/white"-->
+<!--        />-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/course_widget_4_4_course_view_img"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        />-->
+<!--    <TextView-->
+<!--        android:textSize="10sp"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:ellipsize="end"-->
+<!--        android:gravity="center_horizontal"-->
+<!--        android:id="@+id/course_widget_4_4_course_view_text"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_marginLeft="2dp"-->
+<!--        android:layout_marginTop="2dp"-->
+<!--        android:layout_marginRight="2dp"-->
+<!--        android:layout_marginBottom="2dp"-->
+<!--        />-->
+
+    <include layout="@layout/course_widget_4_4_course_view"/>
+
 </FrameLayout>
 

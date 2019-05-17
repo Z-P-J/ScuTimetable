@@ -120,9 +120,17 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         LSettingItem itemWidgetSmartShowWeekends = view.findViewById(R.id.item_widget_smart_show_weekends);
         itemWidgetSmartShowWeekends.setChecked(TimetableWidgtHelper.isSmartShowWeekends());
         itemWidgetSmartShowWeekends.setmOnLSettingItemClick(this);
-        smartShowWeekends.setmOnBtnInfoClick(v -> showInfoPopupView(v,
+        itemWidgetSmartShowWeekends.setmOnBtnInfoClick(v -> showInfoPopupView(v,
                 "关于桌面插件的智能显示周末",
                 "桌面插件默认开启智能显示周末")
+        );
+
+        LSettingItem itemWidgetTransparentMode = view.findViewById(R.id.item_widget_transparent_mode);
+        itemWidgetTransparentMode.setChecked(TimetableWidgtHelper.isTransparentMode());
+        itemWidgetTransparentMode.setmOnLSettingItemClick(this);
+        itemWidgetTransparentMode.setmOnBtnInfoClick(v -> showInfoPopupView(v,
+                "关于透明模式",
+                "炫酷的透明模式，并且将充分利用桌面空间来显示您的课程")
         );
 
         StateButton btnLogout = view.findViewById(R.id.btn_logout);
@@ -266,6 +274,8 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
             TimetableHelper.openChangeCurrentWeekDialog(getContext(), null);
         } else if (id == R.id.item_widget_smart_show_weekends) {
             TimetableWidgtHelper.toggleSmartShowWeekends(getContext());
+        } else if (id == R.id.item_widget_transparent_mode) {
+            TimetableWidgtHelper.toggleTransparentMode(getContext());
         }
 
         Toast.makeText(getContext(), "" + isChecked, Toast.LENGTH_SHORT).show();
