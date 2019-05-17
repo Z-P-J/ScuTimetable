@@ -9,7 +9,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.deadline.statebutton.StateButton;
 import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
+import com.scu.timetable.model.MySubject;
 import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.ApkUtil;
@@ -35,112 +37,59 @@ import com.zpj.popupmenuview.CustomPopupMenuView;
 import com.zpj.qianxundialoglib.IDialog;
 import com.zpj.qianxundialoglib.QianxunDialog;
 
-public class SettingsDialogFragment extends FullscreenDialogFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
+public class DetailDialogFragment extends FullscreenDialogFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
 
     private FrameLayout background;
 
     private float currentAlpha = 0.0f;
 
-    private OnDismissListener onDismissListener;
+    private Callback callback;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         FrameLayout frameLayout = new FrameLayout(getContext());
-        View view = inflater.inflate(R.layout.dialog_fragment_settings, null, false);
+        View view = inflater.inflate(R.layout.dialog_fragment_detail, null, false);
         frameLayout.addView(view);
         background = new FrameLayout(getContext());
         background.setBackgroundColor(Color.BLACK);
         background.setAlpha(currentAlpha);
         frameLayout.addView(background);
-        initView(view);
+        if (callback != null) {
+            initView(view);
+        }
         return frameLayout;
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss(dialog);
-        }
-        super.onDismiss(dialog);
-    }
-
     private void initView(View view) {
-//        initBackground(view);
-        ImageView btnBack = view.findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(this);
+        MySubject subject = callback.fechSubject();
+        TextView headerTitle = view.findViewById(R.id.header_title);
+        DetailLayout courseName = view.findViewById(R.id.course_name);
+        DetailLayout teacherName = view.findViewById(R.id.teacher_name);
+        DetailLayout classTime = view.findViewById(R.id.class_time);
+        DetailLayout classRoom = view.findViewById(R.id.class_room);
+        DetailLayout courseNum = view.findViewById(R.id.course_num);
+        DetailLayout courseSequenceNum = view.findViewById(R.id.course_sequence_num);
+        DetailLayout studyUnit = view.findViewById(R.id.study_unit);
+        DetailLayout courseProperties = view.findViewById(R.id.course_properties);
+        DetailLayout courseType = view.findViewById(R.id.course_type);
+        DetailLayout examType = view.findViewById(R.id.exam_type);
+        DetailLayout studyMode = view.findViewById(R.id.study_mode);
+        DetailLayout restrictedCondition = view.findViewById(R.id.restricted_condition);
 
-        LSettingItem smartShowWeekends = view.findViewById(R.id.item_smart_show_weekends);
-        smartShowWeekends.setChecked(TimetableHelper.isSmartShowWeekends());
-        smartShowWeekends.setmOnLSettingItemClick(this);
-        smartShowWeekends.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于智能显示周末",
-                "开启该功能后将只会在当前时间为周末时才显示周末的课程，当前时间不为周末时则隐藏周末的课程。该选项启用后将不能使用“显示周末”选项。")
-        );
-
-        LSettingItem itemMondayIsFirstDay = view.findViewById(R.id.item_monday_is_first_day);
-        itemMondayIsFirstDay.setChecked(!TimetableHelper.sundayIsFirstDay());
-        itemMondayIsFirstDay.setmOnLSettingItemClick(this);
-        itemMondayIsFirstDay.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于设置星期一为周一",
-                "默认星期天为周一。不排除有些人喜欢讲星期一作为周一，所以天骄设置星期一为周一的选项。")
-        );
-
-        LSettingItem itemShowWeekends = view.findViewById(R.id.item_show_weekends);
-        itemShowWeekends.setChecked(TimetableHelper.isShowWeekendsOrin());
-        if (TimetableHelper.isSmartShowWeekends()) {
-            itemShowWeekends.setEnable(false);
-        }
-        itemShowWeekends.setmOnLSettingItemClick(this);
-        itemShowWeekends.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于显示周末",
-                "显示周末。")
-        );
-        itemShowWeekends.setEnabled(false);
-
-        LSettingItem itemShowNonThisWeek = view.findViewById(R.id.item_show_non_this_week);
-        itemShowNonThisWeek.setChecked(TimetableHelper.isShowNotCurWeek());
-        itemShowNonThisWeek.setmOnLSettingItemClick(this);
-        itemShowNonThisWeek.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于显示非本周课程",
-                "开启该选项将显示不在本周上课的课程。")
-        );
-
-        LSettingItem itemShowTime = view.findViewById(R.id.item_show_time);
-        itemShowTime.setChecked(TimetableHelper.isShowTime());
-        itemShowTime.setmOnLSettingItemClick(this);
-        itemShowTime.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于显示节次时间",
-                "开启该选项将在侧边栏显示该节课的上课时间。")
-        );
-
-        LSettingItem itemChangeCurrentWeek = view.findViewById(R.id.item_change_current_week);
-        itemChangeCurrentWeek.setmOnLSettingItemClick(this);
-
-        LSettingItem itemWidgetSmartShowWeekends = view.findViewById(R.id.item_widget_smart_show_weekends);
-        itemWidgetSmartShowWeekends.setChecked(TimetableWidgtHelper.isSmartShowWeekends());
-        itemWidgetSmartShowWeekends.setmOnLSettingItemClick(this);
-        smartShowWeekends.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于桌面插件的智能显示周末",
-                "桌面插件默认开启智能显示周末")
-        );
-
-        StateButton btnLogout = view.findViewById(R.id.btn_logout);
-        btnLogout.setOnClickListener(this);
-
-        DetailLayout appVersion = view.findViewById(R.id.app_version);
-        appVersion.setContent("V" + ApkUtil.getVersionName(getContext()));
-
-        String link2 = "https://github.com/Z-P-J/ScuTimetable";
-        DetailLayout linkOpenSource = view.findViewById(R.id.link_open_source);
-        TextUtil.setSuperlink(linkOpenSource.getContentTextView(), link2, link2);
-
-        String link = "https://github.com/Z-P-J";
-        DetailLayout linkGithub = view.findViewById(R.id.link_github);
-        TextUtil.setSuperlink(linkGithub.getContentTextView(), link, link);
-
-        DetailLayout linkSjly = view.findViewById(R.id.link_sjly);
-        TextUtil.setSuperlink(linkSjly.getContentTextView(), "我好像在哪儿见过您", "https://www.shouji.com.cn/user/5544802/home.html");
+        headerTitle.setText(subject.getCourseName());
+        courseName.setContent(subject.getCourseName());
+        teacherName.setContent(subject.getTeacher());
+        classTime.setContent(subject.getClassTime());
+        classRoom.setContent(subject.getRoom());
+        courseNum.setContent(subject.getCoureNumber());
+        courseSequenceNum.setContent(subject.getCoureSequenceNumber());
+        studyUnit.setContent(subject.getUnit());
+        courseProperties.setContent(subject.getCourseProperties());
+        courseType.setContent(subject.getCourseCategory());
+        examType.setContent(subject.getExamType());
+        studyMode.setContent(subject.getStudyMode());
+        restrictedCondition.setContent(subject.getRestrictedCondition());
     }
 
     private void initBackground(View view) {
@@ -222,26 +171,6 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         int id = v.getId();
         if (id == R.id.btn_back) {
             dismiss();
-        } else if (id == R.id.btn_logout){
-            QianxunDialog.with(getContext())
-                    .setTitle("注销登录！")
-                    .setTitleTextColor(Color.RED)
-                    .setContent("注销后需重新登录才能查看课表，确认注销？")
-                    .setNegativeButton(new IDialog.OnClickListener() {
-                        @Override
-                        public void onClick(IDialog dialog) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .setPositiveButton(new IDialog.OnClickListener() {
-                        @Override
-                        public void onClick(IDialog dialog) {
-                            SPHelper.putBoolean("logined", false);
-                            dismiss();
-                        }
-                    })
-                    .setPositiveButtonTextColor(Color.RED)
-                    .show();
         }
     }
 
@@ -271,12 +200,12 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         Toast.makeText(getContext(), "" + isChecked, Toast.LENGTH_SHORT).show();
     }
 
-    public void setOnDismissListener(OnDismissListener onDismissListener) {
-        this.onDismissListener = onDismissListener;
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 
-    public interface OnDismissListener {
-        void onDismiss(DialogInterface dialog);
+    public interface Callback {
+        MySubject fechSubject();
     }
 
 }

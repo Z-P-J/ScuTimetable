@@ -4,7 +4,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.CardView;
@@ -20,7 +22,9 @@ import android.widget.Toast;
 import com.scu.timetable.model.MySubject;
 import com.scu.timetable.ui.activity.ActivityCollector;
 import com.scu.timetable.ui.activity.BaseActivity;
+import com.scu.timetable.ui.fragment.DetailDialogFragment;
 import com.scu.timetable.ui.fragment.SettingsDialogFragment;
+import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.LoginUtil;
@@ -38,6 +42,7 @@ import com.zpj.popupmenuview.CustomPopupMenuView;
 import com.zpj.popupmenuview.OptionMenuView;
 import com.zpj.qianxundialoglib.IDialog;
 import com.zpj.qianxundialoglib.QianxunDialog;
+import com.zpj.qianxundialoglib.utils.AnimHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,11 +194,11 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
     public void showMenu(View view) {
         CustomPopupMenuView.with(this, R.layout.layout_menu)
                 .setOrientation(LinearLayout.VERTICAL)
-                .setBackgroundAlpha(MainActivity.this, 0.8f, 200)
+                .setBackgroundAlpha(MainActivity.this, 0.9f, 500)
                 .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
 //                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_X, 350, 100, 0)
 //                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_Y, 350, -100, 0)
-                .setAnimationAlphaShow(350, 0.0f, 1.0f)
+//                .setAnimationAlphaShow(350, 0.0f, 1.0f)
 //                .setAnimationAlphaDismiss(350, 1.0f, 0.0f)
                 .initViews(
                         1,
@@ -206,7 +211,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                             tools.setOnOptionMenuClickListener((index, menu) -> {
                                 if (!menu.isEnable()) {
                                     if (index == 0) {
-                                        Toast.makeText(this, "智能显示周末已开启！", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "请关闭智能显示周末后再试！", Toast.LENGTH_SHORT).show();
                                     }
                                     return false;
                                 }
@@ -257,41 +262,52 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                 .setOrientation(LinearLayout.VERTICAL)
 //                .setBackgroundAlpha(MainActivity.this, 0.9f)
                 .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
-                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_X, 350, 100, 0)
-                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_Y, 350, -100, 0)
-                .setAnimationAlphaShow(350, 0.0f, 1.0f)
+//                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_X, 350, 100, 0)
+//                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_Y, 350, -100, 0)
+//                .setAnimationAlphaShow(350, 0.0f, 1.0f)
 //                .setAnimationAlphaDismiss(350, 1.0f, 0.0f)
                 .initViews(
                         1,
                         (popupMenuView, itemView, position) -> {
                             TextView courseName = itemView.findViewById(R.id.course_name);
-                            TextView teacherName = itemView.findViewById(R.id.teacher_name);
-                            TextView classRoom = itemView.findViewById(R.id.class_room);
-                            TextView classTime = itemView.findViewById(R.id.class_time);
+                            DetailLayout teacherName = itemView.findViewById(R.id.teacher_name);
+                            DetailLayout classRoom = itemView.findViewById(R.id.class_room);
+                            DetailLayout classTime = itemView.findViewById(R.id.class_time);
 //                            TextView courseSequenceNum = itemView.findViewById(R.id.course_sequence_num);
 //                            TextView courseNum = itemView.findViewById(R.id.course_num);
 
                             courseName.setText(mySubject.getCourseName());
-                            teacherName.setText(mySubject.getTeacher());
-                            classRoom.setText(mySubject.getRoom());
-                            String sessions = "第" + mySubject.getStart() + " - " + mySubject.getEnd() + "节";
-                            classTime.setText(mySubject.getWeekDescription() + "\n" + sessions);
+                            teacherName.setContent(mySubject.getTeacher());
+                            classRoom.setContent(mySubject.getRoom());
+                            classTime.setContent(mySubject.getClassTime());
 
                             if (!TextUtils.isEmpty(mySubject.getNote())) {
-                                itemView.findViewById(R.id.layout_note).setVisibility(View.VISIBLE);
-                                ((TextView)itemView.findViewById(R.id.note_text)).setText(mySubject.getNote());
+                                DetailLayout noteLayout = itemView.findViewById(R.id.layout_note);
+                                noteLayout.setVisibility(View.VISIBLE);
+                                noteLayout.setContent(mySubject.getNote());
                             }
-
-//                            courseSequenceNum.setText(mySubject.getCoureSequenceNumber());
-//                            courseNum.setText(mySubject.getCoureNumber());
 
                             ImageView note = itemView.findViewById(R.id.subject_note);
                             note.setOnClickListener(v -> {
                                 popupMenuView.dismiss();
                                 showSubjectNote(mySubject);
                             });
+                            ImageView more = itemView.findViewById(R.id.subject_more);
+                            more.setOnClickListener(v -> {
+                                popupMenuView.dismiss();
+                                DetailDialogFragment dialogFragment = new DetailDialogFragment();
+                                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                                dialogFragment.setCallback(new DetailDialogFragment.Callback() {
+                                    @Override
+                                    public MySubject fechSubject() {
+                                        return mySubject;
+                                    }
+                                });
+                                dialogFragment.show(fragmentTransaction, "detail");
+                            });
                         })
-                .show(view);
+                .show(view, -1);
     }
 
     private void showSubjectNote(final MySubject subject) {
@@ -311,6 +327,10 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                         btnClose.setOnClickListener(v -> dialog.dismiss());
                         btnSave.setOnClickListener(v -> {
                             String note = editText.getText().toString();
+                            if (subject.getNote().isEmpty() && editText.getText().toString().isEmpty()) {
+                                Toast.makeText(MainActivity.this, "请输入备注！", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             if (TimetableHelper.saveNote(MainActivity.this, subject, note)) {
                                 dialog.dismiss();
                                 Toast.makeText(MainActivity.this, "保存成功！", Toast.LENGTH_SHORT).show();
@@ -330,6 +350,10 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                 .setBuildChildListener(new IDialog.OnBuildListener() {
                     @Override
                     public void onBuildChildView(IDialog dialog, View view, int layoutRes) {
+                        LinearLayout container = view.findViewById(R.id.container);
+                        LinearLayout statusLayout = view.findViewById(R.id.layout_status);
+                        TextView loadingDialogText = view.findViewById(R.id.loading_dialog_text);
+
                         ImageView imgCatpcha = view.findViewById(R.id.img_captcha);
                         CaptchaFetcher.fetchcaptcha(imgCatpcha);
                         ImageView btnClose = view.findViewById(R.id.btn_close);
@@ -338,6 +362,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                         changeCatpcha.setOnClickListener(v -> CaptchaFetcher.fetchcaptcha(imgCatpcha));
                         TextView btnRefresh = view.findViewById(R.id.btn_refresh);
                         EditText captchaEdit = view.findViewById(R.id.captcha);
+
                         btnRefresh.setOnClickListener(v -> {
                             //todo refresh
 //                            Toast.makeText(MainActivity.this, "todo refresh", Toast.LENGTH_SHORT).show();
@@ -347,29 +372,68 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                 Toast.makeText(MainActivity.this, "验证码为空！", Toast.LENGTH_SHORT).show();
                                 return;
                             }
+                            if (dialog instanceof QianxunDialog) {
+                                QianxunDialog qianxunDialog = ((QianxunDialog) dialog);
+                                qianxunDialog.setCancelable(false);
+                                qianxunDialog.setCanceledOnTouchOutside(false);
+                            }
+//                            container.setVisibility(View.INVISIBLE);
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                                AnimatorUtil.circleAnimator(statusLayout, 500);
+//                            } else {
+//                                AnimHelper.createTopInAnim(statusLayout);
+//                            }
+                            statusLayout.setVisibility(View.VISIBLE);
                             LoginUtil.with()
                                     .setCallback(new LoginUtil.Callback() {
+
+                                        private void onError() {
+                                            loadingDialogText.setText("登录失败！");
+//                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                                                AnimatorUtil.circleAnimator(statusLayout, 500);
+//                                            } else {
+//                                                AnimHelper.createTopOutAnim(statusLayout);
+//                                            }
+                                            statusLayout.setVisibility(View.GONE);
+                                            Toast.makeText(MainActivity.this, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
+                                            CaptchaFetcher.fetchcaptcha(imgCatpcha);
+                                            captchaEdit.setText("");
+                                            if (dialog instanceof QianxunDialog) {
+                                                QianxunDialog qianxunDialog = ((QianxunDialog) dialog);
+                                                qianxunDialog.setCancelable(true);
+                                                qianxunDialog.setCanceledOnTouchOutside(true);
+                                            }
+                                        }
+
                                         @Override
                                         public void onGetCookie(String cookie) { }
 
                                         @Override
                                         public void onLoginSuccess() {
-
+                                            loadingDialogText.setText("登录成功!获取课表信息中。。。");
                                         }
 
                                         @Override
                                         public void onLoginFailed() {
-
+                                            onError();
                                         }
 
                                         @Override
                                         public void onLoginError(String errorMsg) {
-
+                                            onError();
                                         }
 
                                         @Override
                                         public void onGetTimetable(String json) {
-
+                                            Toast.makeText(MainActivity.this, "刷新课表成功！", Toast.LENGTH_SHORT).show();
+                                            try {
+                                                TimetableHelper.writeToJson(MainActivity.this, json);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            dialog.dismiss();
+                                            initTimetableView();
+                                            initData();
                                         }
                                     })
                                     .login(captcha);

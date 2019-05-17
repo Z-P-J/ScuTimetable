@@ -13,6 +13,7 @@ import android.graphics.RectF;
 import android.graphics.Xfermode;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -176,11 +177,11 @@ public class PopLayout extends FrameLayout implements View.OnLayoutChangeListene
         switch (mSiteMode) {
             case SITE_TOP:
             case SITE_BOTTOM:
-                size = getWidth();
+                size = getMeasuredWidth();
                 break;
             case SITE_LEFT:
             case SITE_RIGHT:
-                size = getHeight();
+                size = getMeasuredHeight();
                 break;
         }
         offset = Math.max(offset, mRadiusSize + bulgeWidth);
@@ -190,10 +191,12 @@ public class PopLayout extends FrameLayout implements View.OnLayoutChangeListene
                 offset = size >> 1;
             }
         }
+        Log.d("reviseOffset", "offset=" + offset);
         return offset;
     }
 
     public void setOffset(int offset) {
+        Log.d("setOffset", "offset=" + offset);
         if (mOffset != offset) {
             mOffset = offset;
             resetMask();

@@ -42,8 +42,6 @@ public class PopupMenuView extends PopupView implements OptionMenuView.OnOptionM
         scrollView.addView(mOptionMenuView);
         mPopLayout.addView(scrollView);
         setContentView(mPopLayout);
-        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     public PopupMenuView(Context context, int menuRes, Menu menu) {

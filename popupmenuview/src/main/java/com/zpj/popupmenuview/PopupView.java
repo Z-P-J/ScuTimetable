@@ -94,6 +94,10 @@ public class PopupView extends PopupWindow {
         show(anchor, null, null);
     }
 
+    public void show(View anchor, int animRes) {
+        show(anchor);
+    }
+
     public void show(View anchor, Point origin) {
         show(anchor, null, origin);
     }
@@ -180,20 +184,18 @@ public class PopupView extends PopupWindow {
             int offsetX = 0, offsetY = 0;
             if (rt.bottom > frame.bottom) {
                 offsetY = frame.bottom - rt.bottom;
-            }
-
-            if (rt.top < frame.top) {
+            } else if (rt.top < frame.top) {
                 offsetY = frame.top - rt.top;
             }
 
             if (rt.right > frame.right) {
                 offsetX = frame.right - rt.right;
-            }
-
-            if (rt.left < frame.left) {
+            } else if (rt.left < frame.left) {
                 offsetX = frame.left - rt.left;
             }
 
+            Log.d("getOffset", "offsetX=" + offsetX);
+            Log.d("getOffset", "offsetY=" + offsetY);
             rt.offset(offsetX, offsetY);
         }
         return new Point(rt.left - rect.left, rt.top - rect.top);

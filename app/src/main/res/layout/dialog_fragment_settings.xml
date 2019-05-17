@@ -229,159 +229,46 @@
                         android:layout_marginEnd="15dp"
                         android:background="#99999999"/>
 
-                    <LinearLayout
-                        android:orientation="horizontal"
+                    <com.scu.timetable.ui.widget.DetailLayout
+                        android:id="@+id/app_version"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        >
+                        app:left_text="软件版本"
+                        app:right_text="V 1.3.0"
+                        />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="软件版本:"
-                            android:padding="5dp"
-                            />
-
-                        <TextView
-                            android:id="@+id/app_version"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="V 1.3.0"
-                            android:padding="5dp"
-                            android:textColor="@color/black"
-                            android:maxLines="2"
-                            android:ellipsize="end"
-                            android:maxEms="10"
-                            android:lineSpacingExtra="5dp"
-                            />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
+                    <com.scu.timetable.ui.widget.DetailLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        >
+                        app:left_text="软件作者"
+                        app:right_text="Z-P-J（我好想在哪儿见过您）"
+                        />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="软件开源:"
-                            android:padding="5dp"
-                            />
-
-                        <TextView
-                            android:id="@+id/link_open_source"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="https://github.com/Z-P-J/ScuTimetable"
-                            android:padding="5dp"
-                            android:textColor="@color/black"
-                            android:maxLines="2"
-                            android:ellipsize="end"
-                            android:maxEms="10"
-                            android:lineSpacingExtra="5dp"
-                            />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
+                    <com.scu.timetable.ui.widget.DetailLayout
+                        android:id="@+id/link_open_source"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        >
+                        app:left_text="软件开源"
+                        app:right_text="https://github.com/Z-P-J/ScuTimetable"
+                        />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="软件作者:"
-                            android:padding="5dp"
-                            />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Z-P-J（我好想在哪儿见过您）"
-                            android:padding="5dp"
-                            android:textColor="@color/black"
-                            android:maxLines="2"
-                            android:ellipsize="end"
-                            android:maxEms="10"
-                            android:lineSpacingExtra="5dp"
-                            />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
+                    <com.scu.timetable.ui.widget.DetailLayout
+                        android:id="@+id/link_github"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        >
+                        app:left_text="Github主页"
+                        app:right_text="https://github.com/Z-P-J"
+                        />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Github主页:"
-                            android:padding="5dp"
-                            />
-
-                        <TextView
-                            android:id="@+id/link_github"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="https://github.com/Z-P-J"
-                            android:padding="5dp"
-                            android:textColor="@color/black"
-                            android:maxLines="2"
-                            android:ellipsize="end"
-                            android:maxEms="10"
-                            android:lineSpacingExtra="5dp"
-                            />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:orientation="horizontal"
+                    <com.scu.timetable.ui.widget.DetailLayout
+                        android:id="@+id/link_sjly"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
-                        >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="手机乐园主页:"
-                            android:padding="5dp"
-                            />
-
-                        <TextView
-                            android:id="@+id/link_sjly"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="https://www.shouji.com.cn/user/5544802/home.html"
-                            android:padding="5dp"
-                            android:textColor="@color/black"
-                            android:maxLines="2"
-                            android:ellipsize="end"
-                            android:maxEms="10"
-                            android:lineSpacingExtra="5dp"
-                            />
-
-                    </LinearLayout>
+                        app:left_text="手机乐园主页"
+                        app:right_text="https://www.shouji.com.cn/user/5544802/home.html"
+                        />
 
                 </LinearLayout>
-
-
-
 
             </android.support.v7.widget.CardView>
 
@@ -405,29 +292,6 @@
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 />
-
-<!--            <android.support.v7.widget.CardView-->
-<!--                android:id="@+id/btn_logout"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:cardCornerRadius="20dp"-->
-<!--                app:cardUseCompatPadding="true"-->
-
-<!--                app:cardBackgroundColor="#aaf60707"-->
-<!--                app:contentPadding="10dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                >-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="注销登录"-->
-<!--                    android:textSize="18sp"-->
-<!--                    android:textColor="@color/white"-->
-<!--                    android:textStyle="bold"-->
-<!--                    />-->
-
-<!--            </android.support.v7.widget.CardView>-->
 
         </LinearLayout>
 

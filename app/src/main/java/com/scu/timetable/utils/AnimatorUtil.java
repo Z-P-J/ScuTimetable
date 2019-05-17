@@ -231,6 +231,87 @@ public final class AnimatorUtil {
         }
     }
 
+    public static void circleAnimator(final View view, int duration) {
+        //隐藏
+        int x = view.getMeasuredWidth() / 2;
+        int y = view.getMeasuredHeight() / 2;
+        if (view.getVisibility() == View.VISIBLE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                final Animator animatorHide = ViewAnimationUtils.createCircularReveal(view,
+                        x,
+                        y,
+                        //确定元的半径（算长宽的斜边长，这样半径不会太短也不会很长效果比较舒服）
+                        (float) Math.hypot(view.getWidth(), view.getHeight()),
+                        0);
+                animatorHide.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                animatorHide.setDuration(duration);
+                animatorHide.start();
+            } else {
+                view.setVisibility(View.GONE);
+            }
+            view.setEnabled(false);
+        }
+        //显示
+        else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                final Animator animator = ViewAnimationUtils.createCircularReveal(view,
+                        x,
+                        y,
+                        0,
+                        (float) Math.hypot(view.getWidth(), view.getHeight()));
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                view.setVisibility(View.VISIBLE);
+                if (view.getVisibility() == View.VISIBLE) {
+                    animator.setDuration(duration);
+                    animator.start();
+                    view.setEnabled(true);
+                }
+            } else {
+                view.setVisibility(View.VISIBLE);
+                view.setEnabled(true);
+            }
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static Animator createCircularRevealInAnim(@NonNull final View target, int centerX, int centerY) {
         int x = target.getMeasuredWidth();

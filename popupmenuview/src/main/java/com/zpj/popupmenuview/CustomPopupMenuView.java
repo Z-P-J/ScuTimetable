@@ -222,6 +222,12 @@ public class CustomPopupMenuView extends PopupView implements BaseOptionMenuView
     }
 
     @Override
+    public void show(View anchor, int animRes) {
+        super.show(anchor);
+        setAnimationStyle(animRes);
+    }
+
+    @Override
     public void show(View anchor, Rect frame, Point origin) {
         onDialogShowing();
         setAnimationStyle(R.style.pop_animation);

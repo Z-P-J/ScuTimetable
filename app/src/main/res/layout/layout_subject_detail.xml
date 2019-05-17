@@ -1,16 +1,16 @@
 <com.zpj.popupmenuview.ElasticScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:scrollbars="none"
+    android:fillViewport="true"
     >
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
         >
 
         <TextView
@@ -34,235 +34,266 @@
             android:layout_height="1px"
             android:background="#99999999"/>
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <com.scu.timetable.ui.widget.DetailLayout
+            android:id="@+id/teacher_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            
-            >
+            app:left_text="老师"
+            app:right_text="zpj"
+            />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="老师:"
-                
-                android:padding="5dp"
-                />
-
-            <TextView
-                android:id="@+id/teacher_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="zpj"
-                
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:maxEms="10"
-                android:lineSpacingExtra="5dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
+        <com.scu.timetable.ui.widget.DetailLayout
+            android:id="@+id/class_room"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            
-            >
+            app:left_text="地点"
+            app:right_text="二基楼"
+            />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="地点:"
-                
-                android:padding="5dp"
-                />
-
-            <TextView
-                android:id="@+id/class_room"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="二基楼"
-                
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
+        <com.scu.timetable.ui.widget.DetailLayout
+            android:id="@+id/class_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            
-            >
+            app:left_text="时间"
+            app:right_text="1 - 17周\n第1 - 2节\n8:15- 9:00"
+            />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="时间:"
-                
-                android:padding="5dp"
-                />
-
-            <TextView
-                android:id="@+id/class_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1 - 17周\n第1 - 2节\n8:15- 9:00"
-                
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:lineSpacingExtra="5dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <com.scu.timetable.ui.widget.DetailLayout
             android:id="@+id/layout_note"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:left_text="备注"
+            app:right_text="test"
             android:visibility="gone"
-            >
+            />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="备注:"
+<!--        <LinearLayout-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            >-->
 
-                android:padding="5dp"
-                />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="老师:"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                />-->
 
-            <TextView
-                android:id="@+id/note_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="test"
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:lineSpacingExtra="5dp"
-                />
+<!--            <TextView-->
+<!--                android:id="@+id/teacher_name"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="zpj"-->
+<!--                android:padding="5dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:maxLines="2"-->
+<!--                android:ellipsize="end"-->
+<!--                android:maxEms="10"-->
+<!--                android:lineSpacingExtra="5dp"-->
+<!--                />-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            >
+<!--        <LinearLayout-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            -->
+<!--            >-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="课序号:"
-                
-                android:padding="5dp"
-                />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="地点:"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                />-->
 
-            <TextView
-                android:id="@+id/course_sequence_num"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="100"
-                
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                />
+<!--            <TextView-->
+<!--                android:id="@+id/class_room"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="二基楼"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/black"-->
+<!--                />-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            >
+<!--        <LinearLayout-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            -->
+<!--            >-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="课程号:"
-                
-                android:padding="5dp"
-                />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="时间:"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                />-->
 
-            <TextView
-                android:id="@+id/course_num"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="99"
-                
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                />
+<!--            <TextView-->
+<!--                android:id="@+id/class_time"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="1 - 17周\n第1 - 2节\n8:15- 9:00"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:lineSpacingExtra="5dp"-->
+<!--                />-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            >
+<!--        <LinearLayout-->
+<!--            android:id="@+id/layout_note"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:visibility="gone"-->
+<!--            >-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="学分:"
-                
-                android:padding="5dp"
-                />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="备注:"-->
 
-            <TextView
-                android:id="@+id/study_unit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2"
-                
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                />
+<!--                android:padding="5dp"-->
+<!--                />-->
 
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/note_text"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="test"-->
+<!--                android:padding="5dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:lineSpacingExtra="5dp"-->
+<!--                />-->
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            >
+<!--        </LinearLayout>-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="考试类型:"
-                
-                android:padding="5dp"
-                />
+<!--        <LinearLayout-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:visibility="gone"-->
+<!--            >-->
 
-            <TextView
-                android:id="@+id/exam_type"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="考试"
-                
-                android:padding="5dp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="课序号:"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                />-->
 
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/course_sequence_num"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="100"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/black"-->
+<!--                />-->
+
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:visibility="gone"-->
+<!--            >-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="课程号:"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/course_num"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="99"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/black"-->
+<!--                />-->
+
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:visibility="gone"-->
+<!--            >-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="学分:"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/study_unit"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="2"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/black"-->
+<!--                />-->
+
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:visibility="gone"-->
+<!--            >-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="考试类型:"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/exam_type"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="考试"-->
+<!--                -->
+<!--                android:padding="5dp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/black"-->
+<!--                />-->
+
+<!--        </LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -271,21 +302,33 @@
             >
 
             <ImageView
-                android:id="@+id/subject_note"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:padding="6dp"
+                android:id="@+id/subject_more"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
                 android:src="@drawable/ic_event_note_black_24dp"
                 android:tint="@color/colorPrimary"
+                android:background="@drawable/bg_selector"
                 />
 
             <ImageView
-                android:id="@+id/subject_more"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:padding="6dp"
-                android:src="@drawable/ic_more_black_24dp"
+                android:id="@+id/subject_note"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:src="@drawable/ic_class_black_24dp"
                 android:tint="@color/colorPrimary"
+                android:background="@drawable/bg_selector"
+                />
+
+            <ImageView
+                android:id="@+id/subject_alarm"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:src="@drawable/ic_access_alarms_black_24dp"
+                android:tint="@color/colorPrimary"
+                android:background="@drawable/bg_selector"
                 />
 
         </LinearLayout>

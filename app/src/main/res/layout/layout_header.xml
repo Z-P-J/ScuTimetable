@@ -29,7 +29,10 @@
         android:textStyle="bold"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-
+        android:layout_marginStart="?attr/actionBarSize"
+        android:layout_marginEnd="?attr/actionBarSize"
+        android:ellipsize="marquee"
+        android:singleLine="true"
         />
 
     <TextView

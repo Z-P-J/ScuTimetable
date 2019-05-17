@@ -12,6 +12,7 @@
     >
 
     <LinearLayout
+        android:id="@+id/container"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,7 +93,33 @@
 
         </LinearLayout>
 
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/layout_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#eeffffff"
+        android:visibility="gone"
+        >
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/AVLoadingIndicatorView"
+            app:indicatorColor="@color/colorPrimary"
+            app:indicatorName="PacmanIndicator"/>
+
+        <TextView
+            android:id="@+id/loading_dialog_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="加载中..."
+            android:textColor="#555555"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

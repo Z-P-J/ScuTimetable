@@ -355,7 +355,7 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
                 @Override
                 public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                     boolean flag = keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN;
-                    if (flag && isCancelable()) {
+                    if (flag && mCancelable) {
                         initContentOutAnimator(view);
                         dismiss();
                     }

@@ -173,6 +173,11 @@ public class MySubject implements ScheduleEnable {
         this.room = room;
     }
 
+    public String getClassTime() {
+        String sessions = "第" + start + " - " + getEnd() + "节";
+        return weekDescription + "\n" + sessions;
+    }
+
     public String getTeacher() {
         return teacher;
     }
@@ -290,6 +295,9 @@ public class MySubject implements ScheduleEnable {
     }
 
     public String getCourseCategory() {
+        if ("null".equals(courseCategory) || courseCategory == null) {
+            return "无";
+        }
         return courseCategory;
     }
 
@@ -298,6 +306,9 @@ public class MySubject implements ScheduleEnable {
     }
 
     public String getRestrictedCondition() {
+        if (restrictedCondition.equals(";")) {
+            return "无";
+        }
         return restrictedCondition;
     }
 
