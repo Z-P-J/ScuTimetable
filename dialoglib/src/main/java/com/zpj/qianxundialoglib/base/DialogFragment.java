@@ -129,7 +129,9 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
 //            }
 //        });
         if (mContentOutAnimator != null) {
-            mContentOutAnimator.start();
+            if (!mContentOutAnimator.isRunning()) {
+                mContentOutAnimator.start();
+            }
         } else {
             dismissInternal(false);
         }
@@ -270,42 +272,42 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
         }
     }
 
-    private void initAnimator(View view) {
-        if (mContentInAnimator == null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mContentInAnimator = AnimHelper.createCircularRevealInAnim(view);
-            } else {
-                mContentInAnimator = AnimHelper.createZoomInAnim(view);
-            }
-            mContentInAnimator.setInterpolator(new DecelerateInterpolator());
+    private void initContentInAnimator(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mContentInAnimator = AnimHelper.createCircularRevealInAnim(view);
+        } else {
+            mContentInAnimator = AnimHelper.createZoomInAnim(view);
         }
-        if (mContentOutAnimator == null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mContentOutAnimator = AnimHelper.createCircularRevealOutAnim(view);
-            } else {
-                mContentOutAnimator = AnimHelper.createZoomOutAnim(view);
-            }
-            mContentOutAnimator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) { }
+        mContentInAnimator.setInterpolator(new DecelerateInterpolator());
+    }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    DialogFragment.this.dismissInternal(false);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) { }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) { }
-            });
-            mContentOutAnimator.setInterpolator(new DecelerateInterpolator());
+    private void initContentOutAnimator(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mContentOutAnimator = AnimHelper.createCircularRevealOutAnim(view);
+        } else {
+            mContentOutAnimator = AnimHelper.createZoomOutAnim(view);
         }
+        mContentOutAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) { }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                dismissInternal(false);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) { }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) { }
+        });
+        mContentOutAnimator.setInterpolator(new DecelerateInterpolator());
     }
 
     @NonNull
     public OutsideClickDialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Toast.makeText(getContext(), "onCreateDialog", Toast.LENGTH_SHORT).show();
         return new OutsideClickDialog(this.getActivity(), this.getTheme());
     }
 
@@ -334,7 +336,7 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
 //                Animator animator = ViewAnimationUtils.createCircularReveal(view, x / 2, y / 2, 0, r);
 //                animator.setInterpolator(new DecelerateInterpolator());
 //                animator.start();
-                initAnimator(view);
+                initContentInAnimator(view);
                 if (mContentInAnimator != null) {
                     mContentInAnimator.start();
                 }
@@ -354,7 +356,7 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
                 public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                     boolean flag = keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN;
                     if (flag && isCancelable()) {
-                        getDialog().setOnKeyListener(null);
+                        initContentOutAnimator(view);
                         dismiss();
                     }
                     return flag;
@@ -410,9 +412,7 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
         super.onSaveInstanceState(outState);
         if (this.mDialog != null) {
             Bundle dialogState = this.mDialog.onSaveInstanceState();
-            if (dialogState != null) {
-                outState.putBundle("android:savedDialogState", dialogState);
-            }
+            outState.putBundle("android:savedDialogState", dialogState);
         }
 
         if (this.mStyle != 0) {
@@ -443,7 +443,11 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
         if (this.mDialog != null) {
             this.mDialog.hide();
         }
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
