@@ -189,7 +189,7 @@ public class PopupView extends PopupWindow {
             } else if (rt.top < frame.top) {
                 offsetY = frame.top - rt.top;
             }
-            offsetX = Math.max(frame.bottom - rt.bottom, frame.top - rt.top);
+//            offsetX = Math.max(frame.bottom - rt.bottom, frame.top - rt.top);
             Log.d("getOffset", "offsetY111111111=" + (frame.bottom - rt.bottom));
             Log.d("getOffset", "offsetY2222222222=" + (frame.top - rt.top));
 

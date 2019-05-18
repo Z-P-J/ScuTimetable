@@ -50,6 +50,18 @@
 
         </service>
 
+        <service android:name=".ui.widget.LongRunningService">
+
+        </service>
+
+        <receiver
+            android:name=".ui.widget.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+
+            
+        </receiver>
+
     </application>
 
 </manifest>

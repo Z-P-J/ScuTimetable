@@ -4,9 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.CardView;
@@ -29,7 +27,6 @@ import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.StatusBarUtil;
-import com.scu.timetable.utils.TextUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zhuangfei.timetable.TimetableView;
@@ -42,7 +39,6 @@ import com.zpj.popupmenuview.CustomPopupMenuView;
 import com.zpj.popupmenuview.OptionMenuView;
 import com.zpj.qianxundialoglib.IDialog;
 import com.zpj.qianxundialoglib.QianxunDialog;
-import com.zpj.qianxundialoglib.utils.AnimHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +91,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         initTimetableView();
 
         initData();
+//        AlarmReceiver.startAlarm(this);
     }
 
     private void toggleTitle(boolean tag) {
@@ -406,7 +403,8 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                         }
 
                                         @Override
-                                        public void onGetCookie(String cookie) { }
+                                        public void onGetCookie(String cookie) {
+                                        }
 
                                         @Override
                                         public void onLoginSuccess() {
@@ -523,7 +521,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        int id =view.getId();
+        int id = view.getId();
         //如果周次选择已经显示了，那么将它隐藏，更新课程、日期
         if (id == R.id.id_layout) {
             //否则，显示
@@ -532,7 +530,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
             } else {
                 showWeekView();
             }
-        }  else if (id == R.id.settins) {
+        } else if (id == R.id.settins) {
             showMenu(view);
         }
     }
