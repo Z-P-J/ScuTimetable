@@ -102,32 +102,7 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
     }
 
     public void dismiss() {
-//        int x = getView().getMeasuredWidth();
-//        int y = getView().getMeasuredHeight();
-//        int r = (int) Math.sqrt(Math.pow(x / 2, 2) + Math.pow(y / 2, 2));
-//        Animator animator = ViewAnimationUtils.createCircularReveal(getView(), x / 2, y / 2, r, 0);
-//        animator.setInterpolator(new DecelerateInterpolator());
-//        mContentOutAnimator.addListener(new Animator.AnimatorListener() {
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                DialogFragment.this.dismissInternal(false);
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation) {
-//
-//            }
-//        });
+        initContentOutAnimator(getView());
         if (mContentOutAnimator != null) {
             if (!mContentOutAnimator.isRunning()) {
                 mContentOutAnimator.start();
@@ -356,7 +331,7 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
                 public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                     boolean flag = keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN;
                     if (flag && mCancelable) {
-                        initContentOutAnimator(view);
+//                        initContentOutAnimator(view);
                         dismiss();
                     }
                     return flag;

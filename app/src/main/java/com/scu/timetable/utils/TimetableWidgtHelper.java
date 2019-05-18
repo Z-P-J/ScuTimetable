@@ -9,11 +9,8 @@ import android.graphics.Color;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.URLSpan;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -25,7 +22,6 @@ import com.scu.timetable.model.MySubject;
 import com.scu.timetable.ui.widget.TimetableWidget;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zhuangfei.timetable.model.ScheduleColorPool;
-import com.zhuangfei.timetable.utils.ScreenUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +43,9 @@ public final class TimetableWidgtHelper {
     private static boolean showWeekends;
 
     private static int currentDay;
+
+    private static List<Integer> canHideRows = new ArrayList<>();
+    private static List<Integer> canHideColumns = new ArrayList<>();
 
     private TimetableWidgtHelper() { }
 
@@ -193,6 +192,47 @@ public final class TimetableWidgtHelper {
                 }
             }
         }
+
+        for (int i = 0; i < 7; i++) {
+            List<MySubject> mySubjectList = SUBJECT_SPARSE_ARRAY.get(i);
+            if (mySubjectList.size() == 12) {
+                int count = 0;
+                for (MySubject subject : mySubjectList) {
+                    count++;
+                    if (!subject.getCourseName().isEmpty()) {
+                        break;
+                    }
+                    if (count == 12) {
+                        canHideColumns.add(i);
+                    }
+                }
+            }
+        }
+
+        canHideRows.clear();
+        for (int i = 0; i < 12; i++) {
+            int count = 0;
+            for (int j = 0; j < 7; j++) {
+                List<MySubject> mySubjectList = SUBJECT_SPARSE_ARRAY.get(j);
+                MySubject mySubject = null;
+                for (MySubject subject : mySubjectList) {
+                    int start = subject.getStart() - 1;
+                    int end = subject.getEnd() - 1;
+                    if (i >= start && i <= end) {
+                        mySubject = subject;
+                        break;
+                    }
+                }
+                if (mySubject !=null && !mySubject.getCourseName().isEmpty()) {
+                    break;
+                }
+                count++;
+                if (count == 6) {
+                    Log.d("initSubjects", "" + i);
+                    canHideRows.add(i);
+                }
+            }
+        }
     }
 
     private static void showTimetable(Context context, @IdRes int i) {
@@ -251,26 +291,38 @@ public final class TimetableWidgtHelper {
                     continue;
                 }
             }
+            if (isTransparentMode() && canHideColumns.contains(i - 1)) {
+                continue;
+            }
             RemoteViews colum = new RemoteViews(context.getPackageName(), R.layout.course_widget_4_4_day_colum);
             List<MySubject> mySubjectList = SUBJECT_SPARSE_ARRAY.get(i - 1);
             for (MySubject mySubject : mySubjectList) {
+                if (isTransparentMode() && canHideRows.contains(mySubject.getStart() - 1)) {
+                    continue;
+                }
                 RemoteViews remoteViews1 = new RemoteViews(context.getPackageName(), getCourseViewRes(mySubject.getStep()));
                 if (TextUtils.isEmpty(mySubject.getCourseName())) {
                     remoteViews1.setInt(R.id.course_widget_4_4_course_view_img, "setBackgroundColor", Color.TRANSPARENT);
                     remoteViews1.setTextViewText(R.id.course_widget_4_4_course_view_text, "");
                 } else {
-                    int color = colorPool.getColorAutoWithAlpha(mySubject.getColorRandom(), 0.8f);
+                    int color = colorPool.getColorAutoWithAlpha(mySubject.getColorRandom(), isTransparentMode() ? 0.6f : 0.8f);
                     remoteViews1.setInt(R.id.course_widget_4_4_course_view_img, "setBackgroundColor", color);
                     if (isTransparentMode()) {
                         remoteViews1.setViewVisibility(R.id.title, View.VISIBLE);
-                        remoteViews1.setTextColor(R.id.title, color);
-                        String title = DateUtil.dayOfWeekStr(mySubject.getDay() - 1) + mySubject.getStart() + "-" + mySubject.getEnd() + "节";
-//                        if (mySubject.getStart() >= 10) {
-//                            title = title + "第" + mySubject.getStart() + "节";
-//                        } else {
-//                            title = title + mySubject.getStart() + "-" + mySubject.getEnd() + "节";
-//                        }
-                        remoteViews1.setTextViewText(R.id.title, title);
+                        remoteViews1.setTextColor(R.id.title, colorPool.getColorAuto(mySubject.getColorRandom()));
+
+                        if (showWeekends && canHideRows.size() < 2) {
+                            String weekStr = DateUtil.dayOfWeekStr(mySubject.getDay() - 1).replace("周", "");
+                            remoteViews1.setTextViewText(R.id.title, weekStr + "-" + mySubject.getStart() + "-" + mySubject.getEnd());
+                        } else {
+                            remoteViews1.setInt(R.id.title, "setMaxLines", 2);
+                            String title = DateUtil.dayOfWeekStr(mySubject.getDay() - 1) + mySubject.getStart() + "-" + mySubject.getEnd() + "节";
+                            remoteViews1.setTextViewText(R.id.title, title);
+                            if (canHideColumns.size() >= 1) {
+                                remoteViews1.setFloat(R.id.title, "setTextSize", 11);
+                                remoteViews1.setFloat(R.id.course_widget_4_4_course_view_text, "setTextSize", 12);
+                            }
+                        }
                     }
                     String room = mySubject.getRoom();
 //                    SpannableString sp = new SpannableString(room + "@" + mySubject.getCourseName());

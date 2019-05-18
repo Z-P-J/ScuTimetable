@@ -455,7 +455,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                     return;
                 }
                 boolean sundayIsFirstDay = TimetableHelper.sundayIsFirstDay();
-                boolean showWeekends = TimetableHelper.isShowWeekendsOrin();
+                boolean showWeekends = TimetableHelper.isShowWeekends();
                 boolean showNotCurWeek = TimetableHelper.isShowNotCurWeek();
                 boolean showTime = TimetableHelper.isShowTime();
                 int currentWeek = TimetableHelper.getCurrentWeek();
