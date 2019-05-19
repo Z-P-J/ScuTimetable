@@ -83,7 +83,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         itemMondayIsFirstDay.setmOnLSettingItemClick(this);
         itemMondayIsFirstDay.setmOnBtnInfoClick(v -> showInfoPopupView(v,
                 "关于设置星期一为周一",
-                "默认星期天为周一。不排除有些人喜欢讲星期一作为周一，所以天骄设置星期一为周一的选项。")
+                "默认星期天为周一。不排除有些人喜欢将星期一作为周一，所以增加设置星期一为周一的选项。")
         );
 
         LSettingItem itemShowWeekends = view.findViewById(R.id.item_show_weekends);

@@ -3,8 +3,7 @@
     <item
         android:checked="false"
         android:checkable="true"
-        android:id="@+id/nav_findpassword"
-        android:icon="@drawable/ic_event_note_black_24dp"
+        android:icon="@drawable/ic_weekend_black_24dp"
         android:title="显示周末">
     </item>
 
@@ -12,7 +11,7 @@
         android:id="@+id/nav_recycle"
         android:checked="true"
         android:checkable="true"
-        android:icon="@drawable/ic_assignment_late_black_24dp"
+        android:icon="@drawable/ic_access_time_black_24dp"
         android:title="显示时间">
 
     </item>
@@ -21,7 +20,7 @@
         android:id="@+id/nav_new_folder"
         android:checked="true"
         android:checkable="true"
-        android:icon="@drawable/ic_account_box_black_24dp"
+        android:icon="@drawable/ic_event_note_black_24dp"
         android:title="显示非本周课程">
     </item>
 

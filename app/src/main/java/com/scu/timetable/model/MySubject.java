@@ -306,10 +306,10 @@ public class MySubject implements ScheduleEnable {
     }
 
     public String getRestrictedCondition() {
-        if (restrictedCondition.equals(";")) {
+        if (";".equals(restrictedCondition)) {
             return "无";
         }
-        return restrictedCondition;
+        return restrictedCondition.replace(";", "");
     }
 
     public void setRestrictedCondition(String restrictedCondition) {

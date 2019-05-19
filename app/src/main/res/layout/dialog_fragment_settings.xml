@@ -64,7 +64,7 @@
                         app:leftText="智能显示周末"
                         app:rightStyle="iconSwitch"
                         app:showInfoBtn="true"
-                        app:leftIcon="@drawable/ic_event_note_black_24dp"
+                        app:leftIcon="@drawable/ic_color_lens_black_24dp"
                         />
 
                     <com.leon.lib.settingview.LSettingItem
@@ -75,7 +75,7 @@
                         app:leftText="星期一为周一"
                         app:rightStyle="iconSwitch"
                         app:showInfoBtn="true"
-                        app:leftIcon="@drawable/ic_assignment_late_black_24dp"
+                        app:leftIcon="@drawable/ic_next_week_black_24dp"
                         />
 
                     <com.leon.lib.settingview.LSettingItem
@@ -86,7 +86,7 @@
                         app:leftText="显示周末"
                         app:rightStyle="iconSwitch"
                         app:showInfoBtn="true"
-                        app:leftIcon="@drawable/ic_assignment_late_black_24dp"
+                        app:leftIcon="@drawable/ic_weekend_black_24dp"
                         />
 
                     <com.leon.lib.settingview.LSettingItem
@@ -97,7 +97,7 @@
                         app:leftText="显示非本周课程"
                         app:rightStyle="iconSwitch"
                         app:showInfoBtn="true"
-                        app:leftIcon="@drawable/ic_assignment_late_black_24dp"
+                        app:leftIcon="@drawable/ic_event_note_black_24dp"
                         />
 
                     <com.leon.lib.settingview.LSettingItem
@@ -108,7 +108,7 @@
                         app:leftText="显示节次时间"
                         app:rightStyle="iconSwitch"
                         app:showInfoBtn="true"
-                        app:leftIcon="@drawable/ic_assignment_late_black_24dp"
+                        app:leftIcon="@drawable/ic_access_time_black_24dp"
                         />
 
                     <com.leon.lib.settingview.LSettingItem
@@ -171,7 +171,7 @@
                         app:leftText="智能显示周末"
                         app:rightStyle="iconSwitch"
                         app:showInfoBtn="false"
-                        app:leftIcon="@drawable/ic_assignment_late_black_24dp"
+                        app:leftIcon="@drawable/ic_color_lens_black_24dp"
                         />
 
                     <com.leon.lib.settingview.LSettingItem
@@ -183,7 +183,7 @@
                         app:rightStyle="iconSwitch"
                         app:showInfoBtn="true"
                         android:layout_marginBottom="10dp"
-                        app:leftIcon="@drawable/ic_event_note_black_24dp"
+                        app:leftIcon="@drawable/ic_format_color_fill_black_24dp"
                         />
 
                 </LinearLayout>

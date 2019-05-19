@@ -3,8 +3,15 @@
 
 # 截图
 <div>
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot1.png" height="660" width="380">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot2.png" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot5.png" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot6.png" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot7.png" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot8.png" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot9.png" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot10.png" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot11.png" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot12.png" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot13.png" height="660" width="380">
 </div>
 
 
