@@ -71,8 +71,8 @@
              6.修复一些bug
 ### v1.4.0截图
 <div>
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot12.jpg" height="660" width="380">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot13.jpg" height="660" width="380">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot14.jpg" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot12.jpg" height="330" width="190">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot13.jpg" height="330" width="190">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot14.jpg" height="330" width="190">
 </div>
     
