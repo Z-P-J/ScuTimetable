@@ -44,6 +44,8 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
 
     private OnDismissListener onDismissListener;
 
+    private LSettingItem itemShowWeekends;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -87,7 +89,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
                 "默认星期天为周一。不排除有些人喜欢将星期一作为周一，所以增加设置星期一为周一的选项。")
         );
 
-        LSettingItem itemShowWeekends = view.findViewById(R.id.item_show_weekends);
+        itemShowWeekends = view.findViewById(R.id.item_show_weekends);
         itemShowWeekends.setChecked(TimetableHelper.isShowWeekendsOrin());
         if (TimetableHelper.isSmartShowWeekends()) {
             itemShowWeekends.setEnable(false);
@@ -97,7 +99,6 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
                 "关于显示周末",
                 "显示周末。")
         );
-        itemShowWeekends.setEnabled(false);
 
         LSettingItem itemShowNonThisWeek = view.findViewById(R.id.item_show_non_this_week);
         itemShowNonThisWeek.setChecked(TimetableHelper.isShowNotCurWeek());
@@ -263,6 +264,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         int id = view.getId();
         if (id == R.id.item_smart_show_weekends) {
             TimetableHelper.toggleSmartShowWeekends();
+            itemShowWeekends.setEnable(!TimetableHelper.isSmartShowWeekends());
         } else if (id == R.id.item_monday_is_first_day) {
             TimetableHelper.toggleSundayIsFirstDay();
         } else if (id == R.id.item_show_non_this_week) {

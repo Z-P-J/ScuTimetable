@@ -102,7 +102,7 @@ public class OptionMenu {
 
     public void setEnable(boolean enable) {
         this.enable = enable;
-        int color = Color.parseColor("#80cccccc");
+        int color = enable ? Color.BLACK : Color.parseColor("#80cccccc");
         textView.setTextColor(color);
         drawableLeft = tintDrawable(this.drawableLeft, ColorStateList.valueOf(color));
         if (checkable) {

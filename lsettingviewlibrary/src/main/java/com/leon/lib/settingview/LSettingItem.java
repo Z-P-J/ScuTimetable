@@ -1,9 +1,11 @@
 package com.leon.lib.settingview;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.SwitchCompat;
 import android.util.AttributeSet;
@@ -293,6 +295,19 @@ public class LSettingItem extends RelativeLayout {
     public void setEnable(boolean enable) {
         mEnable = enable;
         mRightIcon_switch.setEnabled(enable);
+        int color = enable ? Color.parseColor("#727474") : Color.parseColor("#80cccccc");
+        mTvLeftText.setTextColor(color);
+        tintDrawable(mLeftIcon, ColorStateList.valueOf(enable ? Color.BLACK : color));
+        tintDrawable(mRightIcon, ColorStateList.valueOf(enable ? Color.BLACK : color));
+    }
+
+    private Drawable tintDrawable(Drawable drawable, ColorStateList colors) {
+        if (drawable == null) {
+            return null;
+        }
+        final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTintList(wrappedDrawable, colors);
+        return wrappedDrawable;
     }
 
     /**
