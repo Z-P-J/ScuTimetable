@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public final class TimetableWidgtHelper {
 
@@ -117,13 +118,17 @@ public final class TimetableWidgtHelper {
     }
 
     private static boolean showTimetable(Context ctx) {
-        if (TimetableHelper.isLogined(ctx)) {
+        if (TimetableHelper.isLogined(ctx) || TimetableHelper.isVisitorMode()) {
             remoteViews.setViewVisibility(R.id.widget_llyt_no_course, View.INVISIBLE);
             remoteViews.setViewVisibility(R.id.course_widget_4_4_week_course, View.VISIBLE);
             return true;
         } else {
+            remoteViews.setViewVisibility(R.id.widget_llyt_no_course, View.VISIBLE);
+            remoteViews.setViewVisibility(R.id.course_widget_4_4_week_course, View.INVISIBLE);
             clickToLoginActivity(ctx, R.id.widget_btn_enter_treehole);
             remoteViews.setViewVisibility(R.id.widget_btn_enter_treehole, View.VISIBLE);
+            remoteViews.setViewVisibility(R.id.widget_btn_enter_visitor_mode, View.VISIBLE);
+            clickToVisitorMode(ctx, R.id.widget_btn_enter_visitor_mode);
             remoteViews.setTextViewText(R.id.widget_btn_enter_treehole, ctx.getResources().getString(R.string.goto_login));
             remoteViews.setTextViewText(R.id.widget_txv_no_course_text, ctx.getResources().getString(R.string.no_login_body_tip));
             return false;
@@ -134,6 +139,14 @@ public final class TimetableWidgtHelper {
         Intent intent = new Intent(context, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         remoteViews.setOnClickPendingIntent(i, PendingIntent.getActivity(context, 17,intent, PendingIntent.FLAG_UPDATE_CURRENT));
+    }
+
+    private static void clickToVisitorMode(Context context, int i) {
+        Intent intent = new Intent();
+        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+        intent.putExtra("visitor_mode", true);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, UUID.randomUUID().hashCode(),intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(i, pendingIntent);
     }
 
     private static List<MySubject> getColorReflect(List<MySubject> schedules) {

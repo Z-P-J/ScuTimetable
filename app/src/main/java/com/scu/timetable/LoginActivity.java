@@ -3,11 +3,15 @@ package com.scu.timetable;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,9 +19,11 @@ import android.widget.Toast;
 import com.scu.timetable.ui.activity.BaseActivity;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
+import com.scu.timetable.utils.FileUtil;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.popupmenuview.CustomPopupMenuView;
 
 /**
  * @author Z-P-J
@@ -39,11 +45,14 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
 
     private RelativeLayout middleLayout;
 
+    private LinearLayout visitorLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        TimetableHelper.closeVisitorMode();
         LoginUtil.with().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -80,6 +89,18 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
 
         TextView mBtnLogin = findViewById(R.id.main_btn_login);
         mBtnLogin.setOnClickListener(this);
+
+        visitorLayout = findViewById(R.id.layout_visitor);
+        visitorLayout.setVisibility(View.VISIBLE);
+        TextView visitorLogin = findViewById(R.id.visitor_mode);
+        //下划线
+        visitorLogin.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        //抗锯齿
+        visitorLogin.getPaint().setAntiAlias(true);
+        visitorLogin.setOnClickListener(this);
+        ImageView btnInfo = findViewById(R.id.btn_info);
+        btnInfo.setOnClickListener(this);
+
 
         progress = findViewById(R.id.layout_progress);
         msgText = findViewById(R.id.id_tv_loading_dialog_text);
@@ -209,6 +230,7 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
             public void onAnimationEnd(Animator animation) {
                 progress.setVisibility(View.GONE);
                 AnimatorUtil.showViewAnimator(middleLayout, 500);
+                visitorLayout.setVisibility(View.VISIBLE);
                 captcha.setText("");
                 CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
             }
@@ -256,6 +278,45 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
 //        }
 //    }
 
+    private void login() {
+        if (progress.getVisibility() == View.VISIBLE) {
+            return;
+        }
+        if (userName.getText().toString().isEmpty() || password.getText().toString().isEmpty() || captcha.getText().toString().isEmpty()) {
+            Toast.makeText(LoginActivity.this, "请输入正确的信息", Toast.LENGTH_SHORT).show();
+        } else {
+            SPHelper.putString("user_name", userName.getText().toString());
+            SPHelper.putString("password", password.getText().toString());
+            AnimatorUtil.hideViewAnimator(middleLayout, 500, new AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) { }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progress.setVisibility(View.VISIBLE);
+                    AnimatorUtil.shakeAnimator(progress, 1000);
+                    middleLayout.setVisibility(View.INVISIBLE);
+                    visitorLayout.setVisibility(View.GONE);
+                    msgText.setText("登录中...");
+//                        login();
+                    LoginUtil.with()
+                            .setCallback(LoginActivity.this)
+                            .login(
+                                    userName.getText().toString(),
+                                    password.getText().toString(),
+                                    captcha.getText().toString()
+                            );
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) { }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) { }
+            });
+        }
+    }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -264,55 +325,37 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
                 CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
             }
         } else if (id == R.id.main_btn_login) {
-            if (progress.getVisibility() == View.VISIBLE) {
-                return;
+            login();
+        } else if (id == R.id.visitor_mode){
+            if (TimetableHelper.startVisitorMode(this)) {
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                //发送广播。更新桌面插件
+                updateWidget(true);
             }
-            if (userName.getText().toString().isEmpty() || password.getText().toString().isEmpty() || captcha.getText().toString().isEmpty()) {
-                Toast.makeText(LoginActivity.this, "请输入正确的信息", Toast.LENGTH_SHORT).show();
-            } else {
-                SPHelper.putString("user_name", userName.getText().toString());
-                SPHelper.putString("password", password.getText().toString());
-                AnimatorUtil.hideViewAnimator(middleLayout, 500, new AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        progress.setVisibility(View.VISIBLE);
-                        AnimatorUtil.shakeAnimator(progress, 1000);
-                        middleLayout.setVisibility(View.INVISIBLE);
-                        msgText.setText("登录中...");
-//                        login();
-                        LoginUtil.with()
-                                .setCallback(LoginActivity.this)
-                                .login(
-                                        userName.getText().toString(),
-                                        password.getText().toString(),
-                                        captcha.getText().toString()
-                                );
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
-
-            }
+        } else if (id == R.id.btn_info) {
+            CustomPopupMenuView.with(this, R.layout.layout_text)
+                    .setOrientation(LinearLayout.VERTICAL)
+//                    .setBackgroundAlpha(this, 0.9f, 500)
+                    .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
+                    .initViews(
+                            1,
+                            (popupMenuView, itemView, position) -> {
+                                TextView titleView = itemView.findViewById(R.id.title);
+                                titleView.setText("关于游客模式");
+                                TextView contentView = itemView.findViewById(R.id.content);
+                                contentView.setText("在该模式下会显示软件内置的一个课程表，并且在该模式下有些功能不能使用！");
+                                ImageView btnClose = itemView.findViewById(R.id.btn_close);
+                                btnClose.setOnClickListener(v1 -> popupMenuView.dismiss());
+                            })
+                    .show(v);
         }
     }
 
     @Override
     public void onGetCookie(String cookie) {
         this.cookie = cookie;
-        Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
         CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
     }
 

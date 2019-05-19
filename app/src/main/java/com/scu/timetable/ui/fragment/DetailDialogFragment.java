@@ -203,7 +203,7 @@ public class DetailDialogFragment extends FullscreenDialogFragment implements Vi
             TimetableWidgtHelper.toggleSmartShowWeekends(getContext());
         }
 
-        Toast.makeText(getContext(), "" + isChecked, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "" + isChecked, Toast.LENGTH_SHORT).show();
     }
 
     public void setCallback(Callback callback) {

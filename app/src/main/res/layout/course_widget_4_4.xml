@@ -170,6 +170,16 @@
                     android:layout_marginTop="10dp"
                     android:text="登录"
                     android:layout_below="@id/widget_txv_no_course_text" />
+                <TextView
+                    android:textColor="@color/colorPrimary"
+                    android:gravity="center"
+                    android:id="@+id/widget_btn_enter_visitor_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="游客模式"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/widget_btn_enter_treehole" />
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>

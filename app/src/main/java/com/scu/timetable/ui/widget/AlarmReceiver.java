@@ -24,7 +24,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("AlarmReceiver", "haha    " + new Date().toString());
-        Toast.makeText(context,  new Date().toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context,  new Date().toString(), Toast.LENGTH_SHORT).show();
         startAlarm(context);
 //        Intent i = new Intent(context, LongRunningService.class);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

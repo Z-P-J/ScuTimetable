@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.scu.timetable.model.MySubject;
 import com.scu.timetable.utils.content.SPHelper;
@@ -37,19 +38,34 @@ public final class TimetableHelper {
             "19:30", "20:30", "21:30", "22:30"
     };
 
-    public static final String UA = "Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/8.9 Mobile Safari/537.36";
+    static final String UA = "Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/8.9 Mobile Safari/537.36";
 
     private static final String FILE_NAME = "timetable.json";
+    private static final String VISITOR_FILE_NAME = "timetable_visitor.json";
 
     private TimetableHelper() {
 
     }
 
-    private static boolean hasJsonFile(Context context) {
+//    private static boolean hasJsonFile(Context context) {
+////        String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
+//        File filesDir = context.getFilesDir();
+//        if (filesDir.exists()) {
+//            for (File file : filesDir.listFiles()) {
+//                if (file.getName().equals(FILE_NAME)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
+
+    private static boolean hasJsonFile(Context context, String fileName) {
+//        String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
         File filesDir = context.getFilesDir();
         if (filesDir.exists()) {
             for (File file : filesDir.listFiles()) {
-                if (file.getName().equals(FILE_NAME)) {
+                if (file.getName().equals(fileName)) {
                     return true;
                 }
             }
@@ -58,8 +74,9 @@ public final class TimetableHelper {
     }
 
     private static String readFromJson(Context context) throws FileNotFoundException {
+        String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
         FileInputStream inStream = null;
-        inStream = context.openFileInput(FILE_NAME);
+        inStream = context.openFileInput(fileName);
         //输出到内存
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
         int len = 0;
@@ -76,81 +93,93 @@ public final class TimetableHelper {
     }
 
     public static List<MySubject> getSubjects(Context context) {
-        List<MySubject> mySubjectList = new ArrayList<>();
         try {
             String json = readFromJson(context);
-            JSONObject jsonObject = new JSONObject(json).getJSONArray("dateList").getJSONObject(0);
-            JSONArray jsonArray = jsonObject.getJSONArray("selectCourseList");
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONArray array = jsonArray.getJSONObject(i).getJSONArray("timeAndPlaceList");
-                String attendClassTeacher = jsonArray.getJSONObject(i).getString("attendClassTeacher");
-                String name = jsonArray.getJSONObject(i).getString("courseName");
-                String examTypeName = jsonArray.getJSONObject(i).getString("examTypeName");
-                String coursePropertiesName = jsonArray.getJSONObject(i).getString("coursePropertiesName");
-                String courseCategoryName = jsonArray.getJSONObject(i).getString("courseCategoryName");
-                String restrictedCondition = jsonArray.getJSONObject(i).getString("restrictedCondition");
-                String programPlanName = jsonArray.getJSONObject(i).getString("programPlanName");
-                String studyModeName = jsonArray.getJSONObject(i).getString("studyModeName");
-                int unit = jsonArray.getJSONObject(i).getInt("unit");
-                for (int j = 0; j < array.length(); j++) {
-                    JSONObject object = array.getJSONObject(j);
-                    String classroomName = object.getString("classroomName");
-                    String teachingBuildingName = object.getString("teachingBuildingName");
-                    String room = teachingBuildingName + classroomName;
-                    String weekDescription = object.getString("weekDescription");
-                    int start = object.getInt("classSessions");
-                    int step = object.getInt("continuingSession");
-                    int day = object.getInt("classDay");
-                    day = day + 1;
-                    if (day == 8) {
-                        day = 1;
-                    }
-                    String campusName = object.getString("campusName");
-                    String courseNumber = object.getString("coureNumber");
-                    String courseSequenceNumber = object.getString("coureSequenceNumber");
-                    String executiveEducationPlanNumber = object.getString("executiveEducationPlanNumber");
-                    String note = "";
-                    if (object.has("note")) {
-                        note = object.getString("note");
-                    }
-
-//                    MySubject mySubject = new MySubject("2018-2019学年春", name, room, attendClassTeacher, getWeekList(object.getString("weekDescription")), start, step, day, -1, null);
-                    MySubject mySubject = new MySubject();
-                    mySubject.setTerm("2018-2019学年春");
-                    mySubject.setCourseName(name);
-                    mySubject.setClassroom(classroomName);
-                    mySubject.setTeachingBuilding(teachingBuildingName);
-                    mySubject.setTeacher(attendClassTeacher);
-                    mySubject.setRoom(room);
-                    mySubject.setWeekDescription(weekDescription);
-                    mySubject.setWeekList(getWeekList(weekDescription));
-                    mySubject.setStart(start);
-                    mySubject.setStep(step);
-                    mySubject.setDay(day);
-                    mySubject.setColorRandom(-1);
-                    mySubject.setTime(null);
-                    mySubject.setCourseProperties(coursePropertiesName);
-                    mySubject.setCampusName(campusName);
-                    mySubject.setCoureNumber(courseNumber);
-                    mySubject.setCoureSequenceNumber(courseSequenceNumber);
-                    mySubject.setExamType(examTypeName);
-                    mySubject.setCourseCategory(courseCategoryName);
-                    mySubject.setRestrictedCondition(restrictedCondition);
-                    mySubject.setProgramPlan(programPlanName);
-                    mySubject.setStudyMode(studyModeName);
-                    mySubject.setUnit("" + unit);
-                    mySubject.setNote(note);
-                    mySubjectList.add(mySubject);
-                }
-            }
+            return getSubjects(json);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return new ArrayList<>(0);
+    }
+
+    public static List<MySubject> getSubjects(String json) throws Exception {
+        List<MySubject> mySubjectList = new ArrayList<>();
+        JSONObject jsonObject = new JSONObject(json).getJSONArray("dateList").getJSONObject(0);
+        JSONArray jsonArray = jsonObject.getJSONArray("selectCourseList");
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONArray array = jsonArray.getJSONObject(i).getJSONArray("timeAndPlaceList");
+            String attendClassTeacher = jsonArray.getJSONObject(i).getString("attendClassTeacher");
+            String name = jsonArray.getJSONObject(i).getString("courseName");
+            String examTypeName = jsonArray.getJSONObject(i).getString("examTypeName");
+            String coursePropertiesName = jsonArray.getJSONObject(i).getString("coursePropertiesName");
+            String courseCategoryName = jsonArray.getJSONObject(i).getString("courseCategoryName");
+            String restrictedCondition = jsonArray.getJSONObject(i).getString("restrictedCondition");
+            String programPlanName = jsonArray.getJSONObject(i).getString("programPlanName");
+            String studyModeName = jsonArray.getJSONObject(i).getString("studyModeName");
+            int unit = jsonArray.getJSONObject(i).getInt("unit");
+            for (int j = 0; j < array.length(); j++) {
+                JSONObject object = array.getJSONObject(j);
+                String classroomName = object.getString("classroomName");
+                String teachingBuildingName = object.getString("teachingBuildingName");
+                String room = teachingBuildingName + classroomName;
+                String weekDescription = object.getString("weekDescription");
+                int start = object.getInt("classSessions");
+                int step = object.getInt("continuingSession");
+                int day = object.getInt("classDay");
+                day = day + 1;
+                if (day == 8) {
+                    day = 1;
+                }
+                String campusName = object.getString("campusName");
+                String courseNumber = object.getString("coureNumber");
+                String courseSequenceNumber = object.getString("coureSequenceNumber");
+                String executiveEducationPlanNumber = object.getString("executiveEducationPlanNumber");
+                String note = "";
+                if (object.has("note")) {
+                    note = object.getString("note");
+                }
+
+//                    MySubject mySubject = new MySubject("2018-2019学年春", name, room, attendClassTeacher, getWeekList(object.getString("weekDescription")), start, step, day, -1, null);
+                MySubject mySubject = new MySubject();
+                mySubject.setTerm("2018-2019学年春");
+                mySubject.setCourseName(name);
+                mySubject.setClassroom(classroomName);
+                mySubject.setTeachingBuilding(teachingBuildingName);
+                mySubject.setTeacher(attendClassTeacher);
+                mySubject.setRoom(room);
+                mySubject.setWeekDescription(weekDescription);
+                mySubject.setWeekList(getWeekList(weekDescription));
+                mySubject.setStart(start);
+                mySubject.setStep(step);
+                mySubject.setDay(day);
+                mySubject.setColorRandom(-1);
+                mySubject.setTime(null);
+                mySubject.setCourseProperties(coursePropertiesName);
+                mySubject.setCampusName(campusName);
+                mySubject.setCoureNumber(courseNumber);
+                mySubject.setCoureSequenceNumber(courseSequenceNumber);
+                mySubject.setExamType(examTypeName);
+                mySubject.setCourseCategory(courseCategoryName);
+                mySubject.setRestrictedCondition(restrictedCondition);
+                mySubject.setProgramPlan(programPlanName);
+                mySubject.setStudyMode(studyModeName);
+                mySubject.setUnit("" + unit);
+                mySubject.setNote(note);
+                mySubjectList.add(mySubject);
+            }
         }
         return mySubjectList;
     }
 
+//    public static void writeToJson(Context context, String fileName, String content) throws Exception {
+//        FileOutputStream outStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+//        outStream.write(content.getBytes());
+//        outStream.close();
+//    }
+
     public static void writeToJson(Context context, String content) throws Exception {
-        FileOutputStream outStream = context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE);
+        String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
+        FileOutputStream outStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
         outStream.write(content.getBytes());
         outStream.close();
     }
@@ -186,7 +215,7 @@ public final class TimetableHelper {
     }
 
     public static boolean isLogined(Context context) {
-        if (SPHelper.getBoolean("logined", false) && hasJsonFile(context)) {
+        if (SPHelper.getBoolean("logined", false) && hasJsonFile(context, FILE_NAME)) {
             String date = getCurrentDate();
             if (!date.isEmpty()) {
                 Date oldDate = DateUtil.parse(date);
@@ -336,5 +365,29 @@ public final class TimetableHelper {
     public static void toggleSundayIsFirstDay() {
         SPHelper.putBoolean("sunday_is_first_day", !sundayIsFirstDay());
     }
+
+    public static boolean isVisitorMode() {
+        return SPHelper.getBoolean("visitor_mode", false);
+    }
+
+    public static boolean startVisitorMode(Context context) {
+        SPHelper.putBoolean("visitor_mode", true);
+        if (!hasJsonFile(context, VISITOR_FILE_NAME)) {
+            try {
+                TimetableHelper.writeToJson(context, FileUtil.readAssetFile(context, "timetable.json"));
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(context, "启用游客模式失败！", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void closeVisitorMode() {
+        SPHelper.putBoolean("visitor_mode", false);
+    }
+
 
 }

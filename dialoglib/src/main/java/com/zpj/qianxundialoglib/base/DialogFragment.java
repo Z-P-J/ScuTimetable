@@ -282,7 +282,7 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
 
     @NonNull
     public OutsideClickDialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Toast.makeText(getContext(), "onCreateDialog", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "onCreateDialog", Toast.LENGTH_SHORT).show();
         return new OutsideClickDialog(this.getActivity(), this.getTheme());
     }
 

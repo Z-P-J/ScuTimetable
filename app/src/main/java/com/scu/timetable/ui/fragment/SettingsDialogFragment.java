@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.deadline.statebutton.StateButton;
 import com.leon.lib.settingview.LSettingItem;
+import com.scu.timetable.MainActivity;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
@@ -244,6 +245,10 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
                     .setPositiveButton(new IDialog.OnClickListener() {
                         @Override
                         public void onClick(IDialog dialog) {
+                            if (TimetableHelper.isVisitorMode()) {
+                                Toast.makeText(getContext(), "您当前正处于游客模式，无法注销登录！", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             SPHelper.putBoolean("logined", false);
                             dismiss();
                         }
@@ -278,7 +283,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
             TimetableWidgtHelper.toggleTransparentMode(getContext());
         }
 
-        Toast.makeText(getContext(), "" + isChecked, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "" + isChecked, Toast.LENGTH_SHORT).show();
     }
 
     public void setOnDismissListener(OnDismissListener onDismissListener) {

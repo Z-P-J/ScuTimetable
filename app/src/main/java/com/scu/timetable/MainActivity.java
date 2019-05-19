@@ -25,6 +25,7 @@ import com.scu.timetable.ui.fragment.SettingsDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
+import com.scu.timetable.utils.FileUtil;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.StatusBarUtil;
 import com.scu.timetable.utils.TimetableHelper;
@@ -40,6 +41,8 @@ import com.zpj.popupmenuview.OptionMenuView;
 import com.zpj.qianxundialoglib.IDialog;
 import com.zpj.qianxundialoglib.QianxunDialog;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +103,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
 
     private void initData() {
         mySubjects = TimetableHelper.getSubjects(this);
+
         mWeekView.source(mySubjects).showView();
         mTimetableView.source(mySubjects)
                 .isShowWeekends(TimetableHelper.isShowWeekends())
@@ -174,9 +178,9 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                 .callback(new ISchedule.OnItemLongClickListener() {
                     @Override
                     public void onLongClick(View v, int day, int start) {
-                        Toast.makeText(MainActivity.this,
-                                "长按:周" + day + ",第" + start + "节",
-                                Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MainActivity.this,
+//                                "长按:周" + day + ",第" + start + "节",
+//                                Toast.LENGTH_SHORT).show();
                     }
                 })
                 .callback(new ISchedule.OnWeekChangedListener() {
@@ -375,6 +379,10 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                 Toast.makeText(MainActivity.this, "验证码为空！", Toast.LENGTH_SHORT).show();
                                 return;
                             }
+                            if (TimetableHelper.isVisitorMode()) {
+                                Toast.makeText(MainActivity.this, "您当前正处于游客模式，无法刷新课表！", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             if (dialog instanceof QianxunDialog) {
                                 QianxunDialog qianxunDialog = ((QianxunDialog) dialog);
                                 qianxunDialog.setCancelable(false);
@@ -452,8 +460,8 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         dialogFragment.setOnDismissListener(new SettingsDialogFragment.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                Toast.makeText(MainActivity.this, "SettingsDialogFragment", Toast.LENGTH_SHORT).show();
-                if (!SPHelper.getBoolean("logined", false)) {
+//                Toast.makeText(MainActivity.this, "SettingsDialogFragment", Toast.LENGTH_SHORT).show();
+                if (!TimetableHelper.isVisitorMode() && !SPHelper.getBoolean("logined", false)) {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
                     return;
@@ -522,7 +530,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         for (Schedule bean : beans) {
             str.append(bean.getName()).append(",").append(bean.getWeekList().toString()).append(",").append(bean.getStart()).append(",").append(bean.getStep()).append("\n");
         }
-        Toast.makeText(this, str.toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, str.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -549,7 +557,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         toggleTitle(true);
 //        titleTextView.setTextColor(Color.WHITE);
         int cur = mTimetableView.curWeek();
-        Toast.makeText(this, "cur=" + cur, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "cur=" + cur, Toast.LENGTH_SHORT).show();
         mTimetableView.onDateBuildListener()
                 .onUpdateDate(cur, cur, mTimetableView.getSundayIsFirstDay(), mTimetableView.isShowWeekends());
         mTimetableView.changeWeekOnly(cur);
@@ -566,10 +574,16 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
             AnimatorUtil.circleAnimator(test, testX, testY, 500);
             return;
         }
+        if (TimetableHelper.isVisitorMode()) {
+            super.onBackPressed();
+            finish();
+            return;
+        }
         if (System.currentTimeMillis() - firstTime > 2000) {
             Toast.makeText(this, "再次点击退出！", Toast.LENGTH_SHORT).show();
             firstTime = System.currentTimeMillis();
         } else {
+            TimetableHelper.closeVisitorMode();
             ActivityCollector.finishAll();
         }
     }
