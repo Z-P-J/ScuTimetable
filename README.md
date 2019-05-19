@@ -52,9 +52,14 @@
              5.修复某些情况下日期栏显示当前星期几不对的bug
              6.修复点击空白位置显示旗标位置不对的bug
 ### v1.3.0截图
-![screenshot3](screenshots/screenshot6.jpg) ![screenshot4](screenshots/screenshot7.jpg)
-![screenshot3](screenshots/screenshot8.jpg) ![screenshot4](screenshots/screenshot9.jpg)
-![screenshot3](screenshots/screenshot10.jpg) ![screenshot4](screenshots/screenshot11.jpg)
+<div>
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot6.jpg" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot7.jpg" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot8.jpg" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot9.jpg" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot10.jpg" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot11.jpg" height="660" width="380">
+</div>
 
 ## v1.4.0
     2019/05/16
@@ -65,5 +70,9 @@
              5.完善备注功能
              6.修复一些bug
 ### v1.4.0截图
-![screenshot3](screenshots/screenshot11.jpg) ![screenshot4](screenshots/screenshot12.jpg)
+<div>
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot12.jpg" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot13.jpg" height="660" width="380">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot14.jpg" height="660" width="380">
+</div>
     
