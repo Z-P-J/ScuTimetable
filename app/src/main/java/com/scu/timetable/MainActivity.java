@@ -303,6 +303,12 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                 });
                                 dialogFragment.show(fragmentTransaction, "detail");
                             });
+
+                            ImageView alarm = itemView.findViewById(R.id.subject_alarm);
+                            alarm.setOnClickListener(v -> {
+                                //todo alarm
+                                Toast.makeText(this, "提醒功能暂未实现！", Toast.LENGTH_SHORT).show();
+                            });
                         })
                 .show(view, -1);
     }

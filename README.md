@@ -45,11 +45,27 @@
 
 ## v1.3.0
     2019/05/12
-    更新内容：1.新增菜单和设置，支持设置智能显示周末，设置星期一为周一，显示非本周课程，显示节次时间等操作。
+    更新内容：1.新增菜单和设置，支持设置智能显示周末，设置星期一为周一，显示非本周课程，显示节次时间等操作
              2.新增查看课程详情(待完善)
              3.新增课程备注功能(待完善)
              4.修复周数改变后课表显示有错误的bug
              5.修复某些情况下日期栏显示当前星期几不对的bug
              6.修复点击空白位置显示旗标位置不对的bug
 ### v1.3.0截图
+![screenshot3](screenshots/screenshot6.png) ![screenshot4](screenshots/screenshot7.png)
+![screenshot3](screenshots/screenshot8.png) ![screenshot4](screenshots/screenshot9.png)
+![screenshot3](screenshots/screenshot10.png) ![screenshot4](screenshots/screenshot11.png)
+
+## v1.4.0
+    2019/05/16
+    更新内容：1.新增桌面插件透明模式
+             2.新增注销登录功能
+             3.新增课表刷新功能
+             4.完善课程详细信息查看
+             5.完善备注功能
+             6.修复一些bug
+### v1.4.0截图
+![screenshot3](screenshots/screenshot6.png) ![screenshot4](screenshots/screenshot7.png)
+![screenshot3](screenshots/screenshot8.png) ![screenshot4](screenshots/screenshot9.png)
+![screenshot3](screenshots/screenshot10.png) ![screenshot4](screenshots/screenshot11.png)
     

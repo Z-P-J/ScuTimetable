@@ -12,7 +12,7 @@
         android:checked="true"
         android:checkable="true"
         android:icon="@drawable/ic_access_time_black_24dp"
-        android:title="显示时间">
+        android:title="显示节次时间">
 
     </item>
 
