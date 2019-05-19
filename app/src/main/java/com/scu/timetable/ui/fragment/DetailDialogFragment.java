@@ -65,11 +65,11 @@ public class DetailDialogFragment extends FullscreenDialogFragment implements Vi
     private void initView(View view) {
         MySubject subject = callback.fechSubject();
 
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setTitle(subject.getCourseName());
-        toolbar.setTitleTextColor(Color.WHITE);
+//        Toolbar toolbar = view.findViewById(R.id.toolbar);
+//        toolbar.setTitle(subject.getCourseName());
+//        toolbar.setTitleTextColor(Color.WHITE);
 
-//        TextView headerTitle = view.findViewById(R.id.header_title);
+        TextView headerTitle = view.findViewById(R.id.header_title);
         DetailLayout courseName = view.findViewById(R.id.course_name);
         DetailLayout teacherName = view.findViewById(R.id.teacher_name);
         DetailLayout classTime = view.findViewById(R.id.class_time);
@@ -83,7 +83,7 @@ public class DetailDialogFragment extends FullscreenDialogFragment implements Vi
         DetailLayout studyMode = view.findViewById(R.id.study_mode);
         DetailLayout restrictedCondition = view.findViewById(R.id.restricted_condition);
 
-//        headerTitle.setText(subject.getCourseName());
+        headerTitle.setText(subject.getCourseName());
         courseName.setContent(subject.getCourseName());
         teacherName.setContent(subject.getTeacher());
         classTime.setContent(subject.getClassTime());
