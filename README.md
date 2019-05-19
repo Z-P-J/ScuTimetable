@@ -32,7 +32,10 @@
              2.全新登录界面，全新课表展示界面呢
              3.修复由于川大教务系统更换后无法登录的问题
 ### v1.1.0截图
-![screenshot1](screenshots/screenshot1.png) ![screenshot2](screenshots/screenshot2.png)
+<div>
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot1.png" height="330" width="190">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot2.png" height="330" width="190">
+</div>
 
 ---------------------------------------
 
@@ -41,7 +44,10 @@
     更新内容：1.增加桌面插件，方便快捷的查看课表
              2.其他优化
 ### v1.2.0截图
-![screenshot3](screenshots/screenshot4.png) ![screenshot4](screenshots/screenshot3.png)
+<div>
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot4.png" height="330" width="190">
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot3.png" height="330" width="190">
+</div>
 
 ## v1.3.0
     2019/05/12
