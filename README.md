@@ -61,8 +61,6 @@
 <div>
     <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot6.jpg" height="330" width="190">
     <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot7.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot8.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot9.jpg" height="330" width="190">
     <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot10.jpg" height="330" width="190">
     <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot11.jpg" height="330" width="190">
 </div>
@@ -77,6 +75,7 @@
              6.修复一些bug
 ### v1.4.0截图
 <div>
+    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot8.jpg" height="330" width="190">
     <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot12.jpg" height="330" width="190">
     <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot13.jpg" height="330" width="190">
     <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot14.jpg" height="330" width="190">
