@@ -60,7 +60,7 @@ public final class TimetableWidgtHelper {
             }
         }
         if (remoteViews == null) {
-            remoteViews = new RemoteViews(context.getPackageName(), R.layout.course_widget_4_4);
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.course_widget);
         }
         //如果可以显示课表
         if (showTimetable(context)) {
@@ -72,12 +72,14 @@ public final class TimetableWidgtHelper {
             showTimetable(context, R.id.course_widget_4_4_course_layout);
 
             if (!isTransparentMode()) {
+                remoteViews.setInt(R.id.layout_widget, "setBackgroundResource", R.drawable.widget_background);
                 remoteViews.setViewVisibility(R.id.course_widget_4_4_week_bar, View.VISIBLE);
                 showTimetableWeekBar(context, R.id.course_widget_4_4_week_bar);
-                remoteViews.setInt(R.id.course_widget_4_4_course_layout, "setBackgroundResource", R.drawable.widget_4x4bg_bottom);
+//                remoteViews.setInt(R.id.course_widget_4_4_course_layout, "setBackgroundResource", R.drawable.widget_4x4bg_bottom);
             } else {
+                remoteViews.setInt(R.id.layout_widget, "setBackgroundColor", Color.TRANSPARENT);
                 remoteViews.setViewVisibility(R.id.course_widget_4_4_week_bar, View.GONE);
-                remoteViews.setInt(R.id.course_widget_4_4_course_layout, "setBackgroundColor", Color.TRANSPARENT);
+//                remoteViews.setInt(R.id.course_widget_4_4_course_layout, "setBackgroundColor", Color.TRANSPARENT);
             }
             remoteViews.setTextViewText(R.id.cur_week, "第" + TimetableHelper.getCurrentWeek() + "周");
             return remoteViews;
@@ -123,6 +125,7 @@ public final class TimetableWidgtHelper {
             remoteViews.setViewVisibility(R.id.course_widget_4_4_week_course, View.VISIBLE);
             return true;
         } else {
+            remoteViews.setInt(R.id.layout_widget, "setBackgroundResource", R.drawable.widget_background);
             remoteViews.setViewVisibility(R.id.widget_llyt_no_course, View.VISIBLE);
             remoteViews.setViewVisibility(R.id.course_widget_4_4_week_course, View.INVISIBLE);
             clickToLoginActivity(ctx, R.id.widget_btn_enter_treehole);

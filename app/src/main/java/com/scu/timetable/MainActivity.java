@@ -240,7 +240,6 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                         showSettingDialogFragment();
                                         break;
                                     default:
-
                                         break;
                                 }
                                 return true;

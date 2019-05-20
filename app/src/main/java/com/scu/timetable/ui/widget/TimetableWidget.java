@@ -88,7 +88,7 @@ public class TimetableWidget extends AppWidgetProvider {
 
 //    private void initView(Context context) {
 //        if (remoteViews == null) {
-//            remoteViews = new RemoteViews(context.getPackageName(), R.layout.course_widget_4_4);
+//            remoteViews = new RemoteViews(context.getPackageName(), R.layout.course_widget);
 //        }
 //        if (widgtHelper == null) {
 //            widgtHelper = new TimetableWidgtHelper(context);

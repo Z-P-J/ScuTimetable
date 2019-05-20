@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_widget"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <RelativeLayout
         android:orientation="vertical"
         android:id="@+id/course_widget_4_4_week_course"
         android:visibility="invisible"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+
+        >
 
         <ImageView
             android:id="@+id/course_widget_4_4_bottom_display"
@@ -21,17 +25,19 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/course_widget_4_4_bottom_display">
+            android:layout_above="@id/course_widget_4_4_bottom_display"
+            >
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/course_widget_4_4_week_bar"
-                android:background="@drawable/widget_4x2bg_top"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/course_4_4_week_bar_height" />
+<!--            android:background="@drawable/widget_4x2bg_top"-->
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/course_widget_4_4_course_layout"
-                android:background="@drawable/widget_4x4bg_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/course_widget_4_4_week_bar" />
@@ -49,9 +55,8 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/widget_bottom_control"
-                android:background="@drawable/widget_4x4bg_bottom"
-                android:paddingLeft="10dp"
-                android:paddingRight="2.5dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="2.5dp"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/course_4_4_botton_layout_height"
                 android:layout_alignBottom="@id/widget_bottom_status">
@@ -65,7 +70,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                         <TextView
-                            android:textSize="14dp"
+                            android:textSize="14sp"
                             android:textStyle="bold"
                             android:textColor="#CC000000"
                             android:id="@+id/cur_week_english"
@@ -73,18 +78,18 @@
                             android:layout_height="wrap_content"
                             android:text="@string/english_week_display" />
                         <TextView
-                            android:textSize="10dp"
+                            android:textSize="10sp"
                             android:textColor="#CC000000"
                             android:id="@+id/cur_week"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="1dp"
                             android:text="@string/week_display"
-                            android:layout_toRightOf="@id/cur_week_english"
+                            android:layout_toEndOf="@id/cur_week_english"
                             android:layout_alignBottom="@id/cur_week_english" />
                     </RelativeLayout>
                     <TextView
-                        android:textSize="9dp"
+                        android:textSize="9sp"
                         android:textColor="@color/general_light_black"
                         android:id="@+id/course_count"
                         android:layout_width="wrap_content"
@@ -96,18 +101,19 @@
                     android:id="@+id/course_widget_4_4_change_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
+
                     <ImageView
                         android:id="@+id/widget_pre_pager"
                         android:background="@drawable/btn_back_selector"
                         android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerInParent="true" />
+                        android:layout_height="36dp"/>
+
                     <ImageView
                         android:id="@+id/widget_next_pager"
                         android:background="@drawable/btn_next_selector"
                         android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_centerInParent="true" />
+                        android:layout_height="36dp"/>
+
                 </LinearLayout>
             </LinearLayout>
             <ImageView
@@ -131,15 +137,18 @@
         <LinearLayout
             android:orientation="horizontal"
             android:id="@+id/course_widget_4_4_no_course_week_bar"
-            android:background="@drawable/widget_4x2bg_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/course_4_4_week_bar_height" />
+<!--        android:background="@drawable/widget_4x2bg_top"-->
+
         <RelativeLayout
             android:gravity="center"
             android:orientation="vertical"
-            android:background="@drawable/widget_4x4bg_bottom"
+
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+<!--            android:background="@drawable/widget_4x4bg_bottom"-->
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -149,7 +158,7 @@
                     android:layout_height="120dp"
                     android:src="@drawable/ic_state_paper_null_msg" />
                 <TextView
-                    android:textSize="14dp"
+                    android:textSize="14sp"
                     android:textColor="@color/general_dark_black"
                     android:gravity="center"
                     android:id="@+id/widget_txv_no_course_text"
@@ -159,6 +168,7 @@
                     android:text="@string/course_widget_init_tip"
                     android:layout_below="@id/widget_imgv_no_course_icon"
                     android:layout_centerHorizontal="true" />
+
                 <TextView
                     android:textColor="@color/white"
                     android:gravity="center"
@@ -170,9 +180,11 @@
                     android:layout_marginTop="10dp"
                     android:text="登录"
                     android:layout_below="@id/widget_txv_no_course_text" />
+
                 <TextView
                     android:textColor="@color/colorPrimary"
                     android:gravity="center"
+                    android:visibility="invisible"
                     android:id="@+id/widget_btn_enter_visitor_mode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -180,6 +192,7 @@
                     android:text="游客模式"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/widget_btn_enter_treehole" />
+
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>

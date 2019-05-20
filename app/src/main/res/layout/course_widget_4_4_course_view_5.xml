@@ -4,22 +4,24 @@
     android:layout_height="0dp"
     android:layout_weight="5.0">
 
-    <ImageView
-        android:id="@+id/course_widget_4_4_course_view_img"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <TextView
-        android:textSize="10dp"
-        android:textColor="@color/white"
-        android:ellipsize="marquee"
-        android:gravity="center_horizontal"
-        android:id="@+id/course_widget_4_4_course_view_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="2dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginBottom="2dp" />
+<!--    <ImageView-->
+<!--        android:id="@+id/course_widget_4_4_course_view_img"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
+<!--    <TextView-->
+<!--        android:textSize="10dp"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:ellipsize="marquee"-->
+<!--        android:gravity="center_horizontal"-->
+<!--        android:id="@+id/course_widget_4_4_course_view_text"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_marginLeft="2dp"-->
+<!--        android:layout_marginTop="2dp"-->
+<!--        android:layout_marginRight="2dp"-->
+<!--        android:layout_marginBottom="2dp" />-->
+
+    <include layout="@layout/course_widget_4_4_course_view"/>
 
 </FrameLayout>
 

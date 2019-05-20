@@ -80,4 +80,16 @@
     <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot13.jpg" height="330" width="190">
     <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot14.jpg" height="330" width="190">
 </div>
-    
+
+
+# 该项目使用或参考了一下开源库
+[TimetableView](https://github.com/zfman/TimetableView)
+[jsoup](https://github.com/jhy/jsoup)
+[Glide](https://github.com/bumptech/glide)
+[SwitchButton](https://github.com/zcweng/SwitchButton)
+[LSettingView](https://github.com/leonHua/LSettingView)
+[StateButton](https://github.com/niniloveyou/StateButton)
+[AVLoadingIndicatorView](https://github.com/81813780/AVLoadingIndicatorView)
+[SwipeAwayDialog](https://github.com/kakajika/SwipeAwayDialog)
+[AnyLayer](https://github.com/goweii/AnyLayer)
+
