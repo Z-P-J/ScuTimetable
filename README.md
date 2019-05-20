@@ -82,7 +82,7 @@
 </div>
 
 
-# 该项目使用或参考了一下开源库
+# 该项目使用或参考了以下开源库
 [TimetableView](https://github.com/zfman/TimetableView)
 
 [jsoup](https://github.com/jhy/jsoup)
