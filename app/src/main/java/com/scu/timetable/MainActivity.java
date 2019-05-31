@@ -17,15 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.scu.timetable.model.MySubject;
+import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.activity.ActivityCollector;
 import com.scu.timetable.ui.activity.BaseActivity;
 import com.scu.timetable.ui.fragment.DetailDialogFragment;
+import com.scu.timetable.ui.fragment.EvaluationDialogFragment;
 import com.scu.timetable.ui.fragment.SettingsDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
-import com.scu.timetable.utils.FileUtil;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.StatusBarUtil;
 import com.scu.timetable.utils.TimetableHelper;
@@ -41,8 +41,6 @@ import com.zpj.popupmenuview.OptionMenuView;
 import com.zpj.qianxundialoglib.IDialog;
 import com.zpj.qianxundialoglib.QianxunDialog;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +58,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
 
     LinearLayout layout;
     TextView titleTextView;
-    List<MySubject> mySubjects = new ArrayList<>();
+    List<ScuSubject> scuSubjects = new ArrayList<>();
 
     //记录切换的周次，不一定是当前周
     int target = -1;
@@ -102,10 +100,10 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initData() {
-        mySubjects = TimetableHelper.getSubjects(this);
+        scuSubjects = TimetableHelper.getSubjects(this);
 
-        mWeekView.source(mySubjects).showView();
-        mTimetableView.source(mySubjects)
+        mWeekView.source(scuSubjects).showView();
+        mTimetableView.source(scuSubjects)
                 .isShowWeekends(TimetableHelper.isShowWeekends())
                 .isShowNotCurWeek(TimetableHelper.isShowNotCurWeek())
 //                .callback(new ISchedule.OnScrollViewBuildListener() {
@@ -169,10 +167,10 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                         view.getLocationOnScreen(location);
                         testX = location[0] + width / 2;
                         testY = location[1] + height / 2 - StatusBarUtil.getStatusBarHeight(MainActivity.this);
-                        MySubject mySubject = (MySubject) scheduleList.get(0).getScheduleEnable();
+                        ScuSubject scuSubject = (ScuSubject) scheduleList.get(0).getScheduleEnable();
 //                        AnimatorUtil.circleAnimator(test, testX, testY, 500);
                         display(scheduleList);
-                        showSubjectPopupView(view, mySubject);
+                        showSubjectPopupView(view, scuSubject);
                     }
                 })
                 .callback(new ISchedule.OnItemLongClickListener() {
@@ -237,6 +235,12 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                         showRefreshDialog();
                                         break;
                                     case 5:
+                                        EvaluationDialogFragment dialogFragment = new EvaluationDialogFragment();
+                                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                                        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                                        dialogFragment.show(fragmentTransaction, "evaluation");
+                                        break;
+                                    case 6:
                                         showSettingDialogFragment();
                                         break;
                                     default:
@@ -257,7 +261,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                 .show(view);
     }
 
-    private void showSubjectPopupView(final View view, final MySubject mySubject) {
+    private void showSubjectPopupView(final View view, final ScuSubject scuSubject) {
         CustomPopupMenuView.with(MainActivity.this, R.layout.layout_subject_detail)
                 .setOrientation(LinearLayout.VERTICAL)
 //                .setBackgroundAlpha(MainActivity.this, 0.9f)
@@ -276,21 +280,21 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
 //                            TextView courseSequenceNum = itemView.findViewById(R.id.course_sequence_num);
 //                            TextView courseNum = itemView.findViewById(R.id.course_num);
 
-                            courseName.setText(mySubject.getCourseName());
-                            teacherName.setContent(mySubject.getTeacher());
-                            classRoom.setContent(mySubject.getRoom());
-                            classTime.setContent(mySubject.getClassTime());
+                            courseName.setText(scuSubject.getCourseName());
+                            teacherName.setContent(scuSubject.getTeacher());
+                            classRoom.setContent(scuSubject.getRoom());
+                            classTime.setContent(scuSubject.getClassTime());
 
-                            if (!TextUtils.isEmpty(mySubject.getNote())) {
+                            if (!TextUtils.isEmpty(scuSubject.getNote())) {
                                 DetailLayout noteLayout = itemView.findViewById(R.id.layout_note);
                                 noteLayout.setVisibility(View.VISIBLE);
-                                noteLayout.setContent(mySubject.getNote());
+                                noteLayout.setContent(scuSubject.getNote());
                             }
 
                             ImageView note = itemView.findViewById(R.id.subject_note);
                             note.setOnClickListener(v -> {
                                 popupMenuView.dismiss();
-                                showSubjectNote(mySubject);
+                                showSubjectNote(scuSubject);
                             });
                             ImageView more = itemView.findViewById(R.id.subject_more);
                             more.setOnClickListener(v -> {
@@ -300,8 +304,8 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                                 dialogFragment.setCallback(new DetailDialogFragment.Callback() {
                                     @Override
-                                    public MySubject fechSubject() {
-                                        return mySubject;
+                                    public ScuSubject fechSubject() {
+                                        return scuSubject;
                                     }
                                 });
                                 dialogFragment.show(fragmentTransaction, "detail");
@@ -316,7 +320,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                 .show(view, -1);
     }
 
-    private void showSubjectNote(final MySubject subject) {
+    private void showSubjectNote(final ScuSubject subject) {
         QianxunDialog.with(MainActivity.this)
                 .setDialogView(R.layout.layout_subject_note)
                 .setBuildChildListener(new IDialog.OnBuildListener() {

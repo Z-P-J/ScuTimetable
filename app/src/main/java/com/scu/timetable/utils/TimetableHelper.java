@@ -6,7 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.scu.timetable.model.MySubject;
+import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.utils.content.SPHelper;
 
 import org.json.JSONArray;
@@ -92,7 +92,7 @@ public final class TimetableHelper {
         }
     }
 
-    public static List<MySubject> getSubjects(Context context) {
+    public static List<ScuSubject> getSubjects(Context context) {
         try {
             String json = readFromJson(context);
             return getSubjects(json);
@@ -102,8 +102,8 @@ public final class TimetableHelper {
         return new ArrayList<>(0);
     }
 
-    public static List<MySubject> getSubjects(String json) throws Exception {
-        List<MySubject> mySubjectList = new ArrayList<>();
+    public static List<ScuSubject> getSubjects(String json) throws Exception {
+        List<ScuSubject> scuSubjectList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(json).getJSONArray("dateList").getJSONObject(0);
         JSONArray jsonArray = jsonObject.getJSONArray("selectCourseList");
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -139,36 +139,36 @@ public final class TimetableHelper {
                     note = object.getString("note");
                 }
 
-//                    MySubject mySubject = new MySubject("2018-2019学年春", name, room, attendClassTeacher, getWeekList(object.getString("weekDescription")), start, step, day, -1, null);
-                MySubject mySubject = new MySubject();
-                mySubject.setTerm("2018-2019学年春");
-                mySubject.setCourseName(name);
-                mySubject.setClassroom(classroomName);
-                mySubject.setTeachingBuilding(teachingBuildingName);
-                mySubject.setTeacher(attendClassTeacher);
-                mySubject.setRoom(room);
-                mySubject.setWeekDescription(weekDescription);
-                mySubject.setWeekList(getWeekList(weekDescription));
-                mySubject.setStart(start);
-                mySubject.setStep(step);
-                mySubject.setDay(day);
-                mySubject.setColorRandom(-1);
-                mySubject.setTime(null);
-                mySubject.setCourseProperties(coursePropertiesName);
-                mySubject.setCampusName(campusName);
-                mySubject.setCoureNumber(courseNumber);
-                mySubject.setCoureSequenceNumber(courseSequenceNumber);
-                mySubject.setExamType(examTypeName);
-                mySubject.setCourseCategory(courseCategoryName);
-                mySubject.setRestrictedCondition(restrictedCondition);
-                mySubject.setProgramPlan(programPlanName);
-                mySubject.setStudyMode(studyModeName);
-                mySubject.setUnit("" + unit);
-                mySubject.setNote(note);
-                mySubjectList.add(mySubject);
+//                    ScuSubject scuSubject = new ScuSubject("2018-2019学年春", name, room, attendClassTeacher, getWeekList(object.getString("weekDescription")), start, step, day, -1, null);
+                ScuSubject scuSubject = new ScuSubject();
+                scuSubject.setTerm("2018-2019学年春");
+                scuSubject.setCourseName(name);
+                scuSubject.setClassroom(classroomName);
+                scuSubject.setTeachingBuilding(teachingBuildingName);
+                scuSubject.setTeacher(attendClassTeacher);
+                scuSubject.setRoom(room);
+                scuSubject.setWeekDescription(weekDescription);
+                scuSubject.setWeekList(getWeekList(weekDescription));
+                scuSubject.setStart(start);
+                scuSubject.setStep(step);
+                scuSubject.setDay(day);
+                scuSubject.setColorRandom(-1);
+                scuSubject.setTime(null);
+                scuSubject.setCourseProperties(coursePropertiesName);
+                scuSubject.setCampusName(campusName);
+                scuSubject.setCoureNumber(courseNumber);
+                scuSubject.setCoureSequenceNumber(courseSequenceNumber);
+                scuSubject.setExamType(examTypeName);
+                scuSubject.setCourseCategory(courseCategoryName);
+                scuSubject.setRestrictedCondition(restrictedCondition);
+                scuSubject.setProgramPlan(programPlanName);
+                scuSubject.setStudyMode(studyModeName);
+                scuSubject.setUnit("" + unit);
+                scuSubject.setNote(note);
+                scuSubjectList.add(scuSubject);
             }
         }
-        return mySubjectList;
+        return scuSubjectList;
     }
 
 //    public static void writeToJson(Context context, String fileName, String content) throws Exception {
@@ -231,7 +231,7 @@ public final class TimetableHelper {
         return false;
     }
 
-    public static boolean saveNote(Context context, MySubject subject, String note) {
+    public static boolean saveNote(Context context, ScuSubject subject, String note) {
         try {
             String json = readFromJson(context);
             JSONObject jsonObject = new JSONObject(json);

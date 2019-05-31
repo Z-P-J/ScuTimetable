@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @see ScheduleEnable#getSchedule()
  */
-public class MySubject implements ScheduleEnable {
+public class ScuSubject implements ScheduleEnable {
 
     public static final String EXTRAS_ID = "extras_id";
     public static final String EXTRAS_AD_URL = "extras_ad_url";
@@ -116,7 +116,7 @@ public class MySubject implements ScheduleEnable {
         return url;
     }
 
-    public MySubject() {
+    public ScuSubject() {
         // TODO Auto-generated constructor stub
     }
 
@@ -136,14 +136,14 @@ public class MySubject implements ScheduleEnable {
         return term;
     }
 
-    public MySubject(int start, int day) {
+    public ScuSubject(int start, int day) {
         this.start = start;
         this.step = 1;
         this.day = day;
         this.courseName = "";
     }
 
-//    public MySubject(String term, String courseName, String room, String teacher, List<Integer> weekList, int start, int step, int day, int colorRandom, String time) {
+//    public ScuSubject(String term, String courseName, String room, String teacher, List<Integer> weekList, int start, int step, int day, int colorRandom, String time) {
 //        super();
 //        this.term = term;
 //        this.courseName = courseName;
@@ -359,7 +359,7 @@ public class MySubject implements ScheduleEnable {
 
     @Override
     public String toString() {
-        return "MySubject{" +
+        return "ScuSubject{" +
                 "\n\rid=" + id +
                 "\n\rcourseName='" + courseName + '\'' +
                 "\n\rtime='" + time + '\'' +

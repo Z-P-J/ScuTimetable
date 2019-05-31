@@ -1,17 +1,10 @@
 package com.scu.timetable.ui.fragment;
 
 import android.animation.ValueAnimator;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,21 +15,14 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.deadline.statebutton.StateButton;
 import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
-import com.scu.timetable.model.MySubject;
+import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.scu.timetable.utils.ApkUtil;
-import com.scu.timetable.utils.FastBlur;
-import com.scu.timetable.utils.TextUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
-import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.popupmenuview.CustomPopupMenuView;
-import com.zpj.qianxundialoglib.IDialog;
-import com.zpj.qianxundialoglib.QianxunDialog;
 
 public class DetailDialogFragment extends FullscreenDialogFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
 
@@ -63,7 +49,7 @@ public class DetailDialogFragment extends FullscreenDialogFragment implements Vi
     }
 
     private void initView(View view) {
-        MySubject subject = callback.fechSubject();
+        ScuSubject subject = callback.fechSubject();
 
 //        Toolbar toolbar = view.findViewById(R.id.toolbar);
 //        toolbar.setTitle(subject.getCourseName());
@@ -211,7 +197,7 @@ public class DetailDialogFragment extends FullscreenDialogFragment implements Vi
     }
 
     public interface Callback {
-        MySubject fechSubject();
+        ScuSubject fechSubject();
     }
 
 }

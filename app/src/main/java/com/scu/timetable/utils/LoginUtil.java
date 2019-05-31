@@ -76,6 +76,11 @@ public final class LoginUtil {
         if (msg.what == -1) {
             if (callback != null) {
                 String errorMsg = (String) msg.obj;
+                if (errorMsg.contains("badCredentials")) {
+                    Log.d("重新登录", "重新登录");
+                } else if (errorMsg.contains("badCaptcha")) {
+                    Log.d("验证码错误", "验证码错误");
+                }
                 callback.onLoginError(errorMsg);
             }
         } else if (msg.what == 2) {
@@ -109,6 +114,7 @@ public final class LoginUtil {
             msg.what = -1;
             handler.sendMessage(msg);
         }
+        Log.d("captcha", "captcha=" + captcha);
         login(userName, password, captcha);
     }
 
@@ -133,7 +139,7 @@ public final class LoginUtil {
                             .data("j_username", userName)
                             .data("j_password", password)
                             .data("j_captcha", captcha)
-                            .ignoreHttpErrors(true)
+//                            .ignoreHttpErrors(true)
 //                            .followRedirects(false)
                             .execute();
                     Log.d("response.statusCode()=", "" + response.statusCode());
