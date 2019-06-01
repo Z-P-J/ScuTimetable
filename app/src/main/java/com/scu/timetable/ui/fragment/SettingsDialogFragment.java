@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 
 import com.deadline.statebutton.StateButton;
 import com.leon.lib.settingview.LSettingItem;
-import com.scu.timetable.MainActivity;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
@@ -169,11 +167,6 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
     public void setBackgroudAlpha(float alpha) {
         ValueAnimator animator = ValueAnimator.ofFloat(currentAlpha, alpha);
         currentAlpha = alpha;
-//        if (alpha > 0.0f) {
-//            animator = ValueAnimator.ofFloat(0.0f, alpha);;
-//        } else {
-//            ValueAnimator.ofFloat(0.0f, alpha);
-//        }
         animator.setDuration(300);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -284,8 +277,6 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         } else if (id == R.id.item_widget_transparent_mode) {
             TimetableWidgtHelper.toggleTransparentMode(getContext());
         }
-
-//        Toast.makeText(getContext(), "" + isChecked, Toast.LENGTH_SHORT).show();
     }
 
     public void setOnDismissListener(OnDismissListener onDismissListener) {

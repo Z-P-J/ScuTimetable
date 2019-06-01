@@ -9,14 +9,11 @@ import com.scu.timetable.utils.content.SPHelper;
 /**
  * @author Z-P-J
  */
-public class Application extends android.app.Application {
-
-    private static Context context;
+public final class Application extends android.app.Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
-        context = this;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
@@ -24,7 +21,4 @@ public class Application extends android.app.Application {
         SPHelper.init(this);
     }
 
-    public static Context getContext() {
-        return context;
-    }
 }

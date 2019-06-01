@@ -29,6 +29,8 @@ import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
 import com.scu.timetable.utils.LoginUtil;
 import com.zpj.popupmenuview.CustomPopupMenuView;
+import com.zpj.qianxundialoglib.IDialog;
+import com.zpj.qianxundialoglib.QianxunDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +41,7 @@ import java.util.Locale;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class EvaluationDialogFragment extends FullscreenDialogFragment implements View.OnClickListener, LoginUtil.Callback, EvaluationUtil.EvaluationCallback {
+public class EvaluationDialogFragment extends FullscreenDialogFragment implements View.OnClickListener, LoginUtil.LoginCallback, EvaluationUtil.EvaluationCallback {
 
     private FrameLayout background;
 
@@ -54,19 +56,18 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
     private AtomicInteger evaluatedCount = new AtomicInteger(0);
     private AtomicInteger notEvaluatedCount = new AtomicInteger(0);
 
-    private int totalNum;
-
-//    private List<EvaluationBean> evaluationBeanList = new ArrayList<>();
     private Queue<EvaluationBean> evaluationBeanQueue = new LinkedList<>();
 
     private TextView countDownView;
 
-    private static final String countDownText = "%ds后自动进行下一次评教，将应用置于后台休息一下吧(๑‾ ꇴ ‾๑)";
+    private static final String COUNT_DOWN_TEXT = "%ds后自动进行下一次评教，\n将应用置于后台休息一下吧(๑‾ ꇴ ‾๑)";
+
+    private boolean isEvaluating;
 
     private final CountDownTimer timer = new CountDownTimer(60 * 1000 * 2, 1000) {
         @Override
         public void onTick(long millisUntilFinished) {
-            countDownView.setText(String.format(Locale.getDefault(), countDownText, millisUntilFinished / 1000));
+            countDownView.setText(String.format(Locale.getDefault(), COUNT_DOWN_TEXT, millisUntilFinished / 1000));
         }
 
         @Override
@@ -97,38 +98,75 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
         return frameLayout;
     }
 
+    @Override
+    protected boolean onBackPressed() {
+        if (isEvaluating) {
+            QianxunDialog.with(getContext())
+                    .setTitle("确认返回！")
+                    .setTitleTextColor(Color.RED)
+                    .setContent("返回后将终止评教，确认返回？")
+                    .setNegativeButton(new IDialog.OnClickListener() {
+                        @Override
+                        public void onClick(IDialog dialog) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton(new IDialog.OnClickListener() {
+                        @Override
+                        public void onClick(IDialog dialog) {
+                            dialog.dismiss();
+                            timer.cancel();
+                            setCancelable(true);
+                            setSwipeable(true);
+                            setCanceledOnTouchOutside(true);
+                            dismiss();
+                        }
+                    })
+                    .setPositiveButtonTextColor(Color.RED)
+                    .show();
+            return true;
+        } else if (isCancelable()){
+            dismiss();
+            return true;
+        }
+        return false;
+    }
+
     private void initView(View view) {
 
         TextView headerTitle = view.findViewById(R.id.header_title);
+        ImageView backBtn = view.findViewById(R.id.btn_back);
+        backBtn.setOnClickListener(v -> onBackPressed());
+        ImageView infoBtn = view.findViewById(R.id.btn_info);
+        infoBtn.setVisibility(View.VISIBLE);
+        infoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showInfoPopupView(
+                        infoBtn,
+                        "关于一键评教",
+                        "1.一键评教将自动对未评教的教师或助教进行评教。\n" +
+                                "2.由于教务系统服务器的限制，每成功评教一次将等待两分钟。\n" +
+                                "3.教师或助教的主观评价将从默认的十几条评价中随机选择。"
+                );
+            }
+        });
         headerTitle.setText("一键评教");
 
         scrollView = view.findViewById(R.id.scroll_view);
 
         consoleView = view.findViewById(R.id.console_view);
-        consoleLog("请输入验证码，并点击“一键评教”开始评教!");
+        consoleLog("请输入验证码，并点击“一键评教”开始评教");
 
         captchaLayout = view.findViewById(R.id.layout_captcha);
         ImageView imgCatpcha = view.findViewById(R.id.img_captcha);
-        CaptchaFetcher.fetchcaptcha(imgCatpcha);
+        CaptchaFetcher.fetchCaptcha(imgCatpcha);
         TextView changeCatpcha = view.findViewById(R.id.change_captcha);
-        changeCatpcha.setOnClickListener(v -> CaptchaFetcher.fetchcaptcha(imgCatpcha));
+        changeCatpcha.setOnClickListener(v -> CaptchaFetcher.fetchCaptcha(imgCatpcha));
         captchaEdit = view.findViewById(R.id.captcha);
 
         evaluationButton = view.findViewById(R.id.btn_evaluation);
         evaluationButton.setOnClickListener(this);
-    }
-
-    private void initBackground(View view) {
-//        LinearLayout linearLayout = view.findViewById(R.id.container);
-//        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background_login);
-//
-//        Bitmap scaledBitmap = Bitmap.createScaledBitmap(mBitmap,
-//                mBitmap.getWidth() / 4,
-//                mBitmap.getHeight() / 4,
-//                false);
-//        Bitmap blurBitmap = FastBlur.doBlur(scaledBitmap, 20, true);
-//
-//        linearLayout.setBackground(new BitmapDrawable(null, blurBitmap));
     }
 
     public void setBackgroudAlpha(float alpha) {
@@ -203,15 +241,16 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
                 Toast.makeText(getContext(), "验证码为空！", Toast.LENGTH_SHORT).show();
                 return;
             }
-//            LoginUtil.with()
-//                    .setCallback(this)
-//                    .getCookie();
+            isEvaluating = true;
+            setSwipeable(false);
+            setCancelable(false);
+            setCanceledOnTouchOutside(false);
             evaluationButton.setText("评教中...");
             evaluationButton.setClickable(false);
             consoleLog("\n获取评教教师和助教...");
             LoginUtil.with()
-                    .setCallback(this)
-                    .login(captchaEdit.getText().toString());
+                    .setLoginCallback(this)
+                    .checkCaptcha(captchaEdit.getText().toString());
             captchaLayout.setVisibility(View.GONE);
             captchaEdit.setText("");
         }
@@ -231,21 +270,25 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
 
     @Override
     public void onLoginFailed() {
-        consoleLog("出错了!", Color.RED);
+        consoleLog("出错了( ˃ ˄ ˂̥̥ )", Color.RED);
         notEvaluatedCount.incrementAndGet();
+        timer.cancel();
 //        checkFinished();
     }
 
     @Override
     public void onLoginError(String errorMsg) {
-        consoleLog("出错了：" + errorMsg, Color.RED);
+        consoleLog("出错了( ˃ ˄ ˂̥̥ ) " + errorMsg, Color.RED);
         notEvaluatedCount.incrementAndGet();
+        timer.cancel();
 //        checkFinished();
     }
 
     @Override
-    public void onGetTimetable(String json) {
-    }
+    public void onGetTimetable(String json) { }
+
+    @Override
+    public void onGetSemesters(JSONArray jsonArray) { }
 
     @Override
     public void onGetEvaluationSubjects(String json) {
@@ -255,7 +298,7 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
             JSONObject jsonObject = new JSONObject(json);
             int notFinishedNum = jsonObject.getInt("notFinishedNum");
             JSONArray jsonArray = jsonObject.getJSONArray("data");
-            totalNum = jsonArray.length();
+            int totalNum = jsonArray.length();
             consoleLog("共" + totalNum + "人，已评教" + (totalNum - notFinishedNum) + "人，未评教" + notFinishedNum + "人", Color.BLACK);
             for (int i = 0; i < totalNum; i++) {
                 JSONObject evaluationObj = jsonArray.getJSONObject(i);
@@ -338,7 +381,7 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
     private void newEvaluation() {
         if (hasEvaluation()) {
             countDownView = new TextView(getContext());
-            countDownView.setText(String.format(Locale.getDefault(), countDownText, 120));
+            countDownView.setText(String.format(Locale.getDefault(), COUNT_DOWN_TEXT, 120));
             consoleView.addView(countDownView);
             timer.start();
             EvaluationUtil.with(this).post(scrollToBottomRunnable);
@@ -359,6 +402,10 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
         if (evaluationBeanQueue.isEmpty()) {
             consoleLog("一键评教完成！ 已评教" + evaluatedCount.get() + "人，评教失败" + notEvaluatedCount.get() + "人");
             evaluationButton.setText("评教完成");
+            isEvaluating = false;
+            setSwipeable(true);
+            setCancelable(true);
+            setCanceledOnTouchOutside(true);
             return false;
         }
         return true;
@@ -369,7 +416,6 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
         textView.setText(msg);
         consoleView.addView(textView);
         EvaluationUtil.with(this).post(scrollToBottomRunnable);
-//        consoleView.setText(consoleView.getText().toString() + "\n" + msg);
     }
 
     private void consoleLog(String msg, int color) {
@@ -378,22 +424,6 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
         textView.setTextColor(color);
         consoleView.addView(textView);
         EvaluationUtil.with(this).post(scrollToBottomRunnable);
-//        String newStr= consoleView.getText().toString() + "\n" + msg;
-//        SpannableStringBuilder spannable = new SpannableStringBuilder(newStr);
-//        spannable.setSpan(new ForegroundColorSpan(color), newStr.length() - msg.length(), newStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        consoleView.setText(spannable);
     }
-
-//    private void checkFinished() {
-//        int num1 = evaluatedCount.get();
-//        int mu2 = notEvaluatedCount.get();
-//        Log.d("checkFinished", "num1=" + num1);
-//        Log.d("checkFinished", "mu2=" + mu2);
-//        Log.d("checkFinished", "totalNum=" + totalNum);
-//        if (num1 + mu2 == totalNum) {
-//            consoleLog("一键评教完成！ 已评教" + evaluatedCount.get() + "人，评教失败" + notEvaluatedCount.get() + "人");
-//            evaluationButton.setText("评教完成");
-//        }
-//    }
 
 }

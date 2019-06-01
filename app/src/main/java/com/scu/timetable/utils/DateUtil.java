@@ -6,6 +6,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * @author Z-P-J
+ */
 public final class DateUtil {
 
     private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
@@ -50,7 +53,6 @@ public final class DateUtil {
     }
 
     public static int computeWeek(Date startDate, Date endDate) {
-
         int weeks = 0;
 
         Calendar beginCalendar = Calendar.getInstance();
@@ -67,7 +69,6 @@ public final class DateUtil {
         System.out.println("weekIndex=" + weekIndex);
 
         endCalendar.add(Calendar.DAY_OF_YEAR, 7 - weekIndex);
-
 
         while (beginCalendar.before(endCalendar)) {
             System.out.println("111111111111111");
@@ -89,9 +90,6 @@ public final class DateUtil {
                 weeks += 1;
             }
         }
-
-
-
         return weeks;
     }
 

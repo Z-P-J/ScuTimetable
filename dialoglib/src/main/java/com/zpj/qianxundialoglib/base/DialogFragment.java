@@ -330,9 +330,14 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
                 @Override
                 public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                     boolean flag = keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN;
-                    if (flag && mCancelable) {
+                    if (flag) {
 //                        initContentOutAnimator(view);
-                        dismiss();
+                        if (onBackPressed()) {
+                            return true;
+                        }
+                        if (mCancelable) {
+                            dismiss();
+                        }
                     }
                     return flag;
                 }
@@ -434,5 +439,9 @@ public class DialogFragment extends Fragment implements OnCancelListener, OnDism
             this.mDialog = null;
         }
 
+    }
+
+    protected boolean onBackPressed() {
+        return false;
     }
 }

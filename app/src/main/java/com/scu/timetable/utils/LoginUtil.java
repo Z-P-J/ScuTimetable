@@ -1,21 +1,26 @@
 package com.scu.timetable.utils;
 
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.scu.timetable.LoginActivity;
-import com.scu.timetable.MainActivity;
 import com.scu.timetable.utils.content.SPHelper;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Z-P-J
@@ -38,18 +43,19 @@ public final class LoginUtil {
         }
     }
 
-    public interface Callback {
+    public interface LoginCallback {
         void onGetCookie(String cookie);
         void onLoginSuccess();
         void onLoginFailed();
 //        void onLoginError(Throwable e);
         void onLoginError(String errorMsg);
         void onGetTimetable(String json);
+        void onGetSemesters(JSONArray jsonArray);
     }
 
     private final Handler handler = new MyHandler(this);
 
-    private Callback callback;
+    private LoginCallback loginCallback;
 
     private LoginUtil() {
 
@@ -59,8 +65,8 @@ public final class LoginUtil {
         return new LoginUtil();
     }
 
-    public LoginUtil setCallback(Callback callback) {
-        this.callback = callback;
+    public LoginUtil setLoginCallback(LoginCallback loginCallback) {
+        this.loginCallback = loginCallback;
         return this;
     }
 
@@ -74,132 +80,197 @@ public final class LoginUtil {
 
     private void handleMessage(Message msg) {
         if (msg.what == -1) {
-            if (callback != null) {
+            if (loginCallback != null) {
                 String errorMsg = (String) msg.obj;
                 if (errorMsg.contains("badCredentials")) {
                     Log.d("重新登录", "重新登录");
                 } else if (errorMsg.contains("badCaptcha")) {
                     Log.d("验证码错误", "验证码错误");
                 }
-                callback.onLoginError(errorMsg);
+                loginCallback.onLoginError(errorMsg);
             }
         } else if (msg.what == 2) {
             String cookie = (String) msg.obj;
             SPHelper.putString("cookie", cookie);
-            if (callback != null) {
-                callback.onGetCookie(cookie);
+            if (loginCallback != null) {
+                loginCallback.onGetCookie(cookie);
             }
         } else if (msg.what == 3) {
-            if (callback != null) {
-                callback.onLoginFailed();
+            if (loginCallback != null) {
+                loginCallback.onLoginFailed();
             }
         } else if (msg.what == 4) {
-            if (callback != null) {
-                callback.onLoginSuccess();
+            if (loginCallback != null) {
+                loginCallback.onLoginSuccess();
             }
         } else if (msg.what == 5) {
-            if (callback != null) {
+            if (loginCallback != null) {
                 String json = (String) msg.obj;
-                callback.onGetTimetable(json);
+                loginCallback.onGetTimetable(json);
+            }
+        } else if (msg.what == 6) {
+            if (loginCallback != null) {
+                JSONArray jsonArray = (JSONArray) msg.obj;
+                loginCallback.onGetSemesters(jsonArray);
             }
         }
     }
 
-    public void login(final String captcha) {
-        String userName = SPHelper.getString("user_name", "");
-        String password = SPHelper.getString("password", "");
-        if (userName.isEmpty() || password.isEmpty()) {
-            Message msg = new Message();
-            msg.obj = "You must has logined!";
-            msg.what = -1;
-            handler.sendMessage(msg);
-        }
-        Log.d("captcha", "captcha=" + captcha);
-        login(userName, password, captcha);
+    private void sendMessage(int what, Object obj) {
+        Message msg = new Message();
+        msg.what = what;
+        msg.obj = obj;
+        handler.sendMessage(msg);
     }
 
-    public void login(final String userName, final String password, final String captcha) {
-        final String cookie = SPHelper.getString("cookie", "");
-        if (cookie.isEmpty()) {
-            Message msg = new Message();
-            msg.obj = "You must getCookie first!";
-            msg.what = -1;
-            handler.sendMessage(msg);
-            return;
-        }
-        new Thread() {
+    public void checkCaptcha(final String captcha) {
+        ExecutorHelper.submit(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Connection.Response response = Jsoup.connect("http://202.115.47.141/j_spring_security_check")
-                            .method(Connection.Method.POST)
-                            .header("Cookie", cookie)
-                            .userAgent(TimetableHelper.UA)
-                            .header("Referer", "http://202.115.47.141/login")
-                            .data("j_username", userName)
-                            .data("j_password", password)
-                            .data("j_captcha", captcha)
-//                            .ignoreHttpErrors(true)
-//                            .followRedirects(false)
-                            .execute();
-                    Log.d("response.statusCode()=", "" + response.statusCode());
-                    Log.d("body=", "" + response.body());
-                    if (response.statusCode() != 200 || response.body().contains("badCredentials")) {
-                        Message msg = new Message();
-                        msg.what = 3;
-                        handler.sendMessage(msg);
-                    } else {
-                        Message msg = new Message();
-                        msg.what = 4;
-                        handler.sendMessage(msg);
-                        Document document = Jsoup.parse(response.body());
-                        Elements elements = document.select("li");
-                        String text = elements.select(".light-red").get(0).select("a").get(0).text();
-                        Log.d("text", "text=" + text);
-                        text = text.substring(text.indexOf("第"));
-                        text = text.substring(1, text.indexOf("周"));
-                        Log.d("text", "text=" + text);
-                        int currentWeek = Integer.parseInt(text);
-                        TimetableHelper.setCurrentWeek(currentWeek);
-                        TimetableHelper.setCurrentDate(DateUtil.currentDate());
+                    securityCheck(captcha);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    sendMessage(-1, e.getMessage());
+                }
+            }
+        });
+    }
 
-                        //通过以下链接可获取当前学期code
-                        //http://202.115.47.141/main/academicInfo
+    private Connection.Response securityCheck(final String captcha) throws IOException {
+        String userName = SPHelper.getString("user_name", "");
+        String password = SPHelper.getString("password", "");
+        if (userName.isEmpty() || password.isEmpty()) {
+            sendMessage(-1, "You have to log in first.");
+            return null;
+        }
+        final String cookie = SPHelper.getString("cookie", "");
+        if (cookie.isEmpty()) {
+            sendMessage(-1, "You have to get the cookie first.");
+            return null;
+        }
+        Connection.Response response = Jsoup.connect("http://202.115.47.141/j_spring_security_check")
+                .method(Connection.Method.POST)
+                .header("Cookie", cookie)
+                .userAgent(TimetableHelper.UA)
+                .header("Referer", "http://202.115.47.141/login")
+                .data("j_username", userName)
+                .data("j_password", password)
+                .data("j_captcha", captcha)
+                .execute();
+        if (response.statusCode() != 200 || response.body().contains("badCredentials")) {
+            sendMessage(3, null);
+            return null;
+        } else {
+            sendMessage(4, null);
+            return response;
+        }
+    }
 
-                        //http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback
+    private String getSemesters() throws IOException, JSONException {
+        Document document = Jsoup.connect("http://zhjw.scu.edu.cn/student/courseSelect/calendarSemesterCurriculum/index")
+                .header("cookie", SPHelper.getString("cookie", ""))
+                .header("Referer", "http://zhjw.scu.edu.cn/")
+                .get();
+        Elements elements = document.getElementById("planCode").select("option");
+        JSONArray jsonArray = new JSONArray();
+        String currentSemesterCode = "2018-2019-2-1";
+        String currentSenesterName  = "2018-2019学年春(当前)";
+        for (Element element : elements) {
+            JSONObject jsonObject = new JSONObject();
+            String semesterName = element.text().replaceAll("#", "").trim();
+            String semesterCode = element.val();
+            if (semesterName.contains("当前")) {
+                currentSemesterCode = semesterCode;
+                currentSenesterName = semesterName;
+            }
+            jsonObject.put("name", semesterName);
+            jsonObject.put("code", semesterCode);
+            jsonArray.put(jsonObject);
+        }
+        sendMessage(6, jsonArray);
+        TimetableHelper.setCurrentSemester(currentSemesterCode, currentSenesterName);
+        return currentSemesterCode;
+    }
 
-                        response = Jsoup.connect("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
-                                .method(Connection.Method.POST)
-                                .userAgent(TimetableHelper.UA)
-                                .ignoreContentType(true)
-                                .header("Cookie", cookie)
-                                .header("Referer", "http://202.115.47.141/student/courseSelect/calendarSemesterCurriculum/index")
-                                .data("planCode", "2018-2019-2-1")
-                                .execute();
+    private void getTimetable(final String currentSemesterCode) throws IOException {
+        Connection.Response response = Jsoup.connect("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
+                .method(Connection.Method.POST)
+                .userAgent(TimetableHelper.UA)
+                .ignoreContentType(true)
+                .header("Cookie", SPHelper.getString("cookie", ""))
+                .header("Referer", "http://202.115.47.141/student/courseSelect/calendarSemesterCurriculum/index")
+                .data("planCode", currentSemesterCode)
+                .execute();
 
-                        Log.d("课程信息", "" + response.body());
+        Log.d("课程信息", "" + response.body());
 
-                        String json = response.body().trim();
-                        if (json.startsWith("{\"allUnits\"")) {
-                            msg = new Message();
-                            msg.obj = json;
-                            msg.what = 5;
-                            handler.sendMessage(msg);
-                        }
+        String json = response.body().trim();
+        if (json.startsWith("{\"allUnits\"")) {
+            sendMessage(5, json);
+        }
+    }
+
+    private void getCurrentWeek(Connection.Response response) {
+        Document document = Jsoup.parse(response.body());
+        Elements elements = document.select("li");
+        String text = elements.select(".light-red").get(0).select("a").get(0).text();
+        Log.d("text", "text=" + text);
+        text = text.substring(text.indexOf("第"));
+        text = text.substring(1, text.indexOf("周"));
+        Log.d("text", "text=" + text);
+        int currentWeek = Integer.parseInt(text);
+        TimetableHelper.setCurrentWeek(currentWeek);
+        TimetableHelper.setCurrentDate(DateUtil.currentDate());
+    }
+
+    public void login(final String captcha) {
+        Log.d("captcha", "captcha=" + captcha);
+        ExecutorHelper.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Connection.Response response = securityCheck(captcha);
+                    if (response != null) {
+                        getCurrentWeek(response);
+                        String currentSemesterCode = getSemesters();
+                        getTimetable(currentSemesterCode);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Message msg = new Message();
-                    msg.obj = e.getMessage();
-                    msg.what = -1;
-                    handler.sendMessage(msg);
+                    sendMessage(-1, e.getMessage());
                 }
             }
-        }.start();
+        });
+    }
+
+    public void login(final String captcha, final String semesterCode) {
+        Log.d("captcha", "captcha=" + captcha);
+        ExecutorHelper.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Connection.Response response = securityCheck(captcha);
+                    if (response != null) {
+                        getCurrentWeek(response);
+                        getTimetable(semesterCode);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    sendMessage(-1, e.getMessage());
+                }
+            }
+        });
+    }
+
+    public void login(final String userName, final String password, final String captcha) {
+        SPHelper.putString("user_name", userName);
+        SPHelper.putString("password", password);
+        login(captcha);
     }
 
     public void getCookie() {
-        new Thread(new Runnable() {
+        ExecutorHelper.submit(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -210,22 +281,15 @@ public final class LoginUtil {
                             .execute();
                     Log.d("body=", "" + response.body());
                     Log.d("headers", response.headers().toString());
-//                    Set-Cookie=JSESSIONID=bcaJAyI5zQLik_Df2jtQw
                     String cookie = response.header("Set-Cookie");
                     Log.d("cookie", "cookie=" + cookie);
-                    Message msg = new Message();
-                    msg.what = 2;
-                    msg.obj = cookie;
-                    handler.sendMessage(msg);
+                    sendMessage(2, cookie);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Message msg = new Message();
-                    msg.obj = e.getMessage();
-                    msg.what = -1;
-                    handler.sendMessage(msg);
+                    sendMessage(-1, e.getMessage());
                 }
             }
-        }).start();
+        });
     }
 
 }

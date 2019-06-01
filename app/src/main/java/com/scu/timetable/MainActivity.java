@@ -41,6 +41,8 @@ import com.zpj.popupmenuview.OptionMenuView;
 import com.zpj.qianxundialoglib.IDialog;
 import com.zpj.qianxundialoglib.QianxunDialog;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,8 +69,6 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
 
     private int currentWeek;
 
-    private CardView test;
-
     private int testX, testY;
 
     @Override
@@ -80,8 +80,6 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         expandLessDrawable = getResources().getDrawable(R.drawable.ic_expand_less_white_24dp);
 
         currentWeek = TimetableHelper.getCurrentWeek();
-
-        test = findViewById(R.id.test);
 
         ImageView settings = findViewById(R.id.settins);
         settings.setOnClickListener(this);
@@ -365,11 +363,11 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                         TextView loadingDialogText = view.findViewById(R.id.loading_dialog_text);
 
                         ImageView imgCatpcha = view.findViewById(R.id.img_captcha);
-                        CaptchaFetcher.fetchcaptcha(imgCatpcha);
+                        CaptchaFetcher.fetchCaptcha(imgCatpcha);
                         ImageView btnClose = view.findViewById(R.id.btn_close);
                         btnClose.setOnClickListener(v -> dialog.dismiss());
                         TextView changeCatpcha = view.findViewById(R.id.change_captcha);
-                        changeCatpcha.setOnClickListener(v -> CaptchaFetcher.fetchcaptcha(imgCatpcha));
+                        changeCatpcha.setOnClickListener(v -> CaptchaFetcher.fetchCaptcha(imgCatpcha));
                         TextView btnRefresh = view.findViewById(R.id.btn_refresh);
                         EditText captchaEdit = view.findViewById(R.id.captcha);
 
@@ -399,7 +397,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
 //                            }
                             statusLayout.setVisibility(View.VISIBLE);
                             LoginUtil.with()
-                                    .setCallback(new LoginUtil.Callback() {
+                                    .setLoginCallback(new LoginUtil.LoginCallback() {
 
                                         private void onError() {
                                             loadingDialogText.setText("登录失败！");
@@ -410,7 +408,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
 //                                            }
                                             statusLayout.setVisibility(View.GONE);
                                             Toast.makeText(MainActivity.this, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
-                                            CaptchaFetcher.fetchcaptcha(imgCatpcha);
+                                            CaptchaFetcher.fetchCaptcha(imgCatpcha);
                                             captchaEdit.setText("");
                                             if (dialog instanceof QianxunDialog) {
                                                 QianxunDialog qianxunDialog = ((QianxunDialog) dialog);
@@ -420,8 +418,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                         }
 
                                         @Override
-                                        public void onGetCookie(String cookie) {
-                                        }
+                                        public void onGetCookie(String cookie) { }
 
                                         @Override
                                         public void onLoginSuccess() {
@@ -449,6 +446,15 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                             dialog.dismiss();
                                             initTimetableView();
                                             initData();
+                                        }
+
+                                        @Override
+                                        public void onGetSemesters(JSONArray jsonArray) {
+                                            try {
+                                                TimetableHelper.writeSemesterFile(MainActivity.this, jsonArray.toString());
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     })
                                     .login(captcha);
@@ -573,10 +579,6 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onBackPressed() {
-        if (test.getVisibility() == View.VISIBLE) {
-            AnimatorUtil.circleAnimator(test, testX, testY, 500);
-            return;
-        }
         if (TimetableHelper.isVisitorMode()) {
             super.onBackPressed();
             finish();

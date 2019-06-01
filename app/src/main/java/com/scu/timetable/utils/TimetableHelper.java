@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.scu.timetable.MainActivity;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.utils.content.SPHelper;
 
@@ -23,6 +24,7 @@ import java.util.List;
 
 /**
  * @author Z-P-J
+ * 课程表工具类
  */
 public final class TimetableHelper {
 
@@ -42,59 +44,16 @@ public final class TimetableHelper {
 
     private static final String FILE_NAME = "timetable.json";
     private static final String VISITOR_FILE_NAME = "timetable_visitor.json";
+    private static final String SEMESTER_FILE_NAME = "timetable_semester.json";
 
     private TimetableHelper() {
 
     }
 
-//    private static boolean hasJsonFile(Context context) {
-////        String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
-//        File filesDir = context.getFilesDir();
-//        if (filesDir.exists()) {
-//            for (File file : filesDir.listFiles()) {
-//                if (file.getName().equals(FILE_NAME)) {
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-//    }
-
-    private static boolean hasJsonFile(Context context, String fileName) {
-//        String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
-        File filesDir = context.getFilesDir();
-        if (filesDir.exists()) {
-            for (File file : filesDir.listFiles()) {
-                if (file.getName().equals(fileName)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private static String readFromJson(Context context) throws FileNotFoundException {
-        String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
-        FileInputStream inStream = null;
-        inStream = context.openFileInput(fileName);
-        //输出到内存
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        int len = 0;
-        byte[] buffer = new byte[1024];
-        try {
-            while ((len = inStream.read(buffer)) != -1) {
-                outStream.write(buffer, 0, len);
-            }
-            byte[] contentByte = outStream.toByteArray();
-            return new String(contentByte);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     public static List<ScuSubject> getSubjects(Context context) {
         try {
-            String json = readFromJson(context);
+            String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
+            String json = FileUtil.readFromJson(context, fileName);
             return getSubjects(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,8 +97,6 @@ public final class TimetableHelper {
                 if (object.has("note")) {
                     note = object.getString("note");
                 }
-
-//                    ScuSubject scuSubject = new ScuSubject("2018-2019学年春", name, room, attendClassTeacher, getWeekList(object.getString("weekDescription")), start, step, day, -1, null);
                 ScuSubject scuSubject = new ScuSubject();
                 scuSubject.setTerm("2018-2019学年春");
                 scuSubject.setCourseName(name);
@@ -170,12 +127,6 @@ public final class TimetableHelper {
         }
         return scuSubjectList;
     }
-
-//    public static void writeToJson(Context context, String fileName, String content) throws Exception {
-//        FileOutputStream outStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-//        outStream.write(content.getBytes());
-//        outStream.close();
-//    }
 
     public static void writeToJson(Context context, String content) throws Exception {
         String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
@@ -215,7 +166,7 @@ public final class TimetableHelper {
     }
 
     public static boolean isLogined(Context context) {
-        if (SPHelper.getBoolean("logined", false) && hasJsonFile(context, FILE_NAME)) {
+        if (SPHelper.getBoolean("logined", false) && FileUtil.hasJsonFile(context, FILE_NAME)) {
             String date = getCurrentDate();
             if (!date.isEmpty()) {
                 Date oldDate = DateUtil.parse(date);
@@ -233,7 +184,8 @@ public final class TimetableHelper {
 
     public static boolean saveNote(Context context, ScuSubject subject, String note) {
         try {
-            String json = readFromJson(context);
+            String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
+            String json = FileUtil.readFromJson(context, fileName);
             JSONObject jsonObject = new JSONObject(json);
             JSONArray jsonArray = jsonObject.getJSONArray("dateList")
                     .getJSONObject(0)
@@ -260,8 +212,6 @@ public final class TimetableHelper {
                         }
                     }
                 }
-
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -372,7 +322,7 @@ public final class TimetableHelper {
 
     public static boolean startVisitorMode(Context context) {
         SPHelper.putBoolean("visitor_mode", true);
-        if (!hasJsonFile(context, VISITOR_FILE_NAME)) {
+        if (!FileUtil.hasJsonFile(context, VISITOR_FILE_NAME)) {
             try {
                 TimetableHelper.writeToJson(context, FileUtil.readAssetFile(context, "timetable.json"));
                 return true;
@@ -389,5 +339,21 @@ public final class TimetableHelper {
         SPHelper.putBoolean("visitor_mode", false);
     }
 
+    static void setCurrentSemester(final String currentSemesterCode, final String currentSenesterName) {
+        SPHelper.putString("current_semester_code", currentSemesterCode);
+        SPHelper.putString("current_semester_name", currentSenesterName);
+    }
+
+    public static void writeSemesterFile(Context context, String json) throws Exception {
+        FileUtil.writeToJson(context, SEMESTER_FILE_NAME, json);
+    }
+
+    public static String getCurrentSemesterCode() {
+        return SPHelper.getString("current_semester_code", "2018-2019-2-1");
+    }
+
+    public static String getCurrentSemesterName() {
+        return SPHelper.getString("current_semester_name", "2018-2019学年春(当前)");
+    }
 
 }

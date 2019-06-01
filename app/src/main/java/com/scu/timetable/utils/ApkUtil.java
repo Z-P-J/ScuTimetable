@@ -23,7 +23,7 @@ public final class ApkUtil {
         return versionName;
     }
 
-    public static synchronized int compareVersions(String oldVersion, String newVersion) {
+    public static synchronized int compareVersion(String oldVersion, String newVersion) {
         //返回结果: -2 错误,-1 ,0 ,1
         int result = 0;
         String matchStr = "[0-9]+(\\.[0-9]+)*";

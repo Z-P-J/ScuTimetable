@@ -11,26 +11,17 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.jsoup.select.Selector;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Z-P-J
  * @date 2019/5/31 13:53
  */
-public class EvaluationUtil {
+public final class EvaluationUtil {
 
     private static final String[] TEACHER_SUBJECTIVE_EVALUATIONS = {
             "老师上课时备课充分，语言流畅，思路清晰，课堂上有许多生动的案例分析，课堂互动时间也很多。",
@@ -76,9 +67,6 @@ public class EvaluationUtil {
         }
     }
 
-//    private Executor executor = Executors.newScheduledThreadPool(5);
-    private ExecutorService service = new ThreadPoolExecutor(5, 10, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-
     private final Handler handler = new MyHandler(this);
 
     private EvaluationCallback callback;
@@ -93,10 +81,6 @@ public class EvaluationUtil {
         void onEvaluationSuccess(String msg);
     }
 
-    private EvaluationUtil() {
-
-    }
-
     private EvaluationUtil(EvaluationCallback callback) {
         this.callback = callback;
     }
@@ -108,22 +92,8 @@ public class EvaluationUtil {
         return evaluationUtil;
     }
 
-//    private synchronized static EvaluationUtil getInstance() {
-//        if (evaluationUtil == null) {
-//            evaluationUtil = new EvaluationUtil();
-//        }
-//        return evaluationUtil;
-//    }
-//
-//    public EvaluationUtil setEvaluationCallback(EvaluationCallback callback) {
-//        if (callback == null) {
-//            this.callback = callback;
-//        }
-//        return this;
-//    }
-
     public void getEvaluationSubjects() {
-        service.submit(new Runnable() {
+        ExecutorHelper.submit(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -133,47 +103,19 @@ public class EvaluationUtil {
                             .ignoreHttpErrors(true)
                             .ignoreContentType(true)
                             .execute();
-                    Message msg = new Message();
-                    msg.obj = doc.body();
-                    msg.what = 1;
-                    handler.sendMessage(msg);
+                    sendMessage(1, doc.body());
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Message msg = new Message();
-                    msg.obj = e.getMessage();
-                    msg.what = -1;
-                    handler.sendMessage(msg);
+                    sendMessage(-1, e.getMessage());
                 }
             }
         });
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    Connection.Response doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
-//                            .header("cookie", SPHelper.getString("cookie", ""))
-//                            .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
-//                            .ignoreHttpErrors(true)
-//                            .ignoreContentType(true)
-//                            .execute();
-//                    Message msg = new Message();
-//                    msg.obj = doc.body();
-//                    msg.what = 1;
-//                    handler.sendMessage(msg);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    Message msg = new Message();
-//                    msg.obj = e.getMessage();
-//                    msg.what = -1;
-//                    handler.sendMessage(msg);
-//                }
-//            }
-//        }).start();
     }
 
     public void getEvaluationPage(final String evaluatedPeople, final String evaluatedPeopleNumber,
-                                  final String questionnaireCode, final String questionnaireName, final String evaluationContentNumber, final String evaluationContent) {
-        service.submit(new Runnable() {
+                                  final String questionnaireCode, final String questionnaireName,
+                                  final String evaluationContentNumber, final String evaluationContent) {
+        ExecutorHelper.submit(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -194,18 +136,8 @@ public class EvaluationUtil {
                     Log.d("table", "table=" + table);
                     Elements inputs = table.select("input.ace");
                     Log.d("inputs", "inputs=" + inputs.toString());
-//                    Map<String, String> map = new HashMap<>();
-//                    for (Element input : inputs) {
-//                        String name = input.attr("name");
-//                        Log.d("name", name);
-//                        if (map.containsKey(name)) {
-//                            continue;
-//                        }
-//                        map.put(name, "10_1");
-//                    }
 
                     if (!tokenValue.isEmpty()) {
-//                        String[] randomChoices = getRandomChoices();
                         Connection connection = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
                                 .method(Connection.Method.POST)
                                 .followRedirects(false)
@@ -221,8 +153,8 @@ public class EvaluationUtil {
                                 .ignoreContentType(true);
                         Map<String, String> map = new HashMap<>();
 
-                        int randomNum1 = (int) (Math.random() * inputs.size());
-                        int randomNum2 = (int) (Math.random() * inputs.size());
+                        int randomNum1 = (int) (Math.random() * inputs.size()) / 5;
+                        int randomNum2 = (int) (Math.random() * inputs.size()) / 5;
                         int count = 0;
                         for (Element input : inputs) {
                             String name = input.attr("name");
@@ -236,32 +168,22 @@ public class EvaluationUtil {
                                 connection.data(name, "10_1");
                             }
                             map.put(name, "");
+                            count++;
                         }
                         Log.d("map", "map.size=" + map.size());
 
                         Connection.Response response = connection.execute();
                         Log.d("evaluation", "result=" + response.body());
-                        Message msg = new Message();
-                        msg.obj = questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教成功！";;
-                        msg.what = 4;
-                        handler.sendMessage(msg);
+                        sendMessage(4, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教成功！");
                         return;
                     }
-
-                    Message msg = new Message();
-                    msg.obj = questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！";
-                    msg.what = 3;
-                    handler.sendMessage(msg);
+                    sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！");
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Message msg = new Message();
-                    msg.obj = questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教出错了！ 错误信息：" + e.getMessage();
-                    msg.what = -1;
-                    handler.sendMessage(msg);
+                    sendMessage(-1, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教出错了！ 错误信息：" + e.getMessage());
                 }
             }
         });
-        //        new Thread().start();
     }
 
     private String getRandomEvaluation(String questionnaireName) {
@@ -271,21 +193,15 @@ public class EvaluationUtil {
         return isAssistantEvaluation ? ASSISTANT_SUBJECTIVE_EVALUATIONS[random] : TEACHER_SUBJECTIVE_EVALUATIONS[random];
     }
 
-    private String[] getRandomChoices() {
-        String[] choices = new String[6];
-        int length = choices.length;
-        for (int i = 0; i< length; i++) {
-            choices[i] = "10_1";
-        }
-        for (int i = 0; i < 2; i++) {
-            int random = (int) (Math.random() * length);
-            choices[random] = "10_0.8";
-        }
-        return choices;
-    }
-
     public void post(Runnable r) {
         handler.post(r);
+    }
+
+    private void sendMessage(int what, Object obj) {
+        Message msg = new Message();
+        msg.what = what;
+        msg.obj = obj;
+        handler.sendMessage(msg);
     }
 
     private void handleMessage(Message msg) {

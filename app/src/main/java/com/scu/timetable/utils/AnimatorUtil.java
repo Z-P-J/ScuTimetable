@@ -84,37 +84,7 @@ public final class AnimatorUtil {
     }
 
     public static void hideViewAnimator(final View view, long duration, AnimatorListener listener) {
-
         AnimatorSet set = new AnimatorSet();
-
-//		ValueAnimator animator = ValueAnimator.ofFloat(0, w);
-//		animator.addUpdateListener(new AnimatorUpdateListener() {
-//
-//			@Override
-//			public void onAnimationUpdate(ValueAnimator animation) {
-//				float value = (Float) animation.getAnimatedValue();
-//				MarginLayoutParams params = (MarginLayoutParams) view
-//						.getLayoutParams();
-//				params.leftMargin = (int) value;
-//				params.rightMargin = (int) value;
-//				view.setLayoutParams(params);
-//			}
-//		});
-
-//		ValueAnimator animator4 = ValueAnimator.ofFloat(h, 0);
-//		animator.addUpdateListener(new AnimatorUpdateListener() {
-//
-//			@Override
-//			public void onAnimationUpdate(ValueAnimator animation) {
-//				float value = (Float) animation.getAnimatedValue();
-//				MarginLayoutParams params = (MarginLayoutParams) view
-//						.getLayoutParams();
-//				params.topMargin = (int) value;
-//				params.bottomMargin = (int) value;
-//				view.setLayoutParams(params);
-//			}
-//		});
-
         ObjectAnimator animator2 = ObjectAnimator.ofFloat(view,
                 "scaleX", 1f, 0.0f);
         ObjectAnimator animator3 = ObjectAnimator.ofFloat(view,
@@ -153,7 +123,6 @@ public final class AnimatorUtil {
 
     public static void circleAnimator(final View view, int x, int y, int duration) {
         //隐藏
-
         if (view.getVisibility() == View.VISIBLE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 final Animator animatorHide = ViewAnimationUtils.createCircularReveal(view,

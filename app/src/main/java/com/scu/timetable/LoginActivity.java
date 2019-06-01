@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,17 +18,18 @@ import android.widget.Toast;
 import com.scu.timetable.ui.activity.BaseActivity;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
-import com.scu.timetable.utils.FileUtil;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.popupmenuview.CustomPopupMenuView;
 
+import org.json.JSONArray;
+
 /**
  * @author Z-P-J
  * @date 2019
  */
-public final class LoginActivity extends BaseActivity implements View.OnClickListener, LoginUtil.Callback {
+public final class LoginActivity extends BaseActivity implements View.OnClickListener, LoginUtil.LoginCallback {
 
     private EditText userName;
     private EditText password;
@@ -65,7 +65,7 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
                     initView();
 //                    getCookie();
                     LoginUtil.with()
-                            .setCallback(LoginActivity.this)
+                            .setLoginCallback(LoginActivity.this)
                             .getCookie();
                 }
             }
@@ -232,7 +232,7 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
                 AnimatorUtil.showViewAnimator(middleLayout, 500);
                 visitorLayout.setVisibility(View.VISIBLE);
                 captcha.setText("");
-                CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
+                CaptchaFetcher.fetchCaptcha(cookie, captchaImg);
             }
 
             @Override
@@ -252,7 +252,7 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
 //        } else if (msg.what == 2) {
 //            Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
 //            SPHelper.putString("cookie", cookie);
-//            CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
+//            CaptchaFetcher.fetchCaptcha(cookie, captchaImg);
 //        } else if (msg.what == 3) {
 //            Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
 //            onError();
@@ -285,8 +285,8 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
         if (userName.getText().toString().isEmpty() || password.getText().toString().isEmpty() || captcha.getText().toString().isEmpty()) {
             Toast.makeText(LoginActivity.this, "请输入正确的信息", Toast.LENGTH_SHORT).show();
         } else {
-            SPHelper.putString("user_name", userName.getText().toString());
-            SPHelper.putString("password", password.getText().toString());
+//            SPHelper.putString("user_name", userName.getText().toString());
+//            SPHelper.putString("password", password.getText().toString());
             AnimatorUtil.hideViewAnimator(middleLayout, 500, new AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) { }
@@ -300,7 +300,7 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
                     msgText.setText("登录中...");
 //                        login();
                     LoginUtil.with()
-                            .setCallback(LoginActivity.this)
+                            .setLoginCallback(LoginActivity.this)
                             .login(
                                     userName.getText().toString(),
                                     password.getText().toString(),
@@ -322,7 +322,7 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
         int id = v.getId();
         if (id == R.id.change_captcha || id == R.id.img_captcha) {
             if (!TextUtils.isEmpty(cookie)) {
-                CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
+                CaptchaFetcher.fetchCaptcha(cookie, captchaImg);
             }
         } else if (id == R.id.main_btn_login) {
             login();
@@ -356,7 +356,7 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
     public void onGetCookie(String cookie) {
         this.cookie = cookie;
 //        Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
-        CaptchaFetcher.fetchcaptcha(cookie, captchaImg);
+        CaptchaFetcher.fetchCaptcha(cookie, captchaImg);
     }
 
     @Override
@@ -392,6 +392,15 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
         } catch (Exception e) {
             e.printStackTrace();
             onError();
+        }
+    }
+
+    @Override
+    public void onGetSemesters(JSONArray jsonArray) {
+        try {
+            TimetableHelper.writeSemesterFile(LoginActivity.this, jsonArray.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

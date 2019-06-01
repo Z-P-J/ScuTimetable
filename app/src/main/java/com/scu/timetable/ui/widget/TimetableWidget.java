@@ -23,10 +23,6 @@ import java.util.TimerTask;
 
 public class TimetableWidget extends AppWidgetProvider {
 
-//    private TimetableWidgtHelper widgtHelper;
-//    private RemoteViews remoteViews;
-
-
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
@@ -48,9 +44,6 @@ public class TimetableWidget extends AppWidgetProvider {
         String action = intent.getAction();
         if (action != null) {
             if ("android.appwidget.action.APPWIDGET_UPDATE".equals(action)) {
-//                Toast.makeText(context, "com.scu.timetable.login.success", Toast.LENGTH_SHORT).show();
-//                AlarmReceiver.startAlarm(context);
-//                refreshViews(context);
                 if (intent.getBooleanExtra("visitor_mode", false)) {
                     TimetableHelper.startVisitorMode(context);
                     Toast.makeText(context, "游客模式！", Toast.LENGTH_SHORT).show();
@@ -66,8 +59,6 @@ public class TimetableWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] iArr) {
         for (int i : iArr) {
-//            refreshViews(context);
-//            appWidgetManager.updateAppWidget(i, this.remoteViews);
             appWidgetManager.updateAppWidget(i, TimetableWidgtHelper.refreshViews(context));
         }
     }
@@ -86,51 +77,8 @@ public class TimetableWidget extends AppWidgetProvider {
         context.stopService(new Intent(context, WidgetService.class));
     }
 
-//    private void initView(Context context) {
-//        if (remoteViews == null) {
-//            remoteViews = new RemoteViews(context.getPackageName(), R.layout.course_widget);
-//        }
-//        if (widgtHelper == null) {
-//            widgtHelper = new TimetableWidgtHelper(context);
-//        }
-//        //如果可以显示课表
-//        if (showTimetable(context)) {
-////            Toast.makeText(context, "showTimetable", Toast.LENGTH_SHORT).show();
-//            widgtHelper.showTimetable(remoteViews, R.id.course_widget_4_4_course_layout);
-//            widgtHelper.showTimetableWeekBar(remoteViews, R.id.course_widget_4_4_week_bar);
-////            clickToLoginActivity(context);
-////            dodo(context);
-//            this.remoteViews.setTextViewText(R.id.cur_week, "第" + TimetableHelper.getCurrentWeek() + "周");
-//            return;
-//        }
-//        widgtHelper.showTimetableWeekBar(remoteViews, R.id.course_widget_4_4_no_course_week_bar);
-//    }
-//
-//    private boolean showTimetable(Context ctx) {
-//        if (TimetableHelper.isLogined(ctx)) {
-//            this.remoteViews.setViewVisibility(R.id.widget_llyt_no_course, View.INVISIBLE);
-//            this.remoteViews.setViewVisibility(R.id.course_widget_4_4_week_course, View.VISIBLE);
-//            return true;
-//        } else {
-//            clickToLoginActivity(ctx, R.id.widget_btn_enter_treehole);
-//            this.remoteViews.setViewVisibility(R.id.widget_btn_enter_treehole, View.VISIBLE);
-//            this.remoteViews.setTextViewText(R.id.widget_btn_enter_treehole, ctx.getResources().getString(R.string.goto_login));
-//            this.remoteViews.setTextViewText(R.id.widget_txv_no_course_text, ctx.getResources().getString(R.string.no_login_body_tip));
-//            return false;
-//        }
-//    }
-//
-//    private void clickToLoginActivity(Context context, int i) {
-//        Intent intent = new Intent(context, LoginActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        this.remoteViews.setOnClickPendingIntent(i, PendingIntent.getActivity(context, 17,intent, PendingIntent.FLAG_UPDATE_CURRENT));
-//    }
-
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int i, Bundle bundle) {
-//        initView(context);;
-//        appWidgetManager.updateAppWidget(i, this.remoteViews);
         appWidgetManager.updateAppWidget(i, TimetableWidgtHelper.refreshViews(context));
     }
-
 }

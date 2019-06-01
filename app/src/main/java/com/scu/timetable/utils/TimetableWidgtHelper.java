@@ -29,6 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * @author Z-P-J
+ * 课程表桌面插件工具类
+ */
 public final class TimetableWidgtHelper {
 
     private static RemoteViews remoteViews;
@@ -65,9 +69,6 @@ public final class TimetableWidgtHelper {
         //如果可以显示课表
         if (showTimetable(context)) {
             scuSubjects = getColorReflect(TimetableHelper.getSubjects(context));
-//            if (scuSubjects.isEmpty()) {
-//                return remoteViews;
-//            }
             initSubjects();
             showTimetable(context, R.id.course_widget_4_4_course_layout);
 
@@ -75,11 +76,9 @@ public final class TimetableWidgtHelper {
                 remoteViews.setInt(R.id.layout_widget, "setBackgroundResource", R.drawable.widget_background);
                 remoteViews.setViewVisibility(R.id.course_widget_4_4_week_bar, View.VISIBLE);
                 showTimetableWeekBar(context, R.id.course_widget_4_4_week_bar);
-//                remoteViews.setInt(R.id.course_widget_4_4_course_layout, "setBackgroundResource", R.drawable.widget_4x4bg_bottom);
             } else {
                 remoteViews.setInt(R.id.layout_widget, "setBackgroundColor", Color.TRANSPARENT);
                 remoteViews.setViewVisibility(R.id.course_widget_4_4_week_bar, View.GONE);
-//                remoteViews.setInt(R.id.course_widget_4_4_course_layout, "setBackgroundColor", Color.TRANSPARENT);
             }
             remoteViews.setTextViewText(R.id.cur_week, "第" + TimetableHelper.getCurrentWeek() + "周");
             return remoteViews;
@@ -89,9 +88,6 @@ public final class TimetableWidgtHelper {
     }
 
     public static RemoteViews getRemoteViews(Context context) {
-//        if (remoteViews == null) {
-//            refreshViews(context, false);
-//        }
         return remoteViews;
     }
 
@@ -341,10 +337,6 @@ public final class TimetableWidgtHelper {
                         }
                     }
                     String room = scuSubject.getRoom();
-//                    SpannableString sp = new SpannableString(room + "@" + scuSubject.getCourseName());
-//                    // 设置超链接
-//                    sp.setSpan(new AbsoluteSizeSpan(ScreenUtils.dip2px(context, 12)), 0, room.length(),
-//                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     remoteViews1.setTextViewText(R.id.course_widget_4_4_course_view_text,  Html.fromHtml("<b><tt>" + room + "</tt></b>@" + scuSubject.getCourseName()));
                 }
                 colum.addView(R.id.course_widget_4_4_day_colum, remoteViews1);

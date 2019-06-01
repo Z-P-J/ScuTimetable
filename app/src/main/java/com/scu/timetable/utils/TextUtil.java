@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import com.scu.timetable.R;
 
+/**
+ * @author Z-P-J
+ */
 public final class TextUtil {
 
     private TextUtil() {
@@ -23,7 +26,6 @@ public final class TextUtil {
         // 设置超链接
         sp.setSpan(new URLSpan(link), 0, title.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
         textView.setText(sp);
         //设置TextView可点击
         textView.setMovementMethod(LinkMovementMethod.getInstance());

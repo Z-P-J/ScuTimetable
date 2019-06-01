@@ -37,14 +37,14 @@ public final class CaptchaFetcher {
         );
     }
 
-    public static void fetchcaptcha(String cookie, ImageView imageView) {
+    public static void fetchCaptcha(String cookie, ImageView imageView) {
         Glide.with(imageView.getContext())
                 .load(getUrl(cookie))
                 .apply(OPTIONS)
                 .into(imageView);
     }
 
-    public static void fetchcaptcha(ImageView imageView) {
+    public static void fetchCaptcha(ImageView imageView) {
         Glide.with(imageView.getContext())
                 .load(getUrl(SPHelper.getString("cookie", "")))
                 .apply(OPTIONS)
