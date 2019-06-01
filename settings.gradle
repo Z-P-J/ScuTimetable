@@ -6,4 +6,6 @@ include ':app',
         ':popupmenuview',
 //        ':swipeawaydialog',
         ':switchbutton',
-        ':statebutton'
+        ':statebutton',
+//        ':xupdate-lib',
+        ':qxdownloader'

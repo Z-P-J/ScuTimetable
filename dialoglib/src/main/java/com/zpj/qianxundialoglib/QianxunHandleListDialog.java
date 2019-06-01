@@ -15,18 +15,10 @@
 //import android.widget.TextView;
 //import android.widget.Toast;
 //
-//import com.qianxun.browser.R;
-//import com.qianxun.browser.utils.DisplayUtil;
-//import com.qianxun.browser.utils.UIHelper;
-//import com.qianxun.browser.view.listener.OnItemClickListener;
-//import com.qianxun.browser.view.qianxundialoglib.base.QianxunHandleListBaseDialog;
-//import com.zpj.qianxundialoglib.base.QianxunHandleListBaseDialog;
+//import com.zpj.dialoglib.R;
 //
 //import java.util.ArrayList;
 //
-//import cn.bingoogolapple.baseadapter.BGAOnItemChildClickListener;
-//import cn.bingoogolapple.baseadapter.BGARecyclerViewAdapter;
-//import cn.bingoogolapple.baseadapter.BGAViewHolderHelper;
 //
 ///**
 // * Created by Renny on 2018/1/10.

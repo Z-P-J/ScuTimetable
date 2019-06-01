@@ -75,4 +75,5 @@ dependencies {
     implementation project(':popupmenuview')
 //    implementation project(':swipeawaydialog')
     implementation project(':statebutton')
+    implementation project(':qxdownloader')
 }

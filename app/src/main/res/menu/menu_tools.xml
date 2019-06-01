@@ -27,8 +27,12 @@
     <item
         android:icon="@drawable/ic_lock_black_24dp"
         android:title="修改当前周">
-
     </item>
+
+    <item
+        android:icon="@drawable/ic_event_note_black_24dp"
+        android:title="切换学期"
+        />
 
     <item
         android:icon="@drawable/ic_refresh_black_24dp"

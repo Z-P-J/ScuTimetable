@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.scu.timetable.model.SemesterBean;
 import com.scu.timetable.utils.content.SPHelper;
 
 import org.json.JSONArray;
@@ -17,6 +18,8 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -49,8 +52,9 @@ public final class LoginUtil {
         void onLoginFailed();
 //        void onLoginError(Throwable e);
         void onLoginError(String errorMsg);
-        void onGetTimetable(String json);
-        void onGetSemesters(JSONArray jsonArray);
+        void onGetTimetable(JSONObject jsonObject);
+        void onGetTimetableFinished();
+        void onGetSemesters(String json);
     }
 
     private final Handler handler = new MyHandler(this);
@@ -105,13 +109,17 @@ public final class LoginUtil {
             }
         } else if (msg.what == 5) {
             if (loginCallback != null) {
-                String json = (String) msg.obj;
+                JSONObject json = (JSONObject) msg.obj;
                 loginCallback.onGetTimetable(json);
             }
         } else if (msg.what == 6) {
             if (loginCallback != null) {
-                JSONArray jsonArray = (JSONArray) msg.obj;
-                loginCallback.onGetSemesters(jsonArray);
+                String json = (String) msg.obj;
+                loginCallback.onGetSemesters(json);
+            }
+        } else if (msg.what == 7) {
+            if (loginCallback != null) {
+                loginCallback.onGetTimetableFinished();
             }
         }
     }
@@ -167,7 +175,8 @@ public final class LoginUtil {
         }
     }
 
-    private String getSemesters() throws IOException, JSONException {
+    private List<SemesterBean> getSemesters() throws IOException, JSONException {
+        List<SemesterBean> semesterBeanList = new ArrayList<>();
         Document document = Jsoup.connect("http://zhjw.scu.edu.cn/student/courseSelect/calendarSemesterCurriculum/index")
                 .header("cookie", SPHelper.getString("cookie", ""))
                 .header("Referer", "http://zhjw.scu.edu.cn/")
@@ -184,16 +193,20 @@ public final class LoginUtil {
                 currentSemesterCode = semesterCode;
                 currentSenesterName = semesterName;
             }
+            SemesterBean semester = new SemesterBean();
+            semester.setSemesterName(semesterName);
+            semester.setSemesterCode(semesterCode);
+            semesterBeanList.add(semester);
             jsonObject.put("name", semesterName);
             jsonObject.put("code", semesterCode);
             jsonArray.put(jsonObject);
         }
-        sendMessage(6, jsonArray);
+        sendMessage(6, jsonArray.toString());
         TimetableHelper.setCurrentSemester(currentSemesterCode, currentSenesterName);
-        return currentSemesterCode;
+        return semesterBeanList;
     }
 
-    private void getTimetable(final String currentSemesterCode) throws IOException {
+    private void getTimetable(final String currentSemesterCode) throws Exception {
         Connection.Response response = Jsoup.connect("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
                 .method(Connection.Method.POST)
                 .userAgent(TimetableHelper.UA)
@@ -207,7 +220,9 @@ public final class LoginUtil {
 
         String json = response.body().trim();
         if (json.startsWith("{\"allUnits\"")) {
-            sendMessage(5, json);
+            JSONObject jsonObject = new JSONObject(json);
+            jsonObject.put("semester_code", currentSemesterCode);
+            sendMessage(5, jsonObject);
         }
     }
 
@@ -224,7 +239,7 @@ public final class LoginUtil {
         TimetableHelper.setCurrentDate(DateUtil.currentDate());
     }
 
-    public void login(final String captcha) {
+    private void login(final String captcha) {
         Log.d("captcha", "captcha=" + captcha);
         ExecutorHelper.submit(new Runnable() {
             @Override
@@ -233,8 +248,12 @@ public final class LoginUtil {
                     Connection.Response response = securityCheck(captcha);
                     if (response != null) {
                         getCurrentWeek(response);
-                        String currentSemesterCode = getSemesters();
-                        getTimetable(currentSemesterCode);
+                        for (SemesterBean semester : getSemesters()) {
+                            getTimetable(semester.getSemesterCode());
+                        }
+                        sendMessage(7, null);
+//                        String currentSemesterCode = getSemesters();
+//                        getTimetable(currentSemesterCode);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -252,7 +271,7 @@ public final class LoginUtil {
                 try {
                     Connection.Response response = securityCheck(captcha);
                     if (response != null) {
-                        getCurrentWeek(response);
+//                        getCurrentWeek(response);
                         getTimetable(semesterCode);
                     }
                 } catch (Exception e) {

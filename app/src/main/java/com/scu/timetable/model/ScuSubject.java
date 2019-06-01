@@ -1,5 +1,7 @@
 package com.scu.timetable.model;
 
+import android.support.annotation.NonNull;
+
 import com.zhuangfei.timetable.model.Schedule;
 import com.zhuangfei.timetable.model.ScheduleEnable;
 
@@ -357,6 +359,7 @@ public class ScuSubject implements ScheduleEnable {
         return id;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "ScuSubject{" +

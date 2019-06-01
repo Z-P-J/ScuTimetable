@@ -54,6 +54,8 @@
 
         </service>
 
+        <service android:name=".service.DownloadService"/>
+
         <receiver
             android:name=".ui.widget.AlarmReceiver"
             android:enabled="true"

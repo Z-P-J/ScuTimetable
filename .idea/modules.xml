@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/dialoglib/dialoglib.iml" filepath="$PROJECT_DIR$/dialoglib/dialoglib.iml" />
       <module fileurl="file://$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" filepath="$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/popupmenuview/popupmenuview.iml" filepath="$PROJECT_DIR$/popupmenuview/popupmenuview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qxdownloader/qxdownloader.iml" filepath="$PROJECT_DIR$/qxdownloader/qxdownloader.iml" />
       <module fileurl="file://$PROJECT_DIR$/statebutton/statebutton.iml" filepath="$PROJECT_DIR$/statebutton/statebutton.iml" />
       <module fileurl="file://$PROJECT_DIR$/switchbutton/switchbutton.iml" filepath="$PROJECT_DIR$/switchbutton/switchbutton.iml" />
     </modules>

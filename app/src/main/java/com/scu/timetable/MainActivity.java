@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.CardView;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -18,13 +21,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.scu.timetable.model.ScuSubject;
+import com.scu.timetable.model.SemesterBean;
+import com.scu.timetable.model.UpdateBean;
 import com.scu.timetable.ui.activity.ActivityCollector;
 import com.scu.timetable.ui.activity.BaseActivity;
 import com.scu.timetable.ui.fragment.DetailDialogFragment;
 import com.scu.timetable.ui.fragment.EvaluationDialogFragment;
 import com.scu.timetable.ui.fragment.SettingsDialogFragment;
+import com.scu.timetable.ui.fragment.UpdateDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.AnimatorUtil;
+import com.scu.timetable.utils.ApkUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.StatusBarUtil;
@@ -38,10 +45,16 @@ import com.zhuangfei.timetable.model.Schedule;
 import com.zhuangfei.timetable.view.WeekView;
 import com.zpj.popupmenuview.CustomPopupMenuView;
 import com.zpj.popupmenuview.OptionMenuView;
+import com.zpj.qianxundialoglib.EasyAdapter;
 import com.zpj.qianxundialoglib.IDialog;
+import com.zpj.qianxundialoglib.QXListDialog;
 import com.zpj.qianxundialoglib.QianxunDialog;
+import com.zpj.qxdownloader.QianXun;
+import com.zpj.qxdownloader.core.DownloadMission;
+import com.zpj.qxdownloader.util.FileUtil;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +62,7 @@ import java.util.List;
 /**
  * @author Z-P-J
  */
-public final class MainActivity extends BaseActivity implements View.OnClickListener {
+public final class MainActivity extends BaseActivity implements View.OnClickListener, ApkUtil.UpdateCallback {
 
     private Drawable expandMoreDrawable;
     private Drawable expandLessDrawable;
@@ -90,6 +103,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         initTimetableView();
 
         initData();
+        ApkUtil.with(this).checkUpdate(this);
 //        AlarmReceiver.startAlarm(this);
     }
 
@@ -230,15 +244,18 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                         onWeekLeftLayoutClicked();
                                         break;
                                     case 4:
-                                        showRefreshDialog();
+                                        showChooseSemesterDialog();
                                         break;
                                     case 5:
+                                        showRefreshDialog();
+                                        break;
+                                    case 6:
                                         EvaluationDialogFragment dialogFragment = new EvaluationDialogFragment();
                                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                                         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                                         dialogFragment.show(fragmentTransaction, "evaluation");
                                         break;
-                                    case 6:
+                                    case 7:
                                         showSettingDialogFragment();
                                         break;
                                     default:
@@ -352,6 +369,42 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                 .show();
     }
 
+    private void showChooseSemesterDialog() {
+        QXListDialog<SemesterBean> dialog = new QXListDialog<>(this);
+        dialog.setItemList(TimetableHelper.getSemesterList(this))
+                .setItemRes(R.layout.layout_semester_item)
+                .setGravity(Gravity.BOTTOM)
+                .setEasyAdapterCallback(new EasyAdapter.EasyAdapterCallback<SemesterBean>() {
+                    @Override
+                    public EasyAdapter.ViewHolder onCreateViewHolder(List<SemesterBean> list, View itemView, int i) {
+                        return null;
+                    }
+
+                    @Override
+                    public void onBindViewHolder(List<SemesterBean> list, View itemView, int i) {
+                        TextView textView = itemView.findViewById(R.id.text_view);
+                        textView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (TimetableHelper.getCurrentSemesterCode().equals(list.get(i).getSemesterCode())) {
+                                    return;
+                                }
+//                                Toast.makeText(MainActivity.this, "请输入验证码刷新课表！", Toast.LENGTH_SHORT).show();
+                                TimetableHelper.setCurrentSemester(list.get(i).getSemesterCode(), list.get(i).getSemesterName());
+                                initTimetableView();
+                                initData();
+                                dialog.dismiss();
+                            }
+                        });
+                        textView.setText(list.get(i).getSemesterName());
+                        if (TimetableHelper.getCurrentSemesterCode().equals(list.get(i).getSemesterCode())) {
+                            textView.setTextColor(Color.BLACK);
+                        }
+                    }
+                })
+                .show();
+    }
+
     private void showRefreshDialog() {
         QianxunDialog.with(MainActivity.this)
                 .setDialogView(R.layout.layout_refresh)
@@ -372,9 +425,6 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                         EditText captchaEdit = view.findViewById(R.id.captcha);
 
                         btnRefresh.setOnClickListener(v -> {
-                            //todo refresh
-//                            Toast.makeText(MainActivity.this, "todo refresh", Toast.LENGTH_SHORT).show();
-//                            dialog.dismiss();
                             String captcha = captchaEdit.getText().toString();
                             if (TextUtils.isEmpty(captcha)) {
                                 Toast.makeText(MainActivity.this, "验证码为空！", Toast.LENGTH_SHORT).show();
@@ -389,23 +439,12 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                 qianxunDialog.setCancelable(false);
                                 qianxunDialog.setCanceledOnTouchOutside(false);
                             }
-//                            container.setVisibility(View.INVISIBLE);
-//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                                AnimatorUtil.circleAnimator(statusLayout, 500);
-//                            } else {
-//                                AnimHelper.createTopInAnim(statusLayout);
-//                            }
                             statusLayout.setVisibility(View.VISIBLE);
                             LoginUtil.with()
                                     .setLoginCallback(new LoginUtil.LoginCallback() {
 
                                         private void onError() {
                                             loadingDialogText.setText("登录失败！");
-//                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                                                AnimatorUtil.circleAnimator(statusLayout, 500);
-//                                            } else {
-//                                                AnimHelper.createTopOutAnim(statusLayout);
-//                                            }
                                             statusLayout.setVisibility(View.GONE);
                                             Toast.makeText(MainActivity.this, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
                                             CaptchaFetcher.fetchCaptcha(imgCatpcha);
@@ -436,28 +475,32 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                         }
 
                                         @Override
-                                        public void onGetTimetable(String json) {
-                                            Toast.makeText(MainActivity.this, "刷新课表成功！", Toast.LENGTH_SHORT).show();
+                                        public void onGetTimetable(JSONObject jsonObject) {
                                             try {
-                                                TimetableHelper.writeToJson(MainActivity.this, json);
+                                                TimetableHelper.writeToJson(MainActivity.this, jsonObject);
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
+                                        }
+
+                                        @Override
+                                        public void onGetTimetableFinished() {
+                                            Toast.makeText(MainActivity.this, "刷新课表成功！", Toast.LENGTH_SHORT).show();
                                             dialog.dismiss();
                                             initTimetableView();
                                             initData();
                                         }
 
                                         @Override
-                                        public void onGetSemesters(JSONArray jsonArray) {
+                                        public void onGetSemesters(String json) {
                                             try {
-                                                TimetableHelper.writeSemesterFile(MainActivity.this, jsonArray.toString());
+                                                TimetableHelper.writeSemesterFile(MainActivity.this, json);
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }
                                         }
                                     })
-                                    .login(captcha);
+                                    .login(captcha, TimetableHelper.getCurrentSemesterCode());
                         });
                     }
                 })
@@ -591,5 +634,68 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
             TimetableHelper.closeVisitorMode();
             ActivityCollector.finishAll();
         }
+    }
+
+    @Override
+    public void onError(String errMsg) {
+        Toast.makeText(this, "检查更新出错！ " + errMsg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onGetLatestVersion(UpdateBean bean) {
+        //todo 更新操作
+        Toast.makeText(this, "开始更新", Toast.LENGTH_SHORT).show();
+//        http://tt.shouji.com.cn/wap/down/soft?id=1555815
+
+        UpdateDialogFragment.newInstance(bean).show(getSupportFragmentManager());
+
+//        DownloadMission mission = QianXun.download("http://tt.shouji.com.cn/wap/down/soft?id=1555815");
+//        mission.addListener(new DownloadMission.MissionListener() {
+//            @Override
+//            public void onInit() {
+//                Log.d("onInit", "onInit");
+//            }
+//
+//            @Override
+//            public void onStart() {
+//                Log.d("onStart", "onStart");
+//            }
+//
+//            @Override
+//            public void onPause() {
+//                Log.d("onPause", "onPause");
+//            }
+//
+//            @Override
+//            public void onWaiting() {
+//                Log.d("onWaiting", "onWaiting");
+//            }
+//
+//            @Override
+//            public void onRetry() {
+//                Log.d("onRetry", "onRetry");
+//            }
+//
+//            @Override
+//            public void onProgress(long done, long total) {
+//                Log.d("progress", "progress=" + mission.getProgress());
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//                Log.d("onFinish", "onFinish");
+//                FileUtil.openFile(MainActivity.this, mission.getFile());
+//            }
+//
+//            @Override
+//            public void onError(int errCode) {
+//                Log.d("errCode", "errCode=" + errCode);
+//            }
+//        });
+    }
+
+    @Override
+    public void isLatestVersion() {
+        Toast.makeText(this, "软件已是最新版！", Toast.LENGTH_SHORT).show();
     }
 }

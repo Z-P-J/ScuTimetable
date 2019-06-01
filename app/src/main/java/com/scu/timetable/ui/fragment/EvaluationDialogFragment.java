@@ -285,10 +285,13 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
     }
 
     @Override
-    public void onGetTimetable(String json) { }
+    public void onGetTimetable(JSONObject jsonObject) { }
 
     @Override
-    public void onGetSemesters(JSONArray jsonArray) { }
+    public void onGetTimetableFinished() { }
+
+    @Override
+    public void onGetSemesters(String json) { }
 
     @Override
     public void onGetEvaluationSubjects(String json) {
@@ -358,9 +361,7 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
     }
 
     @Override
-    public void onGetTokenValue(String tokenValue) {
-
-    }
+    public void onGetTokenValue(String tokenValue) { }
 
     @Override
     public void onEvaluationFailed(String msg) {

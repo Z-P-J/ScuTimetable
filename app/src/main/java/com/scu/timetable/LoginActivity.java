@@ -24,6 +24,7 @@ import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.popupmenuview.CustomPopupMenuView;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * @author Z-P-J
@@ -361,8 +362,8 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onLoginSuccess() {
-        Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
-        msgText.setText("获取课表信息中...");
+//        Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
+        msgText.setText("获取课表数据中...");
         SPHelper.putString("user_name", userName.getText().toString());
         SPHelper.putString("password", password.getText().toString());
     }
@@ -380,15 +381,9 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
-    public void onGetTimetable(String json) {
+    public void onGetTimetable(JSONObject jsonObject) {
         try {
-            TimetableHelper.writeToJson(LoginActivity.this, json);
-            SPHelper.putBoolean("logined", true);
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            //发送广播。更新桌面插件
-            updateWidget(true);
-            finish();
+            TimetableHelper.writeToJson(LoginActivity.this, jsonObject);
         } catch (Exception e) {
             e.printStackTrace();
             onError();
@@ -396,9 +391,20 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
-    public void onGetSemesters(JSONArray jsonArray) {
+    public void onGetTimetableFinished() {
+        msgText.setText("获取课表数据成功！");
+        SPHelper.putBoolean("logined", true);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        //发送广播。更新桌面插件
+        updateWidget(true);
+        finish();
+    }
+
+    @Override
+    public void onGetSemesters(String json) {
         try {
-            TimetableHelper.writeSemesterFile(LoginActivity.this, jsonArray.toString());
+            TimetableHelper.writeSemesterFile(LoginActivity.this, json);
         } catch (Exception e) {
             e.printStackTrace();
         }

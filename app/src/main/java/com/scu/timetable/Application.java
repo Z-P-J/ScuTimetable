@@ -1,10 +1,13 @@
 package com.scu.timetable;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.StrictMode;
+import android.util.Log;
 
+import com.scu.timetable.utils.FileUtil;
 import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.qxdownloader.QianXun;
+import com.zpj.qxdownloader.config.QianXunConfig;
 
 /**
  * @author Z-P-J
@@ -19,6 +22,10 @@ public final class Application extends android.app.Application {
             StrictMode.setVmPolicy(builder.build());
         }
         SPHelper.init(this);
+        QianXunConfig config = QianXunConfig.with(this)
+                .setDownloadPath(FileUtil.getDiskCacheDir(this));
+        Log.d("cachePath", "cachePath=" + FileUtil.getDiskCacheDir(this));
+        QianXun.init(config);
     }
 
 }

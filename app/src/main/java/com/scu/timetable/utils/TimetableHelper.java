@@ -8,9 +8,11 @@ import android.widget.Toast;
 
 import com.scu.timetable.MainActivity;
 import com.scu.timetable.model.ScuSubject;
+import com.scu.timetable.model.SemesterBean;
 import com.scu.timetable.utils.content.SPHelper;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -42,7 +44,7 @@ public final class TimetableHelper {
 
     static final String UA = "Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/8.9 Mobile Safari/537.36";
 
-    private static final String FILE_NAME = "timetable.json";
+    private static final String FILE_NAME = "timetable_%s.json";
     private static final String VISITOR_FILE_NAME = "timetable_visitor.json";
     private static final String SEMESTER_FILE_NAME = "timetable_semester.json";
 
@@ -50,10 +52,14 @@ public final class TimetableHelper {
 
     }
 
+    private static String getFileName() {
+        String currentSemesterCode = getCurrentSemesterCode();
+        return isVisitorMode() ? VISITOR_FILE_NAME : String.format(FILE_NAME, currentSemesterCode);
+    }
+
     public static List<ScuSubject> getSubjects(Context context) {
         try {
-            String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
-            String json = FileUtil.readFromJson(context, fileName);
+            String json = FileUtil.readFromJson(context, getFileName());
             return getSubjects(json);
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,11 +134,8 @@ public final class TimetableHelper {
         return scuSubjectList;
     }
 
-    public static void writeToJson(Context context, String content) throws Exception {
-        String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
-        FileOutputStream outStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-        outStream.write(content.getBytes());
-        outStream.close();
+    public static void writeToJson(Context context, JSONObject jsonObject) throws Exception {
+        FileUtil.writeToJson(context, String.format(FILE_NAME, jsonObject.getString("semester_code")), jsonObject.toString());
     }
 
     private static List<Integer> getWeekList(String weeksString) {
@@ -166,7 +169,7 @@ public final class TimetableHelper {
     }
 
     public static boolean isLogined(Context context) {
-        if (SPHelper.getBoolean("logined", false) && FileUtil.hasJsonFile(context, FILE_NAME)) {
+        if (SPHelper.getBoolean("logined", false) && FileUtil.hasJsonFile(context, String.format(FILE_NAME, getCurrentSemesterCode()))) {
             String date = getCurrentDate();
             if (!date.isEmpty()) {
                 Date oldDate = DateUtil.parse(date);
@@ -184,14 +187,12 @@ public final class TimetableHelper {
 
     public static boolean saveNote(Context context, ScuSubject subject, String note) {
         try {
-            String fileName = isVisitorMode() ? VISITOR_FILE_NAME : FILE_NAME;
-            String json = FileUtil.readFromJson(context, fileName);
+            String json = FileUtil.readFromJson(context, getFileName());
             JSONObject jsonObject = new JSONObject(json);
             JSONArray jsonArray = jsonObject.getJSONArray("dateList")
                     .getJSONObject(0)
                     .getJSONArray("selectCourseList");
             for (int i = 0; i < jsonArray.length(); i++) {
-
                 String attendClassTeacher = jsonArray.getJSONObject(i).getString("attendClassTeacher");
                 String name = jsonArray.getJSONObject(i).getString("courseName");
                 if (subject.getTeacher().equals(attendClassTeacher) && subject.getCourseName().equals(name)) {
@@ -207,7 +208,7 @@ public final class TimetableHelper {
                         }
                         if (subject.getDay() == day && subject.getStart() == start && subject.getStep() == step) {
                             object.put("note", note);
-                            writeToJson(context, jsonObject.toString());
+                            FileUtil.writeToJson(context, getFileName(), jsonObject.toString());
                             return true;
                         }
                     }
@@ -324,7 +325,7 @@ public final class TimetableHelper {
         SPHelper.putBoolean("visitor_mode", true);
         if (!FileUtil.hasJsonFile(context, VISITOR_FILE_NAME)) {
             try {
-                TimetableHelper.writeToJson(context, FileUtil.readAssetFile(context, "timetable.json"));
+                FileUtil.writeToJson(context, VISITOR_FILE_NAME, FileUtil.readAssetFile(context, "timetable.json"));
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -339,9 +340,26 @@ public final class TimetableHelper {
         SPHelper.putBoolean("visitor_mode", false);
     }
 
-    static void setCurrentSemester(final String currentSemesterCode, final String currentSenesterName) {
+    public static void setCurrentSemester(final String currentSemesterCode, final String currentSenesterName) {
         SPHelper.putString("current_semester_code", currentSemesterCode);
         SPHelper.putString("current_semester_name", currentSenesterName);
+    }
+
+    public static List<SemesterBean> getSemesterList(Context context) {
+        List<SemesterBean> semesterBeanList = new ArrayList<>();
+        try {
+            JSONArray jsonArray = new JSONArray(FileUtil.readFromJson(context, SEMESTER_FILE_NAME));
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                SemesterBean semester = new SemesterBean();
+                semester.setSemesterCode(jsonObject.getString("code"));
+                semester.setSemesterName(jsonObject.getString("name"));
+                semesterBeanList.add(semester);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return semesterBeanList;
     }
 
     public static void writeSemesterFile(Context context, String json) throws Exception {
