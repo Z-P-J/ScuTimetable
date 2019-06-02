@@ -24,7 +24,7 @@ import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.scu.timetable.utils.ApkUtil;
+import com.scu.timetable.utils.UpdateUtil;
 import com.scu.timetable.utils.FastBlur;
 import com.scu.timetable.utils.TextUtil;
 import com.scu.timetable.utils.TimetableHelper;
@@ -137,7 +137,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         btnLogout.setOnClickListener(this);
 
         DetailLayout appVersion = view.findViewById(R.id.app_version);
-        appVersion.setContent("V" + ApkUtil.getVersionName(getContext()));
+        appVersion.setContent("V" + UpdateUtil.getVersionName(getContext()));
 
         String link2 = "https://github.com/Z-P-J/ScuTimetable";
         DetailLayout linkOpenSource = view.findViewById(R.id.link_open_source);

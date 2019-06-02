@@ -5,12 +5,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.view.menu.MenuBuilder;
-import android.support.v7.widget.CardView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
@@ -30,8 +27,7 @@ import com.scu.timetable.ui.fragment.EvaluationDialogFragment;
 import com.scu.timetable.ui.fragment.SettingsDialogFragment;
 import com.scu.timetable.ui.fragment.UpdateDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.scu.timetable.utils.AnimatorUtil;
-import com.scu.timetable.utils.ApkUtil;
+import com.scu.timetable.utils.UpdateUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.StatusBarUtil;
@@ -49,11 +45,7 @@ import com.zpj.qianxundialoglib.EasyAdapter;
 import com.zpj.qianxundialoglib.IDialog;
 import com.zpj.qianxundialoglib.QXListDialog;
 import com.zpj.qianxundialoglib.QianxunDialog;
-import com.zpj.qxdownloader.QianXun;
-import com.zpj.qxdownloader.core.DownloadMission;
-import com.zpj.qxdownloader.util.FileUtil;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -62,7 +54,7 @@ import java.util.List;
 /**
  * @author Z-P-J
  */
-public final class MainActivity extends BaseActivity implements View.OnClickListener, ApkUtil.UpdateCallback {
+public final class MainActivity extends BaseActivity implements View.OnClickListener, UpdateUtil.UpdateCallback {
 
     private Drawable expandMoreDrawable;
     private Drawable expandLessDrawable;
@@ -103,7 +95,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         initTimetableView();
 
         initData();
-        ApkUtil.with(this).checkUpdate(this);
+        UpdateUtil.with(this).checkUpdate(this);
 //        AlarmReceiver.startAlarm(this);
     }
 

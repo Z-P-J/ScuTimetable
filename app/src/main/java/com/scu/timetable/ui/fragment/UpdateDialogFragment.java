@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +36,8 @@ import android.widget.Toast;
 import com.scu.timetable.R;
 import com.scu.timetable.model.UpdateBean;
 import com.scu.timetable.ui.view.NumberProgressBar;
+import com.scu.timetable.ui.widget.DetailLayout;
+import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.qianxundialoglib.base.DialogFragment;
 import com.zpj.qxdownloader.QianXun;
 import com.zpj.qxdownloader.core.DownloadMission;
@@ -67,7 +70,10 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
     /**
      * 版本更新内容
      */
-    private TextView mTvUpdateInfo;
+    private DetailLayout appVersion;
+    private DetailLayout appSize;
+    private DetailLayout appUpdateTime;
+    private DetailLayout appUpdateInfo;
     /**
      * 版本更新
      */
@@ -150,8 +156,14 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
 //            lp.width = (int) (displayMetrics.widthPixels * 0.8f);
 //            window.setAttributes(lp);
 //        }
-        if (getDialog().getWindow() != null) {
-            getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//            window.setGravity(Gravity.CENTER);
+//            WindowManager.LayoutParams lp = window.getAttributes();
+//            DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+//            lp.height = (int) (displayMetrics.heightPixels * 0.6f);
+//            window.setAttributes(lp);
         }
     }
 
@@ -176,7 +188,10 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
         //标题
         mTvTitle = view.findViewById(R.id.tv_title);
         //提示内容
-        mTvUpdateInfo = view.findViewById(R.id.tv_update_info);
+        appVersion = view.findViewById(R.id.app_version);
+        appSize = view.findViewById(R.id.app_size);
+        appUpdateTime = view.findViewById(R.id.app_update_time);
+        appUpdateInfo = view.findViewById(R.id.app_update_content);
         //更新按钮
         mBtnUpdate = view.findViewById(R.id.btn_update);
         //后台更新按钮
@@ -203,9 +218,10 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
     private void initUpdateInfo() {
         //弹出对话框
         final String newVersion = bean.getVersionName();
-        String updateInfo = bean.getUpdateContent();
-        //更新内容
-        mTvUpdateInfo.setText(updateInfo);
+        appVersion.setContent(newVersion);
+        appSize.setContent(bean.getFileSize());
+        appUpdateTime.setContent(bean.getUpdateTime());
+        appUpdateInfo.setContent(bean.getUpdateContent());
         mTvTitle.setText(String.format("是否升级到%s版本？", newVersion));
 
         mTvIgnore.setVisibility(View.VISIBLE);
@@ -261,6 +277,7 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
         } else if (i == R.id.tv_ignore) {
             //点击忽略按钮
             Toast.makeText(getContext(), "忽略", Toast.LENGTH_SHORT).show();
+            SPHelper.putString("ignore_version", appVersion.getContentTextView().getText().toString());
             dismiss();
         }
     }

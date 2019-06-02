@@ -12,6 +12,7 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.scu.timetable.model.UpdateBean;
+import com.scu.timetable.utils.content.SPHelper;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,20 +23,23 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.net.Proxy;
 
-public final class ApkUtil {
+/**
+ * @author Z-P-J
+ */
+public final class UpdateUtil {
 
     private static final class MyHandler extends Handler {
-        private final WeakReference<ApkUtil> reference;
+        private final WeakReference<UpdateUtil> reference;
 
-        MyHandler(ApkUtil apkUtil) {
-            this.reference = new WeakReference<>(apkUtil);
+        MyHandler(UpdateUtil updateUtil) {
+            this.reference = new WeakReference<>(updateUtil);
         }
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            ApkUtil apkUtil = reference.get();
-            apkUtil.handleMessage(msg);
+            UpdateUtil updateUtil = reference.get();
+            updateUtil.handleMessage(msg);
         }
     }
 
@@ -49,12 +53,12 @@ public final class ApkUtil {
 
     private Handler handler = new MyHandler(this);;
 
-    private ApkUtil(UpdateCallback callback) {
+    private UpdateUtil(UpdateCallback callback) {
         this.callback = callback;
     }
 
-    public static ApkUtil with(UpdateCallback callback) {
-        return new ApkUtil(callback);
+    public static UpdateUtil with(UpdateCallback callback) {
+        return new UpdateUtil(callback);
     }
 
     private void sendMessage(int what, Object obj) {
@@ -104,20 +108,29 @@ public final class ApkUtil {
                             .proxy(Proxy.NO_PROXY)
                             .header("Connection", "Keep-Alive")
                             .header("Referer", "https://wap.shouji.com.cn/")
-                            .header("User-Agent", TimetableHelper.UA)
+//                            .header("User-Agent", TimetableHelper.UA)
                             .header("Accept-Encoding", "gzip")
                             .get();
                     String versionName = document.select("versionname").get(0).text();
-                    String baseinfof = document.select("baseinfof").get(0).text();
-                    Log.d("baseinfof", "baseinfof=" + baseinfof);
+
                     String newVersionName = versionName.trim();
                     Log.d("newVersionName", "newVersionName=" + newVersionName);
+
+                    String ignoreVersion = SPHelper.getString("ignore_version", "");
+                    if (ignoreVersion.equals(newVersionName)) {
+                        return;
+                    }
+
+                    String baseinfof = document.select("baseinfof").get(0).text();
+                    Log.d("baseinfof", "baseinfof=" + baseinfof);
+
                     String currentVersionName = getVersionName(context).trim();
                     Log.d("currentVersionName", "currentVersionName=" + newVersionName);
+
                     boolean isNew = compareVersions(currentVersionName, newVersionName);
                     Log.d("isNew", "isNew=" + isNew);
 
-                    if (true) {
+                    if (isNew) {
                         String updateContent = "";
                         String fileSize = "";
                         String updateTime = "";
@@ -125,7 +138,7 @@ public final class ApkUtil {
                         for (Element element : elements) {
                             String title = element.select("introducetitle").get(0).text();
                             if ("更新内容".equals(title)) {
-                                updateContent = "更新内容:\n" + element.select("introduceContent").get(0).text();
+                                updateContent = element.select("introduceContent").get(0).text();
                                 Log.d("更新内容", "更新内容=" + updateContent);
                             } else if ("软件信息".equals(title)) {
                                 String content = element.select("introduceContent").get(0).text();
@@ -178,39 +191,6 @@ public final class ApkUtil {
             }
         }
         return false;
-
-
-//        int len = oldLen > newLen ? oldLen : newLen;
-//        for (int i = 0; i < len; i++) {
-//            if (i < oldLen && i < newLen) {
-//                int o = Integer.parseInt(oldVs[i]);
-//                int n = Integer.parseInt(newVs[i]);
-//                if (o > n) {
-//                    result = -1;
-//                    break;
-//                } else if (o < n) {
-//                    result = 1;
-//                    break;
-//                }
-//            } else {
-//                if (oldLen > newLen) {
-//                    for (int j = i; j < oldLen; j++) {
-//                        if (Integer.parseInt(oldVs[j]) > 0) {
-//                            result = -1;
-//                        }
-//                    }
-//                    break;
-//                } else if (oldLen < newLen) {
-//                    for (int j = i; j < newLen; j++) {
-//                        if (Integer.parseInt(newVs[j]) > 0) {
-//                            result = 1;
-//                        }
-//                    }
-//                    break;
-//                }
-//            }
-//        }
-//        return result;
     }
 
     public static Intent getInstallAppIntent(Context context, File appFile) {
