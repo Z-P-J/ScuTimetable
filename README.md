@@ -82,8 +82,16 @@
     <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot14.jpg" height="330" width="190">
 </div>
 
+## v1.5.0
+    2019/06/02
+    更新内容：1.支持查看其他学期的课表信息
+             2.支持一键评教
+             3.增加检查更新功能
+
 
 # 该项目使用或参考了以下开源库
+[QXDownloader(自己开发的多线程下载框架，川大课表应用内更新软件时使用该库进行下载更新)](https://github.com/Z-P-J/QXDownloader)
+
 [TimetableView](https://github.com/zfman/TimetableView)
 
 [jsoup](https://github.com/jhy/jsoup)

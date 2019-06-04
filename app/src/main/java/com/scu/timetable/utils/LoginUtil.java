@@ -273,6 +273,7 @@ public final class LoginUtil {
                     if (response != null) {
 //                        getCurrentWeek(response);
                         getTimetable(semesterCode);
+                        sendMessage(7, null);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
