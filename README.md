@@ -90,7 +90,7 @@
 
 
 # 该项目使用或参考了以下开源库
-[QXDownloader(自己开发的多线程下载框架，川大课表应用内更新软件时使用该库进行下载更新)](https://github.com/Z-P-J/QXDownloader)
+[QXDownloader(自己开发的多线程下载框架，川大课表应用内更新软件时使用该库下载最新安装包)](https://github.com/Z-P-J/QXDownloader)
 
 [TimetableView](https://github.com/zfman/TimetableView)
 
