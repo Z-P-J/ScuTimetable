@@ -12,13 +12,13 @@ import java.util.concurrent.TimeUnit;
 public final class ExecutorHelper {
 
     private static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(1, 2, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-    
+
     private ExecutorHelper() {
-        
+
     }
-    
+
     public static void submit(Runnable runnable) {
         EXECUTOR_SERVICE.submit(runnable);
     }
-    
+
 }

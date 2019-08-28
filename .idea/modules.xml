@@ -2,15 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ScuTimetable.iml" filepath="$PROJECT_DIR$/ScuTimetable.iml" />
-      <module fileurl="file://$PROJECT_DIR$/TimetableView/TimetableView.iml" filepath="$PROJECT_DIR$/TimetableView/TimetableView.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dialoglib/dialoglib.iml" filepath="$PROJECT_DIR$/dialoglib/dialoglib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" filepath="$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/popupmenuview/popupmenuview.iml" filepath="$PROJECT_DIR$/popupmenuview/popupmenuview.iml" />
-      <module fileurl="file://$PROJECT_DIR$/qxdownloader/qxdownloader.iml" filepath="$PROJECT_DIR$/qxdownloader/qxdownloader.iml" />
-      <module fileurl="file://$PROJECT_DIR$/statebutton/statebutton.iml" filepath="$PROJECT_DIR$/statebutton/statebutton.iml" />
-      <module fileurl="file://$PROJECT_DIR$/switchbutton/switchbutton.iml" filepath="$PROJECT_DIR$/switchbutton/switchbutton.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ScuTimetable.iml" filepath="$PROJECT_DIR$/ScuTimetable.iml" group="ScuTimetable" />
+      <module fileurl="file://$PROJECT_DIR$/TimetableView/TimetableView.iml" filepath="$PROJECT_DIR$/TimetableView/TimetableView.iml" group="ScuTimetable/TimetableView" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="ScuTimetable/app" />
+      <module fileurl="file://$PROJECT_DIR$/dialoglib/dialoglib.iml" filepath="$PROJECT_DIR$/dialoglib/dialoglib.iml" group="ScuTimetable/dialoglib" />
+      <module fileurl="file://$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" filepath="$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" group="ScuTimetable/lsettingviewlibrary" />
+      <module fileurl="file://$PROJECT_DIR$/popupmenuview/popupmenuview.iml" filepath="$PROJECT_DIR$/popupmenuview/popupmenuview.iml" group="ScuTimetable/popupmenuview" />
+      <module fileurl="file://$PROJECT_DIR$/qxdownloader/qxdownloader.iml" filepath="$PROJECT_DIR$/qxdownloader/qxdownloader.iml" group="ScuTimetable/qxdownloader" />
+      <module fileurl="file://$PROJECT_DIR$/statebutton/statebutton.iml" filepath="$PROJECT_DIR$/statebutton/statebutton.iml" group="ScuTimetable/statebutton" />
+      <module fileurl="file://$PROJECT_DIR$/switchbutton/switchbutton.iml" filepath="$PROJECT_DIR$/switchbutton/switchbutton.iml" group="ScuTimetable/switchbutton" />
     </modules>
   </component>
 </project>

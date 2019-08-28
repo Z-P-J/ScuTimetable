@@ -231,8 +231,12 @@ public final class LoginUtil {
         Elements elements = document.select("li");
         String text = elements.select(".light-red").get(0).select("a").get(0).text();
         Log.d("text", "text=" + text);
-        text = text.substring(text.indexOf("第"));
-        text = text.substring(1, text.indexOf("周"));
+        if (text.contains("假期")) {
+            text = "1";
+        } else {
+            text = text.substring(text.indexOf("第"));
+            text = text.substring(1, text.indexOf("周"));
+        }
         Log.d("text", "text=" + text);
         int currentWeek = Integer.parseInt(text);
         TimetableHelper.setCurrentWeek(currentWeek);
