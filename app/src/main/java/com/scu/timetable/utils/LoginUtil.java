@@ -2,6 +2,7 @@ package com.scu.timetable.utils;
 
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.scu.timetable.model.SemesterBean;
@@ -19,7 +20,10 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -226,19 +230,134 @@ public final class LoginUtil {
         }
     }
 
+    public static void main(String[] args) {
+        try {
+            int currentWeek;
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+            int day = calendar.get(Calendar.DATE);
+            System.out.println("year=" + year + " month=" + month + " day=" + day );
+            Document doc = Jsoup.connect(String.format(Locale.CHINA, "http://jwc.scu.edu.cn/scdx/xl%d.html", year))
+                    .userAgent(TimetableHelper.UA)
+                    .ignoreContentType(true)
+                    .get();
+            String firstDay = "";
+            String monthStr = "";
+            if (month == 1 || month == 2 || month == 3) {
+                firstDay = doc.select("table").get(1).select("tr").get(2).select("td").get(3).text().trim();
+                int first = Integer.parseInt(firstDay);
+                String info = doc.select("table").get(1).select("tr").get(2).select("td").get(10).select("p").get(1).select("strong").text();
+                System.out.println("info1=" + info);
+                if (first < 10) {
+                    firstDay = "0" + firstDay;
+                }
+
+                if (info.contains("3月") || first <= 10) {
+                    //3
+                    monthStr = "-03-";
+                } else {
+                    //2
+                    monthStr = "-02-";
+                }
+
+            } else if (month == 7 || month == 8 || month == 9) {
+                firstDay = doc.select("table").get(0).select("tr").get(2).select("td").get(3).text().trim();
+                int first = Integer.parseInt(firstDay);
+                String info = doc.select("table").get(0).select("tr").get(2).select("td").get(10).select("p").get(1).select("strong").text();
+                System.out.println("info2=" + info);
+                if (first < 10) {
+                    firstDay = "0" + firstDay;
+                }
+                if (info.contains("9月") || first <= 10) {
+                    //9
+                    monthStr = "-09-";
+                } else {
+                    //8
+                    monthStr = "-08-";
+                }
+            }
+            if (monthStr.equals("")) {
+                System.out.println("empty");
+                currentWeek = 1;
+            } else {
+                System.out.println(year + monthStr + firstDay);
+                currentWeek = -DateUtil.computeWeek(DateUtil.parse("2019-08-30"), DateUtil.parse(year + monthStr + firstDay));
+            }
+            System.out.println("currentWeek=" + currentWeek);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void getCurrentWeek(Connection.Response response) {
         Document document = Jsoup.parse(response.body());
         Elements elements = document.select("li");
         String text = elements.select(".light-red").get(0).select("a").get(0).text();
         Log.d("text", "text=" + text);
+        int currentWeek;
         if (text.contains("假期")) {
-            text = "1";
+            try {
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH) + 1;
+                int day = calendar.get(Calendar.DATE);
+                System.out.println("year=" + year + " month=" + month + " day=" + day );
+                Document doc = Jsoup.connect(String.format(Locale.CHINA, "http://jwc.scu.edu.cn/scdx/xl%d.html", year))
+                        .userAgent(TimetableHelper.UA)
+                        .ignoreContentType(true)
+                        .get();
+                String firstDay = "";
+                String monthStr = "";
+                if (month == 1 || month == 2 || month == 3) {
+                    firstDay = doc.select("table").get(1).select("tr").get(2).select("td").get(3).text().trim();
+                    int first = Integer.parseInt(firstDay);
+                    String info = doc.select("table").get(1).select("tr").get(2).select("td").get(10).select("p").get(1).select("strong").text();
+                    System.out.println("info1=" + info);
+                    if (first < 10) {
+                        firstDay = "0" + firstDay;
+                    }
+                    if (info.contains("3月") || first <= 10) {
+                        //3
+                        monthStr = "-03-";
+                    } else {
+                        //2
+                        monthStr = "-02-";
+                    }
+                } else if (month == 7 || month == 8 || month == 9) {
+                    firstDay = doc.select("table").get(0).select("tr").get(2).select("td").get(3).text().trim();
+                    int first = Integer.parseInt(firstDay);
+                    String info = doc.select("table").get(0).select("tr").get(2).select("td").get(10).select("p").get(1).select("strong").text();
+                    System.out.println("info2=" + info);
+                    if (first < 10) {
+                        firstDay = "0" + firstDay;
+                    }
+                    if (info.contains("9月") || first <= 10) {
+                        //9
+                        monthStr = "-09-";
+                    } else {
+                        //8
+                        monthStr = "-08-";
+                    }
+                }
+                if (monthStr.equals("")) {
+                    System.out.println("empty");
+                    currentWeek = 1;
+                } else {
+                    System.out.println(year + monthStr + firstDay);
+                    currentWeek = -DateUtil.computeWeek(new Date(), DateUtil.parse(year + monthStr + firstDay));
+                }
+                System.out.println("currentWeek=" + currentWeek);
+            } catch (IOException e) {
+                e.printStackTrace();
+                currentWeek = 1;
+            }
         } else {
             text = text.substring(text.indexOf("第"));
             text = text.substring(1, text.indexOf("周"));
+            currentWeek = Integer.parseInt(text);
         }
         Log.d("text", "text=" + text);
-        int currentWeek = Integer.parseInt(text);
         TimetableHelper.setCurrentWeek(currentWeek);
         TimetableHelper.setCurrentDate(DateUtil.currentDate());
     }
