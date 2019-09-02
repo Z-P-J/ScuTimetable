@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.felix.atoast.library.AToast;
 import com.scu.timetable.ui.activity.BaseActivity;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
@@ -284,7 +284,7 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
             return;
         }
         if (userName.getText().toString().isEmpty() || password.getText().toString().isEmpty() || captcha.getText().toString().isEmpty()) {
-            Toast.makeText(LoginActivity.this, "请输入正确的信息", Toast.LENGTH_SHORT).show();
+            AToast.normal("请输入正确的信息");
         } else {
 //            SPHelper.putString("user_name", userName.getText().toString());
 //            SPHelper.putString("password", password.getText().toString());
@@ -370,13 +370,13 @@ public final class LoginActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onLoginFailed() {
-        Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+        AToast.normal("登录失败！");
         onError();
     }
 
     @Override
     public void onLoginError(String errorMsg) {
-        Toast.makeText(this, "错误信息：" + errorMsg, Toast.LENGTH_SHORT).show();
+        AToast.normal("错误信息:" + errorMsg);
         onError();
     }
 

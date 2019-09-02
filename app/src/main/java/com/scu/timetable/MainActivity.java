@@ -15,11 +15,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.felix.atoast.library.AToast;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.model.SemesterBean;
 import com.scu.timetable.model.UpdateBean;
+import com.scu.timetable.service.NotificationService;
 import com.scu.timetable.ui.activity.ActivityCollector;
 import com.scu.timetable.ui.activity.BaseActivity;
 import com.scu.timetable.ui.fragment.DetailDialogFragment;
@@ -80,6 +81,8 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_func);
+
+        NotificationService.start(this);
 
         expandMoreDrawable = getResources().getDrawable(R.drawable.ic_expand_more_white_24dp);
         expandLessDrawable = getResources().getDrawable(R.drawable.ic_expand_less_white_24dp);
@@ -214,7 +217,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                             tools.setOnOptionMenuClickListener((index, menu) -> {
                                 if (!menu.isEnable()) {
                                     if (index == 0) {
-                                        Toast.makeText(this, "请关闭智能显示周末后再试！", Toast.LENGTH_SHORT).show();
+                                        AToast.normal("请关闭智能显示周末后再试！");
                                     }
                                     return false;
                                 }
@@ -321,7 +324,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                             ImageView alarm = itemView.findViewById(R.id.subject_alarm);
                             alarm.setOnClickListener(v -> {
                                 //todo alarm
-                                Toast.makeText(this, "提醒功能暂未实现！", Toast.LENGTH_SHORT).show();
+                                AToast.normal("提醒功能未实现！");
                             });
                         })
                 .show(view, -1);
@@ -345,15 +348,15 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                         btnSave.setOnClickListener(v -> {
                             String note = editText.getText().toString();
                             if (subject.getNote().isEmpty() && editText.getText().toString().isEmpty()) {
-                                Toast.makeText(MainActivity.this, "请输入备注！", Toast.LENGTH_SHORT).show();
+                                AToast.normal("请输入备注！");
                                 return;
                             }
                             if (TimetableHelper.saveNote(MainActivity.this, subject, note)) {
                                 dialog.dismiss();
-                                Toast.makeText(MainActivity.this, "保存成功！", Toast.LENGTH_SHORT).show();
+                                AToast.normal("保存成功！");
                                 subject.setNote(note);
                             } else {
-                                Toast.makeText(MainActivity.this, "保存失败，请重试！", Toast.LENGTH_SHORT).show();
+                                AToast.normal("保存失败，请重试！");
                             }
                         });
                     }
@@ -419,11 +422,11 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                         btnRefresh.setOnClickListener(v -> {
                             String captcha = captchaEdit.getText().toString();
                             if (TextUtils.isEmpty(captcha)) {
-                                Toast.makeText(MainActivity.this, "验证码为空！", Toast.LENGTH_SHORT).show();
+                                AToast.normal("验证码为空！");
                                 return;
                             }
                             if (TimetableHelper.isVisitorMode()) {
-                                Toast.makeText(MainActivity.this, "您当前正处于游客模式，无法刷新课表！", Toast.LENGTH_SHORT).show();
+                                AToast.normal("您当前正处于游客模式，无法刷新课表！");
                                 return;
                             }
                             if (dialog instanceof QianxunDialog) {
@@ -438,7 +441,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                         private void onError() {
                                             loadingDialogText.setText("登录失败！");
                                             statusLayout.setVisibility(View.GONE);
-                                            Toast.makeText(MainActivity.this, "登录失败，请重试！", Toast.LENGTH_SHORT).show();
+                                            AToast.normal("登录失败，请重试！");
                                             CaptchaFetcher.fetchCaptcha(imgCatpcha);
                                             captchaEdit.setText("");
                                             if (dialog instanceof QianxunDialog) {
@@ -477,7 +480,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
 
                                         @Override
                                         public void onGetTimetableFinished() {
-                                            Toast.makeText(MainActivity.this, "刷新课表成功！", Toast.LENGTH_SHORT).show();
+                                            AToast.normal("刷新课表成功！");
                                             dialog.dismiss();
                                             initTimetableView();
                                             initData();
@@ -504,7 +507,6 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         dialogFragment.setOnDismissListener(new SettingsDialogFragment.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-//                Toast.makeText(MainActivity.this, "SettingsDialogFragment", Toast.LENGTH_SHORT).show();
                 if (!TimetableHelper.isVisitorMode() && !SPHelper.getBoolean("logined", false)) {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
@@ -574,7 +576,6 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         for (Schedule bean : beans) {
             str.append(bean.getName()).append(",").append(bean.getWeekList().toString()).append(",").append(bean.getStart()).append(",").append(bean.getStep()).append("\n");
         }
-//        Toast.makeText(this, str.toString(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -601,7 +602,6 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         toggleTitle(true);
 //        titleTextView.setTextColor(Color.WHITE);
         int cur = mTimetableView.curWeek();
-//        Toast.makeText(this, "cur=" + cur, Toast.LENGTH_SHORT).show();
         mTimetableView.onDateBuildListener()
                 .onUpdateDate(cur, cur, mTimetableView.getSundayIsFirstDay(), mTimetableView.isShowWeekends());
         mTimetableView.changeWeekOnly(cur);
@@ -620,7 +620,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
             return;
         }
         if (System.currentTimeMillis() - firstTime > 2000) {
-            Toast.makeText(this, "再次点击退出！", Toast.LENGTH_SHORT).show();
+            AToast.normal("再次点击退出！");
             firstTime = System.currentTimeMillis();
         } else {
             TimetableHelper.closeVisitorMode();
@@ -630,64 +630,18 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onError(String errMsg) {
-        Toast.makeText(this, "检查更新出错！ " + errMsg, Toast.LENGTH_SHORT).show();
+        AToast.normal("检查更新出错！");
     }
 
     @Override
     public void onGetLatestVersion(UpdateBean bean) {
-        //todo 更新操作
-        Toast.makeText(this, "开始更新", Toast.LENGTH_SHORT).show();
+        AToast.normal("开始更新！");
 //        http://tt.shouji.com.cn/wap/down/soft?id=1555815
-
         UpdateDialogFragment.newInstance(bean).show(getSupportFragmentManager());
-
-//        DownloadMission mission = QianXun.download("http://tt.shouji.com.cn/wap/down/soft?id=1555815");
-//        mission.addListener(new DownloadMission.MissionListener() {
-//            @Override
-//            public void onInit() {
-//                Log.d("onInit", "onInit");
-//            }
-//
-//            @Override
-//            public void onStart() {
-//                Log.d("onStart", "onStart");
-//            }
-//
-//            @Override
-//            public void onPause() {
-//                Log.d("onPause", "onPause");
-//            }
-//
-//            @Override
-//            public void onWaiting() {
-//                Log.d("onWaiting", "onWaiting");
-//            }
-//
-//            @Override
-//            public void onRetry() {
-//                Log.d("onRetry", "onRetry");
-//            }
-//
-//            @Override
-//            public void onProgress(long done, long total) {
-//                Log.d("progress", "progress=" + mission.getProgress());
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//                Log.d("onFinish", "onFinish");
-//                FileUtil.openFile(MainActivity.this, mission.getFile());
-//            }
-//
-//            @Override
-//            public void onError(int errCode) {
-//                Log.d("errCode", "errCode=" + errCode);
-//            }
-//        });
     }
 
     @Override
     public void isLatestVersion() {
-        Toast.makeText(this, "软件已是最新版！", Toast.LENGTH_SHORT).show();
+        AToast.normal("软件已是最新版！");
     }
 }

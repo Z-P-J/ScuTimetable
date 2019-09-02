@@ -4,22 +4,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.scu.timetable.MainActivity;
+import com.felix.atoast.library.AToast;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.model.SemesterBean;
 import com.scu.timetable.utils.content.SPHelper;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -329,7 +322,7 @@ public final class TimetableHelper {
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(context, "启用游客模式失败！", Toast.LENGTH_SHORT).show();
+                AToast.normal("启用游客模式失败！");
                 return false;
             }
         }

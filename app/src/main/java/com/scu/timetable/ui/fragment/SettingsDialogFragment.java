@@ -17,9 +17,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.deadline.statebutton.StateButton;
+import com.felix.atoast.library.AToast;
 import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
@@ -240,7 +240,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
                         @Override
                         public void onClick(IDialog dialog) {
                             if (TimetableHelper.isVisitorMode()) {
-                                Toast.makeText(getContext(), "您当前正处于游客模式，无法注销登录！", Toast.LENGTH_SHORT).show();
+                                AToast.normal("您当前正处于游客模式，无法注销登录！");
                                 return;
                             }
                             SPHelper.putBoolean("logined", false);
@@ -264,7 +264,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
             TimetableHelper.toggleShowNotCurWeek();
         } else if (id == R.id.item_show_weekends) {
             if (TimetableHelper.isSmartShowWeekends()) {
-                Toast.makeText(getContext(), "关闭智能显示周末后启用", Toast.LENGTH_SHORT).show();
+                AToast.normal("关闭智能显示周末后启用！");
             } else {
                 TimetableHelper.toggleShowWeekends();
             }

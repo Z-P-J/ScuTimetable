@@ -31,8 +31,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.model.UpdateBean;
 import com.scu.timetable.ui.view.NumberProgressBar;
@@ -268,15 +268,15 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
             mission.addListener(missionListener);
         } else if (i == R.id.btn_background_update) {
             //点击后台更新按钮
-            Toast.makeText(getContext(), "后台更新", Toast.LENGTH_SHORT).show();
+            AToast.normal("后台更新");
             dismiss();
         } else if (i == R.id.iv_close) {
             //点击关闭按钮
-            Toast.makeText(getContext(), "关闭", Toast.LENGTH_SHORT).show();
+            AToast.normal("关闭");
             dismiss();
         } else if (i == R.id.tv_ignore) {
             //点击忽略按钮
-            Toast.makeText(getContext(), "忽略", Toast.LENGTH_SHORT).show();
+            AToast.normal("忽略更新");
             SPHelper.putString("ignore_version", appVersion.getContentTextView().getText().toString());
             dismiss();
         }

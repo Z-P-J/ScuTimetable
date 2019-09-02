@@ -4,6 +4,7 @@ import android.os.Build;
 import android.os.StrictMode;
 import android.util.Log;
 
+import com.felix.atoast.library.AToast;
 import com.scu.timetable.utils.FileUtil;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.qxdownloader.QianXun;
@@ -22,6 +23,7 @@ public final class Application extends android.app.Application {
             StrictMode.setVmPolicy(builder.build());
         }
         SPHelper.init(this);
+        AToast.onInit(this);
         QianXunConfig config = QianXunConfig.with(this)
                 .setDownloadPath(FileUtil.getDiskCacheDir(this));
         Log.d("cachePath", "cachePath=" + FileUtil.getDiskCacheDir(this));

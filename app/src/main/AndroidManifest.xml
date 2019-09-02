@@ -54,6 +54,10 @@
 
         </service>
 
+        <service android:name=".service.NotificationService">
+
+        </service>
+
         <service android:name=".service.DownloadService"/>
 
         <receiver

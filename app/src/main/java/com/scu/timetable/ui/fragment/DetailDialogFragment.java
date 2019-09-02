@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.felix.atoast.library.AToast;
 import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
@@ -177,7 +177,7 @@ public class DetailDialogFragment extends FullscreenDialogFragment implements Vi
             TimetableHelper.toggleShowNotCurWeek();
         } else if (id == R.id.item_show_weekends) {
             if (TimetableHelper.isSmartShowWeekends()) {
-                Toast.makeText(getContext(), "关闭智能显示周末后启用", Toast.LENGTH_SHORT).show();
+                AToast.normal("关闭智能显示周末后启用");
             } else {
                 TimetableHelper.toggleShowWeekends();
             }

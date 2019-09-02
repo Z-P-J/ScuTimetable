@@ -18,9 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.deadline.statebutton.StateButton;
+import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.model.EvaluationBean;
 import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
@@ -238,7 +238,7 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
         } else if (id == R.id.btn_evaluation) {
             String captcha = captchaEdit.getText().toString();
             if (TextUtils.isEmpty(captcha)) {
-                Toast.makeText(getContext(), "验证码为空！", Toast.LENGTH_SHORT).show();
+                AToast.normal("验证码为空！");
                 return;
             }
             isEvaluating = true;
