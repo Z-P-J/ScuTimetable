@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/ScuTimetable.iml" filepath="$PROJECT_DIR$/ScuTimetable.iml" group="ScuTimetable" />
       <module fileurl="file://$PROJECT_DIR$/TimetableView/TimetableView.iml" filepath="$PROJECT_DIR$/TimetableView/TimetableView.iml" group="ScuTimetable/TimetableView" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="ScuTimetable/app" />
+      <module fileurl="file://$PROJECT_DIR$/atoast/atoast.iml" filepath="$PROJECT_DIR$/atoast/atoast.iml" />
       <module fileurl="file://$PROJECT_DIR$/dialoglib/dialoglib.iml" filepath="$PROJECT_DIR$/dialoglib/dialoglib.iml" group="ScuTimetable/dialoglib" />
       <module fileurl="file://$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" filepath="$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" group="ScuTimetable/lsettingviewlibrary" />
       <module fileurl="file://$PROJECT_DIR$/popupmenuview/popupmenuview.iml" filepath="$PROJECT_DIR$/popupmenuview/popupmenuview.iml" group="ScuTimetable/popupmenuview" />

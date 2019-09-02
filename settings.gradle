@@ -8,4 +8,5 @@ include ':app',
         ':switchbutton',
         ':statebutton',
 //        ':xupdate-lib',
-        ':qxdownloader'
+        ':qxdownloader',
+        ':atoast'

@@ -3,6 +3,4 @@
     android:versionCode="200"
     android:versionName="2.0" >
 
-    <uses-sdk android:targetSdkVersion="21" />
-
 </manifest>

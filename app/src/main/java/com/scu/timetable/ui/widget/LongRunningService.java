@@ -43,7 +43,7 @@ public class LongRunningService extends Service {
 //        manager.setWindow(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime(), 1000, pi);
 //        //   stopForeground(true);
 ////        stopSelf();
-//        AlarmReceiver.startAlarm(this);
+        AlarmReceiver.startAlarm(this);
         return super.onStartCommand(intent, flags, startId);
     }
 

@@ -76,4 +76,5 @@ dependencies {
 //    implementation project(':swipeawaydialog')
     implementation project(':statebutton')
     implementation project(':qxdownloader')
+    implementation project(':atoast')
 }
