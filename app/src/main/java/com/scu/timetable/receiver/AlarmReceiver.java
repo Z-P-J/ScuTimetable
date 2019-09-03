@@ -1,4 +1,4 @@
-package com.scu.timetable.ui.widget;
+package com.scu.timetable.receiver;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -22,7 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d("AlarmReceiver", "haha    " + new Date().toString());
 //        Toast.makeText(context,  new Date().toString(), Toast.LENGTH_SHORT).show();
-        startAlarm(context);
+//        startAlarm(context);
 //        Intent i = new Intent(context, LongRunningService.class);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //            //这是8.0以后的版本需要这样跳转
@@ -30,6 +30,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 //        } else {
 //            context.startService(i);
 //        }
+
     }
 
     public static void startAlarm(Context context) {

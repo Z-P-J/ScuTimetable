@@ -20,7 +20,7 @@ import com.felix.atoast.library.AToast;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.model.SemesterBean;
 import com.scu.timetable.model.UpdateBean;
-import com.scu.timetable.service.NotificationService;
+import com.scu.timetable.service.AlarmService;
 import com.scu.timetable.ui.activity.ActivityCollector;
 import com.scu.timetable.ui.activity.BaseActivity;
 import com.scu.timetable.ui.fragment.DetailDialogFragment;
@@ -82,7 +82,7 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_func);
 
-        NotificationService.start(this);
+        AlarmService.start(this);
 
         expandMoreDrawable = getResources().getDrawable(R.drawable.ic_expand_more_white_24dp);
         expandLessDrawable = getResources().getDrawable(R.drawable.ic_expand_less_white_24dp);

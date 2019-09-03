@@ -50,18 +50,18 @@
 
         </service>
 
-        <service android:name=".ui.widget.LongRunningService">
+        <service android:name=".service.LongRunningService">
 
         </service>
 
-        <service android:name=".service.NotificationService">
+        <service android:name=".service.AlarmService">
 
         </service>
 
         <service android:name=".service.DownloadService"/>
 
         <receiver
-            android:name=".ui.widget.AlarmReceiver"
+            android:name=".receiver.AlarmReceiver"
             android:enabled="true"
             android:exported="true">
 

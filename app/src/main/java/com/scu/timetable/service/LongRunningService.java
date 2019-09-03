@@ -1,13 +1,11 @@
-package com.scu.timetable.ui.widget;
+package com.scu.timetable.service;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.SystemClock;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import com.scu.timetable.receiver.AlarmReceiver;
 
 import java.util.Date;
 
