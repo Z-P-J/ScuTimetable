@@ -62,7 +62,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     private final LinkedList<ScuSubject> scuSubjectLinkedList = new LinkedList<>();
 
     private ScuSubject nextSubject;
-    LinkedList<Alarm> alarmQueue = new LinkedList<>();
+    private final LinkedList<Alarm> alarmQueue = new LinkedList<>();
     private TextToSpeech textToSpeech;
 
     private static final int ALARM_TYPR_BEFORE_CLASS = 0;
@@ -350,6 +350,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     }
 
     private void onAlarm() {
+        Log.d("onAlarm", "scuSubjectLinkedList=" + scuSubjectLinkedList.isEmpty());
         if (scuSubjectLinkedList.isEmpty()) {
             int day = calendar.get(Calendar.DAY_OF_WEEK) + 1;
             if (day == 8) {
@@ -394,17 +395,20 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
             int currentMinute = calendar.get(Calendar.MINUTE);
             while (true) {
                 nextSubject = scuSubjectLinkedList.pop();
+                Log.d("initAlarm", "nextSubject=" + nextSubject);
                 String[] arr = TimetableHelper.TIMES_1[nextSubject.getStart() - 1].split(":");
                 int hourOfSubject = Integer.valueOf(arr[0]);
                 int minuteOfSubject = Integer.valueOf(arr[1]);
 
-                if ((currentHour > hourOfSubject) || (currentHour == hourOfSubject && currentMinute > minuteOfSubject)) {
-                    continue;
-                }
+//                if ((currentHour > hourOfSubject) || (currentHour == hourOfSubject && currentMinute > minuteOfSubject)) {
+//                    continue;
+//                }
 
                 if (scuSubjectLinkedList.isEmpty()) {
                     onAlarm();
                     return;
+                } else if ((currentHour > hourOfSubject) || (currentHour == hourOfSubject && currentMinute > minuteOfSubject)) {
+                    continue;
                 } else {
                     break;
                 }
