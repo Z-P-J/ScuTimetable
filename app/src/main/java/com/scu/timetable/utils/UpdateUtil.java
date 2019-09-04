@@ -39,7 +39,9 @@ public final class UpdateUtil {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             UpdateUtil updateUtil = reference.get();
-            updateUtil.handleMessage(msg);
+            if (updateUtil != null) {
+                updateUtil.handleMessage(msg);
+            }
         }
     }
 
@@ -51,10 +53,11 @@ public final class UpdateUtil {
 
     private UpdateCallback callback;
 
-    private Handler handler = new MyHandler(this);;
+    private Handler handler;
 
     private UpdateUtil(UpdateCallback callback) {
         this.callback = callback;
+        handler = new MyHandler(this);
     }
 
     public static UpdateUtil with(UpdateCallback callback) {
@@ -65,7 +68,9 @@ public final class UpdateUtil {
         Message msg = new Message();
         msg.obj = obj;
         msg.what = what;
-        handler.sendMessage(msg);
+        if (handler != null) {
+            handler.sendMessage(msg);
+        }
     }
 
     private void handleMessage(Message msg) {
