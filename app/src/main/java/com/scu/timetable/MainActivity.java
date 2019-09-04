@@ -61,15 +61,15 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
     private Drawable expandLessDrawable;
 
     //控件
-    TimetableView mTimetableView;
-    WeekView mWeekView;
+    private TimetableView mTimetableView;
+    private WeekView mWeekView;
 
-    LinearLayout layout;
-    TextView titleTextView;
-    List<ScuSubject> scuSubjects = new ArrayList<>();
+    private LinearLayout layout;
+    private TextView titleTextView;
+    private List<ScuSubject> scuSubjects = new ArrayList<>();
 
     //记录切换的周次，不一定是当前周
-    int target = -1;
+    private int target = -1;
 
     private long firstTime = 0;
 

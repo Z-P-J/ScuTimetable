@@ -23,16 +23,22 @@ import java.util.List;
  */
 public final class TimetableHelper {
 
+    /**
+     * 江安校区作息时间
+     */
     public static final String[] TIMES_1 = {
             "8:15", "9:10", "10:15", "11:10",
-            "13:50", "14:45", "15:40", "16:50",
-            "17:45", "19:20", "20:15", "21:10"
+            "13:50", "14:45", "15:40", "16:45",
+            "17:40", "19:20", "20:15", "21:10"
     };
 
+    /**
+     * 望江及华西校区作息时间
+     */
     public static final String[] TIMES_2 = new String[]{
-            "8:00", "9:00", "10:10", "11:00",
-            "15:00", "16:00", "17:00", "18:00",
-            "19:30", "20:30", "21:30", "22:30"
+            "8:00", "8:55", "10:00", "10:55",
+            "14:00", "14:55", "15:50", "16:55",
+            "17:50", "19:30", "20:25", "21:20"
     };
 
     static final String UA = "Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/8.9 Mobile Safari/537.36";
