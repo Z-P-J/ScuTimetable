@@ -58,7 +58,10 @@
 
         </service>
 
-        <service android:name=".service.DownloadService"/>
+<!--        <receiver-->
+<!--            android:name=".service.AlarmService$AlarmReceiver" />-->
+
+<!--        <service android:name=".service.DownloadService"/>-->
 
         <receiver
             android:name=".receiver.AlarmReceiver"
