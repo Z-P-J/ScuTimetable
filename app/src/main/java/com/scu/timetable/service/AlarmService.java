@@ -69,55 +69,11 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     private final LinkedList<Alarm> alarmQueue = new LinkedList<>();
     private TextToSpeech textToSpeech;
 
-
-
     // 与闹钟相关
     private AlarmManager alarmManager;
     private Calendar calendar;
     private PendingIntent sender;
     private Timer timer;
-
-    public static void start(@NonNull Context context) {
-        ContextCompat.startForegroundService(context, new Intent(context, AlarmService.class)
-                .setAction(ACTION_START));
-    }
-
-    public static void stop(@NonNull Context context) {
-        context.startService(new Intent(context, AlarmService.class).setAction(ACTION_STOP));
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Log.d("AlarmService", "onCreate");
-        isCreate = true;
-        init();
-    }
-
-    private void init() {
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        startForeground(FOREGROUND_SERVICE_NOTIF_ID, createForegroundServiceNotification());
-        // 保证内存不足，杀死会重新创建
-        startArgFlags = getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.ECLAIR ? START_STICKY_COMPATIBILITY : START_STICKY;
-
-        textToSpeech = new TextToSpeech(this, this);
-
-        // 与闹钟相关
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-        alarmReceiver = new AlarmReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("alarm_receiver");
-        registerReceiver(alarmReceiver, intentFilter);
-
-//        Intent intent = new Intent(this, AlarmReceiver.class);
-        Intent intent = new Intent();
-        intent.setAction("alarm_receiver");
-        sender = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        initDayOfSubjects(calendar.get(Calendar.DAY_OF_WEEK));
-        onAlarm();
-    }
 
     public class Alarm{
 
@@ -148,6 +104,111 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         }
     }
 
+    private class AlarmReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("onReceive", "onReceive:" + new Date().toString());
+            if (alarmQueue.isEmpty()) {
+                onAlarm();
+            } else {
+                Alarm alarm = alarmQueue.pop();
+                updateAlarm(alarm);
+            }
+        }
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d("AlarmService", "onCreate");
+        isCreate = true;
+        init();
+    }
+
+    @Override
+    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+        if (!isCreate) {
+            onCreate();
+        }
+        broadcastManager = LocalBroadcastManager.getInstance(this);
+
+        if (intent != null) {
+            if (Objects.equals(intent.getAction(), ACTION_STOP)) {
+                stopForeground(true);
+                stopSelf();
+            } else if (Objects.equals(intent.getAction(), ACTION_START)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    NotificationChannel channel = new NotificationChannel(CHANNEL_FOREGROUND_SERVICE, "Foreground service", NotificationManager.IMPORTANCE_LOW);
+                    channel.setShowBadge(false);
+                    notificationManager.createNotificationChannel(channel);
+                }
+                return super.onStartCommand(intent, flags, startId);
+            }
+        }
+
+        broadcastManager.sendBroadcast(new Intent(EVENT_STOPPED));
+        stopSelf();
+
+        return START_NOT_STICKY; // Process will stop
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        if (messenger == null) {
+            serviceThread.start();
+            broadcastManager = LocalBroadcastManager.getInstance(this);
+            messenger = new Messenger(new Handler());
+        }
+        return messenger.getBinder();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (alarmReceiver != null)
+            unregisterReceiver(alarmReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onInit(int status) {
+        Log.d("onInit", "status=" + status);
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.CHINA);
+            Log.d("onInit", "result=" + result);
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                AToast.normal("数据丢失或不支持");
+            }
+        }
+    }
+
+    private void init() {
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        startForeground(FOREGROUND_SERVICE_NOTIF_ID, createForegroundServiceNotification());
+        // 保证内存不足，杀死会重新创建
+        startArgFlags = getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.ECLAIR ? START_STICKY_COMPATIBILITY : START_STICKY;
+
+        textToSpeech = new TextToSpeech(this, this);
+
+        // 与闹钟相关
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        alarmReceiver = new AlarmReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("alarm_receiver");
+        registerReceiver(alarmReceiver, intentFilter);
+
+//        Intent intent = new Intent(this, AlarmReceiver.class);
+        Intent intent = new Intent();
+        intent.setAction("alarm_receiver");
+        sender = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        initDayOfSubjects(calendar.get(Calendar.DAY_OF_WEEK));
+        onAlarm();
+    }
+
     private void initDayOfSubjects(int day) {
         if (scuSubjects == null) {
             scuSubjects = TimetableHelper.getSubjects(this);
@@ -167,112 +228,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
             }
         });
         Log.d("initQueue", "scuSubjectLinkedList=" + scuSubjectLinkedList);
-    }
-
-    @Override
-    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
-        if (!isCreate) {
-            onCreate();
-        }
-        broadcastManager = LocalBroadcastManager.getInstance(this);
-
-        if (intent != null) {
-            if (Objects.equals(intent.getAction(), ACTION_STOP)) {
-                stopForeground(true);
-                stopSelf();
-            } else if (Objects.equals(intent.getAction(), ACTION_START)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    createMainChannel();
-                }
-                return super.onStartCommand(intent, flags, startId);
-            }
-        }
-
-        broadcastManager.sendBroadcast(new Intent(EVENT_STOPPED));
-        stopSelf();
-
-        return START_NOT_STICKY; // Process will stop
-    }
-
-    private void updateForegroundNotification() {
-        notificationManager.notify(FOREGROUND_SERVICE_NOTIF_ID, createForegroundServiceNotification());
-    }
-
-    @NonNull
-    private Notification createForegroundServiceNotification() {
-        return createForegroundServiceNotification("notificationService", "content text");
-    }
-
-    @NonNull
-    private Notification createForegroundServiceNotification(String title, String contentText) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_FOREGROUND_SERVICE);
-        builder.setShowWhen(false)
-                .setContentTitle(title)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setContentText(contentText)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .setGroup(CHANNEL_FOREGROUND_SERVICE)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setOngoing(true)
-//                .addAction(new NotificationCompat.Action(R.drawable.ic_close_black_24dp, "停止服务", PendingIntent.getService(this, 1, new Intent(this, AlarmService.class).setAction(ACTION_STOP), PendingIntent.FLAG_UPDATE_CURRENT)))
-                .setContentIntent(PendingIntent.getActivity(this, 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
-        currentNotification =  builder.build();
-        return currentNotification;
-    }
-
-    private Notification createForegroundServiceNotification(String title, String classRoom, String time, String teacher) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_FOREGROUND_SERVICE);
-        RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.layout_notification);
-        remoteViews.setTextViewText(R.id.text_title, title);
-        remoteViews.setTextViewText(R.id.text_classroom, classRoom);
-        remoteViews.setTextViewText(R.id.text_time, time);
-        remoteViews.setTextViewText(R.id.text_teacher, teacher);
-        builder.setShowWhen(false)
-                .setContentTitle(title)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setContentText(classRoom + " " + time)
-                .setCustomBigContentView(remoteViews)
-                .setCustomContentView(remoteViews)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .setGroup(CHANNEL_FOREGROUND_SERVICE)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setOngoing(true)
-//                .addAction(new NotificationCompat.Action(R.drawable.ic_close_black_24dp, "停止服务", PendingIntent.getService(this, 1, new Intent(this, AlarmService.class).setAction(ACTION_STOP), PendingIntent.FLAG_UPDATE_CURRENT)))
-                .setContentIntent(PendingIntent.getActivity(this, 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
-        currentNotification =  builder.build();
-        return currentNotification;
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        if (messenger == null) {
-            serviceThread.start();
-            broadcastManager = LocalBroadcastManager.getInstance(this);
-            messenger = new Messenger(new Handler());
-        }
-
-        return messenger.getBinder();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void createMainChannel() {
-        NotificationChannel channel = new NotificationChannel(CHANNEL_FOREGROUND_SERVICE, "Foreground service", NotificationManager.IMPORTANCE_LOW);
-        channel.setShowBadge(false);
-        notificationManager.createNotificationChannel(channel);
-    }
-
-    @Override
-    public void onDestroy() {
-        if (alarmReceiver != null)
-            unregisterReceiver(alarmReceiver);
-        super.onDestroy();
     }
 
     private void initAlarmQueue() {
@@ -337,19 +292,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         return alarm;
     }
 
-    public static void main(String[] args) {
-        Calendar calendar = Calendar.getInstance();
-        System.out.println("DAY_OF_WEEK111=" + calendar.get(Calendar.DAY_OF_WEEK));
-        System.out.println("DAY_OF_WEEK111=" + calendar.get(Calendar.DAY_OF_MONTH));
-        calendar.add(Calendar.DAY_OF_WEEK, 1);
-        System.out.println("DAY_OF_WEEK222=" + calendar.get(Calendar.DAY_OF_WEEK));
-        System.out.println("DAY_OF_WEEK222=" + calendar.get(Calendar.DAY_OF_MONTH));
-        calendar.add(Calendar.DAY_OF_WEEK, 2);
-        System.out.println("DAY_OF_WEEK333=" + calendar.get(Calendar.DAY_OF_WEEK));
-        System.out.println("DAY_OF_WEEK333=" + calendar.get(Calendar.DAY_OF_MONTH));
-    }
-
-    public void onAlarm() {
+    private void onAlarm() {
         Log.d("onAlarm", "scuSubjectLinkedList=" + scuSubjectLinkedList.isEmpty());
         if (scuSubjectLinkedList.isEmpty()) {
             Log.d("onAlarm", "11111111111");
@@ -409,34 +352,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         updateAlarm(alarm);
     }
 
-    @Override
-    public void onInit(int status) {
-        Log.d("onInit", "status=" + status);
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.CHINA);
-            Log.d("onInit", "result=" + result);
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                AToast.normal("数据丢失或不支持");
-            }
-        }
-    }
-
-    private class AlarmReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("onReceive", "onReceive:" + new Date().toString());
-            if (alarmQueue.isEmpty()) {
-                onAlarm();
-            } else {
-                Alarm alarm = alarmQueue.pop();
-                updateAlarm(alarm);
-            }
-        }
-    }
-
-    public void updateAlarm(Alarm alarm) {
+    private void updateAlarm(Alarm alarm) {
         if (alarmManager == null || nextSubject == null) {
             return;
         }
@@ -505,6 +421,80 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
         }
+    }
+
+    private void updateForegroundNotification() {
+        notificationManager.notify(FOREGROUND_SERVICE_NOTIF_ID, createForegroundServiceNotification());
+    }
+
+    private Notification createForegroundServiceNotification() {
+        return createForegroundServiceNotification("notificationService", "content text");
+    }
+
+    private Notification createForegroundServiceNotification(String title, String contentText) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_FOREGROUND_SERVICE);
+        builder.setShowWhen(false)
+                .setContentTitle(title)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setContentText(contentText)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .setGroup(CHANNEL_FOREGROUND_SERVICE)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setOngoing(true)
+//                .addAction(new NotificationCompat.Action(R.drawable.ic_close_black_24dp, "停止服务", PendingIntent.getService(this, 1, new Intent(this, AlarmService.class).setAction(ACTION_STOP), PendingIntent.FLAG_UPDATE_CURRENT)))
+                .setContentIntent(PendingIntent.getActivity(this, 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
+        currentNotification =  builder.build();
+        return currentNotification;
+    }
+
+    private Notification createForegroundServiceNotification(String title, String classRoom, String time, String teacher) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_FOREGROUND_SERVICE);
+        RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.layout_notification);
+        remoteViews.setTextViewText(R.id.text_title, title);
+        remoteViews.setTextViewText(R.id.text_classroom, classRoom);
+        remoteViews.setTextViewText(R.id.text_time, time);
+        remoteViews.setTextViewText(R.id.text_teacher, teacher);
+        builder.setShowWhen(false)
+                .setContentTitle(title)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setContentText(classRoom + " " + time)
+                .setCustomBigContentView(remoteViews)
+                .setCustomContentView(remoteViews)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .setGroup(CHANNEL_FOREGROUND_SERVICE)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setOngoing(true)
+//                .addAction(new NotificationCompat.Action(R.drawable.ic_close_black_24dp, "停止服务", PendingIntent.getService(this, 1, new Intent(this, AlarmService.class).setAction(ACTION_STOP), PendingIntent.FLAG_UPDATE_CURRENT)))
+                .setContentIntent(PendingIntent.getActivity(this, 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
+        currentNotification =  builder.build();
+        return currentNotification;
+    }
+
+    public static void start(Context context) {
+        ContextCompat.startForegroundService(context, new Intent(context, AlarmService.class)
+                .setAction(ACTION_START));
+    }
+
+    public static void stop(Context context) {
+        context.startService(new Intent(context, AlarmService.class).setAction(ACTION_STOP));
+    }
+
+    public static void main(String[] args) {
+        Calendar calendar = Calendar.getInstance();
+        System.out.println("DAY_OF_WEEK111=" + calendar.get(Calendar.DAY_OF_WEEK));
+        System.out.println("DAY_OF_WEEK111=" + calendar.get(Calendar.DAY_OF_MONTH));
+        calendar.add(Calendar.DAY_OF_WEEK, 1);
+        System.out.println("DAY_OF_WEEK222=" + calendar.get(Calendar.DAY_OF_WEEK));
+        System.out.println("DAY_OF_WEEK222=" + calendar.get(Calendar.DAY_OF_MONTH));
+        calendar.add(Calendar.DAY_OF_WEEK, 2);
+        System.out.println("DAY_OF_WEEK333=" + calendar.get(Calendar.DAY_OF_WEEK));
+        System.out.println("DAY_OF_WEEK333=" + calendar.get(Calendar.DAY_OF_MONTH));
     }
 
 }
