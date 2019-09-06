@@ -46,12 +46,18 @@ import java.util.TimerTask;
 
 
 public class AlarmService extends Service implements TextToSpeech.OnInitListener {
-    public static final String EVENT_STOPPED = AlarmService.class.getName() + ".STOPPED";
+
+    private static final String EVENT_STOPPED = AlarmService.class.getName() + ".STOPPED";
     private static final int FOREGROUND_SERVICE_NOTIF_ID = 1;
     private static final String CHANNEL_FOREGROUND_SERVICE = "foreground";
     private static final String ACTION_START = AlarmService.class.getName() + ".START";
     private static final String ACTION_STOP = AlarmService.class.getName() + ".STOP";
+    private static final String ACTION_ALARM = AlarmService.class.getName() + ".alarm_receive";
+
     private final HandlerThread serviceThread = new HandlerThread("aria2app notification service");
+    private final LinkedList<ScuSubject> scuSubjectLinkedList = new LinkedList<>();
+    private final LinkedList<Alarm> alarmQueue = new LinkedList<>();
+
     private NotificationManager notificationManager;
     private Messenger messenger;
     private LocalBroadcastManager broadcastManager;
@@ -62,16 +68,15 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     private boolean isOpenStartForeground = true;
     private boolean isOpenAlarmRemind;
     private List<ScuSubject> scuSubjects;
-    private final LinkedList<ScuSubject> scuSubjectLinkedList = new LinkedList<>();
+
 
     private Notification currentNotification;
     private ScuSubject nextSubject;
-    private final LinkedList<Alarm> alarmQueue = new LinkedList<>();
+
     private TextToSpeech textToSpeech;
 
     // 与闹钟相关
     private AlarmManager alarmManager;
-    private Calendar calendar;
     private PendingIntent sender;
     private Timer timer;
 
@@ -82,7 +87,8 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         static final int TYPE_CLASS_BEGAIN = 2;
         static final int TYPE_CLASS_BREAK = 3;
         static final int TYPE_CLASS_END = 4;
-//        static final int TYPE_CLASS_AFTER_CLASS = 5;
+        static final int TYPE_NO_CLASS = 5;
+        static final int TYPE_NIGHT = 6;
 
         private Calendar calendar;
         private int alarmType;
@@ -194,8 +200,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
 
         // 与闹钟相关
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        calendar = Calendar.getInstance();
-        calendar.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         alarmReceiver = new AlarmReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("alarm_receiver");
@@ -205,7 +209,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         Intent intent = new Intent();
         intent.setAction("alarm_receiver");
         sender = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        initDayOfSubjects(calendar.get(Calendar.DAY_OF_WEEK));
+        initDayOfSubjects(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         onAlarm();
     }
 
@@ -230,80 +234,24 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         Log.d("initQueue", "scuSubjectLinkedList=" + scuSubjectLinkedList);
     }
 
-    private void initAlarmQueue() {
-        if (nextSubject == null)  {
-            return;
-        }
-        alarmQueue.clear();
-        int offsetMin = 0;
-        for (int i = nextSubject.getStart(); i <= nextSubject.getEnd(); i++) {
-            if (alarmQueue.isEmpty()) {
-
-                //test
-//                Alarm alarm = new Alarm();
-//                alarm.setAlarmType(Alarm.TYPE_BEFORE_CLASS);
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.add(Calendar.MINUTE, 1);
-//                calendar.set(Calendar.SECOND, 0);
-//                calendar.set(Calendar.MILLISECOND, 0);
-//                alarm.setCalendar(calendar);
-//                alarmQueue.add(alarm);
-
-                alarmQueue.add(createAlarm(-10, Alarm.TYPE_BEFORE_CLASS));
-                alarmQueue.add(createAlarm(0, Alarm.TYPE_BEFORE_CLASS_TEN_MIN));
-                alarmQueue.add(createAlarm(45, Alarm.TYPE_CLASS_BEGAIN));
-                offsetMin = 45;
-            } else {
-                if (i == 3 || i == 8) {
-                    offsetMin += 20;
-                } else {
-                    offsetMin += 10;
-                }
-                alarmQueue.add(createAlarm(offsetMin, Alarm.TYPE_CLASS_BREAK));
-                offsetMin += 45;
-                alarmQueue.add(createAlarm(offsetMin, Alarm.TYPE_CLASS_BEGAIN));
-            }
-        }
-    }
-
-    private Alarm createAlarm(int offsetMin, int alarmType) {
-        Calendar calendar = Calendar.getInstance();
-        int currentDay = calendar.get(Calendar.DAY_OF_WEEK);
-        String[] arr = TimetableHelper.TIMES_1[nextSubject.getStart() - 1].split(":");
-        int subjectDay = nextSubject.getDay();
-        int subjectHour = Integer.valueOf(arr[0]);
-        int subjectMin = Integer.valueOf(arr[1]);
-        Alarm alarm = new Alarm();
-        alarm.setAlarmType(alarmType);
-        calendar.set(Calendar.DAY_OF_WEEK, subjectDay);
-        Log.d("createAlarm", "currentDay=" + currentDay + " subjectDay=" + subjectDay);
-        if (subjectDay >= currentDay) {
-            calendar.add(Calendar.DAY_OF_WEEK, subjectDay - currentDay);
-        } else {
-            calendar.add(Calendar.DAY_OF_WEEK, 7);
-        }
-        Log.d("createAlarm", "day=" + calendar.get(Calendar.DAY_OF_WEEK));
-        calendar.set(Calendar.HOUR_OF_DAY, subjectHour);
-        calendar.set(Calendar.MINUTE, subjectMin);
-        calendar.add(Calendar.MINUTE, offsetMin);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        alarm.setCalendar(calendar);
-        return alarm;
-    }
-
     private void onAlarm() {
         Log.d("onAlarm", "scuSubjectLinkedList=" + scuSubjectLinkedList.isEmpty());
+        Calendar calendar = Calendar.getInstance();
         if (scuSubjectLinkedList.isEmpty()) {
             Log.d("onAlarm", "11111111111");
-            Calendar calendar = Calendar.getInstance();
-            do {
-                calendar.add(Calendar.DAY_OF_WEEK, 1);
-                initDayOfSubjects(calendar.get(Calendar.DAY_OF_WEEK));
-            } while (scuSubjectLinkedList.isEmpty());
 
-            nextSubject = scuSubjectLinkedList.pop();
-            Log.d("onAlarm1", "nextSubject=" + nextSubject);
+//            do {
+//                calendar.add(Calendar.DAY_OF_WEEK, 1);
+//                initDayOfSubjects(calendar.get(Calendar.DAY_OF_WEEK));
+//            } while (scuSubjectLinkedList.isEmpty());
+//
+//            nextSubject = scuSubjectLinkedList.pop();
+//            Log.d("onAlarm1", "nextSubject=" + nextSubject);
+
+
+
+            nextSubject = null;
+
         } else {
             Log.d("onAlarm", "222222222222");
             int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -352,8 +300,101 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         updateAlarm(alarm);
     }
 
+    private void initAlarmQueue() {
+        alarmQueue.clear();
+        if (nextSubject != null)  {
+            int offsetMin = 0;
+            for (int i = nextSubject.getStart(); i <= nextSubject.getEnd(); i++) {
+                if (alarmQueue.isEmpty()) {
+
+                    //test
+//                Alarm alarm = new Alarm();
+//                alarm.setAlarmType(Alarm.TYPE_BEFORE_CLASS);
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.add(Calendar.MINUTE, 1);
+//                calendar.set(Calendar.SECOND, 0);
+//                calendar.set(Calendar.MILLISECOND, 0);
+//                alarm.setCalendar(calendar);
+//                alarmQueue.add(alarm);
+
+                    alarmQueue.add(createAlarm(-10, Alarm.TYPE_BEFORE_CLASS));
+                    alarmQueue.add(createAlarm(0, Alarm.TYPE_BEFORE_CLASS_TEN_MIN));
+                    alarmQueue.add(createAlarm(45, Alarm.TYPE_CLASS_BEGAIN));
+                    offsetMin = 45;
+                } else {
+                    if (i == 3 || i == 8) {
+                        offsetMin += 20;
+                    } else {
+                        offsetMin += 10;
+                    }
+                    alarmQueue.add(createAlarm(offsetMin, Alarm.TYPE_CLASS_BREAK));
+                    offsetMin += 45;
+                    alarmQueue.add(createAlarm(offsetMin, Alarm.TYPE_CLASS_BEGAIN));
+                }
+            }
+        }
+        if (scuSubjectLinkedList.isEmpty()) {
+            alarmQueue.add(createNoClassAlarm());
+            alarmQueue.add(createNightAlarm());
+        }
+    }
+
+    private Alarm createAlarm(int offsetMin, int alarmType) {
+        if (nextSubject == null) {
+            return null;
+        }
+        Calendar calendar = Calendar.getInstance();
+        int currentDay = calendar.get(Calendar.DAY_OF_WEEK);
+        String[] arr = TimetableHelper.TIMES_1[nextSubject.getStart() - 1].split(":");
+        int subjectDay = nextSubject.getDay();
+        int subjectHour = Integer.valueOf(arr[0]);
+        int subjectMin = Integer.valueOf(arr[1]);
+        Alarm alarm = new Alarm();
+        alarm.setAlarmType(alarmType);
+        calendar.set(Calendar.DAY_OF_WEEK, subjectDay);
+        Log.d("createAlarm", "currentDay=" + currentDay + " subjectDay=" + subjectDay);
+        if (subjectDay >= currentDay) {
+            calendar.add(Calendar.DAY_OF_WEEK, subjectDay - currentDay);
+        } else {
+            calendar.add(Calendar.DAY_OF_WEEK, 7);
+        }
+        Log.d("createAlarm", "day=" + calendar.get(Calendar.DAY_OF_WEEK));
+        calendar.set(Calendar.HOUR_OF_DAY, subjectHour);
+        calendar.set(Calendar.MINUTE, subjectMin);
+        calendar.add(Calendar.MINUTE, offsetMin);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        alarm.setCalendar(calendar);
+        return alarm;
+    }
+
+    private Alarm createNoClassAlarm() {
+        Alarm alarm = new Alarm();
+        alarm.setAlarmType(Alarm.TYPE_NO_CLASS);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        alarm.setCalendar(calendar);
+        return alarm;
+    }
+
+    private Alarm createNightAlarm() {
+        Alarm alarm = new Alarm();
+        alarm.setAlarmType(Alarm.TYPE_NIGHT);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_WEEK, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 6);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return alarm;
+    }
+
     private void updateAlarm(Alarm alarm) {
-        if (alarmManager == null || nextSubject == null) {
+        // || nextSubject == null
+        if (alarmManager == null) {
             return;
         }
         Calendar calendar = alarm.getCalendar();
@@ -368,11 +409,10 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                     long deltaMin = (calendar.getTime().getTime() - System.currentTimeMillis()) / (1000 * 60);
                     long deltaHour = deltaMin / 60;
                     deltaMin = deltaMin % 60;
-                    Notification notification = createForegroundServiceNotification("下一节课：" + nextSubject.getCourseName(),
+                    updateNotification("下一节课：" + nextSubject.getCourseName(),
                             "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
                             "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "  " + deltaHour + "小时" + deltaMin + "分钟后开始上课",
                             "任课老师：" + nextSubject.getTeacher());
-                    notificationManager.notify(FOREGROUND_SERVICE_NOTIF_ID, notification);
                 }
             }, 0, 1000 * 60);
         } else {
@@ -387,16 +427,26 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 textToSpeech.speak(nextSubject.getCourseName() + "课程即将开始", TextToSpeech.QUEUE_FLUSH, null);
                 break;
             case Alarm.TYPE_CLASS_BEGAIN:
-                Notification notification = createForegroundServiceNotification(nextSubject.getCourseName() + "课程正在上课中",
+                updateNotification(nextSubject.getCourseName() + "课程正在上课中",
                         "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
                         "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1],
                         "任课老师：" + nextSubject.getTeacher());
-                notificationManager.notify(FOREGROUND_SERVICE_NOTIF_ID, notification);
                 break;
             case Alarm.TYPE_CLASS_BREAK:
-                notificationManager.notify(FOREGROUND_SERVICE_NOTIF_ID, createForegroundServiceNotification(nextSubject.getCourseName() + "课间休息时间", "休息一会儿吧！"));
+                updateNotification(nextSubject.getCourseName() + "课间休息时间", "休息一会儿吧！");
                 break;
             case Alarm.TYPE_CLASS_END:
+                break;
+            case Alarm.TYPE_NO_CLASS:
+                updateNotification("川大课表", "今天没课了，放松一下！");
+                break;
+            case Alarm.TYPE_NIGHT:
+                /**
+                 * 太好了，明天是周末，可以睡懒觉了！
+                 * 太好了，明天上午没课，可以睡懒觉了！
+                 * 明天上午还有课，请早点休息吧！
+                 */
+                updateNotification("夜深了，快点睡觉吧！", "太好了，明天没有课，可以睡懒觉了！");
                 break;
             default:
                 break;
@@ -423,8 +473,12 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         }
     }
 
-    private void updateForegroundNotification() {
-        notificationManager.notify(FOREGROUND_SERVICE_NOTIF_ID, createForegroundServiceNotification());
+    private void updateNotification(String title, String content) {
+        notificationManager.notify(FOREGROUND_SERVICE_NOTIF_ID, createForegroundServiceNotification(title, content));
+    }
+
+    private void updateNotification(String title, String classRoom, String time, String teacher) {
+        notificationManager.notify(FOREGROUND_SERVICE_NOTIF_ID, createForegroundServiceNotification(title, classRoom, time, teacher));
     }
 
     private Notification createForegroundServiceNotification() {
