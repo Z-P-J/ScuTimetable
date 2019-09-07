@@ -7,9 +7,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Handler;
@@ -25,8 +27,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.felix.atoast.library.AToast;
+import com.scu.timetable.IAlarmAidlInterface;
 import com.scu.timetable.MainActivity;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
@@ -80,6 +84,9 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     private PendingIntent sender;
     private Timer timer;
 
+    private AlarmBinder binder;
+    private AlarmConn conn;
+
     public class Alarm{
 
         static final int TYPE_BEFORE_CLASS = 0;
@@ -115,13 +122,46 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("onReceive", "onReceive:" + new Date().toString());
-            if (alarmQueue.isEmpty()) {
-                onAlarm();
-            } else {
-                Alarm alarm = alarmQueue.pop();
-                updateAlarm(alarm);
+            String action = intent.getAction();
+            if (Intent.ACTION_SCREEN_ON.equals(action) || Intent.ACTION_SCREEN_OFF.equals(action)) {
+                Log.d("onReceive", "action=" + action);
+                if (currentNotification != null) {
+                    updateNotification(currentNotification);
+                }
+            }
+            else {
+                if (alarmQueue.isEmpty()) {
+                    onAlarm();
+                } else {
+                    Alarm alarm = alarmQueue.pop();
+                    updateAlarm(alarm);
+                }
             }
         }
+    }
+
+    class AlarmBinder extends IAlarmAidlInterface.Stub {
+        @Override
+        public String getServiceName() {
+            return AlarmService.class.getSimpleName();
+        }
+    }
+
+    class AlarmConn implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Toast.makeText(AlarmService.this, "闹钟服务", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            // 启动远程服务
+//            startRemoteService();
+//            // 绑定远程服务
+//            bindRemoteService();
+        }
+
     }
 
     @Override
@@ -137,13 +177,32 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         if (!isCreate) {
             onCreate();
         }
+
         broadcastManager = LocalBroadcastManager.getInstance(this);
 
         if (intent != null) {
-            if (Objects.equals(intent.getAction(), ACTION_STOP)) {
+            String action = intent.getAction();
+            Log.d("onStartCommand", "action=" + action);
+            if (Objects.equals(action, ACTION_STOP)) {
+                // 关闭闹钟
+                if (alarmManager != null) {
+                    alarmManager.cancel(sender);
+                    alarmManager = null;
+                }
+
+                // 销毁定时器
+                timer = null;
+
+                // 关闭前置服务
+                isOpenStartForeground = false;
+
+                // 关闭远程服务
+                stopRemoteService();
+                unBindRemoteService();
+
                 stopForeground(true);
                 stopSelf();
-            } else if (Objects.equals(intent.getAction(), ACTION_START)) {
+            } else if (Objects.equals(action, ACTION_START)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     NotificationChannel channel = new NotificationChannel(CHANNEL_FOREGROUND_SERVICE, "Foreground service", NotificationManager.IMPORTANCE_LOW);
                     channel.setShowBadge(false);
@@ -162,12 +221,13 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        if (messenger == null) {
-            serviceThread.start();
-            broadcastManager = LocalBroadcastManager.getInstance(this);
-            messenger = new Messenger(new Handler());
-        }
-        return messenger.getBinder();
+//        if (messenger == null) {
+//            serviceThread.start();
+//            broadcastManager = LocalBroadcastManager.getInstance(this);
+//            messenger = new Messenger(new Handler());
+//        }
+//        return messenger.getBinder();
+        return binder;
     }
 
     @Override
@@ -175,6 +235,14 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         if (alarmReceiver != null)
             unregisterReceiver(alarmReceiver);
         super.onDestroy();
+        timer = null;
+
+        start(this);
+
+        // 启动远程服务
+        startRemoteService();
+        // 绑定远程服务
+        bindRemoteService();
     }
 
     @Override
@@ -193,6 +261,10 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     private void init() {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         startForeground(FOREGROUND_SERVICE_NOTIF_ID, createForegroundServiceNotification());
+
+        binder = new AlarmBinder();
+        conn = new AlarmConn();
+
         // 保证内存不足，杀死会重新创建
         startArgFlags = getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.ECLAIR ? START_STICKY_COMPATIBILITY : START_STICKY;
 
@@ -202,36 +274,41 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmReceiver = new AlarmReceiver();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("alarm_receiver");
+        intentFilter.addAction("com.scu.timetable.alarm_receiver");
+        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(alarmReceiver, intentFilter);
 
 //        Intent intent = new Intent(this, AlarmReceiver.class);
         Intent intent = new Intent();
-        intent.setAction("alarm_receiver");
+        intent.setAction("com.scu.timetable.alarm_receiver");
         sender = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        initDayOfSubjects(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+        scuSubjectLinkedList.clear();
+        scuSubjectLinkedList.addAll(getDayOfSubjects(Calendar.getInstance().get(Calendar.DAY_OF_WEEK)));
         onAlarm();
     }
 
-    private void initDayOfSubjects(int day) {
+    private LinkedList<ScuSubject> getDayOfSubjects(int day) {
+        LinkedList<ScuSubject> todaySubjects = new LinkedList<>();
         if (scuSubjects == null) {
             scuSubjects = TimetableHelper.getSubjects(this);
         }
-        scuSubjectLinkedList.clear();
+//        scuSubjectLinkedList.clear();
 
         Log.d("initQueue", "day=" + day);
         for (ScuSubject subject : scuSubjects) {
             if (day == subject.getDay() && subject.getWeekList().contains(TimetableHelper.getCurrentWeek())) {
-                scuSubjectLinkedList.add(subject);
+                todaySubjects.add(subject);
             }
         }
-        Collections.sort(scuSubjectLinkedList, new Comparator<ScuSubject>() {
+        Collections.sort(todaySubjects, new Comparator<ScuSubject>() {
             @Override
             public int compare(ScuSubject o1, ScuSubject o2) {
                 return o1.getStart() - o2.getStart();
             }
         });
-        Log.d("initQueue", "scuSubjectLinkedList=" + scuSubjectLinkedList);
+        Log.d("initQueue", "subjects=" + todaySubjects);
+        return todaySubjects;
     }
 
     private void onAlarm() {
@@ -278,8 +355,10 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 if ((currentHour > hourOfSubject)
                         || (currentHour == hourOfSubject && currentMinute > minuteOfSubject)) {
                     if (scuSubjectLinkedList.isEmpty()) {
-                        onAlarm();
-                        return;
+//                        onAlarm();
+//                        return;
+                        nextSubject = null;
+                        break;
                     }
                 } else {
                     break;
@@ -333,7 +412,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 }
             }
         }
-        if (scuSubjectLinkedList.isEmpty()) {
+        if (nextSubject == null || scuSubjectLinkedList.isEmpty()) {
             alarmQueue.add(createNoClassAlarm());
             alarmQueue.add(createNightAlarm());
         }
@@ -389,6 +468,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+        alarm.setCalendar(calendar);
         return alarm;
     }
 
@@ -438,7 +518,22 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
             case Alarm.TYPE_CLASS_END:
                 break;
             case Alarm.TYPE_NO_CLASS:
-                updateNotification("川大课表", "今天没课了，放松一下！");
+                Calendar calendar1 = Calendar.getInstance();
+                int day = calendar1.get(Calendar.DAY_OF_WEEK);
+                Log.d("updateAlarm", "day1=" + day);
+                calendar1.add(Calendar.DAY_OF_WEEK, 1);
+                day = calendar1.get(Calendar.DAY_OF_WEEK);
+                Log.d("updateAlarm", "day2=" + day);
+
+                if (scuSubjectLinkedList.isEmpty()){
+                    String content;
+                    if (day == 1 || day == 7) {
+                        content = "今天周末，放松一下！";
+                    } else {
+                        content = "今天没课了，放松一下吧！";
+                    }
+                    updateNotification("川大课表", content);
+                }
                 break;
             case Alarm.TYPE_NIGHT:
                 /**
@@ -446,7 +541,25 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                  * 太好了，明天上午没课，可以睡懒觉了！
                  * 明天上午还有课，请早点休息吧！
                  */
-                updateNotification("夜深了，快点睡觉吧！", "太好了，明天没有课，可以睡懒觉了！");
+                calendar1 = Calendar.getInstance();
+                day = calendar1.get(Calendar.DAY_OF_WEEK);
+                Log.d("updateAlarm", "day1=" + day);
+                calendar1.add(Calendar.DAY_OF_WEEK, 1);
+                day = calendar1.get(Calendar.DAY_OF_WEEK);
+                Log.d("updateAlarm", "day2=" + day);
+                scuSubjectLinkedList.clear();
+                scuSubjectLinkedList.addAll(getDayOfSubjects(day));
+                String content;
+                if (day == 1 || day == 7) {
+                    content = "太好了，明天是周末，可以睡懒觉了！";
+                } else if (scuSubjectLinkedList.isEmpty()){
+                    content = "太好了，明天没有课，可以睡懒觉了！";
+                } else if (scuSubjectLinkedList.getFirst().getStart() > 4){
+                    content = "太好了，明天上午没课，可以睡懒觉了！";
+                } else {
+                    content = "明天上午还有课，请早点休息吧！";
+                }
+                updateNotification("夜深了，快点睡觉吧！", content);
                 break;
             default:
                 break;
@@ -473,6 +586,10 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         }
     }
 
+    private void updateNotification(Notification notification) {
+        notificationManager.notify(FOREGROUND_SERVICE_NOTIF_ID, notification);
+    }
+
     private void updateNotification(String title, String content) {
         notificationManager.notify(FOREGROUND_SERVICE_NOTIF_ID, createForegroundServiceNotification(title, content));
     }
@@ -482,7 +599,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     }
 
     private Notification createForegroundServiceNotification() {
-        return createForegroundServiceNotification("notificationService", "content text");
+        return createForegroundServiceNotification("川大课表", "海纳百川 有容乃大");
     }
 
     private Notification createForegroundServiceNotification(String title, String contentText) {
@@ -528,6 +645,43 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 .setContentIntent(PendingIntent.getActivity(this, 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
         currentNotification =  builder.build();
         return currentNotification;
+    }
+
+    /**
+     * 启动远程服务
+     */
+    private void startRemoteService() {
+        Intent intent = new Intent(this, RemoteService.class);
+        intent.setAction("com.scu.timetable.remote_service");
+        startService(intent);
+    }
+
+    /**
+     * 绑定远程服务
+     */
+    private void bindRemoteService() {
+        Intent intent = new Intent(this, RemoteService.class);
+        intent.setAction("com.scu.timetable.remote_service");
+        bindService(
+                intent,
+                conn,
+                Context.BIND_IMPORTANT);
+    }
+
+    /**
+     * 关闭远程服务
+     */
+    private void stopRemoteService() {
+        Intent intent = new Intent(this, RemoteService.class);
+        intent.setAction("com.scu.timetable.remote_service");
+        stopService(intent);
+    }
+
+    /**
+     * 解绑远程服务
+     */
+    private void unBindRemoteService() {
+        unbindService(conn);
     }
 
     public static void start(Context context) {

@@ -33,9 +33,7 @@ public class JobSchedulerService extends JobService {
         public void handleMessage(Message msg) {
             // 开启闹钟服务
             Intent intent = new Intent(mWeakRef.get(), AlarmService.class);
-            intent.setAction("cc.ibooker.zalarm.alarm_service");
-            intent.putExtra("isOpenStartForeground", false);
-            intent.putExtra("isUpdateAlarmCalendar", false);
+            intent.setAction("com.scu.timetable.alarm_service");
             mWeakRef.get().startService(intent);
 
             // 通知系统当前任务已完成

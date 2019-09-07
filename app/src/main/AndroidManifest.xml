@@ -50,26 +50,44 @@
 
         </service>
 
-        <service android:name=".service.LongRunningService">
+<!--        <service android:name=".service.LongRunningService">-->
 
+<!--        </service>-->
+
+        <service android:name=".service.AlarmService"
+            android:exported="false"
+            android:process=":alarm_service">
+            <intent-filter android:priority="1000">
+                <action android:name="com.scu.timetable.alarm_service" />
+            </intent-filter>
         </service>
 
-        <service android:name=".service.AlarmService">
-
+        <!--远程服务-->
+        <service
+            android:name=".service.RemoteService"
+            android:exported="false"
+            android:process=":remote_service">
+            <intent-filter android:priority="1000">
+                <action android:name="com.scu.timetable.remote_service" />
+            </intent-filter>
         </service>
+
+        <service
+            android:name=".service.JobSchedulerService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
 <!--        <receiver-->
 <!--            android:name=".service.AlarmService$AlarmReceiver" />-->
 
 <!--        <service android:name=".service.DownloadService"/>-->
 
-        <receiver
-            android:name=".receiver.AlarmReceiver"
-            android:enabled="true"
-            android:exported="true">
+<!--        <receiver-->
+<!--            android:name=".receiver.AlarmReceiver"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true">-->
 
-            
-        </receiver>
+<!--            -->
+<!--        </receiver>-->
 
     </application>
 
