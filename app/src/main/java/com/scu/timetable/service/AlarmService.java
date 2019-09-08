@@ -123,7 +123,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         public void onReceive(Context context, Intent intent) {
             Log.d("onReceive", "onReceive:" + new Date().toString());
             String action = intent.getAction();
-            if (Intent.ACTION_SCREEN_ON.equals(action) || Intent.ACTION_SCREEN_OFF.equals(action)) {
+            if (Intent.ACTION_SCREEN_OFF.equals(action)) {// Intent.ACTION_SCREEN_ON.equals(action) ||
                 Log.d("onReceive", "action=" + action);
                 if (currentNotification != null) {
                     updateNotification(currentNotification);
@@ -489,9 +489,15 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                     long deltaMin = (calendar.getTime().getTime() - System.currentTimeMillis()) / (1000 * 60);
                     long deltaHour = deltaMin / 60;
                     deltaMin = deltaMin % 60;
-                    updateNotification("下一节课：" + nextSubject.getCourseName(),
+                    String time = deltaHour + "小时" + deltaMin + "分钟后开始";
+                    if (deltaHour == 0) {
+                        time = deltaMin + "分钟后开始";
+                    } else if (deltaMin == 0) {
+                        time = deltaHour + "小时后开始";
+                    }
+                    updateNotification("下一节课：" + nextSubject.getCourseName() + " " + time,
                             "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
-                            "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "  " + deltaHour + "小时" + deltaMin + "分钟后开始上课",
+                            "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getStart() - 1],
                             "任课老师：" + nextSubject.getTeacher());
                 }
             }, 0, 1000 * 60);
@@ -507,9 +513,9 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 textToSpeech.speak(nextSubject.getCourseName() + "课程即将开始", TextToSpeech.QUEUE_FLUSH, null);
                 break;
             case Alarm.TYPE_CLASS_BEGAIN:
-                updateNotification(nextSubject.getCourseName() + "课程正在上课中",
+                updateNotification(nextSubject.getCourseName() + "课程已开始",
                         "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
-                        "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1],
+                        "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getStart() - 1],
                         "任课老师：" + nextSubject.getTeacher());
                 break;
             case Alarm.TYPE_CLASS_BREAK:
@@ -521,8 +527,8 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 Calendar calendar1 = Calendar.getInstance();
                 int day = calendar1.get(Calendar.DAY_OF_WEEK);
                 Log.d("updateAlarm", "day1=" + day);
-                calendar1.add(Calendar.DAY_OF_WEEK, 1);
-                day = calendar1.get(Calendar.DAY_OF_WEEK);
+//                calendar1.add(Calendar.DAY_OF_WEEK, 1);
+//                day = calendar1.get(Calendar.DAY_OF_WEEK);
                 Log.d("updateAlarm", "day2=" + day);
 
                 if (scuSubjectLinkedList.isEmpty()){
