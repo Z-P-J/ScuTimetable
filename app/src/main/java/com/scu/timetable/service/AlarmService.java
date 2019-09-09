@@ -61,6 +61,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     private final HandlerThread serviceThread = new HandlerThread("aria2app notification service");
     private final LinkedList<ScuSubject> scuSubjectLinkedList = new LinkedList<>();
     private final LinkedList<Alarm> alarmQueue = new LinkedList<>();
+    private final Notification[] notifications = new Notification[1];
 
     private NotificationManager notificationManager;
     private Messenger messenger;
@@ -125,8 +126,9 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
             String action = intent.getAction();
             if (Intent.ACTION_SCREEN_OFF.equals(action)) {// Intent.ACTION_SCREEN_ON.equals(action) ||
                 Log.d("onReceive", "action=" + action);
-                if (currentNotification != null) {
-                    updateNotification(currentNotification);
+                Notification notification = notifications[0];
+                if (notification != null) {
+                    updateNotification(notification);
                 }
             }
             else {
@@ -565,7 +567,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 } else {
                     content = "明天上午还有课，请早点休息吧！";
                 }
-                updateNotification("夜深了，快点睡觉吧！", content);
+                updateNotification("夜深了，早点睡觉吧！", content);
                 break;
             default:
                 break;
@@ -623,8 +625,8 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 .setOngoing(true)
 //                .addAction(new NotificationCompat.Action(R.drawable.ic_close_black_24dp, "停止服务", PendingIntent.getService(this, 1, new Intent(this, AlarmService.class).setAction(ACTION_STOP), PendingIntent.FLAG_UPDATE_CURRENT)))
                 .setContentIntent(PendingIntent.getActivity(this, 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
-        currentNotification =  builder.build();
-        return currentNotification;
+        notifications[0] =  builder.build();
+        return notifications[0];
     }
 
     private Notification createForegroundServiceNotification(String title, String classRoom, String time, String teacher) {
@@ -649,8 +651,8 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 .setOngoing(true)
 //                .addAction(new NotificationCompat.Action(R.drawable.ic_close_black_24dp, "停止服务", PendingIntent.getService(this, 1, new Intent(this, AlarmService.class).setAction(ACTION_STOP), PendingIntent.FLAG_UPDATE_CURRENT)))
                 .setContentIntent(PendingIntent.getActivity(this, 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
-        currentNotification =  builder.build();
-        return currentNotification;
+        notifications[0] =  builder.build();
+        return notifications[0];
     }
 
     /**
