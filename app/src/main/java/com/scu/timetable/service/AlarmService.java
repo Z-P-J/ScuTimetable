@@ -74,8 +74,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     private boolean isOpenAlarmRemind;
     private List<ScuSubject> scuSubjects;
 
-
-    private Notification currentNotification;
     private ScuSubject nextSubject;
 
     private TextToSpeech textToSpeech;
@@ -130,8 +128,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 if (notification != null) {
                     updateNotification(notification);
                 }
-            }
-            else {
+            } else {
                 if (alarmQueue.isEmpty()) {
                     onAlarm();
                 } else {
@@ -277,7 +274,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         alarmReceiver = new AlarmReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.scu.timetable.alarm_receiver");
-        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+//        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
         intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(alarmReceiver, intentFilter);
 
