@@ -395,7 +395,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
 //                alarm.setCalendar(calendar);
 //                alarmQueue.add(alarm);
 
-                    alarmQueue.add(createAlarm(-10, Alarm.TYPE_BEFORE_CLASS));
+                    alarmQueue.add(createAlarm(0, Alarm.TYPE_BEFORE_CLASS));
                     alarmQueue.add(createAlarm(0, Alarm.TYPE_BEFORE_CLASS_TEN_MIN));
                     alarmQueue.add(createAlarm(45, Alarm.TYPE_CLASS_BEGAIN));
                     offsetMin = 45;
@@ -471,7 +471,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         return alarm;
     }
 
-    private void updateAlarm(Alarm alarm) {
+    private void updateAlarm(final Alarm alarm) {
         // || nextSubject == null
         if (alarmManager == null) {
             return;
@@ -480,23 +480,31 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         int alarmType = alarm.getAlarmType();
 
         if (alarmType == Alarm.TYPE_BEFORE_CLASS || alarmType == Alarm.TYPE_BEFORE_CLASS_TEN_MIN) {
-            if (timer == null)
+            if (timer == null) {
                 timer = new Timer();
+            } else {
+                timer.cancel();
+            }
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    long deltaMin = (calendar.getTime().getTime() - System.currentTimeMillis()) / (1000 * 60);
+                    long deltaTime = calendar.getTime().getTime() - System.currentTimeMillis();
+                    long deltaMin = deltaTime / (1000 * 60);
                     long deltaHour = deltaMin / 60;
                     deltaMin = deltaMin % 60;
                     String time = deltaHour + "小时" + deltaMin + "分钟后开始";
-                    if (deltaHour == 0) {
-                        time = deltaMin + "分钟后开始";
-                    } else if (deltaMin == 0) {
-                        time = deltaHour + "小时后开始";
+                    if (deltaHour == 0 && deltaMin == 0) {
+                        time = "即将开始";
+                    } else {
+                        if (deltaHour == 0) {
+                            time = deltaMin + "分钟后开始";
+                        } else if (deltaMin == 0) {
+                            time = deltaHour + "小时后开始";
+                        }
                     }
                     updateNotification("下一节课：" + nextSubject.getCourseName() + " " + time,
                             "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
-                            "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getStart() - 1],
+                            "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd()],
                             "任课老师：" + nextSubject.getTeacher());
                 }
             }, 0, 1000 * 60);
@@ -512,9 +520,9 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 textToSpeech.speak(nextSubject.getCourseName() + "课程即将开始", TextToSpeech.QUEUE_FLUSH, null);
                 break;
             case Alarm.TYPE_CLASS_BEGAIN:
-                updateNotification(nextSubject.getCourseName() + "课程已开始",
+                updateNotification(nextSubject.getCourseName() + "课程上课中",
                         "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
-                        "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getStart() - 1],
+                        "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd()],
                         "任课老师：" + nextSubject.getTeacher());
                 break;
             case Alarm.TYPE_CLASS_BREAK:
