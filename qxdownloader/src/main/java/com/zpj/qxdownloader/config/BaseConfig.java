@@ -13,29 +13,69 @@ import java.util.Map;
  * */
 abstract class BaseConfig {
 
+    /**
+     * context
+     * */
     private transient Context context;
 
+    /**
+     * 线程池配置
+     * */
     ThreadPoolConfig threadPoolConfig = ThreadPoolConfig.build();
 
+    /**
+     * 下载路径
+     * */
     String downloadPath = DefaultConstant.DOWNLOAD_PATH;
 
+    /**
+     * 下载缓冲大小
+     * */
     int bufferSize = DefaultConstant.BUFFER_SIZE;
 
+    long progressInterval =DefaultConstant.PROGRESS_INTERVAL;
+
+    /**
+     * 下载块大小
+     * */
     int blockSize = DefaultConstant.BLOCK_SIZE;
 
+    /**
+     * 默认UserAgent
+     * */
     String userAgent = DefaultConstant.USER_AGENT;
 
+    /**
+     * 下载出错重试次数
+     * */
     int retryCount = DefaultConstant.RETRY_COUNT;
 
+    /**
+     * 下载出错重试延迟时间（单位ms）
+     * */
     int retryDelay = DefaultConstant.RETRY_DELAY;
 
+    /**
+     * 下载连接超时
+     * */
     int connectOutTime = DefaultConstant.CONNECT_OUT_TIME;
 
+    /**
+     * 下载链接读取超时
+     * */
     int readOutTime = DefaultConstant.READ_OUT_TIME;
 
+    /**
+     * 是否允许在通知栏显示任务下载进度
+     * */
+    boolean enableNotification = true;
+
+    /**
+     * 下载时传入的cookie额值
+     * */
     String cookie = "";
 
-    Map<String, String> headers = new HashMap<>();
+    final Map<String, String> headers = new HashMap<>();
 
     Proxy proxy;
 
@@ -65,19 +105,16 @@ abstract class BaseConfig {
     @Deprecated
     public abstract BaseConfig setThreadCount(int threadCount);
 
-//    {
-//        this.threadCount = threadCount;
-//        return this;
-//    }
-
-//    public int getThreadCount() {
-//        return threadCount;
-//    }
-
     public abstract BaseConfig setBufferSize(int bufferSize);
+
+    public abstract BaseConfig setProgressInterval(long progressInterval);
 
     public int getBufferSize() {
         return bufferSize;
+    }
+
+    public long getProgressInterval() {
+        return progressInterval;
     }
 
     public abstract BaseConfig setBlockSize(int blockSize);
@@ -101,7 +138,7 @@ abstract class BaseConfig {
     public abstract BaseConfig setCookie(String cookie);
 
     public String getCookie() {
-        return cookie;
+        return cookie == null ? "" : cookie;
     }
 
     public abstract BaseConfig setRetryDelay(int retryDelay);
@@ -124,6 +161,8 @@ abstract class BaseConfig {
 
     public abstract BaseConfig setHeaders(Map<String, String> headers);
 
+    public abstract BaseConfig addHeader(String key, String value);
+
     public Map<String, String> getHeaders() {
         return headers;
     }
@@ -134,5 +173,11 @@ abstract class BaseConfig {
 
     public Proxy getProxy() {
         return proxy;
+    }
+
+    public abstract BaseConfig setEnableNotification(boolean enableNotification);
+
+    public boolean getEnableNotificatio() {
+        return enableNotification;
     }
 }

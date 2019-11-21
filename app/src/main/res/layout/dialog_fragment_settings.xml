@@ -115,11 +115,22 @@
                         android:id="@+id/item_change_current_week"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="false"
+                        app:isShowUnderLine="true"
                         app:leftText="修改当前周次"
                         app:showInfoBtn="false"
                         android:layout_marginBottom="10dp"
                         app:leftIcon="@drawable/ic_assignment_late_black_24dp"
+                        />
+
+                    <com.leon.lib.settingview.LSettingItem
+                        android:id="@+id/item_notification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:isShowUnderLine="false"
+                        app:leftText="通知设置"
+                        app:showInfoBtn="false"
+                        android:layout_marginBottom="10dp"
+                        app:leftIcon="@drawable/ic_notifications_black_24dp"
                         />
 
                 </LinearLayout>

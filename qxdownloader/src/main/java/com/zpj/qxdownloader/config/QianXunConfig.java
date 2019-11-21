@@ -46,6 +46,12 @@ public class QianXunConfig extends BaseConfig {
     }
 
     @Override
+    public QianXunConfig setProgressInterval(long progressInterval) {
+        this.progressInterval = progressInterval;
+        return this;
+    }
+
+    @Override
     public QianXunConfig setBlockSize(int blockSize) {
         this.blockSize = blockSize;
         return this;
@@ -89,7 +95,14 @@ public class QianXunConfig extends BaseConfig {
 
     @Override
     public QianXunConfig setHeaders(Map<String, String> headers) {
-        this.headers = headers;
+        this.headers.clear();
+        this.headers.putAll(headers);
+        return this;
+    }
+
+    @Override
+    public BaseConfig addHeader(String key, String value) {
+        this.headers.put(key, value);
         return this;
     }
 
@@ -108,6 +121,12 @@ public class QianXunConfig extends BaseConfig {
     @Override
     public QianXunConfig setProxy(String host, int port) {
         this.proxy = new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(host, port));
+        return this;
+    }
+
+    @Override
+    public QianXunConfig setEnableNotification(boolean enableNotification) {
+        this.enableNotification = enableNotification;
         return this;
     }
 

@@ -7,7 +7,7 @@ import android.os.Environment;
  * */
 public class DefaultConstant {
 
-    public static final String DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/QianXun/";
+    public static final String DOWNLOAD_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/QXDownloader/";
 
     public static final int BUFFER_SIZE = 1024;
 
@@ -17,12 +17,14 @@ public class DefaultConstant {
 
     public static final int RETRY_COUNT = 3;
 
+    public static final int PROGRESS_INTERVAL = 1000;
+
     // 单位毫秒
     public static final int RETRY_DELAY = 10 * 1000;
 
     public static final int CONCURRENT_MISSION_COUNT = 3;
 
-    public static final int CONNECT_OUT_TIME = 10000;
+    public static final int CONNECT_OUT_TIME = 20000;
     public static final int READ_OUT_TIME = 20000;
 
     public static final String KEY_DOWNLOAD_PATH = "download_path";

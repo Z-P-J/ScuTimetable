@@ -1,19 +1,7 @@
 package com.zpj.qxdownloader.util;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import android.support.v4.content.FileProvider;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -55,7 +43,7 @@ public class Utility {
 
 
 
-	public static String formatBytes(long bytes) {
+	public static String formatSize(long bytes) {
 		if (bytes < NUM_1024) {
 			return String.format(Locale.CHINA, "%d B", bytes);
 		} else if (bytes < NUM_1024_1024) {
@@ -71,7 +59,7 @@ public class Utility {
 		if (speed < NUM_1024) {
 			return String.format(Locale.CHINA, "%.2f B/s", speed);
 		} else if (speed < NUM_1024_1024) {
-			return String.format(Locale.CHINA, "%.2f kB/s", speed / NUM_1024);
+			return String.format(Locale.CHINA, "%.2f KB/s", speed / NUM_1024);
 		} else if (speed < NUM_1024_1024_1024) {
 			return String.format(Locale.CHINA, "%.2f MB/s", speed / NUM_1024_1024);
 		} else {
@@ -256,50 +244,5 @@ public class Utility {
 //		long blockSize = stat.getBlockSizeLong();
 //		long availableBlocks = stat.getAvailableBlocksLong();
 //		return Formatter.formatFileSize(MainActivity.this, blockSize * availableBlocks);
-	}
-
-	public static Bitmap drawable2Bitmap(final Drawable drawable) {
-		if (drawable instanceof BitmapDrawable) {
-			BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-			if (bitmapDrawable.getBitmap() != null) {
-				return bitmapDrawable.getBitmap();
-			}
-		}
-		Bitmap bitmap;
-		if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-			bitmap = Bitmap.createBitmap(1, 1,
-					drawable.getOpacity() != PixelFormat.OPAQUE
-							? Bitmap.Config.ARGB_8888
-							: Bitmap.Config.RGB_565);
-		} else {
-			bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-					drawable.getIntrinsicHeight(),
-					drawable.getOpacity() != PixelFormat.OPAQUE
-							? Bitmap.Config.ARGB_8888
-							: Bitmap.Config.RGB_565);
-		}
-		Canvas canvas = new Canvas(bitmap);
-		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-		drawable.draw(canvas);
-		return bitmap;
-	}
-
-	public static Intent getInstallAppIntent(Context context, File appFile) {
-		try {
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-				//区别于 FLAG_GRANT_READ_URI_PERMISSION 跟 FLAG_GRANT_WRITE_URI_PERMISSION， URI权限会持久存在即使重启，直到明确的用 revokeUriPermission(Uri, int) 撤销。 这个flag只提供可能持久授权。但是接收的应用必须调用ContentResolver的takePersistableUriPermission(Uri, int)方法实现
-				intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-				Uri fileUri = FileProvider.getUriForFile(context, "com.zpj.qxdownloader.fileprovider", appFile);
-				intent.setDataAndType(fileUri, "application/vnd.android.package-archive");
-			} else {
-				intent.setDataAndType(Uri.fromFile(appFile), "application/vnd.android.package-archive");
-			}
-			return intent;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 }

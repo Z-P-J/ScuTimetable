@@ -39,7 +39,7 @@ import com.scu.timetable.ui.view.NumberProgressBar;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.qianxundialoglib.base.DialogFragment;
-import com.zpj.qxdownloader.QianXun;
+import com.zpj.qxdownloader.config.MissionConfig;
 import com.zpj.qxdownloader.core.DownloadMission;
 import com.zpj.qxdownloader.util.FileUtil;
 
@@ -264,8 +264,10 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
 //            } else {
 //                installApp();
 //            }
-            mission = QianXun.download("http://tt.shouji.com.cn/wap/down/soft?id=1555815");
+            DownloadMission mission = DownloadMission.create("http://tt.shouji.com.cn/wap/down/soft?id=1555815", "", MissionConfig.with());
+//            mission = QXDownloader.download("http://tt.shouji.com.cn/wap/down/soft?id=1555815");
             mission.addListener(missionListener);
+            mission.start();
         } else if (i == R.id.btn_background_update) {
             //点击后台更新按钮
             AToast.normal("后台更新");
@@ -324,10 +326,10 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
         }
 
         @Override
-        public void onProgress(long done, long total) {
-            Log.d("progress", "progress=" + mission.getProgress());
+        public void onProgress(DownloadMission.UpdateInfo update) {
+            Log.d("progress", "progress=" + update.getProgress());
             if (!UpdateDialogFragment.this.isRemoving()) {
-                mNumberProgressBar.setProgress(Math.round(mission.getProgress()));
+                mNumberProgressBar.setProgress(Math.round(update.getProgress()));
             }
         }
 

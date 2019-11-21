@@ -480,11 +480,16 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         int alarmType = alarm.getAlarmType();
 
         if (alarmType == Alarm.TYPE_BEFORE_CLASS || alarmType == Alarm.TYPE_BEFORE_CLASS_TEN_MIN) {
-            if (timer == null) {
-                timer = new Timer();
-            } else {
+//            if (timer == null) {
+//                timer = new Timer();
+//            } else {
+//                timer.cancel();
+//            }
+            if (timer != null) {
                 timer.cancel();
+                timer = null;
             }
+            timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -504,13 +509,14 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                     }
                     updateNotification("下一节课：" + nextSubject.getCourseName() + " " + time,
                             "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
-                            "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd()],
+                            "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd() - 1],
                             "任课老师：" + nextSubject.getTeacher());
                 }
             }, 0, 1000 * 60);
         } else {
             if (timer != null) {
                 timer.cancel();
+                timer = null;
             }
         }
         switch (alarmType) {
@@ -522,7 +528,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
             case Alarm.TYPE_CLASS_BEGAIN:
                 updateNotification(nextSubject.getCourseName() + "课程上课中",
                         "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
-                        "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd()],
+                        "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd() - 1],
                         "任课老师：" + nextSubject.getTeacher());
                 break;
             case Alarm.TYPE_CLASS_BREAK:

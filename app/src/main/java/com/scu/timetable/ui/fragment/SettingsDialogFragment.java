@@ -2,10 +2,13 @@ package com.scu.timetable.ui.fragment;
 
 import android.animation.ValueAnimator;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -116,6 +119,9 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
 
         LSettingItem itemChangeCurrentWeek = view.findViewById(R.id.item_change_current_week);
         itemChangeCurrentWeek.setmOnLSettingItemClick(this);
+
+        LSettingItem itemNotification = view.findViewById(R.id.item_notification);
+        itemNotification.setmOnLSettingItemClick(this);
 
         LSettingItem itemWidgetSmartShowWeekends = view.findViewById(R.id.item_widget_smart_show_weekends);
         itemWidgetSmartShowWeekends.setChecked(TimetableWidgtHelper.isSmartShowWeekends());
@@ -272,11 +278,33 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
             TimetableHelper.toggleShowTime();
         } else if (id == R.id.item_change_current_week) {
             TimetableHelper.openChangeCurrentWeekDialog(getContext(), null);
-        } else if (id == R.id.item_widget_smart_show_weekends) {
+        } else if (id == R.id.item_notification) {
+            goSetting();
+        }else if (id == R.id.item_widget_smart_show_weekends) {
             TimetableWidgtHelper.toggleSmartShowWeekends(getContext());
         } else if (id == R.id.item_widget_transparent_mode) {
             TimetableWidgtHelper.toggleTransparentMode(getContext());
         }
+    }
+
+    private void goSetting() {
+        Intent intent = new Intent();
+        if (Build.VERSION.SDK_INT >= 26) {
+            // android 8.0引导
+            intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+            intent.putExtra("android.provider.extra.APP_PACKAGE", getContext().getPackageName());
+        } else if (Build.VERSION.SDK_INT >= 21) {
+            // android 5.0-7.0
+            intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
+            intent.putExtra("app_package", getContext().getPackageName());
+            intent.putExtra("app_uid", getContext().getApplicationInfo().uid);
+        } else {
+            // 其他
+            intent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+            intent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
+        }
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     public void setOnDismissListener(OnDismissListener onDismissListener) {

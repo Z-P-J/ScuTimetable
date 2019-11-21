@@ -23,6 +23,7 @@ public class MissionConfig extends BaseConfig {
         return new MissionConfig()
                 .setDownloadPath(config.downloadPath)
                 .setBufferSize(config.bufferSize)
+                .setProgressInterval(config.progressInterval)
                 .setThreadPoolConfig(config.threadPoolConfig)
                 .setBlockSize(config.blockSize)
                 .setRetryCount(config.retryCount)
@@ -30,7 +31,8 @@ public class MissionConfig extends BaseConfig {
                 .setConnectOutTime(config.connectOutTime)
                 .setReadOutTime(config.readOutTime)
                 .setUserAgent(config.userAgent)
-                .setCookie(config.cookie);
+                .setCookie(config.cookie)
+                .setEnableNotification(config.enableNotification);
     }
 
     @Override
@@ -55,6 +57,12 @@ public class MissionConfig extends BaseConfig {
     @Override
     public MissionConfig setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
+        return this;
+    }
+
+    @Override
+    public MissionConfig setProgressInterval(long progressInterval) {
+        this.progressInterval = progressInterval;
         return this;
     }
 
@@ -102,7 +110,14 @@ public class MissionConfig extends BaseConfig {
 
     @Override
     public MissionConfig setHeaders(Map<String, String> headers) {
-        this.headers = headers;
+        this.headers.clear();
+        this.headers.putAll(headers);
+        return this;
+    }
+
+    @Override
+    public MissionConfig addHeader(String key, String value) {
+        this.headers.put(key, value);
         return this;
     }
 
@@ -115,6 +130,12 @@ public class MissionConfig extends BaseConfig {
     @Override
     public MissionConfig setProxy(String host, int port) {
         this.proxy = new Proxy(Proxy.Type.HTTP, InetSocketAddress.createUnresolved(host, port));
+        return this;
+    }
+
+    @Override
+    public MissionConfig setEnableNotification(boolean enableNotification) {
+        this.enableNotification = enableNotification;
         return this;
     }
 

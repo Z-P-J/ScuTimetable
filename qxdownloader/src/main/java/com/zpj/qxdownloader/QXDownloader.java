@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -22,57 +21,26 @@ import com.zpj.qxdownloader.util.notification.NotifyUtil;
 import com.zpj.qxdownloader.util.permission.PermissionUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Z-P-J
  * */
-public class QianXun {
-
-//    private static DownloadManager mManager;
-//    private static DownloadManagerService.DMBinder mBinder;
-//    private static ServiceConnection mConnection = new ServiceConnection() {
-//
-//        @Override
-//        public void onServiceConnected(ComponentName p1, IBinder binder) {
-//            mBinder = (DownloadManagerService.DMBinder) binder;
-//            mManager = mBinder.getDownloadManager();
-//            if (registerListener != null) {
-//                registerListener.onServiceConnected();
-//            }
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName p1) {
-//
-//        }
-//    };
-//
-//    private static RegisterListener registerListener;
-
-    private static volatile boolean isRunning = true;
+public class QXDownloader {
 
     private static boolean waitingForInternet = false;
 
-    private QianXun() {
-
+    private QXDownloader() {
+        throw new RuntimeException("Wrong operation!");
     }
-
-//    public interface RegisterListener {
-//        void onServiceConnected();
-//    }
-
-//    public void setRegisterListener(RegisterListener registerListener) {
-//        this.registerListener = registerListener;
-//    }
 
     public static void init(Context context) {
         init(QianXunConfig.with(context));
     }
 
     public static void init(final QianXunConfig options) {
-//        register(context, null);
-
         final Context context = options.getContext();
 
         PermissionUtil.grandStoragePermission(context);
@@ -85,35 +53,21 @@ public class QianXun {
         options.getContext().registerReceiver(NetworkChangeReceiver.getInstance(), intentFilter);
     }
 
-//    public static void register(Context context, RegisterListener registerListener) {
-//        NotifyUtil.init(context);
-//        QianXun.registerListener = registerListener;
-//        if (mManager == null || mBinder == null) {
-//            Intent intent = new Intent();
-//            intent.setClass(context, DownloadManagerService.class);
-//            context.startService(intent);
-//            context.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-//        }
-//    }
-
-    public static void unInit() {
+    public static void onDestroy() {
         DownloadManagerImpl.unRegister();
         NotifyUtil.cancelAll();
-        System.exit(0);
+//        System.exit(0);
 //        context.unbindService(mConnection);
 //        Intent intent = new Intent();
-//        intent.setClass(context, DownloadManagerService.class);
+//        intent.setClass(context, QXDownloadService.class);
 //        context.stopService(intent);
     }
 
     public static DownloadMission download(String url) {
-//        哈哈.apk
         int res = DownloadManagerImpl.getInstance().startMission(url);
         if (res == -1) {
-//            Log.d("download", "文件已存在！！！");
             return null;
         }
-        //        mBinder.onMissionAdded(downloadMission);
         return DownloadManagerImpl.getInstance().getMission(res);
     }
 
@@ -134,57 +88,46 @@ public class QianXun {
     }
 
     public static DownloadMission download(String url, String name, MissionConfig options) {
-//        哈哈.apk
         int res = DownloadManagerImpl.getInstance().startMission(url, name, options);
-        //Log.d("download", "文件已存在！！！");
         if (res == -1) {
             return null;
         }
-        //mBinder.onMissionAdded(downloadMission);
         return DownloadManagerImpl.getInstance().getMission(res);
     }
 
-//    public static DownloadMission download(String url, int threadCount) {
-////        哈哈.apk
-//        int res = DownloadManagerImpl.getInstance().startMission(url, "", threadCount);
-//        if (res == -1) {
-////            Log.d("download", "文件已存在！！！");
-//            return null;
-//        }
-//        //        mBinder.onMissionAdded(downloadMission);
-//        return DownloadManagerImpl.getInstance().getMission(res);
-//    }
-
     public static void pause(DownloadMission mission) {
-//        mManager.pauseMission(mission.uuid);
         mission.pause();
-//        mBinder.onMissionRemoved(mission);
+    }
+
+    public static void pause(String uuid) {
+        getDownloadManager().getMission(uuid).pause();
     }
 
     public static void resume(DownloadMission mission) {
         mission.start();
-//        mBinder.onMissionAdded(mission);
+    }
+
+    public static void resume(String uuid) {
+        getDownloadManager().getMission(uuid).start();
     }
 
     public static void delete(DownloadMission mission) {
-//        mManager.deleteMission(mission.uuid);
-//        mission.pause();
-//        mission.delete();
-        DownloadManagerImpl.getInstance().deleteMission(mission.uuid);
-//        mBinder.onMissionRemoved(mission);
+        DownloadManagerImpl.getInstance().deleteMission(mission);
     }
 
     public static void clear(DownloadMission mission) {
-//        mManager.clearMission(mission.uuid);
         mission.pause();
-        mission.deleteThisFromFile();
+        mission.deleteMissionInfo();
         DownloadManagerImpl.getInstance().getMissions().remove(mission);
-//        mBinder.onMissionRemoved(mission);
+    }
+
+    public static void clear(String uuid) {
+        clear(DownloadManagerImpl.getInstance().getMission(uuid));
     }
 
     public static boolean rename(DownloadMission mission, String name) {
         Context context = DownloadManagerImpl.getInstance().getContext();
-        if (TextUtils.equals(mission.name, name)) {
+        if (TextUtils.equals(mission.getTaskName(), name)) {
             Toast.makeText(context, "请输入不同的名字", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -192,12 +135,12 @@ public class QianXun {
             Toast.makeText(context, "请暂停下载后再试", Toast.LENGTH_SHORT).show();
             return false;
         }
-        File file = new File(mission.getDownloadPath() + File.separator + mission.name);
+        File file = new File(mission.getDownloadPath() + File.separator + mission.getTaskName());
         File file2Rename = new File(mission.getDownloadPath() + File.separator + name);
         boolean success = file.renameTo(file2Rename);
         if (success) {
-            mission.name = name;
-            mission.writeThisToFile();
+            mission.setTaskName(name);
+            mission.writeMissionInfo();
             DownloadManager.DownloadManagerListener downloadManagerListener =  DownloadManagerImpl.getInstance().getDownloadManagerListener();
             if (downloadManagerListener != null) {
                 downloadManagerListener.onMissionAdd();
@@ -212,7 +155,7 @@ public class QianXun {
 
     public static void openFile(DownloadMission mission) {
         if (mission.isFinished()) {
-            File file = new File(mission.getDownloadPath(), mission.name);
+            File file = mission.getFile();
             Context context = DownloadManagerImpl.getInstance().getContext();
             if (!file.exists()) {
                 Toast.makeText(context, "下载文件不存在", Toast.LENGTH_SHORT).show();
@@ -227,7 +170,7 @@ public class QianXun {
 //                            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
 //                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                Uri contentUri = FileProvider.getUriForFile(context, "com.zpj.baidupan.fileprovider", file);
+                Uri contentUri = FileProvider.getUriForFile(context, FileUtil.getFileProviderName(context), file);
                 intent.setDataAndType(contentUri, FileUtil.getMIMEType(file));
             } else {
                 intent.setDataAndType(Uri.fromFile(file), FileUtil.getMIMEType(file));
@@ -266,12 +209,22 @@ public class QianXun {
         DownloadManagerImpl.getInstance().clearAllMissions();
     }
 
-//    public static DownloadManagerService.DMBinder getBinder() {
-//        return mBinder;
-//    }
-
     public static DownloadManager getDownloadManager() {
         return DownloadManagerImpl.getInstance();
+    }
+
+    public static List<DownloadMission> getAllMissions() {
+        return DownloadManagerImpl.getInstance().getMissions();
+    }
+
+    public static List<DownloadMission> getAllMissions(boolean downloading) {
+        List<DownloadMission> downloadMissionList = new ArrayList<>();
+        for (DownloadMission mission : getAllMissions()) {
+            if (mission.isFinished() != downloading) {
+                downloadMissionList.add(mission);
+            }
+        }
+        return downloadMissionList;
     }
 
 }
