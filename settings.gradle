@@ -9,4 +9,5 @@ include ':app',
         ':statebutton',
 //        ':xupdate-lib',
         ':qxdownloader',
-        ':atoast'
+        ':atoast',
+        ':titlebar'

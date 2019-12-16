@@ -44,6 +44,10 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
 
     private boolean enableSwipeRefresh = false;
 
+    private boolean enableLoadMore = false;
+
+    private boolean enableSelection = true;
+
     public EasyRecyclerLayout(@NonNull Context context) {
         super(context);
         init();
@@ -91,6 +95,21 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
     public EasyRecyclerLayout<T> setEnableSwipeRefresh(boolean enableSwipeRefresh) {
         this.enableSwipeRefresh = enableSwipeRefresh;
         refreshLayout.setEnabled(enableSwipeRefresh);
+        return this;
+    }
+
+    public EasyRecyclerLayout<T> setEnableLoadMore(boolean enableLoadMore) {
+        this.enableLoadMore = enableLoadMore;
+        return this;
+    }
+
+    public EasyRecyclerLayout<T> setEnableSelection(boolean enableSelection) {
+        this.enableSelection = enableSelection;
+        return this;
+    }
+
+    public EasyRecyclerLayout<T> addOnScrollListener(final RecyclerView.OnScrollListener onScrollListener) {
+        easyRecyclerView.addOnScrollListener(onScrollListener);
         return this;
     }
 
@@ -166,8 +185,7 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
                 checkBox.setClickable(false);
                 checkBox.setOnCheckedChangeListener(null);
                 if (showCheckBox) {
-                    checkBoxContainer.setVisibility(VISIBLE);
-
+                    checkBoxContainer.setVisibility(enableSelection ? VISIBLE : GONE);
                 } else {
                     checkBoxContainer.setVisibility(selectMode ? VISIBLE : GONE);
                 }
@@ -530,5 +548,13 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
         if (refreshLayout.isRefreshing()) {
             refreshLayout.setRefreshing(false);
         }
+    }
+
+    public List<T> getData() {
+        return easyRecyclerView.getData();
+    }
+
+    public EasyRecyclerView<T> getEasyRecyclerView() {
+        return easyRecyclerView;
     }
 }

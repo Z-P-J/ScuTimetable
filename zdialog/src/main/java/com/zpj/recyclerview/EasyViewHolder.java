@@ -47,6 +47,20 @@ public final class EasyViewHolder extends RecyclerView.ViewHolder {
         return itemView.findViewById(id);
     }
 
+    public void setVisible(@IdRes int id, boolean visible) {
+        View view = itemView.findViewById(id);
+        if (view != null) {
+            view.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    public void setInVisible(@IdRes int id) {
+        View view = itemView.findViewById(id);
+        if (view != null) {
+            view.setVisibility(View.INVISIBLE);
+        }
+    }
+
     public <T extends TextView> T getTextView(@IdRes int id) {
         return itemView.findViewById(id);
     }

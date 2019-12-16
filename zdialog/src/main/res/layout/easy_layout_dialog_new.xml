@@ -14,7 +14,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="@drawable/roundlayout"
+        android:background="@drawable/z_background_round"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 

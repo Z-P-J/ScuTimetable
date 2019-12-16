@@ -28,7 +28,7 @@
         </receiver> <!-- android:networkSecurityConfig="@xml/security_config" -->
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.activity.LoginActivity"
             android:theme="@style/Transparent_Theme"
             >
 
@@ -41,7 +41,7 @@
 
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:theme="@style/AppThemeTransparent">
 
         </activity>
@@ -49,10 +49,6 @@
         <service android:name=".ui.widget.WidgetService">
 
         </service>
-
-<!--        <service android:name=".service.LongRunningService">-->
-
-<!--        </service>-->
 
         <service android:name=".service.AlarmService"
             android:exported="false"

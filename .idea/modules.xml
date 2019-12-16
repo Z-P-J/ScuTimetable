@@ -11,6 +11,7 @@
       <module fileurl="file://$PROJECT_DIR$/qxdownloader/qxdownloader.iml" filepath="$PROJECT_DIR$/qxdownloader/qxdownloader.iml" group="ScuTimetable/qxdownloader" />
       <module fileurl="file://$PROJECT_DIR$/statebutton/statebutton.iml" filepath="$PROJECT_DIR$/statebutton/statebutton.iml" group="ScuTimetable/statebutton" />
       <module fileurl="file://$PROJECT_DIR$/switchbutton/switchbutton.iml" filepath="$PROJECT_DIR$/switchbutton/switchbutton.iml" group="ScuTimetable/switchbutton" />
+      <module fileurl="file://$PROJECT_DIR$/titlebar/titlebar.iml" filepath="$PROJECT_DIR$/titlebar/titlebar.iml" />
       <module fileurl="file://$PROJECT_DIR$/zdialog/zdialog.iml" filepath="$PROJECT_DIR$/zdialog/zdialog.iml" />
     </modules>
   </component>

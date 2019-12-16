@@ -33,6 +33,12 @@ public class OptionMenuView extends LinearLayout implements PopLayout.OnBulgeCha
 
     private int mLeftPadding, mTopPadding, mRightPadding, mBottomPadding;
 
+    public interface OnMenuItemBuildListener {
+        void onMenuItemBuild(OptionMenu optionMenu, int position);
+    }
+
+    private OnMenuItemBuildListener onMenuItemBuildListener;
+
     public OptionMenuView(Context context) {
         this(context, null, 0);
     }
@@ -85,6 +91,10 @@ public class OptionMenuView extends LinearLayout implements PopLayout.OnBulgeCha
             mOptionMenus.addAll(optionMenus);
         }
         notifyMenusChange();
+    }
+
+    public void setOnMenuItemBuildListener(OnMenuItemBuildListener onMenuItemBuildListener) {
+        this.onMenuItemBuildListener = onMenuItemBuildListener;
     }
 
     public List<OptionMenu> getOptionMenus() {
@@ -140,7 +150,11 @@ public class OptionMenuView extends LinearLayout implements PopLayout.OnBulgeCha
         mOptionMenus.clear();
         int size = menu.size();
         for (int i = 0; i < size; i++) {
-            mOptionMenus.add(new OptionMenu(menu.getItem(i)));
+            OptionMenu optionMenu = new OptionMenu(menu.getItem(i));
+            mOptionMenus.add(optionMenu);
+            if (onMenuItemBuildListener != null) {
+                onMenuItemBuildListener.onMenuItemBuild(optionMenu, i);
+            }
         }
         notifyMenusChange();
     }

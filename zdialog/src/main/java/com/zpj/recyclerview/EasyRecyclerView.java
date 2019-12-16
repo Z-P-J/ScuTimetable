@@ -87,6 +87,11 @@ public class EasyRecyclerView<T> {
         return this;
     }
 
+    public EasyRecyclerView<T> addOnScrollListener(final RecyclerView.OnScrollListener onScrollListener) {
+        recyclerView.addOnScrollListener(onScrollListener);
+        return this;
+    }
+
     public void build() {
         if (itemRes <= 0) {
             throw new RuntimeException("You must set the itemRes!");
@@ -97,7 +102,7 @@ public class EasyRecyclerView<T> {
         if (layoutManager == null) {
             layoutManager = new LinearLayoutManager(recyclerView.getContext());
         }
-        easyAdapter = new EasyAdapter<T>(list, itemRes, onCreateViewHolder, onBindViewHolderCallback);
+        easyAdapter = new EasyAdapter<>(list, itemRes, onCreateViewHolder, onBindViewHolderCallback);
         if (headerView != null) {
             easyAdapter.setHeaderView(headerView);
         }
@@ -118,6 +123,18 @@ public class EasyRecyclerView<T> {
 
     public void notifyItemChanged(int position) {
         easyAdapter.notifyItemChanged(position);
+    }
+
+    public void notifyItemInserted(int position) {
+        easyAdapter.notifyItemInserted(position);
+    }
+
+    public void notifyItemRangeChanged(int start, int itemCount) {
+        easyAdapter.notifyItemRangeChanged(start, itemCount);
+    }
+
+    public void notifyItemRemoved(int position) {
+        easyAdapter.notifyItemRemoved(position);
     }
 
     public EasyAdapter<T> getAdapter() {

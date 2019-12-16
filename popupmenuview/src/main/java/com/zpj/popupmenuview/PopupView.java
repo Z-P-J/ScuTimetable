@@ -1,15 +1,22 @@
 package com.zpj.popupmenuview;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.WindowManager.LayoutParams;
 import android.widget.PopupWindow;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by felix on 16/11/20.
@@ -17,7 +24,7 @@ import android.widget.PopupWindow;
 public class PopupView extends PopupWindow {
     private static final String TAG = "PopupView";
 
-    private int mSites = 0x9C;
+    int mSites = 0x9C;
 
     private Context mViewContext;
 
@@ -29,6 +36,11 @@ public class PopupView extends PopupWindow {
 
     public static final int SITE_BOTTOM = 3;
 
+    AnimatorSet animatorSetForDialogShow = new AnimatorSet();
+    AnimatorSet animatorSetForDialogDismiss = new AnimatorSet();
+    List<Animator> objectAnimatorsForDialogShow = new ArrayList<>();
+    List<Animator> objectAnimatorsForDialogDismiss = new ArrayList<>();
+
     public PopupView(Context context) {
         super(context);
         mViewContext = context;
@@ -37,6 +49,18 @@ public class PopupView extends PopupWindow {
         setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setFocusable(true);
         setOutsideTouchable(true);
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (animatorSetForDialogDismiss.isRunning()) {
+            return;
+        }
+        if (animatorSetForDialogDismiss != null && objectAnimatorsForDialogDismiss != null && objectAnimatorsForDialogDismiss.size() > 0) {
+            animatorSetForDialogDismiss.playTogether(objectAnimatorsForDialogDismiss);
+            animatorSetForDialogDismiss.start();
+        }
     }
 
     public void measureContentView() {
@@ -117,7 +141,11 @@ public class PopupView extends PopupWindow {
 //
 //    }
 
+
+
     public void show(View anchor, Rect frame, Point origin) {
+
+        onDialogShowing();
 
         if (origin == null) {
             origin = new Point(-1, -1);
@@ -137,47 +165,68 @@ public class PopupView extends PopupWindow {
         Point offset = getOffset(frame, new Rect(x, y + height, contentWidth + x,
                 contentHeight + y + height), x + origin.x, y + origin.y);
 
-        int sites = mSites;
-        do {
-            int site = sites & 0x03;
-            Log.d("popupview", "x=" + x + " y=" + y + " contentHeight=" + contentHeight + " contentWidth=" + contentWidth
-                    + " frame.left" + frame.left + " frame.right" + frame.right + " frame.top" + frame.top + " frame.bottom" + frame.bottom);
-            Log.d("sites", "sites=" + sites);
-            switch (site) {
-                case SITE_TOP:
-                    if (y - contentHeight > frame.top) {
-                        showAtTop(anchor, origin, offset.x, -height - contentHeight);
-                        return;
-                    }
-                    break;
-                case SITE_LEFT:
-                    if (x - contentWidth > frame.left) {
-                        showAtLeft(anchor, origin, -contentWidth, offset.y);
-                        return;
-                    }
-                    break;
-                case SITE_RIGHT:
-                    if (x + width + contentWidth < frame.right) {
-                        showAtRight(anchor, origin, width, offset.y);
-                        return;
-                    }
-                    break;
-                case SITE_BOTTOM:
-                    if (y + height + contentHeight < frame.bottom) {
-                        showAtBottom(anchor, origin, offset.x, 0);
-                        return;
-                    }
-                    break;
-            }
-            if (sites <= 0) {
-                showAtTop(anchor, origin, offset.x, -height - contentHeight);
-                break;
-            }
-            sites >>= 2;
-        } while (sites >= 0);
+        int top = y - contentHeight - frame.top;
+        int left = x - contentWidth - frame.left;
+        int right = frame.right - x - width - contentWidth;
+        int bottom = frame.left - y - height - contentHeight;
+        int max1 = Math.max(top, bottom);
+        int max2 = Math.max(right, left);
+        int max = Math.max(max1, max2);
+        if (max == bottom) {
+            showAtBottom(anchor, origin, offset.x, 0);
+        } else if (max == top) {
+            showAtTop(anchor, origin, offset.x, -height - contentHeight);
+        } else if (bottom > 0) {
+            showAtBottom(anchor, origin, offset.x, 0);
+        } else if (top > 0) {
+            showAtTop(anchor, origin, offset.x, -height - contentHeight);
+        } else if (max == right) {
+            showAtRight(anchor, origin, width, offset.y);
+        } else {
+            showAtLeft(anchor, origin, -contentWidth, offset.y);
+        }
+
+//        int sites = mSites;
+//        do {
+//            int site = sites & 0x03;
+//            Log.d("popupview", "x=" + x + " y=" + y + " contentHeight=" + contentHeight + " contentWidth=" + contentWidth
+//                    + " frame.left" + frame.left + " frame.right" + frame.right + " frame.top" + frame.top + " frame.bottom" + frame.bottom);
+//            Log.d("sites", "sites=" + sites);
+//            switch (site) {
+//                case SITE_TOP:
+//                    if (y - contentHeight > frame.top) {
+//                        showAtTop(anchor, origin, offset.x, -height - contentHeight);
+//                        return;
+//                    }
+//                    break;
+//                case SITE_LEFT:
+//                    if (x - contentWidth > frame.left) {
+//                        showAtLeft(anchor, origin, -contentWidth, offset.y);
+//                        return;
+//                    }
+//                    break;
+//                case SITE_RIGHT:
+//                    if (x + width + contentWidth < frame.right) {
+//                        showAtRight(anchor, origin, width, offset.y);
+//                        return;
+//                    }
+//                    break;
+//                case SITE_BOTTOM:
+//                    if (y + height + contentHeight < frame.bottom) {
+//                        showAtBottom(anchor, origin, offset.x, 0);
+//                        return;
+//                    }
+//                    break;
+//            }
+//            if (sites <= 0) {
+//                showAtTop(anchor, origin, offset.x, -height - contentHeight);
+//                break;
+//            }
+//            sites >>= 2;
+//        } while (sites >= 0);
     }
 
-    private Point getOffset(Rect frame, Rect rect, int x, int y) {
+    protected Point getOffset(Rect frame, Rect rect, int x, int y) {
         Rect rt = new Rect(rect);
         rt.offset(x - rt.centerX(), y - rt.centerY());
         Log.d("getOffset", "frame=" + frame.toString());
@@ -228,4 +277,15 @@ public class PopupView extends PopupWindow {
     protected Context getContext() {
         return mViewContext;
     }
+
+    protected void onDialogShowing() {
+        if (animatorSetForDialogShow != null && objectAnimatorsForDialogShow != null && objectAnimatorsForDialogShow.size() > 0) {
+            animatorSetForDialogShow.playTogether(objectAnimatorsForDialogShow);
+            animatorSetForDialogShow.start();
+        }
+        //TODO 缩放的动画效果不好，不能从控件所在的位置开始缩放
+//        ObjectAnimator.ofFloat(rlOutsideBackground.findViewById(R.id.rlParentForAnimate), "scaleX", 0.3f, 1.0f).setDuration(500).start();
+//        ObjectAnimator.ofFloat(rlOutsideBackground.findViewById(R.id.rlParentForAnimate), "scaleY", 0.3f, 1.0f).setDuration(500).start();
+    }
+
 }

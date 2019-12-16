@@ -47,7 +47,7 @@ public class OptionMenu {
         this.enable = true;
         this.visible = true;
         this.checked = false;
-        this.checkable = true;
+        this.checkable = false;
     }
 
     public OptionMenu(int titleRes) {
@@ -116,6 +116,9 @@ public class OptionMenu {
     }
 
     public static Drawable tintDrawable(Drawable drawable, ColorStateList colors) {
+        if (drawable == null) {
+            return drawable;
+        }
         final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTintList(wrappedDrawable, colors);
         return wrappedDrawable;

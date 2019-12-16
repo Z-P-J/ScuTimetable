@@ -68,8 +68,9 @@ public class ZDialog extends DialogFragment implements IDialog {
             //调用方直接传入view
             view = getContentView();
         } else {
-            return super.onCreateView(inflater, container, savedInstanceState);
+            view =  super.onCreateView(inflater, container, savedInstanceState);
 //            throw new RuntimeException("You must call the setContentView");
+            contentView = view;
         }
         return view;
     }
@@ -121,6 +122,10 @@ public class ZDialog extends DialogFragment implements IDialog {
     @Override
     public void onStart() {
         super.onStart();
+        onDialogStart();
+    }
+
+    protected void onDialogStart() {
         Window window = getDialog().getWindow();
         if (window == null) {
             return;
@@ -153,7 +158,7 @@ public class ZDialog extends DialogFragment implements IDialog {
         }
     }
 
-    private void setFragmentActivity(FragmentActivity activity) {
+    protected void setFragmentActivity(FragmentActivity activity) {
         this.activity = activity;
     }
 
@@ -327,8 +332,7 @@ public class ZDialog extends DialogFragment implements IDialog {
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
+    public void onBeginDismiss() {
         if (onDismissListener != null) {
             onDismissListener.onDismiss(this);
         }

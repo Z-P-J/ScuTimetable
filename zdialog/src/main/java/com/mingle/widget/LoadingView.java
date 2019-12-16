@@ -76,9 +76,9 @@ public class LoadingView extends LinearLayout {
         setOrientation(VERTICAL);
         mDistance = dip2px(context, 54f);
         LayoutInflater.from(context).inflate(R.layout.easy_load_view, this, true);
-        mShapeLoadingView = (ShapeLoadingView) findViewById(R.id.shapeLoadingView);
-        mIndicationIm = (ImageView) findViewById(R.id.indication);
-        mLoadTextView = (TextView) findViewById(R.id.promptTV);
+        mShapeLoadingView = findViewById(R.id.shapeLoadingView);
+        mIndicationIm = findViewById(R.id.indication);
+        mLoadTextView = findViewById(R.id.promptTV);
         ViewHelper.setScaleX(mIndicationIm, 0.2f);
 
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.LoadingView);

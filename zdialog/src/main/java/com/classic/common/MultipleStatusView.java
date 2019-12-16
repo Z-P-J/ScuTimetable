@@ -24,9 +24,9 @@ import java.util.ArrayList;
 public class MultipleStatusView extends RelativeLayout {
     private static final String TAG = "MultipleStatusView";
 
-    private static final RelativeLayout.LayoutParams DEFAULT_LAYOUT_PARAMS =
-            new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                    RelativeLayout.LayoutParams.MATCH_PARENT);
+    private static final LayoutParams DEFAULT_LAYOUT_PARAMS =
+            new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.MATCH_PARENT);
 
     public static final int STATUS_CONTENT = 0x00;
     public static final int STATUS_LOADING = 0x01;

@@ -294,6 +294,10 @@ public class EasyAdapter<T> extends RecyclerView.Adapter<EasyViewHolder> {
         @Override
         public void notifyChanged() {
             mShouldRemove = true;
+//            if (!getLoadMoreEnabled()) {
+//                currentPage = -1;
+//            }
+//            mOnScrollListener.onScrollStateChanged(mRecyclerView, RecyclerView.SCROLL_STATE_IDLE);
         }
 
         @Override

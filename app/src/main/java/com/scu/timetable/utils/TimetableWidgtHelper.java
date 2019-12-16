@@ -15,8 +15,8 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.scu.timetable.LoginActivity;
-import com.scu.timetable.MainActivity;
+import com.scu.timetable.ui.activity.LoginActivity;
+import com.scu.timetable.ui.activity.MainActivity;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.widget.TimetableWidget;

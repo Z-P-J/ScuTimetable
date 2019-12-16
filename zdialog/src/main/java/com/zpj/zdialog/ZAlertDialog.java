@@ -9,6 +9,7 @@ import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,7 +27,7 @@ public class ZAlertDialog implements IDialog {
     private final ZDialog dialog;
 
     private String title;
-    private int titleTextColor;
+    private int titleTextColor = Color.BLACK;
 
     private View contentView;
 
@@ -41,11 +42,11 @@ public class ZAlertDialog implements IDialog {
     private boolean isCancelable = true;
     private boolean isCancelableOutside = true;
 
-    private IDialog.OnViewCreateListener onViewCreateListener;
-    private IDialog.OnClickListener positiveBtnListener;
-    private IDialog.OnClickListener negativeBtnListener;
-    private IDialog.OnDismissListener onDismissListener;
-    private IDialog.OnCancelListener onCancelListener;
+    private OnViewCreateListener onViewCreateListener;
+    private OnClickListener positiveBtnListener;
+    private OnClickListener negativeBtnListener;
+    private OnDismissListener onDismissListener;
+    private OnCancelListener onCancelListener;
 
     private ZAlertDialog(Context context) {
         this.context = context;
@@ -91,7 +92,7 @@ public class ZAlertDialog implements IDialog {
         return this;
     }
 
-    public ZAlertDialog setOnViewCreateListener(IDialog.OnViewCreateListener listener) {
+    public ZAlertDialog setOnViewCreateListener(OnViewCreateListener listener) {
         this.onViewCreateListener = listener;
         return this;
     }
@@ -130,11 +131,11 @@ public class ZAlertDialog implements IDialog {
         return this;
     }
 
-    public ZAlertDialog setPositiveButton(IDialog.OnClickListener onclickListener) {
+    public ZAlertDialog setPositiveButton(OnClickListener onclickListener) {
         return setPositiveButton("确定", onclickListener);
     }
 
-    public ZAlertDialog setPositiveButton(String btnStr, IDialog.OnClickListener onclickListener) {
+    public ZAlertDialog setPositiveButton(String btnStr, OnClickListener onclickListener) {
         this.positiveBtnStr = btnStr;
         this.positiveBtnListener = onclickListener;
         return this;
@@ -145,21 +146,21 @@ public class ZAlertDialog implements IDialog {
         return this;
     }
 
-    public ZAlertDialog setPositiveButton(@StringRes int strRes, IDialog.OnClickListener onclickListener) {
+    public ZAlertDialog setPositiveButton(@StringRes int strRes, OnClickListener onclickListener) {
         return setPositiveButton(context.getResources().getString(strRes), onclickListener);
     }
 
-    public ZAlertDialog setNegativeButton(IDialog.OnClickListener onclickListener) {
+    public ZAlertDialog setNegativeButton(OnClickListener onclickListener) {
         return setNegativeButton("取消", onclickListener);
     }
 
-    public ZAlertDialog setNegativeButton(String btnStr, IDialog.OnClickListener onclickListener) {
+    public ZAlertDialog setNegativeButton(String btnStr, OnClickListener onclickListener) {
         this.negativBtnStr = btnStr;
         this.negativeBtnListener = onclickListener;
         return this;
     }
 
-    public ZAlertDialog setNegativeButton(@StringRes int strRes, IDialog.OnClickListener onclickListener) {
+    public ZAlertDialog setNegativeButton(@StringRes int strRes, OnClickListener onclickListener) {
         return setNegativeButton(context.getResources().getString(strRes), onclickListener);
     }
 
@@ -168,12 +169,12 @@ public class ZAlertDialog implements IDialog {
         return this;
     }
 
-    public ZAlertDialog setOnDismissListener(IDialog.OnDismissListener onDismissListener) {
+    public ZAlertDialog setOnDismissListener(OnDismissListener onDismissListener) {
         this.onDismissListener = onDismissListener;
         return this;
     }
 
-    public ZAlertDialog setOnCancelListener(IDialog.OnCancelListener onCancelListener) {
+    public ZAlertDialog setOnCancelListener(OnCancelListener onCancelListener) {
         this.onCancelListener = onCancelListener;
         return this;
     }
@@ -185,17 +186,9 @@ public class ZAlertDialog implements IDialog {
                 .setScreenWidthP(screenWidthPercent)
                 .setDialogCancelable(isCancelable)
                 .setCancelableOutSide(isCancelableOutside)
-                .setOnViewCreateListener(new IDialog.OnViewCreateListener() {
+                .setOnViewCreateListener(new OnViewCreateListener() {
                     @Override
                     public void onViewCreate(final IDialog dialog, View view) {
-
-                        LinearLayout container = dialog.getView(R.id.layout_container);
-                        container.removeAllViews();
-                        container.addView(contentView);
-                        if (onViewCreateListener != null) {
-                            onViewCreateListener.onViewCreate(dialog, contentView);
-                        }
-
                         Button cancelBtn = dialog.getView(R.id.btn_cancel);
                         Button okBtn = dialog.getView(R.id.btn_ok);
                         okBtn.setText(positiveBtnStr);
@@ -223,9 +216,16 @@ public class ZAlertDialog implements IDialog {
                             }
                         });
 
-                        TextView titleText = dialog.getView(R.id.text_title);
+                        TextView titleText = dialog.getView(R.id.easy_text_title);
                         titleText.setText(title);
                         titleText.setTextColor(titleTextColor);
+
+                        if (onViewCreateListener != null) {
+                            onViewCreateListener.onViewCreate(dialog, contentView);
+                        }
+                        FrameLayout container = dialog.getView(R.id.easy_layout_container);
+                        container.removeAllViews();
+                        container.addView(contentView);
                     }
                 })
                 .setOnDismissListener(onDismissListener)

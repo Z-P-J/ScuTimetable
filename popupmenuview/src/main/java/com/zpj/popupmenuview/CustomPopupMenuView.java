@@ -127,10 +127,10 @@ public class CustomPopupMenuView extends PopupView implements BaseOptionMenuView
      */
     public static final int DIRECTION_Y = 1;
 
-    private AnimatorSet animatorSetForDialogShow = new AnimatorSet();
-    private AnimatorSet animatorSetForDialogDismiss = new AnimatorSet();
-    private List<Animator> objectAnimatorsForDialogShow = new ArrayList<>();
-    private List<Animator> objectAnimatorsForDialogDismiss = new ArrayList<>();
+//    private AnimatorSet animatorSetForDialogShow = new AnimatorSet();
+//    private AnimatorSet animatorSetForDialogDismiss = new AnimatorSet();
+//    private List<Animator> objectAnimatorsForDialogShow = new ArrayList<>();
+//    private List<Animator> objectAnimatorsForDialogDismiss = new ArrayList<>();
 
     public CustomPopupMenuView setAnimationTranslationShow(int direction, int duration, float... values) {
         return setAnimationTranslation(true, direction, duration, values);
@@ -229,7 +229,7 @@ public class CustomPopupMenuView extends PopupView implements BaseOptionMenuView
 
     @Override
     public void show(View anchor, Rect frame, Point origin) {
-        onDialogShowing();
+//        onDialogShowing();
         setAnimationStyle(R.style.pop_animation);
         mOptionMenuView.notifyMenusChange();
         super.show(anchor, frame, origin);
@@ -268,13 +268,13 @@ public class CustomPopupMenuView extends PopupView implements BaseOptionMenuView
 //        Toast.makeText(activity, "dismiss", Toast.LENGTH_SHORT).show();
 //        setBackgroundAlpha(activity, 1.0f);
         super.dismiss();
-        if (animatorSetForDialogDismiss.isRunning()) {
-            return;
-        }
-        if (animatorSetForDialogDismiss != null && objectAnimatorsForDialogDismiss != null && objectAnimatorsForDialogDismiss.size() > 0) {
-            animatorSetForDialogDismiss.playTogether(objectAnimatorsForDialogDismiss);
-            animatorSetForDialogDismiss.start();
-        }
+//        if (animatorSetForDialogDismiss.isRunning()) {
+//            return;
+//        }
+//        if (animatorSetForDialogDismiss != null && objectAnimatorsForDialogDismiss != null && objectAnimatorsForDialogDismiss.size() > 0) {
+//            animatorSetForDialogDismiss.playTogether(objectAnimatorsForDialogDismiss);
+//            animatorSetForDialogDismiss.start();
+//        }
     }
 
     @Override
@@ -326,7 +326,7 @@ public class CustomPopupMenuView extends PopupView implements BaseOptionMenuView
         }
     }
 
-    private void onDialogShowing() {
+    protected void onDialogShowing() {
         if (animatorSetForDialogShow != null && objectAnimatorsForDialogShow != null && objectAnimatorsForDialogShow.size() > 0) {
             animatorSetForDialogShow.playTogether(objectAnimatorsForDialogShow);
             animatorSetForDialogShow.start();
