@@ -143,9 +143,9 @@ public class PermissionRequest implements BridgeRequest.Callback {
 
         }
 
-        private MyAsyncTask.AsyncTaskListener listener;
+        private AsyncTaskListener listener;
 
-        MyAsyncTask setListener(MyAsyncTask.AsyncTaskListener listener) {
+        MyAsyncTask setListener(AsyncTaskListener listener) {
             this.listener = listener;
             return this;
         }

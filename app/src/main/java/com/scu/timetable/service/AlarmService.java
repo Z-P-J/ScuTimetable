@@ -392,7 +392,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
 //                alarmQueue.add(alarm);
 
                     alarmQueue.add(createAlarm(0, Alarm.TYPE_BEFORE_CLASS));
-                    alarmQueue.add(createAlarm(0, Alarm.TYPE_BEFORE_CLASS_TEN_MIN));
+                    alarmQueue.add(createAlarm(-5, Alarm.TYPE_BEFORE_CLASS_TEN_MIN));
                     alarmQueue.add(createAlarm(45, Alarm.TYPE_CLASS_BEGAIN));
                     offsetMin = 45;
                 } else {

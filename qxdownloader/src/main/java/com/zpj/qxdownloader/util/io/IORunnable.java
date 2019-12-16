@@ -1,4 +1,4 @@
-//package com.zpj.qxdownloader.util.io;
+package com.zpj.qxdownloader.util.io;//package com.zpj.qxdownloader.util.io;
 //
 //import com.zpj.qxdownloader.get.DownloadRunnable;
 //

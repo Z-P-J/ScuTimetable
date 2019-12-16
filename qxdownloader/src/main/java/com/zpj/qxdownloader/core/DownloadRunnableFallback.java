@@ -1,4 +1,4 @@
-//package com.zpj.qxdownloader.get;
+package com.zpj.qxdownloader.core;//package com.zpj.qxdownloader.get;
 //
 //import android.util.Log;
 //

@@ -306,7 +306,7 @@ public class DownloadMission {
         mission.uuid = UUID.randomUUID().toString();
         mission.createTime = System.currentTimeMillis();
 //        mission.timestamp = mission.createTime;
-        mission.missionStatus = DownloadMission.MissionStatus.INITING;
+        mission.missionStatus = MissionStatus.INITING;
         mission.missionConfig = config;
         return mission;
     }
