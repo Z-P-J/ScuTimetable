@@ -42,10 +42,11 @@ import com.zhuangfei.timetable.model.Schedule;
 import com.zhuangfei.timetable.view.WeekView;
 import com.zpj.popupmenuview.CustomPopupMenuView;
 import com.zpj.popupmenuview.OptionMenuView;
-import com.zpj.qianxundialoglib.EasyAdapter;
-import com.zpj.qianxundialoglib.IDialog;
-import com.zpj.qianxundialoglib.QXListDialog;
-import com.zpj.qianxundialoglib.QianxunDialog;
+import com.zpj.recyclerview.EasyViewHolder;
+import com.zpj.recyclerview.IEasy;
+import com.zpj.zdialog.ZDialog;
+import com.zpj.zdialog.ZListDialog;
+import com.zpj.zdialog.base.IDialog;
 
 import org.json.JSONObject;
 
@@ -331,81 +332,104 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
     }
 
     private void showSubjectNote(final ScuSubject subject) {
-        QianxunDialog.with(MainActivity.this)
-                .setDialogView(R.layout.layout_subject_note)
-                .setBuildChildListener(new IDialog.OnBuildListener() {
-                    @Override
-                    public void onBuildChildView(IDialog dialog, View view, int layoutRes) {
-                        TextView noteTitle = view.findViewById(R.id.note_title);
-                        ImageView btnClose = view.findViewById(R.id.btn_close);
-                        ImageView btnSave = view.findViewById(R.id.btn_save);
-                        EditText editText = view.findViewById(R.id.edit_text);
+        ZDialog.with(MainActivity.this)
+                .setContentView(R.layout.layout_subject_note)
+                .setOnViewCreateListener((dialog, view) -> {
+                    TextView noteTitle = view.findViewById(R.id.note_title);
+                    ImageView btnClose = view.findViewById(R.id.btn_close);
+                    ImageView btnSave = view.findViewById(R.id.btn_save);
+                    EditText editText = view.findViewById(R.id.edit_text);
 
-                        noteTitle.setText(subject.getCourseName() + "的备注");
-                        editText.setText(subject.getNote());
-                        editText.setSelection(subject.getNote().length());
-                        btnClose.setOnClickListener(v -> dialog.dismiss());
-                        btnSave.setOnClickListener(v -> {
-                            String note = editText.getText().toString();
-                            if (subject.getNote().isEmpty() && editText.getText().toString().isEmpty()) {
-                                AToast.normal("请输入备注！");
-                                return;
-                            }
-                            if (TimetableHelper.saveNote(MainActivity.this, subject, note)) {
-                                dialog.dismiss();
-                                AToast.normal("保存成功！");
-                                subject.setNote(note);
-                            } else {
-                                AToast.normal("保存失败，请重试！");
-                            }
-                        });
-                    }
+                    noteTitle.setText(subject.getCourseName() + "的备注");
+                    editText.setText(subject.getNote());
+                    editText.setSelection(subject.getNote().length());
+                    btnClose.setOnClickListener(v -> dialog.dismiss());
+                    btnSave.setOnClickListener(v -> {
+                        String note = editText.getText().toString();
+                        if (subject.getNote().isEmpty() && editText.getText().toString().isEmpty()) {
+                            AToast.normal("请输入备注！");
+                            return;
+                        }
+                        if (TimetableHelper.saveNote(MainActivity.this, subject, note)) {
+                            dialog.dismiss();
+                            AToast.normal("保存成功！");
+                            subject.setNote(note);
+                        } else {
+                            AToast.normal("保存失败，请重试！");
+                        }
+                    });
                 })
                 .show();
     }
 
     private void showChooseSemesterDialog() {
-        QXListDialog<SemesterBean> dialog = new QXListDialog<>(this);
+        ZListDialog<SemesterBean> dialog = new ZListDialog<>(this);
         dialog.setItemList(TimetableHelper.getSemesterList(this))
+                .setTitle("切换学期")
                 .setItemRes(R.layout.layout_semester_item)
-                .setGravity(Gravity.BOTTOM)
-                .setEasyAdapterCallback(new EasyAdapter.EasyAdapterCallback<SemesterBean>() {
-                    @Override
-                    public EasyAdapter.ViewHolder onCreateViewHolder(List<SemesterBean> list, View itemView, int i) {
-                        return null;
-                    }
-
-                    @Override
-                    public void onBindViewHolder(List<SemesterBean> list, View itemView, int i) {
-                        TextView textView = itemView.findViewById(R.id.text_view);
-                        textView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (TimetableHelper.getCurrentSemesterCode().equals(list.get(i).getSemesterCode())) {
-                                    return;
-                                }
-//                                Toast.makeText(MainActivity.this, "请输入验证码刷新课表！", Toast.LENGTH_SHORT).show();
-                                TimetableHelper.setCurrentSemester(list.get(i).getSemesterCode(), list.get(i).getSemesterName());
-                                initTimetableView();
-                                initData();
-                                dialog.dismiss();
+//                .setGravity(Gravity.BOTTOM)
+                .setOnBindChildView((holder, list, position) -> {
+                    TextView textView = holder.getTextView(R.id.text_view);
+                    textView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (TimetableHelper.getCurrentSemesterCode().equals(list.get(position).getSemesterCode())) {
+                                return;
                             }
-                        });
-                        textView.setText(list.get(i).getSemesterName());
-                        if (TimetableHelper.getCurrentSemesterCode().equals(list.get(i).getSemesterCode())) {
-                            textView.setTextColor(Color.BLACK);
+//                                Toast.makeText(MainActivity.this, "请输入验证码刷新课表！", Toast.LENGTH_SHORT).show();
+                            TimetableHelper.setCurrentSemester(list.get(position).getSemesterCode(), list.get(position).getSemesterName());
+                            initTimetableView();
+                            initData();
+                            dialog.dismiss();
                         }
+                    });
+                    textView.setText(list.get(position).getSemesterName());
+                    if (TimetableHelper.getCurrentSemesterCode().equals(list.get(position).getSemesterCode())) {
+                        textView.setTextColor(Color.BLACK);
                     }
                 })
                 .show();
+//        QXListDialog<SemesterBean> dialog = new QXListDialog<>(this);
+//        dialog.setItemList(TimetableHelper.getSemesterList(this))
+//                .setItemRes(R.layout.layout_semester_item)
+//                .setGravity(Gravity.BOTTOM)
+//                .setEasyAdapterCallback(new EasyAdapter.EasyAdapterCallback<SemesterBean>() {
+//                    @Override
+//                    public EasyAdapter.ViewHolder onCreateViewHolder(List<SemesterBean> list, View itemView, int i) {
+//                        return null;
+//                    }
+//
+//                    @Override
+//                    public void onBindViewHolder(List<SemesterBean> list, View itemView, int i) {
+//                        TextView textView = itemView.findViewById(R.id.text_view);
+//                        textView.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                if (TimetableHelper.getCurrentSemesterCode().equals(list.get(i).getSemesterCode())) {
+//                                    return;
+//                                }
+////                                Toast.makeText(MainActivity.this, "请输入验证码刷新课表！", Toast.LENGTH_SHORT).show();
+//                                TimetableHelper.setCurrentSemester(list.get(i).getSemesterCode(), list.get(i).getSemesterName());
+//                                initTimetableView();
+//                                initData();
+//                                dialog.dismiss();
+//                            }
+//                        });
+//                        textView.setText(list.get(i).getSemesterName());
+//                        if (TimetableHelper.getCurrentSemesterCode().equals(list.get(i).getSemesterCode())) {
+//                            textView.setTextColor(Color.BLACK);
+//                        }
+//                    }
+//                })
+//                .show();
     }
 
     private void showRefreshDialog() {
-        QianxunDialog.with(MainActivity.this)
-                .setDialogView(R.layout.layout_refresh)
-                .setBuildChildListener(new IDialog.OnBuildListener() {
+        ZDialog.with(MainActivity.this)
+                .setContentView(R.layout.layout_refresh)
+                .setOnViewCreateListener(new IDialog.OnViewCreateListener() {
                     @Override
-                    public void onBuildChildView(IDialog dialog, View view, int layoutRes) {
+                    public void onViewCreate(IDialog dialog, View view) {
                         LinearLayout container = view.findViewById(R.id.container);
                         LinearLayout statusLayout = view.findViewById(R.id.layout_status);
                         TextView loadingDialogText = view.findViewById(R.id.loading_dialog_text);
@@ -429,10 +453,10 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                 AToast.normal("您当前正处于游客模式，无法刷新课表！");
                                 return;
                             }
-                            if (dialog instanceof QianxunDialog) {
-                                QianxunDialog qianxunDialog = ((QianxunDialog) dialog);
-                                qianxunDialog.setCancelable(false);
-                                qianxunDialog.setCanceledOnTouchOutside(false);
+                            if (dialog instanceof ZDialog) {
+                                ZDialog zDialog = ((ZDialog) dialog);
+                                zDialog.setCancelable(false);
+                                zDialog.setCanceledOnTouchOutside(false);
                             }
                             statusLayout.setVisibility(View.VISIBLE);
                             LoginUtil.with()
@@ -444,10 +468,10 @@ public final class MainActivity extends BaseActivity implements View.OnClickList
                                             AToast.normal("登录失败，请重试！");
                                             CaptchaFetcher.fetchCaptcha(imgCatpcha);
                                             captchaEdit.setText("");
-                                            if (dialog instanceof QianxunDialog) {
-                                                QianxunDialog qianxunDialog = ((QianxunDialog) dialog);
-                                                qianxunDialog.setCancelable(true);
-                                                qianxunDialog.setCanceledOnTouchOutside(true);
+                                            if (dialog instanceof ZDialog) {
+                                                ZDialog zDialog = ((ZDialog) dialog);
+                                                zDialog.setCancelable(true);
+                                                zDialog.setCanceledOnTouchOutside(true);
                                             }
                                         }
 

@@ -136,22 +136,19 @@ public final class LoginUtil {
     }
 
     public void checkCaptcha(final String captcha) {
-        ExecutorHelper.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    securityCheck(captcha);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    sendMessage(-1, e.getMessage());
-                }
+        ExecutorHelper.submit(() -> {
+            try {
+                securityCheck(captcha);
+            } catch (IOException e) {
+                e.printStackTrace();
+                sendMessage(-1, e.getMessage());
             }
         });
     }
 
     private Connection.Response securityCheck(final String captcha) throws IOException {
         String userName = SPHelper.getString("user_name", "");
-        String password = SPHelper.getString("password", "");
+        String password = Md5Utils.md5Encrypt(SPHelper.getString("password", ""));
         if (userName.isEmpty() || password.isEmpty()) {
             sendMessage(-1, "You have to log in first.");
             return null;
@@ -163,17 +160,23 @@ public final class LoginUtil {
         }
         Connection.Response response = Jsoup.connect("http://202.115.47.141/j_spring_security_check")
                 .method(Connection.Method.POST)
+                .followRedirects(true)
                 .header("Cookie", cookie)
                 .userAgent(TimetableHelper.UA)
                 .header("Referer", "http://202.115.47.141/login")
                 .data("j_username", userName)
                 .data("j_password", password)
                 .data("j_captcha", captcha)
+                .data("_spring_security_remember_me", "on")
+                .ignoreHttpErrors(true)
+                .ignoreContentType(true)
                 .execute();
-        if (response.statusCode() != 200 || response.body().contains("badCredentials")) {
+        Log.d("securityCheck", "body=" + response.body());
+        if (response.statusCode() != 200 || response.body().contains("badCredentials") || response.body().contains("欢迎登录四川大学教务管理系统")) {
             sendMessage(3, null);
             return null;
         } else {
+            Log.d("securityCheck", "set-cookie=" + response.header("Set-Cookie"));
             sendMessage(4, null);
             return response;
         }
@@ -364,24 +367,21 @@ public final class LoginUtil {
 
     private void login(final String captcha) {
         Log.d("captcha", "captcha=" + captcha);
-        ExecutorHelper.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Connection.Response response = securityCheck(captcha);
-                    if (response != null) {
-                        getCurrentWeek(response);
-                        for (SemesterBean semester : getSemesters()) {
-                            getTimetable(semester.getSemesterCode());
-                        }
-                        sendMessage(7, null);
+        ExecutorHelper.submit(() -> {
+            try {
+                Connection.Response response = securityCheck(captcha);
+                if (response != null) {
+                    getCurrentWeek(response);
+                    for (SemesterBean semester : getSemesters()) {
+                        getTimetable(semester.getSemesterCode());
+                    }
+                    sendMessage(7, null);
 //                        String currentSemesterCode = getSemesters();
 //                        getTimetable(currentSemesterCode);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    sendMessage(-1, e.getMessage());
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                sendMessage(-1, e.getMessage());
             }
         });
     }
@@ -413,24 +413,21 @@ public final class LoginUtil {
     }
 
     public void getCookie() {
-        ExecutorHelper.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Connection.Response response = Jsoup.connect("http://202.115.47.141/login")
-                            .followRedirects(false)
-                            .userAgent(TimetableHelper.UA)
-                            .ignoreContentType(true)
-                            .execute();
-                    Log.d("body=", "" + response.body());
-                    Log.d("headers", response.headers().toString());
-                    String cookie = response.header("Set-Cookie");
-                    Log.d("cookie", "cookie=" + cookie);
-                    sendMessage(2, cookie);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    sendMessage(-1, e.getMessage());
-                }
+        ExecutorHelper.submit(() -> {
+            try {
+                Connection.Response response = Jsoup.connect("http://202.115.47.141/login")
+                        .followRedirects(false)
+                        .userAgent(TimetableHelper.UA)
+                        .ignoreContentType(true)
+                        .execute();
+                Log.d("body=", "" + response.body());
+                Log.d("headers", response.headers().toString());
+                String cookie = response.header("Set-Cookie");
+                Log.d("cookie", "cookie=" + cookie);
+                sendMessage(2, cookie);
+            } catch (Exception e) {
+                e.printStackTrace();
+                sendMessage(-1, e.getMessage());
             }
         });
     }

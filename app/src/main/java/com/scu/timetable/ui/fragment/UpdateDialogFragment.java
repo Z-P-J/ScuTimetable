@@ -38,10 +38,10 @@ import com.scu.timetable.model.UpdateBean;
 import com.scu.timetable.ui.view.NumberProgressBar;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.content.SPHelper;
-import com.zpj.qianxundialoglib.base.DialogFragment;
 import com.zpj.qxdownloader.config.MissionConfig;
 import com.zpj.qxdownloader.core.DownloadMission;
 import com.zpj.qxdownloader.util.FileUtil;
+import com.zpj.zdialog.base.DialogFragment;
 
 import java.io.File;
 

@@ -70,7 +70,7 @@ dependencies {
 //    implementation 'com.leon:lsettingviewlibrary:1.7.0'
     implementation project(':TimetableView')
 //    implementation project(':easydialog')
-    implementation project(':dialoglib')
+    implementation project(':zdialog')
     implementation project(':lsettingviewlibrary')
     implementation project(':popupmenuview')
 //    implementation project(':swipeawaydialog')

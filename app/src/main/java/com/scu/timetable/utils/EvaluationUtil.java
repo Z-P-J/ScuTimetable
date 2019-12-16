@@ -93,21 +93,21 @@ public final class EvaluationUtil {
     }
 
     public void getEvaluationSubjects() {
-        ExecutorHelper.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Connection.Response doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
-                            .header("cookie", SPHelper.getString("cookie", ""))
-                            .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
-                            .ignoreHttpErrors(true)
-                            .ignoreContentType(true)
-                            .execute();
-                    sendMessage(1, doc.body());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    sendMessage(-1, e.getMessage());
-                }
+        ExecutorHelper.submit(() -> {
+            try {
+                Connection.Response doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
+                        .followRedirects(false)
+                        .header("Cookie", SPHelper.getString("cookie", ""))
+                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
+                        .userAgent(TimetableHelper.UA)
+                        .ignoreHttpErrors(true)
+                        .ignoreContentType(true)
+                        .execute();
+                sendMessage(1, doc.body());
+                Log.d("getEvaluationSubjects", "body=" + doc.body());
+            } catch (IOException e) {
+                e.printStackTrace();
+                sendMessage(-1, e.getMessage());
             }
         });
     }
@@ -115,73 +115,70 @@ public final class EvaluationUtil {
     public void getEvaluationPage(final String evaluatedPeople, final String evaluatedPeopleNumber,
                                   final String questionnaireCode, final String questionnaireName,
                                   final String evaluationContentNumber, final String evaluationContent) {
-        ExecutorHelper.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Document doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
+        ExecutorHelper.submit(() -> {
+            try {
+                Document doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
+                        .header("cookie", SPHelper.getString("cookie", ""))
+                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
+                        .data("evaluatedPeople", evaluatedPeople)
+                        .data("evaluatedPeopleNumber", evaluatedPeopleNumber)
+                        .data("questionnaireCode", questionnaireCode)
+                        .data("questionnaireName", questionnaireName)
+                        .data("evaluationContentNumber", evaluationContentNumber)
+                        .data("evaluationContentContent", "")
+                        .post();
+                Element element = doc.getElementById("tokenValue");
+                final String tokenValue = element.val();
+                Log.d("tokenValue", "tokenValue=" + tokenValue);
+                final Element table = doc.getElementsByClass("table-box").get(0);
+                Log.d("table", "table=" + table);
+                Elements inputs = table.select("input.ace");
+                Log.d("inputs", "inputs=" + inputs.toString());
+
+                if (!tokenValue.isEmpty()) {
+                    Connection connection = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
+                            .method(Connection.Method.POST)
+                            .followRedirects(false)
                             .header("cookie", SPHelper.getString("cookie", ""))
-                            .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
-                            .data("evaluatedPeople", evaluatedPeople)
-                            .data("evaluatedPeopleNumber", evaluatedPeopleNumber)
+                            .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
+                            .data("tokenValue", tokenValue)
                             .data("questionnaireCode", questionnaireCode)
-                            .data("questionnaireName", questionnaireName)
                             .data("evaluationContentNumber", evaluationContentNumber)
-                            .data("evaluationContentContent", "")
-                            .post();
-                    Element element = doc.getElementById("tokenValue");
-                    final String tokenValue = element.val();
-                    Log.d("tokenValue", "tokenValue=" + tokenValue);
-                    final Element table = doc.getElementsByClass("table-box").get(0);
-                    Log.d("table", "table=" + table);
-                    Elements inputs = table.select("input.ace");
-                    Log.d("inputs", "inputs=" + inputs.toString());
+                            .data("evaluatedPeopleNumber", evaluatedPeopleNumber)
+                            .data("count", "0")
+                            .data("zgpj", getRandomEvaluation(questionnaireName))
+                            .ignoreHttpErrors(true)
+                            .ignoreContentType(true);
+                    Map<String, String> map = new HashMap<>();
 
-                    if (!tokenValue.isEmpty()) {
-                        Connection connection = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
-                                .method(Connection.Method.POST)
-                                .followRedirects(false)
-                                .header("cookie", SPHelper.getString("cookie", ""))
-                                .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
-                                .data("tokenValue", tokenValue)
-                                .data("questionnaireCode", questionnaireCode)
-                                .data("evaluationContentNumber", evaluationContentNumber)
-                                .data("evaluatedPeopleNumber", evaluatedPeopleNumber)
-                                .data("count", "0")
-                                .data("zgpj", getRandomEvaluation(questionnaireName))
-                                .ignoreHttpErrors(true)
-                                .ignoreContentType(true);
-                        Map<String, String> map = new HashMap<>();
-
-                        int randomNum1 = (int) (Math.random() * inputs.size()) / 5;
-                        int randomNum2 = (int) (Math.random() * inputs.size()) / 5;
-                        int count = 0;
-                        for (Element input : inputs) {
-                            String name = input.attr("name");
-                            Log.d("name", name);
-                            if (map.containsKey(name)) {
-                                continue;
-                            }
-                            if (count == randomNum1 || count == randomNum2) {
-                                connection.data(name, "10_0.8");
-                            } else {
-                                connection.data(name, "10_1");
-                            }
-                            map.put(name, "");
-                            count++;
+                    int randomNum1 = (int) (Math.random() * inputs.size()) / 5;
+                    int randomNum2 = (int) (Math.random() * inputs.size()) / 5;
+                    int count = 0;
+                    for (Element input : inputs) {
+                        String name = input.attr("name");
+                        Log.d("name", name);
+                        if (map.containsKey(name)) {
+                            continue;
                         }
-                        Log.d("map", "map.size=" + map.size());
-
-                        Connection.Response response = connection.execute();
-                        Log.d("evaluation", "result=" + response.body());
-                        sendMessage(4, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教成功！");
-                        return;
+                        if (count == randomNum1 || count == randomNum2) {
+                            connection.data(name, "10_0.8");
+                        } else {
+                            connection.data(name, "10_1");
+                        }
+                        map.put(name, "");
+                        count++;
                     }
-                    sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    sendMessage(-1, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教出错了！ 错误信息：" + e.getMessage());
+                    Log.d("map", "map.size=" + map.size());
+
+                    Connection.Response response = connection.execute();
+                    Log.d("evaluation", "result=" + response.body());
+                    sendMessage(4, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教成功！");
+                    return;
                 }
+                sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！");
+            } catch (IOException e) {
+                e.printStackTrace();
+                sendMessage(-1, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教出错了！ 错误信息：" + e.getMessage());
             }
         });
     }

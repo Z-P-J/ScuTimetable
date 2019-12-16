@@ -10,12 +10,12 @@ import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.labo.kaji.swipeawaydialog.SwipeAwayDialogFragment;
+import com.zpj.zdialog.base.DialogFragment;
 
 /**
  * @author Z-P-J
  */
-public class FullscreenDialogFragment extends SwipeAwayDialogFragment {
+public class FullscreenDialogFragment extends DialogFragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

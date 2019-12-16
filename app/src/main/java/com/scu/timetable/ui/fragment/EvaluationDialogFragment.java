@@ -29,8 +29,8 @@ import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
 import com.scu.timetable.utils.LoginUtil;
 import com.zpj.popupmenuview.CustomPopupMenuView;
-import com.zpj.qianxundialoglib.IDialog;
-import com.zpj.qianxundialoglib.QianxunDialog;
+import com.zpj.zdialog.ZAlertDialog;
+import com.zpj.zdialog.base.IDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -101,16 +101,10 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
     @Override
     protected boolean onBackPressed() {
         if (isEvaluating) {
-            QianxunDialog.with(getContext())
+            ZAlertDialog.with(getContext())
                     .setTitle("确认返回！")
                     .setTitleTextColor(Color.RED)
                     .setContent("返回后将终止评教，确认返回？")
-                    .setNegativeButton(new IDialog.OnClickListener() {
-                        @Override
-                        public void onClick(IDialog dialog) {
-                            dialog.dismiss();
-                        }
-                    })
                     .setPositiveButton(new IDialog.OnClickListener() {
                         @Override
                         public void onClick(IDialog dialog) {
@@ -139,18 +133,13 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
         backBtn.setOnClickListener(v -> onBackPressed());
         ImageView infoBtn = view.findViewById(R.id.btn_info);
         infoBtn.setVisibility(View.VISIBLE);
-        infoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showInfoPopupView(
-                        infoBtn,
-                        "关于一键评教",
-                        "1.一键评教将自动对未评教的教师或助教进行评教。\n" +
-                                "2.由于教务系统服务器的限制，每成功评教一次将等待两分钟。\n" +
-                                "3.教师或助教的主观评价将从默认的十几条评价中随机选择。"
-                );
-            }
-        });
+        infoBtn.setOnClickListener(v -> showInfoPopupView(
+                infoBtn,
+                "关于一键评教",
+                "1.一键评教将自动对未评教的教师或助教进行评教。\n" +
+                        "2.由于教务系统服务器的限制，每成功评教一次将等待两分钟。\n" +
+                        "3.教师或助教的主观评价将从默认的十几条评价中随机选择。"
+        ));
         headerTitle.setText("一键评教");
 
         scrollView = view.findViewById(R.id.scroll_view);
@@ -178,12 +167,9 @@ public class EvaluationDialogFragment extends FullscreenDialogFragment implement
 //            ValueAnimator.ofFloat(0.0f, alpha);
 //        }
         animator.setDuration(300);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (Float) animation.getAnimatedValue();
-                background.setAlpha(value);
-            }
+        animator.addUpdateListener(animation -> {
+            float value = (Float) animation.getAnimatedValue();
+            background.setAlpha(value);
         });
         animator.start();
     }

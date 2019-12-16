@@ -1,7 +1,7 @@
 include ':app',
         ':TimetableView',
 //        ':easydialog',
-        ':dialoglib',
+        ':zdialog',
         ':lsettingviewlibrary',
         ':popupmenuview',
 //        ':swipeawaydialog',

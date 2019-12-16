@@ -34,8 +34,8 @@ import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.popupmenuview.CustomPopupMenuView;
-import com.zpj.qianxundialoglib.IDialog;
-import com.zpj.qianxundialoglib.QianxunDialog;
+import com.zpj.zdialog.ZAlertDialog;
+import com.zpj.zdialog.base.IDialog;
 
 public class SettingsDialogFragment extends FullscreenDialogFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
 
@@ -58,6 +58,7 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         background.setAlpha(currentAlpha);
         frameLayout.addView(background);
         initView(view);
+        setSwipeable(false);
         return frameLayout;
     }
 
@@ -232,16 +233,10 @@ public class SettingsDialogFragment extends FullscreenDialogFragment implements 
         if (id == R.id.btn_back) {
             dismiss();
         } else if (id == R.id.btn_logout){
-            QianxunDialog.with(getContext())
+            ZAlertDialog.with(getContext())
                     .setTitle("注销登录！")
                     .setTitleTextColor(Color.RED)
                     .setContent("注销后需重新登录才能查看课表，确认注销？")
-                    .setNegativeButton(new IDialog.OnClickListener() {
-                        @Override
-                        public void onClick(IDialog dialog) {
-                            dialog.dismiss();
-                        }
-                    })
                     .setPositiveButton(new IDialog.OnClickListener() {
                         @Override
                         public void onClick(IDialog dialog) {
