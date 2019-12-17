@@ -18,6 +18,7 @@ import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
+import com.scu.timetable.utils.EncryptionUtils;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.content.SPHelper;
@@ -117,8 +118,8 @@ public final class LoginActivity extends SupportActivity implements View.OnClick
 
         //http://202.115.47.141/img/captcha.jpg?60
 
-        userName.setText(SPHelper.getString("user_name", ""));
-        password.setText(SPHelper.getString("password", ""));
+        userName.setText(EncryptionUtils.decryptByAES(SPHelper.getString("user_name", "")));
+        password.setText(EncryptionUtils.decryptByAES(SPHelper.getString("password", "")));
 
     }
 
@@ -365,8 +366,8 @@ public final class LoginActivity extends SupportActivity implements View.OnClick
     public void onLoginSuccess() {
 //        Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
         msgText.setText("获取课表数据中...");
-        SPHelper.putString("user_name", userName.getText().toString());
-        SPHelper.putString("password", password.getText().toString());
+        SPHelper.putString("user_name", EncryptionUtils.encryptByAES(userName.getText().toString()));
+        SPHelper.putString("password", EncryptionUtils.encryptByAES(password.getText().toString()));
     }
 
     @Override

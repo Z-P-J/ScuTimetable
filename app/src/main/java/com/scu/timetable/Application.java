@@ -5,6 +5,7 @@ import android.os.StrictMode;
 import android.util.Log;
 
 import com.felix.atoast.library.AToast;
+import com.scu.timetable.utils.EncryptionUtils;
 import com.scu.timetable.utils.FileUtil;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.downloader.ZDownloader;
@@ -28,6 +29,13 @@ public final class Application extends android.app.Application {
                 .setDownloadPath(FileUtil.getDiskCacheDir(this));
         Log.d("cachePath", "cachePath=" + FileUtil.getDiskCacheDir(this));
         ZDownloader.init(config);
+
+        String test = "kseugrbfjkhdlf";
+        Log.d("Application", "test=" + test);
+        String test2 = EncryptionUtils.encryptByAES(test);
+        Log.d("Application", "test2=" + test2);
+        String test3 = EncryptionUtils.decryptByAES(test2);
+        Log.d("Application", "test3=" + test3);
     }
 
 }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
+import com.scu.timetable.events.EvaluationEvent;
 import com.scu.timetable.model.EvaluationBean;
 import com.scu.timetable.ui.fragment.base.BaseFragment;
 import com.scu.timetable.ui.view.ElasticScrollView;
@@ -27,6 +28,9 @@ import com.zpj.popupmenuview.CustomPopupMenuView;
 import com.zpj.zdialog.ZAlertDialog;
 import com.zpj.zdialog.base.IDialog;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,11 +59,14 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
 
     private TextView countDownView;
 
-    private static final String COUNT_DOWN_TEXT = "%ds后自动进行下一次评教，\n将应用置于后台休息一下吧(๑‾ ꇴ ‾๑)";
+//    private static final String COUNT_DOWN_TEXT = "%ds后自动进行下一次评教，\n将应用置于后台休息一下吧(๑‾ ꇴ ‾๑)";
+    private static final String COUNT_DOWN_TEXT = "%ds后自动开始评教，\n将应用置于后台休息一下吧(๑‾ ꇴ ‾๑)";
 
     private boolean isEvaluating;
 
-    private final CountDownTimer timer = new CountDownTimer(60 * 1000 * 2, 1000) {
+    private EvaluationEvent currentEvent;
+
+    private final CountDownTimer timer = new CountDownTimer(10 * 1000, 1000) {
         @Override
         public void onTick(long millisUntilFinished) {
             countDownView.setText(String.format(Locale.getDefault(), COUNT_DOWN_TEXT, millisUntilFinished / 1000));
@@ -68,7 +75,10 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
         @Override
         public void onFinish() {
             countDownView.setText("");
-            startEvaluation();
+//            startEvaluation();
+            if (currentEvent != null) {
+                EvaluationUtil.with(EvaluationFragment.this).evaluation(currentEvent.getEvaluationBean(), currentEvent.getConnection());
+            }
         }
     };
 
@@ -92,6 +102,13 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
 //        initView(view);
 //        return frameLayout;
 //    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+    }
 
     @Override
     protected int getLayoutId() {
@@ -128,6 +145,12 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
 
         evaluationButton = view.findViewById(R.id.btn_evaluation);
         evaluationButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
     }
 
     @Override
@@ -337,10 +360,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
 
     private void newEvaluation() {
         if (hasEvaluation()) {
-            countDownView = new TextView(getContext());
-            countDownView.setText(String.format(Locale.getDefault(), COUNT_DOWN_TEXT, 120));
-            consoleView.addView(countDownView);
-            timer.start();
+            startEvaluation();
             EvaluationUtil.with(this).post(scrollToBottomRunnable);
         }
     }
@@ -349,9 +369,11 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
         if (hasEvaluation()) {
             EvaluationBean bean = evaluationBeanQueue.remove();
             consoleLog(bean.getQuestionnaireName() + " " + bean.getEvaluatedPeople() + " " + bean.getEvaluationContent() + " 评教中...", Color.BLACK);
+//            EvaluationUtil.with(this)
+//                    .getEvaluationPage(bean.getEvaluatedPeople(), bean.getEvaluatedPeopleNum(), bean.getQuestionnaireCoding(),
+//                            bean.getQuestionnaireName(), bean.getEvaluationContentNumber(), bean.getEvaluationContent());
             EvaluationUtil.with(this)
-                    .getEvaluationPage(bean.getEvaluatedPeople(), bean.getEvaluatedPeopleNum(), bean.getQuestionnaireCoding(),
-                            bean.getQuestionnaireName(), bean.getEvaluationContentNumber(), bean.getEvaluationContent());
+                    .getEvaluationPage(bean);
         }
     }
 
@@ -382,6 +404,18 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
         textView.setTextColor(color);
         consoleView.addView(textView);
         EvaluationUtil.with(this).post(scrollToBottomRunnable);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEvaluationEvent(EvaluationEvent event) {
+        currentEvent = event;
+        if (event.getConnection() != null) {
+            countDownView = new TextView(_mActivity);
+            countDownView.setText(String.format(Locale.getDefault(), COUNT_DOWN_TEXT, 10));
+            consoleView.addView(countDownView);
+            timer.start();
+            EvaluationUtil.with(this).post(scrollToBottomRunnable);
+        }
     }
 
 }

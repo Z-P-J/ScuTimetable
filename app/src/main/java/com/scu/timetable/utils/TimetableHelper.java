@@ -298,6 +298,14 @@ public final class TimetableHelper {
         SPHelper.putBoolean("show_time", !isShowTime());
     }
 
+    public static void toggleSpeech() {
+        SPHelper.putBoolean("text_to_speech", !isSpeech());
+    }
+
+    public static boolean isSpeech() {
+        return SPHelper.getBoolean("text_to_speech", true);
+    }
+
     public static boolean isShowNotCurWeek() {
         return SPHelper.getBoolean("show_not_cur_week", true);
     }

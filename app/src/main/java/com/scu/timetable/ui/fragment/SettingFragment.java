@@ -90,6 +90,10 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 "开启该选项将在侧边栏显示该节课的上课时间。")
         );
 
+        LSettingItem itemSpeech = view.findViewById(R.id.item_speech);
+        itemSpeech.setChecked(TimetableHelper.isSpeech());
+        itemSpeech.setmOnLSettingItemClick(this);
+
         LSettingItem itemChangeCurrentWeek = view.findViewById(R.id.item_change_current_week);
         itemChangeCurrentWeek.setmOnLSettingItemClick(this);
 
@@ -230,6 +234,8 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
             }
         } else if (id == R.id.item_show_time) {
             TimetableHelper.toggleShowTime();
+        } else if (id == R.id.item_speech) {
+            TimetableHelper.toggleSpeech();
         } else if (id == R.id.item_change_current_week) {
             TimetableHelper.openChangeCurrentWeekDialog(getContext(), null);
         } else if (id == R.id.item_notification) {

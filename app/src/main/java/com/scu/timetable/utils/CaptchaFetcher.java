@@ -1,5 +1,6 @@
 package com.scu.timetable.utils;
 
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -8,6 +9,11 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.scu.timetable.utils.content.SPHelper;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+
+import java.io.IOException;
 
 /**
  * @author Z-P-J
@@ -38,6 +44,38 @@ public final class CaptchaFetcher {
     }
 
     public static void fetchCaptcha(String cookie, ImageView imageView) {
+//        ExecutorHelper.submit(() -> {
+//            try {
+//                Connection.Response response = Jsoup.connect("http://zhjw.scu.edu.cn/logout")
+//                        .followRedirects(false)
+//                        .header("cookie", cookie)
+//                        .userAgent(TimetableHelper.UA)
+//                        .ignoreContentType(true)
+//                        .ignoreHttpErrors(true)
+//                        .execute();
+//                Log.d("fetchCaptcha", "/logout body=" + response.body());
+//                response = Jsoup.connect("http://202.115.47.141/login")
+//                        .followRedirects(false)
+//                        .userAgent(TimetableHelper.UA)
+//                        .ignoreContentType(true)
+//                        .execute();
+//                String cookie2 = response.header("Set-Cookie");
+//                Log.d("fetchCaptcha", "login body=" + response.body());
+//                Log.d("fetchCaptcha", "cookie=" + cookie2);
+//                imageView.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        SPHelper.putString("cookie", cookie2);
+//                        Glide.with(imageView.getContext())
+//                                .load(getUrl(cookie2))
+//                                .apply(OPTIONS)
+//                                .into(imageView);
+//                    }
+//                });
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        });
         Glide.with(imageView.getContext())
                 .load(getUrl(cookie))
                 .apply(OPTIONS)
@@ -45,10 +83,11 @@ public final class CaptchaFetcher {
     }
 
     public static void fetchCaptcha(ImageView imageView) {
-        Glide.with(imageView.getContext())
-                .load(getUrl(SPHelper.getString("cookie", "")))
-                .apply(OPTIONS)
-                .into(imageView);
+        fetchCaptcha(SPHelper.getString("cookie", ""), imageView);
+//        Glide.with(imageView.getContext())
+//                .load(getUrl(SPHelper.getString("cookie", "")))
+//                .apply(OPTIONS)
+//                .into(imageView);
     }
 
 }

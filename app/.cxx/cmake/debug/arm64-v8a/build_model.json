@@ -1,0 +1,69 @@
+{
+  "variant": {
+    "module": {
+      "rootBuildGradleFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable",
+      "sdkFolder": "D:\\Programming\\Android\\android-sdk",
+      "isNativeCompilerSettingsCacheEnabled": false,
+      "isBuildOnlyTargetAbiEnabled": true,
+      "ideBuildTargetAbi": "arm64-v8a,armeabi-v7a,armeabi",
+      "splitsAbiFilterSet": [],
+      "intermediatesFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\build\\intermediates",
+      "gradleModulePathName": ":app",
+      "moduleRootFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app",
+      "makeFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\src\\main\\cpp\\CMakeLists.txt",
+      "buildSystem": "CMAKE",
+      "compilerSettingsCacheFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\.cxx",
+      "cxxFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx",
+      "ndkFolder": "D:\\Programming\\Android\\android-sdk\\ndk\\20.0.5594570",
+      "ndkVersion": "20.0.5594570",
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "cmakeToolchainFile": "."
+    },
+    "buildSystemArgumentList": [],
+    "cFlagList": [],
+    "cppFlagsList": [],
+    "variantName": "debug",
+    "soFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\build\\intermediates\\cmake\\debug\\lib",
+    "objFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\build\\intermediates\\cmake\\debug\\obj",
+    "jsonFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug",
+    "gradleBuildOutputFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cxx\\debug",
+    "isDebuggableEnabled": true,
+    "validAbiList": [
+      "ARM64_V8A",
+      "ARMEABI_V7A"
+    ],
+    "buildTargetSet": []
+  },
+  "abi": "ARM64_V8A",
+  "abiPlatformVersion": 19,
+  "cxxBuildFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\arm64-v8a",
+  "jsonFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\arm64-v8a\\android_gradle_build.json",
+  "gradleBuildOutputFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cxx\\debug\\arm64-v8a",
+  "objFolder": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\build\\intermediates\\cmake\\debug\\obj\\arm64-v8a",
+  "buildCommandFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\arm64-v8a\\build_command.txt",
+  "buildOutputFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\arm64-v8a\\build_output.txt",
+  "modelOutputFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\arm64-v8a\\build_model.json",
+  "cmake": {
+    "cmakeListsWrapperFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cxx\\debug\\arm64-v8a\\CMakeLists.txt",
+    "toolchainWrapperFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cxx\\debug\\arm64-v8a\\android_gradle_build.toolchain.cmake",
+    "buildGenerationStateFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cxx\\debug\\arm64-v8a\\build_generation_state.json",
+    "cacheKeyFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cxx\\debug\\arm64-v8a\\compiler_cache_key.json",
+    "compilerCacheUseFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cxx\\debug\\arm64-v8a\\compiler_cache_use.json",
+    "compilerCacheWriteFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cxx\\debug\\arm64-v8a\\compiler_cache_write.json",
+    "toolchainSettingsFromCacheFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cxx\\debug\\arm64-v8a\\compiler_settings_cache.cmake",
+    "cmakeWrappingBaseFolder": "."
+  },
+  "jsonGenerationLoggingRecordFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\arm64-v8a\\json_generation_record.json",
+  "compileCommandsJsonFile": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\arm64-v8a\\compile_commands.json"
+}

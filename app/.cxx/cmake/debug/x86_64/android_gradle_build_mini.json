@@ -1,0 +1,16 @@
+{
+  "buildFiles": [
+    "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "D:\\Programming\\Android\\android-sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\x86_64 --target clean"
+  ],
+  "libraries": {
+    "encryption-Debug-x86_64": {
+      "artifactName": "encryption",
+      "buildCommand": "D:\\Programming\\Android\\android-sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\x86_64 --target encryption",
+      "abi": "x86_64",
+      "output": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\build\\intermediates\\cmake\\debug\\obj\\x86_64\\libencryption.so"
+    }
+  }
+}

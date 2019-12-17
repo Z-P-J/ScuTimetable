@@ -112,6 +112,17 @@
                         />
 
                     <com.leon.lib.settingview.LSettingItem
+                        android:id="@+id/item_speech"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:isShowUnderLine="true"
+                        app:leftText="语音播报"
+                        app:rightStyle="iconSwitch"
+                        app:showInfoBtn="false"
+                        app:leftIcon="@drawable/ic_access_alarm_black_24dp"
+                        />
+
+                    <com.leon.lib.settingview.LSettingItem
                         android:id="@+id/item_change_current_week"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

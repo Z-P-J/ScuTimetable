@@ -1,0 +1,16 @@
+{
+  "buildFiles": [
+    "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\src\\main\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "D:\\Programming\\Android\\android-sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target clean"
+  ],
+  "libraries": {
+    "encryption-Debug-armeabi-v7a": {
+      "artifactName": "encryption",
+      "buildCommand": "D:\\Programming\\Android\\android-sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target encryption",
+      "abi": "armeabi-v7a",
+      "output": "D:\\Programming\\AndroidProjects\\ScuTimetable\\app\\build\\intermediates\\cmake\\debug\\obj\\armeabi-v7a\\libencryption.so"
+    }
+  }
+}

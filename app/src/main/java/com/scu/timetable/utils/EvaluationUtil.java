@@ -4,8 +4,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.scu.timetable.events.EvaluationEvent;
+import com.scu.timetable.model.EvaluationBean;
 import com.scu.timetable.utils.content.SPHelper;
 
+import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -79,6 +83,7 @@ public final class EvaluationUtil {
         void onGetTokenValue(String tokenValue);
         void onEvaluationFailed(String msg);
         void onEvaluationSuccess(String msg);
+//        void onGetEvaluationPage(EvaluationBean bean);
     }
 
     private EvaluationUtil(EvaluationCallback callback) {
@@ -112,21 +117,133 @@ public final class EvaluationUtil {
         });
     }
 
-    public void getEvaluationPage(final String evaluatedPeople, final String evaluatedPeopleNumber,
-                                  final String questionnaireCode, final String questionnaireName,
-                                  final String evaluationContentNumber, final String evaluationContent) {
+//    public void getEvaluationPage(final String evaluatedPeople, final String evaluatedPeopleNumber,
+//                                  final String questionnaireCode, final String questionnaireName,
+//                                  final String evaluationContentNumber, final String evaluationContent) {
+//        ExecutorHelper.submit(() -> {
+//            try {
+//                Document doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
+//                        .followRedirects(true)
+//                        .header("cookie", SPHelper.getString("cookie", ""))
+//                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
+//                        .userAgent(TimetableHelper.UA)
+//                        .data("evaluatedPeople", evaluatedPeople)
+//                        .data("evaluatedPeopleNumber", evaluatedPeopleNumber)
+//                        .data("questionnaireCode", questionnaireCode)
+//                        .data("questionnaireName", questionnaireName)
+//                        .data("evaluationContentNumber", evaluationContentNumber)
+//                        .data("evaluationContentContent", "")
+//                        .post();
+//                Element element = doc.getElementById("tokenValue");
+//                final String tokenValue = element.val();
+//                Log.d("tokenValue", "tokenValue=" + tokenValue);
+//                final Element table = doc.getElementsByClass("table-box").get(0);
+//                Log.d("table", "table=" + table);
+//                Elements inputs = table.select("input.ace");
+//                Log.d("inputs", "inputs=" + inputs.toString());
+//
+//                Thread.sleep(10000);
+//
+//                if (!tokenValue.isEmpty()) {
+//                    Connection connection = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
+//                            .method(Connection.Method.POST)
+//                            .followRedirects(false)
+//                            .header("cookie", SPHelper.getString("cookie", ""))
+//                            .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
+//                            .data("tokenValue", tokenValue)
+//                            .data("questionnaireCode", questionnaireCode)
+//                            .data("evaluationContentNumber", evaluationContentNumber)
+//                            .data("evaluatedPeopleNumber", evaluatedPeopleNumber)
+//                            .data("count", "0")
+//                            .data("zgpj", getRandomEvaluation(questionnaireName))
+//                            .ignoreHttpErrors(true)
+//                            .ignoreContentType(true);
+//                    Map<String, String> map = new HashMap<>();
+//
+//                    int randomNum1 = (int) (Math.random() * inputs.size()) / 5;
+//                    int randomNum2 = (int) (Math.random() * inputs.size()) / 5;
+//                    int count = 0;
+//                    for (Element input : inputs) {
+//                        String name = input.attr("name");
+//                        Log.d("name", name);
+//                        if (map.containsKey(name)) {
+//                            continue;
+//                        }
+////                        if (count == randomNum1 || count == randomNum2) {
+////                            connection.data(name, "10_0.8");
+////                        } else {
+////                            connection.data(name, "10_1");
+////                        }
+//                        connection.data(name, "10_1");
+//                        map.put(name, "");
+//                        count++;
+//                    }
+//                    Log.d("map", "map.size=" + map.size());
+//
+//                    Connection.Response response = connection.execute();
+//                    Log.d("getEvaluationPage", "result1=" + response.body());
+//                    JSONObject jsonObject = new JSONObject(response.body());
+//                    String result = jsonObject.getString("result");
+//                    Log.d("getEvaluationPage", "resultMsg=" + result);
+//                    if ("error".equals(result)) {
+////                        connection.data("tokenValue", jsonObject.getString("token"));
+////                        response = connection.execute();
+//                        sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！");
+//                        return;
+//                    } else if ("/logout".equals(result)) {
+//                        // 重新登录
+////                        response = Jsoup.connect("http://zhjw.scu.edu.cn/logout")
+////                                .followRedirects(true)
+////                                .userAgent(TimetableHelper.UA)
+////                                .ignoreContentType(true)
+////                                .execute();
+//                        Log.d("getEvaluationPage", "/logout");
+//                        sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！请重新登录");
+//                        return;
+//                    } else {
+////                        Log.d("getEvaluationPage", "result2=" + response.body());
+//                        sendMessage(4, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教成功！");
+//                        return;
+//                    }
+//                }
+//                sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                sendMessage(-1, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教出错了！ 错误信息：" + e.getMessage());
+//            }
+//        });
+//    }
+
+    public void getEvaluationPage(EvaluationBean bean) {
         ExecutorHelper.submit(() -> {
             try {
-                Document doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
+                Connection.Response response = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
+                        .method(Connection.Method.POST)
+                        .followRedirects(true)
                         .header("cookie", SPHelper.getString("cookie", ""))
                         .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
-                        .data("evaluatedPeople", evaluatedPeople)
-                        .data("evaluatedPeopleNumber", evaluatedPeopleNumber)
-                        .data("questionnaireCode", questionnaireCode)
-                        .data("questionnaireName", questionnaireName)
-                        .data("evaluationContentNumber", evaluationContentNumber)
+                        .userAgent(TimetableHelper.UA)
+                        .data("evaluatedPeople", bean.getEvaluatedPeople())
+                        .data("evaluatedPeopleNumber", bean.getEvaluatedPeopleNum())
+                        .data("questionnaireCode", bean.getQuestionnaireCoding())
+                        .data("questionnaireName", bean.getQuestionnaireName())
+                        .data("evaluationContentNumber", bean.getEvaluationContentNumber())
                         .data("evaluationContentContent", "")
-                        .post();
+                        .execute();
+                Log.d("getEvaluationPage", "body=" + response.body());
+                Document doc = Jsoup.parse(response.body());
+//                Document doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
+//                        .followRedirects(true)
+//                        .header("cookie", SPHelper.getString("cookie", ""))
+//                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
+//                        .userAgent(TimetableHelper.UA)
+//                        .data("evaluatedPeople", bean.getEvaluatedPeople())
+//                        .data("evaluatedPeopleNumber", bean.getEvaluatedPeopleNum())
+//                        .data("questionnaireCode", bean.getQuestionnaireCoding())
+//                        .data("questionnaireName", bean.getQuestionnaireName())
+//                        .data("evaluationContentNumber", bean.getEvaluationContentNumber())
+//                        .data("evaluationContentContent", "")
+//                        .post();
                 Element element = doc.getElementById("tokenValue");
                 final String tokenValue = element.val();
                 Log.d("tokenValue", "tokenValue=" + tokenValue);
@@ -142,11 +259,14 @@ public final class EvaluationUtil {
                             .header("cookie", SPHelper.getString("cookie", ""))
                             .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
                             .data("tokenValue", tokenValue)
-                            .data("questionnaireCode", questionnaireCode)
-                            .data("evaluationContentNumber", evaluationContentNumber)
-                            .data("evaluatedPeopleNumber", evaluatedPeopleNumber)
+//                            .data("questionnaireCode", questionnaireCode)
+//                            .data("evaluationContentNumber", evaluationContentNumber)
+//                            .data("evaluatedPeopleNumber", evaluatedPeopleNumber)
+                            .data("evaluatedPeopleNumber", bean.getEvaluatedPeopleNum())
+                            .data("questionnaireCode", bean.getQuestionnaireCoding())
+                            .data("evaluationContentNumber", bean.getEvaluationContentNumber())
                             .data("count", "0")
-                            .data("zgpj", getRandomEvaluation(questionnaireName))
+                            .data("zgpj", getRandomEvaluation(bean.getQuestionnaireName()))
                             .ignoreHttpErrors(true)
                             .ignoreContentType(true);
                     Map<String, String> map = new HashMap<>();
@@ -160,25 +280,75 @@ public final class EvaluationUtil {
                         if (map.containsKey(name)) {
                             continue;
                         }
-                        if (count == randomNum1 || count == randomNum2) {
-                            connection.data(name, "10_0.8");
-                        } else {
-                            connection.data(name, "10_1");
-                        }
+//                        if (count == randomNum1 || count == randomNum2) {
+//                            connection.data(name, "10_0.8");
+//                        } else {
+//                            connection.data(name, "10_1");
+//                        }
+                        connection.data(name, "10_1");
                         map.put(name, "");
                         count++;
                     }
                     Log.d("map", "map.size=" + map.size());
+                    EventBus.getDefault().post(
+                            EvaluationEvent.create()
+                                    .setConnection(connection)
+                                    .setEvaluationBean(bean)
+                    );
 
-                    Connection.Response response = connection.execute();
-                    Log.d("evaluation", "result=" + response.body());
-                    sendMessage(4, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教成功！");
-                    return;
+//                    Connection.Response response = connection.execute();
+//                    Log.d("getEvaluationPage", "result1=" + response.body());
+//                    JSONObject jsonObject = new JSONObject(response.body());
+//                    String result = jsonObject.getString("result");
+//                    Log.d("getEvaluationPage", "resultMsg=" + result);
+//                    if ("error".equals(result)) {
+////                        connection.data("tokenValue", jsonObject.getString("token"));
+////                        response = connection.execute();
+//                        sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！");
+//                        return;
+//                    } else if ("/logout".equals(result)) {
+//                        // 重新登录
+////                        response = Jsoup.connect("http://zhjw.scu.edu.cn/logout")
+////                                .followRedirects(true)
+////                                .userAgent(TimetableHelper.UA)
+////                                .ignoreContentType(true)
+////                                .execute();
+//                        Log.d("getEvaluationPage", "/logout");
+//                        sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！请重新登录");
+//                        return;
+//                    } else {
+////                        Log.d("getEvaluationPage", "result2=" + response.body());
+//                        sendMessage(4, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教成功！");
+//                        return;
+//                    }
                 }
-                sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！");
-            } catch (IOException e) {
+//                sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！");
+            } catch (Exception e) {
                 e.printStackTrace();
-                sendMessage(-1, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教出错了！ 错误信息：" + e.getMessage());
+                sendMessage(-1, bean.getQuestionnaireName() + " " + bean.getEvaluatedPeople() + " " + bean.getEvaluationContent() + " 评教出错了！ 错误信息：" + e.getMessage());
+            }
+        });
+    }
+
+    public void evaluation(EvaluationBean bean, Connection connection) {
+        ExecutorHelper.submit(() -> {
+            try {
+                Connection.Response response = connection.execute();
+                Log.d("getEvaluationPage", "result1=" + response.body());
+                JSONObject jsonObject = new JSONObject(response.body());
+                String result = jsonObject.getString("result");
+                Log.d("getEvaluationPage", "resultMsg=" + result);
+                if ("error".equals(result)) {
+                    sendMessage(3, bean.getQuestionnaireName() + " " + bean.getEvaluatedPeople() + " " + bean.getEvaluationContent() + " 评教失败！");
+                } else if ("/logout".equals(result)) {
+                    Log.d("getEvaluationPage", "/logout");
+                    sendMessage(3, bean.getQuestionnaireName() + " " + bean.getEvaluatedPeople() + " " + bean.getEvaluationContent() + " 评教失败！请重新登录");
+                } else {
+                    sendMessage(4, bean.getQuestionnaireName() + " " + bean.getEvaluatedPeople() + " " + bean.getEvaluationContent() + " 评教成功！");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                sendMessage(-1, bean.getQuestionnaireName() + " " + bean.getEvaluatedPeople() + " " + bean.getEvaluationContent() + " 评教出错了！ 错误信息：" + e.getMessage());
             }
         });
     }

@@ -519,7 +519,9 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
             case Alarm.TYPE_BEFORE_CLASS:
                 break;
             case Alarm.TYPE_BEFORE_CLASS_TEN_MIN:
-                textToSpeech.speak(nextSubject.getCourseName() + "课程即将开始", TextToSpeech.QUEUE_FLUSH, null);
+                if (TimetableHelper.isSpeech()) {
+                    textToSpeech.speak(nextSubject.getCourseName() + "课程即将开始", TextToSpeech.QUEUE_FLUSH, null);
+                }
                 break;
             case Alarm.TYPE_CLASS_BEGAIN:
                 updateNotification(nextSubject.getCourseName() + "课程上课中",

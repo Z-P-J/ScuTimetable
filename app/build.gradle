@@ -49,6 +49,12 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.6.0"
+        }
+    }
 }
 
 dependencies {

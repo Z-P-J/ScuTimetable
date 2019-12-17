@@ -1,0 +1,3 @@
+D:/Programming/AndroidProjects/ScuTimetable/app/.cxx/cmake/release/x86_64/CMakeFiles/encryption.dir
+D:/Programming/AndroidProjects/ScuTimetable/app/.cxx/cmake/release/x86_64/CMakeFiles/edit_cache.dir
+D:/Programming/AndroidProjects/ScuTimetable/app/.cxx/cmake/release/x86_64/CMakeFiles/rebuild_cache.dir

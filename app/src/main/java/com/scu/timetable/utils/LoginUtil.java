@@ -147,8 +147,9 @@ public final class LoginUtil {
     }
 
     private Connection.Response securityCheck(final String captcha) throws IOException {
-        String userName = SPHelper.getString("user_name", "");
-        String password = Md5Utils.md5Encrypt(SPHelper.getString("password", ""));
+
+        String userName = EncryptionUtils.decryptByAES(SPHelper.getString("user_name", ""));
+        String password = Md5Utils.md5Encrypt(EncryptionUtils.decryptByAES(SPHelper.getString("password", "")));
         if (userName.isEmpty() || password.isEmpty()) {
             sendMessage(-1, "You have to log in first.");
             return null;
@@ -158,6 +159,26 @@ public final class LoginUtil {
             sendMessage(-1, "You have to get the cookie first.");
             return null;
         }
+
+//        Connection.Response response = Jsoup.connect("http://zhjw.scu.edu.cn/logout")
+//                .followRedirects(true)
+//                .header("cookie", SPHelper.getString("cookie", ""))
+//                .userAgent(TimetableHelper.UA)
+//                .ignoreContentType(true)
+//                .ignoreHttpErrors(true)
+//                .execute();
+//        Log.d("securityCheck", "/logout body=" + response.body());
+//
+//        response = Jsoup.connect("http://202.115.47.141/login")
+//                .followRedirects(false)
+//                .userAgent(TimetableHelper.UA)
+//                .ignoreContentType(true)
+//                .execute();
+//
+//        String cookie = response.header("Set-Cookie");
+//        Log.d("securityCheck", "cookie1=" + cookie);
+//        sendMessage(2, cookie);
+
         Connection.Response response = Jsoup.connect("http://202.115.47.141/j_spring_security_check")
                 .method(Connection.Method.POST)
                 .followRedirects(true)
@@ -173,11 +194,14 @@ public final class LoginUtil {
                 .execute();
         Log.d("securityCheck", "location=" + response.header("location"));
         Log.d("securityCheck", "body=" + response.body());
+        Log.d("securityCheck", "statusCode=" + response.statusCode());
         if (response.statusCode() != 200 || response.body().contains("badCredentials") || response.body().contains("欢迎登录四川大学教务管理系统")) {
             sendMessage(3, null);
             return null;
         } else {
             Log.d("securityCheck", "set-cookie=" + response.header("Set-Cookie"));
+            sendMessage(2, cookie + "; " + response.header("Set-Cookie"));
+            Log.d("securityCheck", "cookie2=" + cookie);
             sendMessage(4, null);
             return response;
         }
@@ -408,8 +432,8 @@ public final class LoginUtil {
     }
 
     public void login(final String userName, final String password, final String captcha) {
-        SPHelper.putString("user_name", userName);
-        SPHelper.putString("password", password);
+        SPHelper.putString("user_name", EncryptionUtils.encryptByAES(userName));
+        SPHelper.putString("password", EncryptionUtils.encryptByAES(password));
         login(captcha);
     }
 
