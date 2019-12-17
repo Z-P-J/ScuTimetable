@@ -7,8 +7,8 @@ import android.util.Log;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.utils.FileUtil;
 import com.scu.timetable.utils.content.SPHelper;
-import com.zpj.qxdownloader.QXDownloader;
-import com.zpj.qxdownloader.config.QianXunConfig;
+import com.zpj.downloader.ZDownloader;
+import com.zpj.downloader.config.DownloaderConfig;
 
 /**
  * @author Z-P-J
@@ -24,10 +24,10 @@ public final class Application extends android.app.Application {
         }
         SPHelper.init(this);
         AToast.onInit(this);
-        QianXunConfig config = QianXunConfig.with(this)
+        DownloaderConfig config = DownloaderConfig.with(this)
                 .setDownloadPath(FileUtil.getDiskCacheDir(this));
         Log.d("cachePath", "cachePath=" + FileUtil.getDiskCacheDir(this));
-        QXDownloader.init(config);
+        ZDownloader.init(config);
     }
 
 }

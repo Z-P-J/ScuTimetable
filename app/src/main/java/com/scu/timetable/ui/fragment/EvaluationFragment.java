@@ -1,21 +1,16 @@
 package com.scu.timetable.ui.fragment;
 
-import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -24,7 +19,6 @@ import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.model.EvaluationBean;
 import com.scu.timetable.ui.fragment.base.BaseFragment;
-import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
 import com.scu.timetable.ui.view.ElasticScrollView;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
@@ -89,7 +83,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
 //    @Override
 //    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 //        FrameLayout frameLayout = new FrameLayout(getContext());
-//        View view = inflater.inflate(R.layout.dialog_fragment_evaluation, null, false);
+//        View view = inflater.inflate(R.layout.fragment_evaluation, null, false);
 //        frameLayout.addView(view);
 //        background = new FrameLayout(getContext());
 //        background.setBackgroundColor(Color.BLACK);
@@ -101,7 +95,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
 
     @Override
     protected int getLayoutId() {
-        return R.layout.dialog_fragment_evaluation;
+        return R.layout.fragment_evaluation;
     }
 
     @Override
@@ -156,62 +150,14 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
                     .show();
             return true;
         }
-//        else if (isCancelable()){
-//            pop();
-//            return true;
-//        }
         pop();
         return true;
-    }
-
-//    @Override
-//    protected boolean onBackPressed() {
-//        if (isEvaluating) {
-//            ZAlertDialog.with(getContext())
-//                    .setTitle("确认返回！")
-//                    .setTitleTextColor(Color.RED)
-//                    .setContent("返回后将终止评教，确认返回？")
-//                    .setPositiveButton(new IDialog.OnClickListener() {
-//                        @Override
-//                        public void onClick(IDialog dialog) {
-//                            dialog.dismiss();
-//                            timer.cancel();
-//                            setCancelable(true);
-//                            setSwipeable(true);
-//                            setCanceledOnTouchOutside(true);
-//                            dismiss();
-//                        }
-//                    })
-//                    .setPositiveButtonTextColor(Color.RED)
-//                    .show();
-//            return true;
-//        } else if (isCancelable()){
-//            dismiss();
-//            return true;
-//        }
-//        return false;
-//    }
-
-    public void setBackgroudAlpha(float alpha) {
-        ValueAnimator animator = ValueAnimator.ofFloat(currentAlpha, alpha);
-        currentAlpha = alpha;
-//        if (alpha > 0.0f) {
-//            animator = ValueAnimator.ofFloat(0.0f, alpha);;
-//        } else {
-//            ValueAnimator.ofFloat(0.0f, alpha);
-//        }
-        animator.setDuration(300);
-        animator.addUpdateListener(animation -> {
-            float value = (Float) animation.getAnimatedValue();
-            background.setAlpha(value);
-        });
-        animator.start();
     }
 
     private void showInfoPopupView(View view, final String title, final String content) {
         CustomPopupMenuView.with(getContext(), R.layout.layout_text)
                 .setOrientation(LinearLayout.VERTICAL)
-//                .setBackgroundAlpha(getActivity(), 0.9f)
+                .setBackgroundAlpha(getActivity(), 0.8f, 500)
                 .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
 //                        .setAnimationTranslationShow(EasyDialog.DIRECTION_X, 350, 100, 0)
 //                        .setAnimationTranslationShow(EasyDialog.DIRECTION_Y, 350, -100, 0)
@@ -236,18 +182,10 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
                                 @Override
                                 public void onClick(View v) {
                                     popupMenuView.dismiss();
-
                                 }
                             });
                         })
-                .setOnPopupWindowDismissListener(new PopupWindow.OnDismissListener() {
-                    @Override
-                    public void onDismiss() {
-                        setBackgroudAlpha(0.0f);
-                    }
-                })
                 .show(view);
-        setBackgroudAlpha(0.1f);
     }
 
     @Override
@@ -432,14 +370,14 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
     }
 
     private void consoleLog(String msg) {
-        TextView textView = new TextView(getContext() == null ? getActivity() : getContext());
+        TextView textView = new TextView(_mActivity);
         textView.setText(msg);
         consoleView.addView(textView);
         EvaluationUtil.with(this).post(scrollToBottomRunnable);
     }
 
     private void consoleLog(String msg, int color) {
-        TextView textView = new TextView(getContext() == null ? getActivity() : getContext());
+        TextView textView = new TextView(_mActivity);
         textView.setText(msg);
         textView.setTextColor(color);
         consoleView.addView(textView);

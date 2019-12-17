@@ -1,17 +1,14 @@
 package com.scu.timetable.ui.fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.view.menu.MenuBuilder;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,7 +18,6 @@ import com.scu.timetable.ui.activity.LoginActivity;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.model.SemesterBean;
-import com.scu.timetable.service.AlarmService;
 import com.scu.timetable.ui.fragment.base.BaseFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.CaptchaFetcher;
@@ -35,7 +31,6 @@ import com.zhuangfei.timetable.listener.OnSlideBuildAdapter;
 import com.zhuangfei.timetable.model.Schedule;
 import com.zhuangfei.timetable.view.WeekView;
 import com.zpj.popupmenuview.CustomPopupMenuView;
-import com.zpj.popupmenuview.OptionMenuView;
 import com.zpj.popupmenuview.popup.EverywherePopup;
 import com.zpj.zdialog.ZDialog;
 import com.zpj.zdialog.ZListDialog;
@@ -72,7 +67,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_base_func);
+//        setContentView(R.layout.fragment_main);
 //
 //        AlarmService.start(this);
 //
@@ -96,7 +91,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_base_func;
+        return R.layout.fragment_main;
     }
 
     @Override
@@ -219,17 +214,19 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     public void showMenu(View view) {
 
         EverywherePopup.create(getContext())
-                .addItems("显示周末",
-                        "显示节次时间",
-                        "显示非本周课程",
+                .addItems(
+//                        "显示周末",
+//                        "显示节次时间",
+//                        "显示非本周课程",
                         "修改当前周",
                         "切换学期",
                         "刷新课表",
                         "一键评教",
                         "设置")
-                .addIcons(R.drawable.ic_weekend_black_24dp,
-                        R.drawable.ic_access_time_black_24dp,
-                        R.drawable.ic_event_note_black_24dp,
+                .addIcons(
+//                        R.drawable.ic_weekend_black_24dp,
+//                        R.drawable.ic_access_time_black_24dp,
+//                        R.drawable.ic_event_note_black_24dp,
                         R.drawable.ic_lock_black_24dp,
                         R.drawable.ic_event_note_black_24dp,
                         R.drawable.ic_refresh_black_24dp,
@@ -237,31 +234,31 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                         R.drawable.ic_settings_black_24dp)
                 .setOnItemClickListener((title, position) -> {
                     switch (position) {
+//                        case 0:
+//                            mTimetableView.isShowWeekends(!mTimetableView.isShowWeekends()).updateView();
+//                            TimetableHelper.toggleShowWeekends();
+//                            break;
+//                        case 1:
+//                            toggleTime(!TimetableHelper.isShowTime());
+//                            TimetableHelper.toggleShowTime();
+//                            break;
+//                        case 2:
+//                            mTimetableView.isShowNotCurWeek(!TimetableHelper.isShowNotCurWeek()).updateView();
+//                            TimetableHelper.toggleShowNotCurWeek();
+//                            break;
                         case 0:
-                            mTimetableView.isShowWeekends(!mTimetableView.isShowWeekends()).updateView();
-                            TimetableHelper.toggleShowWeekends();
-                            break;
-                        case 1:
-                            toggleTime(!TimetableHelper.isShowTime());
-                            TimetableHelper.toggleShowTime();
-                            break;
-                        case 2:
-                            mTimetableView.isShowNotCurWeek(!TimetableHelper.isShowNotCurWeek()).updateView();
-                            TimetableHelper.toggleShowNotCurWeek();
-                            break;
-                        case 3:
                             onWeekLeftLayoutClicked();
                             break;
-                        case 4:
+                        case 1:
                             showChooseSemesterDialog();
                             break;
-                        case 5:
+                        case 2:
                             showRefreshDialog();
                             break;
-                        case 6:
+                        case 3:
                             start(new EvaluationFragment());
                             break;
-                        case 7:
+                        case 4:
                             showSettingDialogFragment();
                             break;
                         default:

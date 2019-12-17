@@ -36,7 +36,7 @@
 //    @Override
 //    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 //        FrameLayout frameLayout = new FrameLayout(getContext());
-//        View view = inflater.inflate(R.layout.dialog_fragment_detail, null, false);
+//        View view = inflater.inflate(R.layout.fragment_detail, null, false);
 //        frameLayout.addView(view);
 //        background = new FrameLayout(getContext());
 //        background.setBackgroundColor(Color.BLACK);

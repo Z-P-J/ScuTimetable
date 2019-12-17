@@ -1,17 +1,8 @@
 package com.scu.timetable.ui.fragment;
 
-import android.animation.ValueAnimator;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.felix.atoast.library.AToast;
@@ -19,11 +10,9 @@ import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.fragment.base.BaseFragment;
-import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
-import com.zpj.popupmenuview.CustomPopupMenuView;
 
 public class DetailFragment extends BaseFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
 
@@ -39,7 +28,7 @@ public class DetailFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     protected int getLayoutId() {
-        return R.layout.dialog_fragment_detail;
+        return R.layout.fragment_detail;
     }
 
     @Override

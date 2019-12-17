@@ -171,6 +171,7 @@ public final class LoginUtil {
                 .ignoreHttpErrors(true)
                 .ignoreContentType(true)
                 .execute();
+        Log.d("securityCheck", "location=" + response.header("location"));
         Log.d("securityCheck", "body=" + response.body());
         if (response.statusCode() != 200 || response.body().contains("badCredentials") || response.body().contains("欢迎登录四川大学教务管理系统")) {
             sendMessage(3, null);

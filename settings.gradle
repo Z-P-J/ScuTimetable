@@ -8,6 +8,6 @@ include ':app',
         ':switchbutton',
         ':statebutton',
 //        ':xupdate-lib',
-        ':qxdownloader',
+        ':zdownloader',
         ':atoast',
         ':titlebar'

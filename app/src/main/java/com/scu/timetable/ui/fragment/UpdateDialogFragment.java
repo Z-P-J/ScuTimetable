@@ -38,9 +38,10 @@ import com.scu.timetable.model.UpdateBean;
 import com.scu.timetable.ui.view.NumberProgressBar;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.content.SPHelper;
-import com.zpj.qxdownloader.config.MissionConfig;
-import com.zpj.qxdownloader.core.DownloadMission;
-import com.zpj.qxdownloader.util.FileUtil;
+import com.zpj.downloader.ZDownloader;
+import com.zpj.downloader.config.MissionConfig;
+import com.zpj.downloader.core.DownloadMission;
+import com.zpj.downloader.util.FileUtil;
 import com.zpj.zdialog.base.DialogFragment;
 
 import java.io.File;
@@ -114,21 +115,15 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
         return fragment;
     }
 
-    /**
-     * 设置更新代理
-     *
-     * @param bean
-     * @return
-     */
-    public UpdateDialogFragment setUpdateBean(UpdateBean bean) {
+    public void setUpdateBean(UpdateBean bean) {
         this.bean = bean;
-        return this;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.XUpdate_Fragment_Dialog);
+        ZDownloader.clearAll();
     }
 
     @Override
@@ -264,10 +259,11 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
 //            } else {
 //                installApp();
 //            }
-            DownloadMission mission = DownloadMission.create("http://tt.shouji.com.cn/wap/down/soft?id=1555815", "", MissionConfig.with());
+//            "http://tt.shouji.com.cn/wap/down/soft?id=1555815"
+            mission = ZDownloader.download("https://down.shouji.com.cn/wap/wdown/soft?id=182765", MissionConfig.with());
+//            DownloadMission mission = DownloadMission.create("https://down.shouji.com.cn/wap/wdown/soft?id=182765", "", MissionConfig.with());
 //            mission = QXDownloader.download("http://tt.shouji.com.cn/wap/down/soft?id=1555815");
             mission.addListener(missionListener);
-            mission.start();
         } else if (i == R.id.btn_background_update) {
             //点击后台更新按钮
             AToast.normal("后台更新");
@@ -282,10 +278,6 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
             SPHelper.putString("ignore_version", appVersion.getContentTextView().getText().toString());
             dismiss();
         }
-    }
-
-    private void installApp() {
-
     }
 
     DownloadMission.MissionListener missionListener = new DownloadMission.MissionListener() {

@@ -1,6 +1,5 @@
 package com.scu.timetable.ui.fragment;
 
-import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,15 +9,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.deadline.statebutton.StateButton;
@@ -26,7 +20,6 @@ import com.felix.atoast.library.AToast;
 import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.base.BaseFragment;
-import com.scu.timetable.ui.fragment.base.FullscreenDialogFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.FastBlur;
 import com.scu.timetable.utils.TextUtil;
@@ -40,31 +33,13 @@ import com.zpj.zdialog.base.IDialog;
 
 public class SettingFragment extends BaseFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
 
-    private FrameLayout background;
-
-    private float currentAlpha = 0.0f;
-
     private OnDismissListener onDismissListener;
 
     private LSettingItem itemShowWeekends;
 
-//    @Nullable
-//    @Override
-//    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        FrameLayout frameLayout = new FrameLayout(getContext());
-//        View view = inflater.inflate(R.layout.dialog_fragment_settings, null, false);
-//        frameLayout.addView(view);
-//        background = new FrameLayout(getContext());
-//        background.setBackgroundColor(Color.BLACK);
-//        background.setAlpha(currentAlpha);
-//        frameLayout.addView(background);
-//        initView(view);
-//        return frameLayout;
-//    }
-
     @Override
     protected int getLayoutId() {
-        return R.layout.dialog_fragment_settings;
+        return R.layout.fragment_settings;
     }
 
     @Override
@@ -155,13 +130,13 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         TextUtil.setSuperlink(linkSjly.getContentTextView(), "我好像在哪儿见过您", "https://www.shouji.com.cn/user/5544802/home.html");
     }
 
-//    @Override
-//    public void onDismiss(DialogInterface dialog) {
-//        if (onDismissListener != null) {
-//            onDismissListener.onDismiss(dialog);
-//        }
-//        super.onDismiss(dialog);
-//    }
+    @Override
+    public void onDestroyView() {
+        if (onDismissListener != null) {
+            onDismissListener.onDismiss(null);
+        }
+        super.onDestroyView();
+    }
 
     private void initBackground(View view) {
         LinearLayout linearLayout = view.findViewById(R.id.container);
@@ -176,24 +151,10 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         linearLayout.setBackground(new BitmapDrawable(null, blurBitmap));
     }
 
-    public void setBackgroudAlpha(float alpha) {
-        ValueAnimator animator = ValueAnimator.ofFloat(currentAlpha, alpha);
-        currentAlpha = alpha;
-        animator.setDuration(300);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (Float) animation.getAnimatedValue();
-                background.setAlpha(value);
-            }
-        });
-        animator.start();
-    }
-
     private void showInfoPopupView(View view, final String title, final String content) {
         CustomPopupMenuView.with(getContext(), R.layout.layout_text)
                 .setOrientation(LinearLayout.VERTICAL)
-//                .setBackgroundAlpha(getActivity(), 0.9f)
+                .setBackgroundAlpha(getActivity(), 0.8f, 500)
                 .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
 //                        .setAnimationTranslationShow(EasyDialog.DIRECTION_X, 350, 100, 0)
 //                        .setAnimationTranslationShow(EasyDialog.DIRECTION_Y, 350, -100, 0)
@@ -222,14 +183,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                                 }
                             });
                         })
-                .setOnPopupWindowDismissListener(new PopupWindow.OnDismissListener() {
-                    @Override
-                    public void onDismiss() {
-                        setBackgroudAlpha(0.0f);
-                    }
-                })
                 .show(view);
-        setBackgroudAlpha(0.1f);
     }
 
     @Override

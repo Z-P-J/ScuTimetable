@@ -90,13 +90,17 @@
 
 
 # 该项目使用或参考了以下开源库
-[QXDownloader(自己开发的多线程下载框架，川大课表应用内更新软件时使用该库下载最新安装包)](https://github.com/Z-P-J/QXDownloader)
+[ZDownloader(自己开发的多线程下载框架，用于该项目应用更新)](https://github.com/Z-P-J/ZDownloader)
+
+[ZDialog(自己开发Dialog库)](https://github.com/Z-P-J/ZDialog)
 
 [TimetableView](https://github.com/zfman/TimetableView)
 
 [jsoup](https://github.com/jhy/jsoup)
 
 [Glide](https://github.com/bumptech/glide)
+
+[Fragmentation](https://github.com/YoKeyword/Fragmentation)
 
 [SwitchButton](https://github.com/zcweng/SwitchButton)
 
@@ -105,8 +109,4 @@
 [StateButton](https://github.com/niniloveyou/StateButton)
 
 [AVLoadingIndicatorView](https://github.com/81813780/AVLoadingIndicatorView)
-
-[SwipeAwayDialog](https://github.com/kakajika/SwipeAwayDialog)
-
-[AnyLayer](https://github.com/goweii/AnyLayer)
 

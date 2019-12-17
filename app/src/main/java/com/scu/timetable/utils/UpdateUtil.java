@@ -6,14 +6,17 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
+import com.scu.timetable.events.UpdateEvent;
 import com.scu.timetable.model.UpdateBean;
 import com.scu.timetable.utils.content.SPHelper;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -28,73 +31,17 @@ import java.net.Proxy;
  */
 public final class UpdateUtil {
 
-    private static final class MyHandler extends Handler {
-        private final WeakReference<UpdateUtil> reference;
+    private UpdateUtil() {
 
-        MyHandler(UpdateUtil updateUtil) {
-            this.reference = new WeakReference<>(updateUtil);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            UpdateUtil updateUtil = reference.get();
-            if (updateUtil != null) {
-                updateUtil.handleMessage(msg);
-            }
-        }
     }
 
-    public interface UpdateCallback {
-        void onError(String errMsg);
-        void onGetLatestVersion(UpdateBean bean);
-        void isLatestVersion();
-    }
-
-    private UpdateCallback callback;
-
-    private Handler handler;
-
-    private UpdateUtil(UpdateCallback callback) {
-        this.callback = callback;
-        handler = new MyHandler(this);
-    }
-
-    public static UpdateUtil with(UpdateCallback callback) {
-        return new UpdateUtil(callback);
-    }
-
-    private void sendMessage(int what, Object obj) {
-        Message msg = new Message();
-        msg.obj = obj;
-        msg.what = what;
-        if (handler != null) {
-            handler.sendMessage(msg);
-        }
-    }
-
-    private void handleMessage(Message msg) {
-        if (msg.what == -1) {
-            if (callback != null) {
-                String errMsg = (String) msg.obj;
-                callback.onError(errMsg);
-            }
-        } else if (msg.what == 1) {
-            UpdateBean bean = (UpdateBean) msg.obj;
-            if (callback != null) {
-                callback.onGetLatestVersion(bean);
-            }
-        } else if (msg.what == 2) {
-            if (callback != null) {
-                callback.isLatestVersion();
-            }
-        }
+    public static UpdateUtil newInstance() {
+        return new UpdateUtil();
     }
 
     public static synchronized String getVersionName(Context context){
         String versionName = "1.4.0";
         try {
-
             PackageManager packageManager = context.getPackageManager();
             PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
             versionName = packageInfo.versionName;
@@ -105,67 +52,64 @@ public final class UpdateUtil {
     }
 
     public void checkUpdate(Context context) {
-        ExecutorHelper.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Document document = Jsoup.connect("http://tt.shouji.com.cn/androidv3/soft_show.jsp?id=1555815")
-                            .proxy(Proxy.NO_PROXY)
-                            .header("Connection", "Keep-Alive")
-                            .header("Referer", "https://wap.shouji.com.cn/")
+        ExecutorHelper.submit(() -> {
+            try {
+                Document document = Jsoup.connect("http://tt.shouji.com.cn/androidv3/soft_show.jsp?id=1555815")
+                        .proxy(Proxy.NO_PROXY)
+                        .header("Connection", "Keep-Alive")
+                        .header("Referer", "https://wap.shouji.com.cn/")
 //                            .header("User-Agent", TimetableHelper.UA)
-                            .header("Accept-Encoding", "gzip")
-                            .get();
-                    String versionName = document.select("versionname").get(0).text();
+                        .header("Accept-Encoding", "gzip")
+                        .get();
+                String versionName = document.select("versionname").get(0).text();
 
-                    String newVersionName = versionName.trim();
-                    Log.d("newVersionName", "newVersionName=" + newVersionName);
+                String newVersionName = versionName.trim();
+                Log.d("newVersionName", "newVersionName=" + newVersionName);
 
-                    String ignoreVersion = SPHelper.getString("ignore_version", "");
-                    if (ignoreVersion.equals(newVersionName)) {
-                        return;
-                    }
-
-                    String baseinfof = document.select("baseinfof").get(0).text();
-                    Log.d("baseinfof", "baseinfof=" + baseinfof);
-
-                    String currentVersionName = getVersionName(context).trim();
-                    Log.d("currentVersionName", "currentVersionName=" + newVersionName);
-
-                    boolean isNew = compareVersions(currentVersionName, newVersionName);
-                    Log.d("isNew", "isNew=" + isNew);
-
-                    if (isNew) {
-                        String updateContent = "";
-                        String fileSize = "";
-                        String updateTime = "";
-                        Elements elements = document.select("introduce");
-                        for (Element element : elements) {
-                            String title = element.select("introducetitle").get(0).text();
-                            if ("更新内容".equals(title)) {
-                                updateContent = element.select("introduceContent").get(0).text();
-                                Log.d("更新内容", "更新内容=" + updateContent);
-                            } else if ("软件信息".equals(title)) {
-                                String content = element.select("introduceContent").get(0).text();
-                                fileSize = content.substring(content.indexOf("大小：") + 3, content.indexOf("MB") + 2);
-                                int index = content.indexOf("更新：");
-                                updateTime = content.substring(index + 3, index + 13);
-                            }
-                        }
-                        UpdateBean bean = new UpdateBean();
-                        bean.setVersionName(versionName);
-                        bean.setUpdateContent(updateContent);
-                        bean.setFileSize(fileSize);
-                        bean.setUpdateTime(updateTime);
-                        Log.d("bean", "bean=" + bean.toString());
-                        sendMessage(1, bean);
-                    } else {
-                        sendMessage(2, null);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    sendMessage(-1, e.getMessage());
+                String ignoreVersion = SPHelper.getString("ignore_version", "");
+                if (ignoreVersion.equals(newVersionName)) {
+                    return;
                 }
+
+                String baseinfof = document.select("baseinfof").get(0).text();
+                Log.d("baseinfof", "baseinfof=" + baseinfof);
+
+                String currentVersionName = getVersionName(context).trim();
+                Log.d("currentVersionName", "currentVersionName=" + newVersionName);
+
+                boolean isNew = compareVersions(currentVersionName, newVersionName);
+                Log.d("isNew", "isNew=" + isNew);
+
+                if (isNew) {
+                    String updateContent = "";
+                    String fileSize = "";
+                    String updateTime = "";
+                    Elements elements = document.select("introduce");
+                    for (Element element : elements) {
+                        String title = element.select("introducetitle").get(0).text();
+                        if ("更新内容".equals(title)) {
+                            updateContent = element.select("introduceContent").get(0).text();
+                            Log.d("更新内容", "更新内容=" + updateContent);
+                        } else if ("软件信息".equals(title)) {
+                            String content = element.select("introduceContent").get(0).text();
+                            fileSize = content.substring(content.indexOf("大小：") + 3, content.indexOf("MB") + 2);
+                            int index = content.indexOf("更新：");
+                            updateTime = content.substring(index + 3, index + 13);
+                        }
+                    }
+                    UpdateBean bean = new UpdateBean();
+                    bean.setVersionName(versionName);
+                    bean.setUpdateContent(updateContent);
+                    bean.setFileSize(fileSize);
+                    bean.setUpdateTime(updateTime);
+                    Log.d("bean", "bean=" + bean.toString());
+                    EventBus.getDefault().post(UpdateEvent.create().setUpdateBean(bean));
+                } else {
+                    EventBus.getDefault().post(UpdateEvent.create().setLatestVersion(true));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                EventBus.getDefault().post(UpdateEvent.create().setErrorMsg(e.getMessage()));
             }
         });
     }
