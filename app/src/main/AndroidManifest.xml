@@ -3,6 +3,8 @@
     package="com.scu.timetable">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 程序自启动权限 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".Application"
@@ -51,7 +53,8 @@
         </service>
 
         <service android:name=".service.AlarmService"
-            android:exported="false"
+            android:enabled="true"
+            android:exported="true"
             android:process=":alarm_service">
             <intent-filter android:priority="1000">
                 <action android:name="com.scu.timetable.alarm_service" />
@@ -71,6 +74,15 @@
         <service
             android:name=".service.JobSchedulerService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver
+            android:name=".service.BootCompletedReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
 <!--        <receiver-->
 <!--            android:name=".service.AlarmService$AlarmReceiver" />-->

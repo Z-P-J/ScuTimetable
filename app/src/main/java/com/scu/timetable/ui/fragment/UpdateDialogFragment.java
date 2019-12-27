@@ -260,7 +260,9 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
 //                installApp();
 //            }
 //            "http://tt.shouji.com.cn/wap/down/soft?id=1555815"
-            mission = ZDownloader.download("https://down.shouji.com.cn/wap/wdown/soft?id=182765", MissionConfig.with());
+//            "https://down.shouji.com.cn/wap/wdown/soft?id=182765"
+
+            mission = ZDownloader.download("https://down.shouji.com.cn/wap/down/app/package?package=" + getContext().getPackageName(), MissionConfig.with());
 //            DownloadMission mission = DownloadMission.create("https://down.shouji.com.cn/wap/wdown/soft?id=182765", "", MissionConfig.with());
 //            mission = QXDownloader.download("http://tt.shouji.com.cn/wap/down/soft?id=1555815");
             mission.addListener(missionListener);

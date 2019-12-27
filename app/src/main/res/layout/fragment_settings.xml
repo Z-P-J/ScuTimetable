@@ -235,7 +235,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="应用信息"
+                        android:text="关于"
                         android:gravity="center_vertical"
                         android:padding="5dp"
                         android:paddingStart="15dp"
