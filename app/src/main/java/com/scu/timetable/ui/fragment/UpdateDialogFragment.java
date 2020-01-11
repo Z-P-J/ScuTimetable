@@ -40,6 +40,7 @@ import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.config.MissionConfig;
+import com.zpj.downloader.constant.Error;
 import com.zpj.downloader.core.DownloadMission;
 import com.zpj.downloader.util.FileUtil;
 import com.zpj.zdialog.base.DialogFragment;
@@ -338,8 +339,8 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
         }
 
         @Override
-        public void onError(int errCode) {
-            Log.d("errCode", "errCode=" + errCode);
+        public void onError(Error e) {
+            Log.d("errCode", "errCode=" + e);
             if (!UpdateDialogFragment.this.isRemoving()) {
                 dismissAllowingStateLoss();
             }

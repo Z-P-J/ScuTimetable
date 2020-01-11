@@ -14,11 +14,11 @@ public interface DownloadManager {
     List<DownloadMission> ALL_MISSIONS = new ArrayList<>();
 
     interface DownloadManagerListener {
-        void onMissionAdd();
+        void onMissionAdd(DownloadMission mission);
 
-        void onMissionDelete();
+        void onMissionDelete(DownloadMission mission);
 
-        void onMissionFinished();
+        void onMissionFinished(DownloadMission mission);
     }
 
     int startMission(String url);
@@ -61,7 +61,7 @@ public interface DownloadManager {
 
     Context getContext();
 
-    DownloaderConfig getQianXunConfig();
+    DownloaderConfig getDownloaderConfig();
 
     ThreadPoolConfig getThreadPoolConfig();
 
