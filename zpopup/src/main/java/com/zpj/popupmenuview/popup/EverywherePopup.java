@@ -114,6 +114,7 @@ public class EverywherePopup extends BasePopup<EverywherePopup> {
     }
 
     public EverywherePopup show(View parent) {
+        apply();
         int[] location = new int[2];
         parent.getLocationInWindow(location);
         int touchX = location[0] + parent.getWidth() / 2;

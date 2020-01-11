@@ -81,11 +81,9 @@ dependencies {
 //    implementation 'com.labo.kaji:swipeawaydialog:0.1.1'
 //    implementation 'com.leon:lsettingviewlibrary:1.7.0'
     implementation project(':TimetableView')
-//    implementation project(':easydialog')
     implementation project(':zdialog')
     implementation project(':lsettingviewlibrary')
-    implementation project(':popupmenuview')
-//    implementation project(':swipeawaydialog')
+    implementation project(':zpopup')
     implementation project(':statebutton')
     implementation project(':zdownloader')
     implementation project(':atoast')
