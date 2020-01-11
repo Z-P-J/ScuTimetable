@@ -94,6 +94,8 @@
 
 [ZDialog(自己开发Dialog库)](https://github.com/Z-P-J/ZDialog)
 
+[ZHttp(自己基于Jsoup开发的网络请求库)](https://github.com/Z-P-J/ZHttp)
+
 [TimetableView](https://github.com/zfman/TimetableView)
 
 [jsoup](https://github.com/jhy/jsoup)
