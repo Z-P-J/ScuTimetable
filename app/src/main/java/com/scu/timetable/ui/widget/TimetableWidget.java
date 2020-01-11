@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.felix.atoast.library.AToast;
+import com.scu.timetable.service.WidgetService;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 

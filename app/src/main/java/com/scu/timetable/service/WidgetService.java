@@ -1,4 +1,4 @@
-package com.scu.timetable.ui.widget;
+package com.scu.timetable.service;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
