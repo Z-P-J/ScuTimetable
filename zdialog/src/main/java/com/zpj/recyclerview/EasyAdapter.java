@@ -63,7 +63,41 @@ public class EasyAdapter<T> extends RecyclerView.Adapter<EasyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EasyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull EasyViewHolder easyViewHolder, int i) {
+
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull EasyViewHolder holder, int position, @NonNull List<Object> payloads) {
+//        if (payloads.isEmpty()) {
+////            onBindViewHolder(holder, position);
+//            if (isHeaderPosition(position)) return;
+//            if (isFooterPosition(position)) {
+//                if (!canScroll() && mOnLoadMoreListener != null && !mIsLoading) {
+//                    mIsLoading = true;
+//                    // fix Cannot call this method while RecyclerView is computing a layout or scrolling
+//                    mRecyclerView.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (mOnLoadMoreListener.onLoadMore(mEnabled, currentPage + 1)) {
+//                                footerView.setVisibility(View.VISIBLE);
+//                                currentPage++;
+//                            } else if (footerView != null){
+//                                footerView.setVisibility(View.GONE);
+//                            }
+//                        }
+//                    });
+//                }
+//                return;
+//            }
+//            if (callback != null) {
+//                callback.onBindViewHolder(holder, list, getRealPosition(holder));
+//            }
+//        } else {
+//            if (callback != null) {
+//                callback.onBindViewHolder(holder, list, getRealPosition(holder), payloads);
+//            }
+//        }
         if (isHeaderPosition(position)) return;
         if (isFooterPosition(position)) {
             if (!canScroll() && mOnLoadMoreListener != null && !mIsLoading) {
@@ -84,9 +118,35 @@ public class EasyAdapter<T> extends RecyclerView.Adapter<EasyViewHolder> {
             return;
         }
         if (callback != null) {
-            callback.onBindViewHolder(holder, list, getRealPosition(holder));
+            callback.onBindViewHolder(holder, list, getRealPosition(holder), payloads);
         }
     }
+
+//    @Override
+//    public void onBindViewHolder(@NonNull EasyViewHolder holder, int position) {
+//        if (isHeaderPosition(position)) return;
+//        if (isFooterPosition(position)) {
+//            if (!canScroll() && mOnLoadMoreListener != null && !mIsLoading) {
+//                mIsLoading = true;
+//                // fix Cannot call this method while RecyclerView is computing a layout or scrolling
+//                mRecyclerView.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (mOnLoadMoreListener.onLoadMore(mEnabled, currentPage + 1)) {
+//                            footerView.setVisibility(View.VISIBLE);
+//                            currentPage++;
+//                        } else if (footerView != null){
+//                            footerView.setVisibility(View.GONE);
+//                        }
+//                    }
+//                });
+//            }
+//            return;
+//        }
+//        if (callback != null) {
+//            callback.onBindViewHolder(holder, list, getRealPosition(holder));
+//        }
+//    }
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {

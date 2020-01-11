@@ -122,7 +122,7 @@ public class ZSelectDialog<T> {
                 })
                 .setOnBindChildView(new IEasy.OnBindViewHolderCallback<T>() {
                     @Override
-                    public void onBindViewHolder(final EasyViewHolder holder, List<T> list, int position) {
+                    public void onBindViewHolder(final EasyViewHolder holder, List<T> list, int position, List<Object> ppayloads) {
                         ImageView iconView = holder.getView(R.id.icon_view);
                         TextView titleView = holder.getView(R.id.title_view);
                         TextView contentView = holder.getView(R.id.content_view);

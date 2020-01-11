@@ -32,7 +32,7 @@ import com.zpj.utils.AnimHelper;
  * @author Z-P-J
  * @date 2019/5/16 21:36
  */
-public class DialogFragment extends Fragment implements OnCancelListener { // OnDismissListener
+public class DialogFragment extends Fragment { // OnDismissListener // implements OnCancelListener
     public static final int STYLE_NORMAL = 0;
     public static final int STYLE_NO_TITLE = 1;
     public static final int STYLE_NO_FRAME = 2;
@@ -41,6 +41,7 @@ public class DialogFragment extends Fragment implements OnCancelListener { // On
     private static final String SAVED_STYLE = "android:style";
     private static final String SAVED_THEME = "android:theme";
     private static final String SAVED_CANCELABLE = "android:cancelable";
+    private static final String SAVED_CANCELABLE_TOUCH_OUTSIDE = "android:cancelableTouchOutside";
     private static final String SAVED_SHOWS_DIALOG = "android:showsDialog";
     private static final String SAVED_BACK_STACK_ID = "android:backStackId";
     int mStyle = 0;
@@ -116,6 +117,19 @@ public class DialogFragment extends Fragment implements OnCancelListener { // On
 
     public void dismiss() {
         onBeginDismiss();
+        isDismissing = true;
+        if (mContentOutAnimator != null) {
+            if (!mContentOutAnimator.isRunning()) {
+                mContentOutAnimator.start();
+            }
+        } else {
+            dismissInternal(false);
+        }
+//        dismissInternal(false);
+    }
+
+    public void cancel() {
+        onBeginCancel();
         isDismissing = true;
         if (mContentOutAnimator != null) {
             if (!mContentOutAnimator.isRunning()) {
@@ -237,6 +251,7 @@ public class DialogFragment extends Fragment implements OnCancelListener { // On
             this.mStyle = savedInstanceState.getInt(SAVED_STYLE, 0);
             this.mTheme = savedInstanceState.getInt(SAVED_THEME, 0);
             this.mCancelable = savedInstanceState.getBoolean(SAVED_CANCELABLE, true);
+            this.mCanceledOnTouchOutside = savedInstanceState.getBoolean(SAVED_CANCELABLE_TOUCH_OUTSIDE, this.mCanceledOnTouchOutside);
             this.mShowsDialog = savedInstanceState.getBoolean(SAVED_SHOWS_DIALOG, this.mShowsDialog);
             this.mBackStackId = savedInstanceState.getInt(SAVED_BACK_STACK_ID, -1);
         }
@@ -255,7 +270,8 @@ public class DialogFragment extends Fragment implements OnCancelListener { // On
                 public void onTouchOutside() {
                     if (mCanceledOnTouchOutside) {
                         mDialog.setOnTouchOutsideListener(null);
-                        dismiss();
+                        cancel();
+//                        mDialog.cancel();
                     }
                 }
             });
@@ -314,12 +330,14 @@ public class DialogFragment extends Fragment implements OnCancelListener { // On
         return new OutsideClickDialog(getContext(), this.getTheme());
     }
 
-    @Override
-    public void onCancel(DialogInterface dialog) {
-    }
-
 
     public void onBeginDismiss() {
+//        if (!this.mViewDestroyed) {
+//            this.dismissInternal(true);
+//        }
+    }
+
+    public void onBeginCancel() {
 //        if (!this.mViewDestroyed) {
 //            this.dismissInternal(true);
 //        }
@@ -354,12 +372,15 @@ public class DialogFragment extends Fragment implements OnCancelListener { // On
                 public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                     boolean flag = keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN;
                     if (flag) {
-                        if (onBackPressed()) {
+                        if (mCancelable) {
+                            if (isDismissing || onBackPressed()) {
+                                return true;
+                            }
+                            dismiss();
                             return true;
                         }
-                        if (mCancelable && !isDismissing) {
-                            dismiss();
-                        }
+                    } else if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+                        return true;
                     }
                     return flag;
                 }
@@ -387,7 +408,7 @@ public class DialogFragment extends Fragment implements OnCancelListener { // On
             }
 
             this.mDialog.setCancelable(this.mCancelable);
-            this.mDialog.setOnCancelListener(this);
+//            this.mDialog.setOnCancelListener(this);
 //            this.mDialog.setOnDismissListener(this);
             if (savedInstanceState != null) {
                 Bundle dialogState = savedInstanceState.getBundle("android:savedDialogState");
@@ -455,6 +476,10 @@ public class DialogFragment extends Fragment implements OnCancelListener { // On
 
         if (!this.mCancelable) {
             outState.putBoolean(SAVED_CANCELABLE, this.mCancelable);
+        }
+
+        if (!this.mCanceledOnTouchOutside) {
+            outState.putBoolean(SAVED_CANCELABLE_TOUCH_OUTSIDE, this.mCanceledOnTouchOutside);
         }
 
         if (!this.mShowsDialog) {

@@ -31,8 +31,7 @@ public class ZDialog extends DialogFragment implements IDialog {
     int dialogHeight;
     float dimAmount = 0.2f;
     public int gravity = Gravity.CENTER;
-    boolean isCancelableOutside = true;
-    boolean cancelable = true;
+
     View contentView;
     FragmentActivity activity;
     private OnViewCreateListener onViewCreateListener;
@@ -89,15 +88,6 @@ public class ZDialog extends DialogFragment implements IDialog {
 
     protected int getDialogHeight() {
         return dialogHeight;
-    }
-
-    public boolean isCanceledOnTouchOutside() {
-        return isCancelableOutside;
-    }
-
-    @Override
-    public boolean isCancelable() {
-        return cancelable;
     }
 
     public float getDimAmount() {
@@ -223,8 +213,8 @@ public class ZDialog extends DialogFragment implements IDialog {
      * @param width 宽度
      * @return Builder
      */
-    public ZDialog setWidth(int width) {
-        this.dialogWidth = width;
+    public ZDialog setWidth(float width) {
+        this.dialogWidth = (int) width;
         return this;
     }
 
@@ -234,8 +224,8 @@ public class ZDialog extends DialogFragment implements IDialog {
      * @param height 高度
      * @return Builder
      */
-    public ZDialog setHeight(int height) {
-        this.dialogHeight = height;
+    public ZDialog setHeight(float height) {
+        this.dialogHeight = (int) height;
         return this;
     }
 
@@ -268,7 +258,6 @@ public class ZDialog extends DialogFragment implements IDialog {
      * @return Builder
      */
     public ZDialog setCancelableOutSide(boolean cancelableOutSide) {
-        this.isCancelableOutside = cancelableOutSide;
         setCanceledOnTouchOutside(cancelableOutSide);
         return this;
     }
@@ -280,7 +269,7 @@ public class ZDialog extends DialogFragment implements IDialog {
      * @return Builder
      */
     public ZDialog setDialogCancelable(boolean cancelable) {
-        this.cancelable = cancelable;
+        setCancelable(cancelable);
         return this;
     }
 
@@ -339,8 +328,7 @@ public class ZDialog extends DialogFragment implements IDialog {
     }
 
     @Override
-    public void onCancel(DialogInterface dialog) {
-        super.onCancel(dialog);
+    public void onBeginCancel() {
         if (onCancelListener != null) {
             onCancelListener.onCancel(this);
         }

@@ -90,9 +90,9 @@ public class ZMenuDialog {
         return this;
     }
 
-    public void show(int x, int y) {
-        locationX = x;
-        locationY = y;
+    public void show(float x, float y) {
+        locationX = (int) x;
+        locationY = (int) y;
         dialog.setOnDialogStartListener(new IDialog.OnDialogStartListener() {
             @Override
             public void onStart() {

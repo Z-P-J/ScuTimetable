@@ -17,7 +17,7 @@ public interface IEasy {
 
 
     interface OnBindViewHolderCallback<T>{
-        void onBindViewHolder(EasyViewHolder holder, List<T> list, int position);
+        void onBindViewHolder(EasyViewHolder holder, List<T> list, int position, List<Object> payloads);
     }
 
     interface OnCreateViewHolderCallback<T>{

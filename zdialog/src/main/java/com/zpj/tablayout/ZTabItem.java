@@ -26,7 +26,7 @@ import android.view.View;
 import com.zpj.zdialog.R;
 
 /**
- * TabItem is a special 'view' which allows you to declare tab items for a {@link com.zpj.tablayout.ZTabLayout}
+ * TabItem is a special 'view' which allows you to declare tab items for a {@link ZTabLayout}
  * within a layout. This view is not actually added to TabLayout, it is just a dummy which allows
  * setting of a tab items's text, icon and custom layout. See TabLayout for more information on how
  * to use it.

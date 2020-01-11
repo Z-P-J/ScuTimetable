@@ -125,6 +125,7 @@ public class ZEditDialog {
                                 selectionEnd = text.length();
                             }
                             editText.setSelection(selectionStart, selectionEnd);
+//                            editText.setSelection(0, text.length());
                         }
                         editText.setHint(hint);
                         if (watcher != null) {

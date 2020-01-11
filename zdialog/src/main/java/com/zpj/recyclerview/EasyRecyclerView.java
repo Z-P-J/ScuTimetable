@@ -125,12 +125,20 @@ public class EasyRecyclerView<T> {
         easyAdapter.notifyItemChanged(position);
     }
 
+    public void notifyItemChanged(int position, Object payload) {
+        easyAdapter.notifyItemChanged(position, payload);
+    }
+
     public void notifyItemInserted(int position) {
         easyAdapter.notifyItemInserted(position);
     }
 
     public void notifyItemRangeChanged(int start, int itemCount) {
         easyAdapter.notifyItemRangeChanged(start, itemCount);
+    }
+
+    public void notifyItemRangeChanged(int start, int itemCount, Object payload) {
+        easyAdapter.notifyItemRangeChanged(start, itemCount, payload);
     }
 
     public void notifyItemRemoved(int position) {

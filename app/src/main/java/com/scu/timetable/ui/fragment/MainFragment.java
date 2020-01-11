@@ -439,7 +439,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                 .setTitle("切换学期")
                 .setItemRes(R.layout.layout_semester_item)
 //                .setGravity(Gravity.BOTTOM)
-                .setOnBindChildView((holder, list, position) -> {
+                .setOnBindChildView((holder, list, position, payload) -> {
                     TextView textView = holder.getTextView(R.id.text_view);
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
