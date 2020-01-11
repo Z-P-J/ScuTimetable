@@ -10,9 +10,6 @@ import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.scu.timetable.utils.content.SPHelper;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-
 import java.io.IOException;
 
 /**

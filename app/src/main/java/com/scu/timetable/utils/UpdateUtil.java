@@ -15,12 +15,12 @@ import android.util.Log;
 import com.scu.timetable.events.UpdateEvent;
 import com.scu.timetable.model.UpdateBean;
 import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.http.ZHttp;
+import com.zpj.http.parser.html.nodes.Document;
+import com.zpj.http.parser.html.nodes.Element;
+import com.zpj.http.parser.html.select.Elements;
 
 import org.greenrobot.eventbus.EventBus;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -54,13 +54,13 @@ public final class UpdateUtil {
     public void checkUpdate(Context context) {
         ExecutorHelper.submit(() -> {
             try {
-                Document document = Jsoup.connect("http://tt.shouji.com.cn/androidv3/soft_show.jsp?id=1555815")
+                Document document = ZHttp.get("http://tt.shouji.com.cn/androidv3/soft_show.jsp?id=1555815")
                         .proxy(Proxy.NO_PROXY)
                         .header("Connection", "Keep-Alive")
                         .header("Referer", "https://wap.shouji.com.cn/")
 //                            .header("User-Agent", TimetableHelper.UA)
                         .header("Accept-Encoding", "gzip")
-                        .get();
+                        .toHtml();
                 String versionName = document.select("versionname").get(0).text();
 
                 String newVersionName = versionName.trim();

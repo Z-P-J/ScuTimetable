@@ -7,15 +7,16 @@ import android.util.Log;
 
 import com.scu.timetable.model.SemesterBean;
 import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.http.ZHttp;
+import com.zpj.http.core.Connection;
+import com.zpj.http.core.IHttp;
+import com.zpj.http.parser.html.nodes.Document;
+import com.zpj.http.parser.html.nodes.Element;
+import com.zpj.http.parser.html.select.Elements;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -179,9 +180,9 @@ public final class LoginUtil {
 //        Log.d("securityCheck", "cookie1=" + cookie);
 //        sendMessage(2, cookie);
 
-        Connection.Response response = Jsoup.connect("http://202.115.47.141/j_spring_security_check")
+        Connection.Response response = ZHttp.get("http://202.115.47.141/j_spring_security_check")
                 .method(Connection.Method.POST)
-                .followRedirects(true)
+                .onRedirect(redirectUrl -> true)
                 .header("Cookie", cookie)
                 .userAgent(TimetableHelper.UA)
                 .header("Referer", "http://202.115.47.141/login")
@@ -209,10 +210,10 @@ public final class LoginUtil {
 
     private List<SemesterBean> getSemesters() throws IOException, JSONException {
         List<SemesterBean> semesterBeanList = new ArrayList<>();
-        Document document = Jsoup.connect("http://zhjw.scu.edu.cn/student/courseSelect/calendarSemesterCurriculum/index")
+        Document document = ZHttp.get("http://zhjw.scu.edu.cn/student/courseSelect/calendarSemesterCurriculum/index")
                 .header("cookie", SPHelper.getString("cookie", ""))
                 .header("Referer", "http://zhjw.scu.edu.cn/")
-                .get();
+                .toHtml();
         Elements elements = document.getElementById("planCode").select("option");
         JSONArray jsonArray = new JSONArray();
         String currentSemesterCode = "2018-2019-2-1";
@@ -239,23 +240,26 @@ public final class LoginUtil {
     }
 
     private void getTimetable(final String currentSemesterCode) throws Exception {
-        Connection.Response response = Jsoup.connect("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
-                .method(Connection.Method.POST)
+        JSONObject jsonObject = ZHttp.post("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
+//                .method(Connection.Method.POST)
                 .userAgent(TimetableHelper.UA)
                 .ignoreContentType(true)
                 .header("Cookie", SPHelper.getString("cookie", ""))
                 .header("Referer", "http://202.115.47.141/student/courseSelect/calendarSemesterCurriculum/index")
                 .data("planCode", currentSemesterCode)
-                .execute();
+                .toJsonObject();
 
-        Log.d("课程信息", "" + response.body());
+        jsonObject.put("semester_code", currentSemesterCode);
+        sendMessage(5, jsonObject);
 
-        String json = response.body().trim();
-        if (json.startsWith("{\"allUnits\"")) {
-            JSONObject jsonObject = new JSONObject(json);
-            jsonObject.put("semester_code", currentSemesterCode);
-            sendMessage(5, jsonObject);
-        }
+//        Log.d("课程信息", "" + response.body());
+//
+//        String json = response.body().trim();
+//        if (json.startsWith("{\"allUnits\"")) {
+//            JSONObject jsonObject = new JSONObject(json);
+//            jsonObject.put("semester_code", currentSemesterCode);
+//            sendMessage(5, jsonObject);
+//        }
     }
 
     public static void main(String[] args) {
@@ -266,10 +270,10 @@ public final class LoginUtil {
             int month = calendar.get(Calendar.MONTH) + 1;
             int day = calendar.get(Calendar.DATE);
             System.out.println("year=" + year + " month=" + month + " day=" + day );
-            Document doc = Jsoup.connect(String.format(Locale.CHINA, "http://jwc.scu.edu.cn/scdx/xl%d.html", year))
+            Document doc = ZHttp.get(String.format(Locale.CHINA, "http://jwc.scu.edu.cn/scdx/xl%d.html", year))
                     .userAgent(TimetableHelper.UA)
                     .ignoreContentType(true)
-                    .get();
+                    .toHtml();
             String firstDay = "";
             String monthStr = "";
             if (month == 1 || month == 2 || month == 3) {
@@ -319,7 +323,7 @@ public final class LoginUtil {
     }
 
     private void getCurrentWeek(Connection.Response response) {
-        Document document = Jsoup.parse(response.body());
+        Document document = ZHttp.parse(response.body());
         Elements elements = document.select("li");
         String text = elements.select(".light-red").get(0).select("a").get(0).text();
         Log.d("text", "text=" + text);
@@ -331,10 +335,10 @@ public final class LoginUtil {
                 int month = calendar.get(Calendar.MONTH) + 1;
                 int day = calendar.get(Calendar.DATE);
                 System.out.println("year=" + year + " month=" + month + " day=" + day );
-                Document doc = Jsoup.connect(String.format(Locale.CHINA, "http://jwc.scu.edu.cn/scdx/xl%d.html", year))
+                Document doc = ZHttp.get(String.format(Locale.CHINA, "http://jwc.scu.edu.cn/scdx/xl%d.html", year))
                         .userAgent(TimetableHelper.UA)
                         .ignoreContentType(true)
-                        .get();
+                        .toHtml();
                 String firstDay = "";
                 String monthStr = "";
                 if (month == 1 || month == 2 || month == 3) {
@@ -440,8 +444,8 @@ public final class LoginUtil {
     public void getCookie() {
         ExecutorHelper.submit(() -> {
             try {
-                Connection.Response response = Jsoup.connect("http://202.115.47.141/login")
-                        .followRedirects(false)
+                Connection.Response response = ZHttp.get("http://202.115.47.141/login")
+                        .onRedirect(redirectUrl -> false)
                         .userAgent(TimetableHelper.UA)
                         .ignoreContentType(true)
                         .execute();

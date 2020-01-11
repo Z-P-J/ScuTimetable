@@ -1,8 +1,7 @@
 package com.scu.timetable.events;
 
 import com.scu.timetable.model.EvaluationBean;
-
-import org.jsoup.Connection;
+import com.zpj.http.core.Connection;
 
 public class EvaluationEvent {
 

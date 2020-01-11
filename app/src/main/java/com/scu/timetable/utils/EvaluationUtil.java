@@ -7,14 +7,15 @@ import android.util.Log;
 import com.scu.timetable.events.EvaluationEvent;
 import com.scu.timetable.model.EvaluationBean;
 import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.http.ZHttp;
+import com.zpj.http.core.Connection;
+import com.zpj.http.core.IHttp;
+import com.zpj.http.parser.html.nodes.Document;
+import com.zpj.http.parser.html.nodes.Element;
+import com.zpj.http.parser.html.select.Elements;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -100,16 +101,16 @@ public final class EvaluationUtil {
     public void getEvaluationSubjects() {
         ExecutorHelper.submit(() -> {
             try {
-                Connection.Response doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
-                        .followRedirects(false)
+                String doc = ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
+                        .onRedirect(redirectUrl -> false)
                         .header("Cookie", SPHelper.getString("cookie", ""))
                         .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
                         .userAgent(TimetableHelper.UA)
                         .ignoreHttpErrors(true)
                         .ignoreContentType(true)
-                        .execute();
-                sendMessage(1, doc.body());
-                Log.d("getEvaluationSubjects", "body=" + doc.body());
+                        .toStr();
+                sendMessage(1, doc);
+                Log.d("getEvaluationSubjects", "body=" + doc);
             } catch (IOException e) {
                 e.printStackTrace();
                 sendMessage(-1, e.getMessage());
@@ -217,9 +218,9 @@ public final class EvaluationUtil {
     public void getEvaluationPage(EvaluationBean bean) {
         ExecutorHelper.submit(() -> {
             try {
-                Connection.Response response = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
+                Document doc = ZHttp.post("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
                         .method(Connection.Method.POST)
-                        .followRedirects(true)
+                        .onRedirect(redirectUrl -> true)
                         .header("cookie", SPHelper.getString("cookie", ""))
                         .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
                         .userAgent(TimetableHelper.UA)
@@ -229,9 +230,9 @@ public final class EvaluationUtil {
                         .data("questionnaireName", bean.getQuestionnaireName())
                         .data("evaluationContentNumber", bean.getEvaluationContentNumber())
                         .data("evaluationContentContent", "")
-                        .execute();
-                Log.d("getEvaluationPage", "body=" + response.body());
-                Document doc = Jsoup.parse(response.body());
+                        .toHtml();
+                Log.d("getEvaluationPage", "body=" + doc.body());
+//                Document doc = Jsoup.parse(response.body());
 //                Document doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
 //                        .followRedirects(true)
 //                        .header("cookie", SPHelper.getString("cookie", ""))
@@ -253,9 +254,9 @@ public final class EvaluationUtil {
                 Log.d("inputs", "inputs=" + inputs.toString());
 
                 if (!tokenValue.isEmpty()) {
-                    Connection connection = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
+                    Connection connection = ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
                             .method(Connection.Method.POST)
-                            .followRedirects(false)
+                            .onRedirect(redirectUrl -> false)
                             .header("cookie", SPHelper.getString("cookie", ""))
                             .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
                             .data("tokenValue", tokenValue)
