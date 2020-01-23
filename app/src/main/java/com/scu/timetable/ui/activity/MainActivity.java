@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.events.UpdateEvent;
-import com.scu.timetable.model.UpdateBean;
 import com.scu.timetable.service.AlarmService;
 import com.scu.timetable.ui.fragment.MainFragment;
 import com.scu.timetable.ui.fragment.UpdateDialogFragment;
@@ -17,7 +16,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import me.yokeyword.eventbusactivityscope.EventBusActivityScope;
 import me.yokeyword.fragmentation.SupportActivity;
 
 /**
@@ -72,10 +70,10 @@ public final class MainActivity extends SupportActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateEvent(UpdateEvent event) {
-        if (event.getUpdateBean() != null) {
+        if (event.getUpdateInfo() != null) {
             AToast.normal("开始更新！");
 //        http://tt.shouji.com.cn/wap/down/soft?id=1555815
-            UpdateDialogFragment.newInstance(event.getUpdateBean()).show(getSupportFragmentManager());
+            UpdateDialogFragment.newInstance(event.getUpdateInfo()).show(getSupportFragmentManager());
         } else if (event.isLatestVersion()) {
             AToast.normal("软件已是最新版");
         } else if (TextUtils.isEmpty(event.getErrorMsg())) {

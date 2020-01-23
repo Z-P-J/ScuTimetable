@@ -14,10 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.felix.atoast.library.AToast;
+import com.scu.timetable.model.SemesterInfo;
 import com.scu.timetable.ui.activity.LoginActivity;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
-import com.scu.timetable.model.SemesterBean;
 import com.scu.timetable.ui.fragment.base.BaseFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.CaptchaFetcher;
@@ -32,9 +32,9 @@ import com.zhuangfei.timetable.model.Schedule;
 import com.zhuangfei.timetable.view.WeekView;
 import com.zpj.popupmenuview.CustomPopupMenuView;
 import com.zpj.popupmenuview.popup.EverywherePopup;
-import com.zpj.zdialog.ZDialog;
-import com.zpj.zdialog.ZListDialog;
-import com.zpj.zdialog.base.IDialog;
+import com.zpj.dialog.ZDialog;
+import com.zpj.dialog.ZListDialog;
+import com.zpj.dialog.base.IDialog;
 
 import org.json.JSONObject;
 
@@ -434,7 +434,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     }
 
     private void showChooseSemesterDialog() {
-        ZListDialog<SemesterBean> dialog = new ZListDialog<>(getContext());
+        ZListDialog<SemesterInfo> dialog = new ZListDialog<>(getContext());
         dialog.setItemList(TimetableHelper.getSemesterList(getContext()))
                 .setTitle("切换学期")
                 .setItemRes(R.layout.layout_semester_item)
@@ -460,18 +460,18 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                     }
                 })
                 .show();
-//        QXListDialog<SemesterBean> dialog = new QXListDialog<>(this);
+//        QXListDialog<SemesterInfo> dialog = new QXListDialog<>(this);
 //        dialog.setItemList(TimetableHelper.getSemesterList(this))
 //                .setItemRes(R.layout.layout_semester_item)
 //                .setGravity(Gravity.BOTTOM)
-//                .setEasyAdapterCallback(new EasyAdapter.EasyAdapterCallback<SemesterBean>() {
+//                .setEasyAdapterCallback(new EasyAdapter.EasyAdapterCallback<SemesterInfo>() {
 //                    @Override
-//                    public EasyAdapter.ViewHolder onCreateViewHolder(List<SemesterBean> list, View itemView, int i) {
+//                    public EasyAdapter.ViewHolder onCreateViewHolder(List<SemesterInfo> list, View itemView, int i) {
 //                        return null;
 //                    }
 //
 //                    @Override
-//                    public void onBindViewHolder(List<SemesterBean> list, View itemView, int i) {
+//                    public void onBindViewHolder(List<SemesterInfo> list, View itemView, int i) {
 //                        TextView textView = itemView.findViewById(R.id.text_view);
 //                        textView.setOnClickListener(new View.OnClickListener() {
 //                            @Override

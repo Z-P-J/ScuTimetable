@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.model.ScuSubject;
-import com.scu.timetable.model.SemesterBean;
+import com.scu.timetable.model.SemesterInfo;
 import com.scu.timetable.utils.content.SPHelper;
 
 import org.json.JSONArray;
@@ -358,21 +358,21 @@ public final class TimetableHelper {
         SPHelper.putString("current_semester_name", currentSenesterName);
     }
 
-    public static List<SemesterBean> getSemesterList(Context context) {
-        List<SemesterBean> semesterBeanList = new ArrayList<>();
+    public static List<SemesterInfo> getSemesterList(Context context) {
+        List<SemesterInfo> semesterInfoList = new ArrayList<>();
         try {
             JSONArray jsonArray = new JSONArray(FileUtil.readFromJson(context, SEMESTER_FILE_NAME));
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                SemesterBean semester = new SemesterBean();
+                SemesterInfo semester = new SemesterInfo();
                 semester.setSemesterCode(jsonObject.getString("code"));
                 semester.setSemesterName(jsonObject.getString("name"));
-                semesterBeanList.add(semester);
+                semesterInfoList.add(semester);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return semesterBeanList;
+        return semesterInfoList;
     }
 
     public static void writeSemesterFile(Context context, String json) throws Exception {

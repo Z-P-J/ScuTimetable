@@ -7,28 +7,36 @@ import java.util.List;
 
 public interface IEasy {
 
-//    interface OnCreateViewHolderCallback<T> {
-//        EasyViewHolder onCreateViewHolder(List<T> list, View itemView, int position);
-//    }
-
     interface OnItemClickCallback {
         boolean shouldIgnoreClick(View view);
     }
 
+    interface OnClickListener<T> {
+        void onClick(EasyViewHolder holder, View view, T data);
+    }
 
-    interface OnBindViewHolderCallback<T>{
+    interface OnItemClickListener<T> {
+        void onClick(EasyViewHolder holder, View view, T data, float x, float y);
+    }
+
+    interface OnItemLongClickListener<T> {
+        boolean onLongClick(EasyViewHolder holder, View view, T data, float x, float y);
+    }
+
+
+    interface OnBindViewHolderListener<T>{
         void onBindViewHolder(EasyViewHolder holder, List<T> list, int position, List<Object> payloads);
     }
 
-    interface OnCreateViewHolderCallback<T>{
+    interface OnCreateViewHolderListener<T>{
         void onCreateViewHolder(ViewGroup parent, View itemView, int viewType);
     }
 
-    interface OnCreateHeaderCallback{
-        void onCreateHeaderView(View view);
+    interface OnBindHeaderListener {
+        void onBindHeader(EasyViewHolder holder);
     }
 
-    interface OnCreateFooterCallback{
+    interface OnCreateFooterListener {
         void onCreateFooterView(View view);
     }
 

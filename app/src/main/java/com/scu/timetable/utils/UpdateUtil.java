@@ -6,14 +6,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 
 import com.scu.timetable.events.UpdateEvent;
-import com.scu.timetable.model.UpdateBean;
+import com.scu.timetable.model.UpdateInfo;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.http.ZHttp;
 import com.zpj.http.parser.html.nodes.Document;
@@ -23,7 +20,6 @@ import com.zpj.http.parser.html.select.Elements;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.net.Proxy;
 
 /**
@@ -97,13 +93,13 @@ public final class UpdateUtil {
                             updateTime = content.substring(index + 3, index + 13);
                         }
                     }
-                    UpdateBean bean = new UpdateBean();
+                    UpdateInfo bean = new UpdateInfo();
                     bean.setVersionName(versionName);
                     bean.setUpdateContent(updateContent);
                     bean.setFileSize(fileSize);
                     bean.setUpdateTime(updateTime);
                     Log.d("bean", "bean=" + bean.toString());
-                    EventBus.getDefault().post(UpdateEvent.create().setUpdateBean(bean));
+                    EventBus.getDefault().post(UpdateEvent.create().setUpdateInfo(bean));
                 } else {
                     EventBus.getDefault().post(UpdateEvent.create().setLatestVersion(true));
                 }

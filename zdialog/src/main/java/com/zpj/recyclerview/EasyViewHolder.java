@@ -3,6 +3,7 @@ package com.zpj.recyclerview;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +18,7 @@ public final class EasyViewHolder extends RecyclerView.ViewHolder {
     private final View itemView;
     private int position;
 
-    EasyViewHolder(@NonNull View view) {
+    public EasyViewHolder(@NonNull View view) {
         super(view);
         this.itemView = view;
         ClickHelper.with(itemView).setOnClickListener(new ClickHelper.OnClickListener() {
@@ -65,7 +66,7 @@ public final class EasyViewHolder extends RecyclerView.ViewHolder {
         return itemView.findViewById(id);
     }
 
-    public <T extends ImageView> T getImageView(@IdRes int id) {
+    public ImageView getImageView(@IdRes int id) {
         return itemView.findViewById(id);
     }
 

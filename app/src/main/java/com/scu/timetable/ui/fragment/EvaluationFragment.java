@@ -18,15 +18,15 @@ import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.events.EvaluationEvent;
-import com.scu.timetable.model.EvaluationBean;
+import com.scu.timetable.model.EvaluationInfo;
 import com.scu.timetable.ui.fragment.base.BaseFragment;
 import com.scu.timetable.ui.view.ElasticScrollView;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
 import com.scu.timetable.utils.LoginUtil;
 import com.zpj.popupmenuview.CustomPopupMenuView;
-import com.zpj.zdialog.ZAlertDialog;
-import com.zpj.zdialog.base.IDialog;
+import com.zpj.dialog.ZAlertDialog;
+import com.zpj.dialog.base.IDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -55,7 +55,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
     private AtomicInteger evaluatedCount = new AtomicInteger(0);
     private AtomicInteger notEvaluatedCount = new AtomicInteger(0);
 
-    private Queue<EvaluationBean> evaluationBeanQueue = new LinkedList<>();
+    private Queue<EvaluationInfo> evaluationInfoQueue = new LinkedList<>();
 
     private TextView countDownView;
 
@@ -305,7 +305,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
                 Log.d("questionnaireCoding", questionnaireCoding);
                 Log.d("questionnaireName", questionnaireName);
                 Log.d("evaluationContentNumber", evaluationContentNumber);
-                EvaluationBean bean = new EvaluationBean();
+                EvaluationInfo bean = new EvaluationInfo();
                 bean.setEvaluatedPeople(evaluatedPeople);
                 bean.setEvaluatedPeopleNum(evaluatedPeopleNum);
                 bean.setEvaluationContent(evaluationContent);
@@ -314,7 +314,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
                 bean.setQuestionnaireName(questionnaireName);
 
 //                evaluationBeanList.add(bean);
-                evaluationBeanQueue.add(bean);
+                evaluationInfoQueue.add(bean);
 
 
 
@@ -367,7 +367,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
 
     private void startEvaluation() {
         if (hasEvaluation()) {
-            EvaluationBean bean = evaluationBeanQueue.remove();
+            EvaluationInfo bean = evaluationInfoQueue.remove();
             consoleLog(bean.getQuestionnaireName() + " " + bean.getEvaluatedPeople() + " " + bean.getEvaluationContent() + " 评教中...", Color.BLACK);
 //            EvaluationUtil.with(this)
 //                    .getEvaluationPage(bean.getEvaluatedPeople(), bean.getEvaluatedPeopleNum(), bean.getQuestionnaireCoding(),
@@ -378,7 +378,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
     }
 
     private boolean hasEvaluation() {
-        if (evaluationBeanQueue.isEmpty()) {
+        if (evaluationInfoQueue.isEmpty()) {
             consoleLog("一键评教完成！ 已评教" + evaluatedCount.get() + "人，评教失败" + notEvaluatedCount.get() + "人");
             evaluationButton.setText("评教完成");
             isEvaluating = false;

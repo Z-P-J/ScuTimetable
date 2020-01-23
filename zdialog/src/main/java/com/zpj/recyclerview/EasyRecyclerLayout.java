@@ -1,6 +1,7 @@
 package com.zpj.recyclerview;
 
 import android.content.Context;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,7 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +16,8 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.classic.common.MultipleStatusView;
-import com.zpj.zdialog.R;
-import com.zpj.zdialog.view.SmoothCheckBox;
+import com.zpj.dialog.R;
+import com.zpj.dialog.view.SmoothCheckBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +77,7 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
 
     public EasyRecyclerLayout<T> setItemRes(@LayoutRes final int res) {
         easyRecyclerView.setItemRes(R.layout.easy_item_recycler_layout);
-        easyRecyclerView.onCreateViewHolder(new IEasy.OnCreateViewHolderCallback<T>() {
+        easyRecyclerView.onCreateViewHolder(new IEasy.OnCreateViewHolderListener<T>() {
             @Override
             public void onCreateViewHolder(ViewGroup parent, View view, int viewType) {
                 FrameLayout container = view.findViewById(R.id.container);
@@ -90,6 +90,11 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
 
     public EasyRecyclerLayout<T> setData(List<T> list) {
         easyRecyclerView.setData(list);
+        return this;
+    }
+
+    public EasyRecyclerLayout<T> setItemAnimator(RecyclerView.ItemAnimator animator) {
+        easyRecyclerView.setItemAnimator(animator);
         return this;
     }
 
@@ -150,7 +155,7 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
         return this;
     }
 
-    public EasyRecyclerLayout<T> setHeaderView(@LayoutRes int layoutRes, IEasy.OnCreateHeaderCallback callback) {
+    public EasyRecyclerLayout<T> setHeaderView(@LayoutRes int layoutRes, IEasy.OnBindHeaderListener callback) {
         easyRecyclerView.setHeaderView(layoutRes, callback);
         return this;
     }
@@ -160,13 +165,14 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
         return this;
     }
 
-    public EasyRecyclerLayout<T> setFooterView(@LayoutRes int layoutRes, IEasy.OnCreateFooterCallback callback) {
+    public EasyRecyclerLayout<T> setFooterView(@LayoutRes int layoutRes, IEasy.OnCreateFooterListener callback) {
         easyRecyclerView.setFooterView(layoutRes, callback);
         return this;
     }
 
     public EasyRecyclerLayout<T> onLoadMore(IEasy.OnLoadMoreListener onLoadMoreListener) {
         easyRecyclerView.onLoadMore(onLoadMoreListener);
+        enableLoadMore = true;
         return this;
     }
 
@@ -175,8 +181,23 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
         return this;
     }
 
-    public EasyRecyclerLayout<T> onBindViewHolder(final IEasy.OnBindViewHolderCallback<T> callback) {
-        easyRecyclerView.onBindViewHolder(new IEasy.OnBindViewHolderCallback<T>() {
+    public EasyRecyclerLayout<T> onViewClick(@IdRes int id, IEasy.OnClickListener<T> onClickListener) {
+        easyRecyclerView.onViewClick(id, onClickListener);
+        return this;
+    }
+
+    public EasyRecyclerLayout<T> onItemClick(IEasy.OnItemClickListener<T> listener) {
+        easyRecyclerView.onItemClick(listener);
+        return this;
+    }
+
+    public EasyRecyclerLayout<T> onItemLongClick(IEasy.OnItemLongClickListener<T> listener) {
+        easyRecyclerView.onItemLongClick(listener);
+        return this;
+    }
+
+    public EasyRecyclerLayout<T> onBindViewHolder(final IEasy.OnBindViewHolderListener<T> callback) {
+        easyRecyclerView.onBindViewHolder(new IEasy.OnBindViewHolderListener<T>() {
             @Override
             public void onBindViewHolder(final EasyViewHolder holder, List<T> list, final int position, List<Object> payloads) {
                 holder.setPosition(position);
@@ -253,6 +274,10 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
 
     public void build() {
         easyRecyclerView.build();
+        if (enableLoadMore) {
+            statusView.showContent();
+            return;
+        }
         if (easyRecyclerView.getData().isEmpty()) {
             statusView.showLoading();
         } else {
@@ -504,7 +529,7 @@ public class EasyRecyclerLayout<T> extends FrameLayout {
     }
 
     public void notifyDataSetChanged() {
-        if (easyRecyclerView.getData().isEmpty()) {
+        if ((easyRecyclerView.getData() == null || easyRecyclerView.getData().isEmpty()) && !enableLoadMore) {
             showEmpty();
         } else {
             easyRecyclerView.notifyDataSetChanged();

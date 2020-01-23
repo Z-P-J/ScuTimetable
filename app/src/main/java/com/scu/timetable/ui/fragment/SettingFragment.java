@@ -2,10 +2,7 @@ package com.scu.timetable.ui.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,15 +18,14 @@ import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.base.BaseFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.scu.timetable.utils.FastBlur;
 import com.scu.timetable.utils.TextUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.scu.timetable.utils.UpdateUtil;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.popupmenuview.CustomPopupMenuView;
-import com.zpj.zdialog.ZAlertDialog;
-import com.zpj.zdialog.base.IDialog;
+import com.zpj.dialog.ZAlertDialog;
+import com.zpj.dialog.base.IDialog;
 
 public class SettingFragment extends BaseFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
 
@@ -140,19 +136,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
             onDismissListener.onDismiss(null);
         }
         super.onDestroyView();
-    }
-
-    private void initBackground(View view) {
-        LinearLayout linearLayout = view.findViewById(R.id.container);
-        Bitmap mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background_login);
-
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(mBitmap,
-                mBitmap.getWidth() / 4,
-                mBitmap.getHeight() / 4,
-                false);
-        Bitmap blurBitmap = FastBlur.doBlur(scaledBitmap, 20, true);
-
-        linearLayout.setBackground(new BitmapDrawable(null, blurBitmap));
     }
 
     private void showInfoPopupView(View view, final String title, final String content) {

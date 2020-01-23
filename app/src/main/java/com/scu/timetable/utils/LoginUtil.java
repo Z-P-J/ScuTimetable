@@ -2,14 +2,12 @@ package com.scu.timetable.utils;
 
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.scu.timetable.model.SemesterBean;
+import com.scu.timetable.model.SemesterInfo;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.Connection;
-import com.zpj.http.core.IHttp;
 import com.zpj.http.parser.html.nodes.Document;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
@@ -25,10 +23,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Z-P-J
@@ -208,8 +202,8 @@ public final class LoginUtil {
         }
     }
 
-    private List<SemesterBean> getSemesters() throws IOException, JSONException {
-        List<SemesterBean> semesterBeanList = new ArrayList<>();
+    private List<SemesterInfo> getSemesters() throws IOException, JSONException {
+        List<SemesterInfo> semesterInfoList = new ArrayList<>();
         Document document = ZHttp.get("http://zhjw.scu.edu.cn/student/courseSelect/calendarSemesterCurriculum/index")
                 .header("cookie", SPHelper.getString("cookie", ""))
                 .header("Referer", "http://zhjw.scu.edu.cn/")
@@ -226,17 +220,17 @@ public final class LoginUtil {
                 currentSemesterCode = semesterCode;
                 currentSenesterName = semesterName;
             }
-            SemesterBean semester = new SemesterBean();
+            SemesterInfo semester = new SemesterInfo();
             semester.setSemesterName(semesterName);
             semester.setSemesterCode(semesterCode);
-            semesterBeanList.add(semester);
+            semesterInfoList.add(semester);
             jsonObject.put("name", semesterName);
             jsonObject.put("code", semesterCode);
             jsonArray.put(jsonObject);
         }
         sendMessage(6, jsonArray.toString());
         TimetableHelper.setCurrentSemester(currentSemesterCode, currentSenesterName);
-        return semesterBeanList;
+        return semesterInfoList;
     }
 
     private void getTimetable(final String currentSemesterCode) throws Exception {
@@ -401,7 +395,7 @@ public final class LoginUtil {
                 Connection.Response response = securityCheck(captcha);
                 if (response != null) {
                     getCurrentWeek(response);
-                    for (SemesterBean semester : getSemesters()) {
+                    for (SemesterInfo semester : getSemesters()) {
                         getTimetable(semester.getSemesterCode());
                     }
                     sendMessage(7, null);

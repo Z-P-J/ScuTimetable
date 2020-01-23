@@ -1,11 +1,11 @@
 package com.scu.timetable.events;
 
-import com.scu.timetable.model.EvaluationBean;
+import com.scu.timetable.model.EvaluationInfo;
 import com.zpj.http.core.Connection;
 
 public class EvaluationEvent {
 
-    private EvaluationBean bean;
+    private EvaluationInfo bean;
     private Connection connection;
 
     private EvaluationEvent() {
@@ -16,7 +16,7 @@ public class EvaluationEvent {
         return new EvaluationEvent();
     }
 
-    public EvaluationEvent setEvaluationBean(EvaluationBean bean) {
+    public EvaluationEvent setEvaluationBean(EvaluationInfo bean) {
         this.bean = bean;
         return this;
     }
@@ -26,7 +26,7 @@ public class EvaluationEvent {
         return this;
     }
 
-    public EvaluationBean getEvaluationBean() {
+    public EvaluationInfo getEvaluationBean() {
         return bean;
     }
 

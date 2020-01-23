@@ -1,13 +1,16 @@
 package com.zpj.recyclerview;
 
+import android.annotation.SuppressLint;
+import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.zpj.zdialog.R;
+import com.zpj.dialog.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +28,24 @@ public class EasyRecyclerView<T> {
     private int itemRes = -1;
 
     private View headerView;
+    private IEasy.OnBindHeaderListener onBindHeaderListener;
     private View footerView;
 
-    private IEasy.OnBindViewHolderCallback<T> onBindViewHolderCallback;
-    private IEasy.OnCreateViewHolderCallback<T> onCreateViewHolder;
+    private IEasy.OnBindViewHolderListener<T> onBindViewHolderListener;
+    private IEasy.OnCreateViewHolderListener<T> onCreateViewHolder;
     private IEasy.OnLoadMoreListener onLoadMoreListener;
+
+    private final SparseArray<IEasy.OnClickListener<T>> onClickListeners = new SparseArray<>();
+    private IEasy.OnItemClickListener<T> onItemClickListener;
+    private IEasy.OnItemLongClickListener<T> onItemLongClickListener;
 
     public EasyRecyclerView(@NonNull RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
+    }
+
+    public EasyRecyclerView<T> setItemAnimator(RecyclerView.ItemAnimator animator) {
+        recyclerView.setItemAnimator(animator);
+        return this;
     }
 
     public EasyRecyclerView<T> setItemRes(int res) {
@@ -55,9 +68,12 @@ public class EasyRecyclerView<T> {
         return this;
     }
 
-    public EasyRecyclerView<T> setHeaderView(@LayoutRes int layoutRes, IEasy.OnCreateHeaderCallback callback) {
-        this.headerView = LayoutInflater.from(recyclerView.getContext()).inflate(layoutRes, null, false);
-        callback.onCreateHeaderView(headerView);
+    @SuppressLint("ResourceType")
+    public EasyRecyclerView<T> setHeaderView(@LayoutRes int layoutRes, IEasy.OnBindHeaderListener l) {
+        if (layoutRes > 0 && l != null) {
+            this.headerView = LayoutInflater.from(recyclerView.getContext()).inflate(layoutRes, null, false);
+            onBindHeaderListener = l;
+        }
         return this;
     }
 
@@ -66,7 +82,7 @@ public class EasyRecyclerView<T> {
         return this;
     }
 
-    public EasyRecyclerView<T> setFooterView(@LayoutRes int layoutRes, IEasy.OnCreateFooterCallback callback) {
+    public EasyRecyclerView<T> setFooterView(@LayoutRes int layoutRes, IEasy.OnCreateFooterListener callback) {
         this.footerView = LayoutInflater.from(recyclerView.getContext()).inflate(layoutRes, null, false);
         callback.onCreateFooterView(footerView);
         return this;
@@ -77,18 +93,33 @@ public class EasyRecyclerView<T> {
         return this;
     }
 
-    public EasyRecyclerView<T> onBindViewHolder(IEasy.OnBindViewHolderCallback<T> callback) {
-        this.onBindViewHolderCallback = callback;
+    public EasyRecyclerView<T> onBindViewHolder(IEasy.OnBindViewHolderListener<T> callback) {
+        this.onBindViewHolderListener = callback;
         return this;
     }
 
-    public EasyRecyclerView<T> onCreateViewHolder(IEasy.OnCreateViewHolderCallback<T> callback) {
+    public EasyRecyclerView<T> onCreateViewHolder(IEasy.OnCreateViewHolderListener<T> callback) {
         this.onCreateViewHolder = callback;
         return this;
     }
 
     public EasyRecyclerView<T> addOnScrollListener(final RecyclerView.OnScrollListener onScrollListener) {
         recyclerView.addOnScrollListener(onScrollListener);
+        return this;
+    }
+
+    public EasyRecyclerView<T> onViewClick(@IdRes int id, IEasy.OnClickListener<T> onClickListener) {
+        onClickListeners.put(id, onClickListener);
+        return this;
+    }
+
+    public EasyRecyclerView<T> onItemClick(IEasy.OnItemClickListener<T> listener) {
+        this.onItemClickListener = listener;
+        return this;
+    }
+
+    public EasyRecyclerView<T> onItemLongClick(IEasy.OnItemLongClickListener<T> listener) {
+        this.onItemLongClickListener = listener;
         return this;
     }
 
@@ -102,9 +133,12 @@ public class EasyRecyclerView<T> {
         if (layoutManager == null) {
             layoutManager = new LinearLayoutManager(recyclerView.getContext());
         }
-        easyAdapter = new EasyAdapter<>(list, itemRes, onCreateViewHolder, onBindViewHolderCallback);
+        easyAdapter = new EasyAdapter<>(list, itemRes, onCreateViewHolder,
+                onBindViewHolderListener, onItemClickListener,
+                onItemLongClickListener, onClickListeners);
         if (headerView != null) {
             easyAdapter.setHeaderView(headerView);
+            easyAdapter.setOnBindHeaderListener(onBindHeaderListener);
         }
         if (footerView != null) {
             easyAdapter.setFooterView(footerView);
@@ -118,30 +152,51 @@ public class EasyRecyclerView<T> {
     }
 
     public void notifyDataSetChanged() {
+        if (easyAdapter == null) {
+            return;
+        }
         easyAdapter.notifyDataSetChanged();
     }
 
     public void notifyItemChanged(int position) {
+        if (easyAdapter == null) {
+            return;
+        }
         easyAdapter.notifyItemChanged(position);
     }
 
     public void notifyItemChanged(int position, Object payload) {
+        if (easyAdapter == null) {
+            return;
+        }
         easyAdapter.notifyItemChanged(position, payload);
     }
 
     public void notifyItemInserted(int position) {
+        if (easyAdapter == null) {
+            return;
+        }
         easyAdapter.notifyItemInserted(position);
     }
 
     public void notifyItemRangeChanged(int start, int itemCount) {
+        if (easyAdapter == null) {
+            return;
+        }
         easyAdapter.notifyItemRangeChanged(start, itemCount);
     }
 
     public void notifyItemRangeChanged(int start, int itemCount, Object payload) {
+        if (easyAdapter == null) {
+            return;
+        }
         easyAdapter.notifyItemRangeChanged(start, itemCount, payload);
     }
 
     public void notifyItemRemoved(int position) {
+        if (easyAdapter == null) {
+            return;
+        }
         easyAdapter.notifyItemRemoved(position);
     }
 

@@ -216,12 +216,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-//        if (messenger == null) {
-//            serviceThread.start();
-//            broadcastManager = LocalBroadcastManager.getInstance(this);
-//            messenger = new Messenger(new Handler());
-//        }
-//        return messenger.getBinder();
         return binder;
     }
 
@@ -311,19 +305,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         Calendar calendar = Calendar.getInstance();
         if (scuSubjectLinkedList.isEmpty()) {
             Log.d("onAlarm", "11111111111");
-
-//            do {
-//                calendar.add(Calendar.DAY_OF_WEEK, 1);
-//                initDayOfSubjects(calendar.get(Calendar.DAY_OF_WEEK));
-//            } while (scuSubjectLinkedList.isEmpty());
-//
-//            nextSubject = scuSubjectLinkedList.pop();
-//            Log.d("onAlarm1", "nextSubject=" + nextSubject);
-
-
-
             nextSubject = null;
-
         } else {
             Log.d("onAlarm", "222222222222");
             int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -350,8 +332,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 if ((currentHour > hourOfSubject)
                         || (currentHour == hourOfSubject && currentMinute > minuteOfSubject)) {
                     if (scuSubjectLinkedList.isEmpty()) {
-//                        onAlarm();
-//                        return;
                         nextSubject = null;
                         break;
                     }
@@ -364,13 +344,8 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         Log.d("onAlarm", "alarmQueue=" + alarmQueue);
         Alarm alarm;
         do {
-//            if (alarmQueue.isEmpty()) {
-//                onAlarm();
-//                return;
-//            }
             alarm = alarmQueue.pop();
         } while (alarm.getCalendar().getTimeInMillis() <= System.currentTimeMillis());
-
         updateAlarm(alarm);
     }
 
@@ -476,11 +451,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         int alarmType = alarm.getAlarmType();
 
         if (alarmType == Alarm.TYPE_BEFORE_CLASS || alarmType == Alarm.TYPE_BEFORE_CLASS_TEN_MIN) {
-//            if (timer == null) {
-//                timer = new Timer();
-//            } else {
-//                timer.cancel();
-//            }
             if (timer != null) {
                 timer.cancel();
                 timer = null;
@@ -586,9 +556,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         if (sender != null) {
             alarmManager.cancel(sender);
         }
-//        Intent intent = new Intent(this, AlarmReceiver.class);
-////        intent.putExtra("alarm_type", alarmType);
-//        sender = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         Log.d("updateAlarm", "day=" + calendar.get(Calendar.DAY_OF_WEEK));
         Log.d("updateAlarm", "hour=" + calendar.get(Calendar.HOUR_OF_DAY));
         Log.d("updateAlarm", "min=" + calendar.get(Calendar.MINUTE));

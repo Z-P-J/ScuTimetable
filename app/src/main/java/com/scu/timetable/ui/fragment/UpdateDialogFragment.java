@@ -34,7 +34,7 @@ import android.widget.TextView;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
-import com.scu.timetable.model.UpdateBean;
+import com.scu.timetable.model.UpdateInfo;
 import com.scu.timetable.ui.view.NumberProgressBar;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.content.SPHelper;
@@ -43,7 +43,7 @@ import com.zpj.downloader.config.MissionConfig;
 import com.zpj.downloader.constant.Error;
 import com.zpj.downloader.core.DownloadMission;
 import com.zpj.downloader.util.FileUtil;
-import com.zpj.zdialog.base.DialogFragment;
+import com.zpj.dialog.base.DialogFragment;
 
 import java.io.File;
 
@@ -99,7 +99,7 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
     private LinearLayout mLlClose;
     private ImageView mIvClose;
 
-    private UpdateBean bean;
+    private UpdateInfo bean;
 
     private DownloadMission mission;
 
@@ -108,7 +108,7 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
      *
      * @return
      */
-    public static UpdateDialogFragment newInstance(@NonNull UpdateBean bean) {
+    public static UpdateDialogFragment newInstance(@NonNull UpdateInfo bean) {
         UpdateDialogFragment fragment = new UpdateDialogFragment();
 //        Bundle args = new Bundle();
         fragment.setUpdateBean(bean);
@@ -116,7 +116,7 @@ public class UpdateDialogFragment extends DialogFragment implements View.OnClick
         return fragment;
     }
 
-    public void setUpdateBean(UpdateBean bean) {
+    public void setUpdateBean(UpdateInfo bean) {
         this.bean = bean;
     }
 

@@ -5,11 +5,10 @@ import android.os.Message;
 import android.util.Log;
 
 import com.scu.timetable.events.EvaluationEvent;
-import com.scu.timetable.model.EvaluationBean;
+import com.scu.timetable.model.EvaluationInfo;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.Connection;
-import com.zpj.http.core.IHttp;
 import com.zpj.http.parser.html.nodes.Document;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
@@ -84,7 +83,7 @@ public final class EvaluationUtil {
         void onGetTokenValue(String tokenValue);
         void onEvaluationFailed(String msg);
         void onEvaluationSuccess(String msg);
-//        void onGetEvaluationPage(EvaluationBean bean);
+//        void onGetEvaluationPage(EvaluationInfo bean);
     }
 
     private EvaluationUtil(EvaluationCallback callback) {
@@ -215,7 +214,7 @@ public final class EvaluationUtil {
 //        });
 //    }
 
-    public void getEvaluationPage(EvaluationBean bean) {
+    public void getEvaluationPage(EvaluationInfo bean) {
         ExecutorHelper.submit(() -> {
             try {
                 Document doc = ZHttp.post("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
@@ -331,7 +330,7 @@ public final class EvaluationUtil {
         });
     }
 
-    public void evaluation(EvaluationBean bean, Connection connection) {
+    public void evaluation(EvaluationInfo bean, Connection connection) {
         ExecutorHelper.submit(() -> {
             try {
                 Connection.Response response = connection.execute();

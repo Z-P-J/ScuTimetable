@@ -1,18 +1,17 @@
 package com.zpj.recyclerview;
 
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.zpj.recyclerview.loadmore.LoadMoreAdapter;
+import com.zpj.utils.ClickHelper;
 
 import java.util.List;
 
@@ -34,14 +33,25 @@ public class EasyAdapter<T> extends RecyclerView.Adapter<EasyViewHolder> {
     private View headerView;
     private View footerView;
 
-    private IEasy.OnBindViewHolderCallback<T> callback;
-    private IEasy.OnCreateViewHolderCallback<T> onCreateViewHolder;
+    private IEasy.OnBindViewHolderListener<T> callback;
+    private IEasy.OnCreateViewHolderListener<T> onCreateViewHolder;
+    private IEasy.OnBindHeaderListener onBindHeaderListener;
+    private IEasy.OnItemClickListener<T> onItemClickListener;
+    private IEasy.OnItemLongClickListener<T> onItemLongClickListener;
+    private final SparseArray<IEasy.OnClickListener<T>> onClickListeners;
 
-    EasyAdapter(List<T> list, int itemRes, IEasy.OnCreateViewHolderCallback<T> onCreateViewHolder, IEasy.OnBindViewHolderCallback<T> callback) {
+    EasyAdapter(List<T> list, int itemRes, IEasy.OnCreateViewHolderListener<T> onCreateViewHolder,
+                IEasy.OnBindViewHolderListener<T> callback,
+                IEasy.OnItemClickListener<T> onClickListener,
+                IEasy.OnItemLongClickListener<T> onLongClickListener,
+                SparseArray<IEasy.OnClickListener<T>> onClickListeners) {
         this.list = list;
         this.itemRes = itemRes;
         this.callback = callback;
         this.onCreateViewHolder = onCreateViewHolder;
+        this.onItemClickListener = onClickListener;
+        this.onItemLongClickListener = onLongClickListener;
+        this.onClickListeners = onClickListeners;
         registerAdapterDataObserver(mObserver);
         mEnabled = new Enabled(mOnEnabledListener);
     }
@@ -68,7 +78,7 @@ public class EasyAdapter<T> extends RecyclerView.Adapter<EasyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EasyViewHolder holder, int position, @NonNull List<Object> payloads) {
+    public void onBindViewHolder(@NonNull final EasyViewHolder holder, int position, @NonNull List<Object> payloads) {
 //        if (payloads.isEmpty()) {
 ////            onBindViewHolder(holder, position);
 //            if (isHeaderPosition(position)) return;
@@ -98,7 +108,12 @@ public class EasyAdapter<T> extends RecyclerView.Adapter<EasyViewHolder> {
 //                callback.onBindViewHolder(holder, list, getRealPosition(holder), payloads);
 //            }
 //        }
-        if (isHeaderPosition(position)) return;
+        if (isHeaderPosition(position)) {
+            if (onBindHeaderListener != null) {
+                onBindHeaderListener.onBindHeader(holder);
+            }
+            return;
+        }
         if (isFooterPosition(position)) {
             if (!canScroll() && mOnLoadMoreListener != null && !mIsLoading) {
                 mIsLoading = true;
@@ -117,6 +132,41 @@ public class EasyAdapter<T> extends RecyclerView.Adapter<EasyViewHolder> {
             }
             return;
         }
+
+        final T data = list.get(getRealPosition(holder));
+        holder.setOnItemClickListener(new ClickHelper.OnClickListener() {
+            @Override
+            public void onClick(View v, float x, float y) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onClick(holder, v, data, x, y);
+                }
+            }
+        });
+        holder.setOnItemLongClickListener(new ClickHelper.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v, float x, float y) {
+                if (onItemLongClickListener != null) {
+                    return onItemLongClickListener.onLongClick(holder, v, data, x, y);
+                }
+                return false;
+            }
+        });
+
+
+        for (int i = 0; i < onClickListeners.size(); i++) {
+            int key = onClickListeners.keyAt(i);
+            View view = holder.getView(key);
+            if (view != null) {
+                final IEasy.OnClickListener<T> listener = onClickListeners.get(key);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onClick(holder, v, data);
+                    }
+                });
+            }
+        }
+
         if (callback != null) {
             callback.onBindViewHolder(holder, list, getRealPosition(holder), payloads);
         }
@@ -178,7 +228,7 @@ public class EasyAdapter<T> extends RecyclerView.Adapter<EasyViewHolder> {
         super.onViewAttachedToWindow(holder);
         ViewGroup.LayoutParams lp = holder.getItemView().getLayoutParams();
         if (lp instanceof StaggeredGridLayoutManager.LayoutParams
-                && holder.getLayoutPosition() == 0) {
+                && (isHeaderPosition(holder.getLayoutPosition()) || isFooterPosition(holder.getLayoutPosition()))) {
             StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
             p.setFullSpan(true);
         }
@@ -233,6 +283,10 @@ public class EasyAdapter<T> extends RecyclerView.Adapter<EasyViewHolder> {
         headerView.setLayoutParams(params);
         this.headerView = headerView;
         notifyItemInserted(0);
+    }
+
+    public void setOnBindHeaderListener(IEasy.OnBindHeaderListener onBindHeaderListener) {
+        this.onBindHeaderListener = onBindHeaderListener;
     }
 
     public View getHeaderView() {

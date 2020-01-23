@@ -1,11 +1,11 @@
 package com.scu.timetable.events;
 
-import com.scu.timetable.model.UpdateBean;
+import com.scu.timetable.model.UpdateInfo;
 
 public class UpdateEvent {
 
     private String errorMsg;
-    private UpdateBean updateBean;
+    private UpdateInfo updateInfo;
     private boolean isLatestVersion = false;
 
     private UpdateEvent() {
@@ -25,13 +25,13 @@ public class UpdateEvent {
         return errorMsg;
     }
 
-    public UpdateEvent setUpdateBean(UpdateBean updateBean) {
-        this.updateBean = updateBean;
+    public UpdateEvent setUpdateInfo(UpdateInfo updateInfo) {
+        this.updateInfo = updateInfo;
         return this;
     }
 
-    public UpdateBean getUpdateBean() {
-        return updateBean;
+    public UpdateInfo getUpdateInfo() {
+        return updateInfo;
     }
 
     public UpdateEvent setLatestVersion(boolean latestVersion) {
