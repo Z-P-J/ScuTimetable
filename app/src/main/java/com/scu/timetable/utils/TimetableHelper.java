@@ -68,16 +68,17 @@ public final class TimetableHelper {
             return getSubjects(json);
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("getSubjects", "e.getMessage=" + e.getMessage());
         }
         return new ArrayList<>(0);
     }
 
     public static List<ScuSubject> getSubjects(String json) throws Exception {
+        Log.d("getSubjects", "json=" + json);
         List<ScuSubject> scuSubjectList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(json).getJSONArray("dateList").getJSONObject(0);
         JSONArray jsonArray = jsonObject.getJSONArray("selectCourseList");
         for (int i = 0; i < jsonArray.length(); i++) {
-            JSONArray array = jsonArray.getJSONObject(i).getJSONArray("timeAndPlaceList");
             String attendClassTeacher = jsonArray.getJSONObject(i).getString("attendClassTeacher");
             String name = jsonArray.getJSONObject(i).getString("courseName");
             String examTypeName = jsonArray.getJSONObject(i).getString("examTypeName");
@@ -87,53 +88,56 @@ public final class TimetableHelper {
             String programPlanName = jsonArray.getJSONObject(i).getString("programPlanName");
             String studyModeName = jsonArray.getJSONObject(i).getString("studyModeName");
             int unit = jsonArray.getJSONObject(i).getInt("unit");
-            for (int j = 0; j < array.length(); j++) {
-                JSONObject object = array.getJSONObject(j);
-                String classroomName = object.getString("classroomName");
-                String teachingBuildingName = object.getString("teachingBuildingName");
-                String room = teachingBuildingName + classroomName;
-                String weekDescription = object.getString("weekDescription");
-                int start = object.getInt("classSessions");
-                int step = object.getInt("continuingSession");
-                int day = object.getInt("classDay");
-                day = day + 1;
-                if (day == 8) {
-                    day = 1;
+            JSONArray array = jsonArray.getJSONObject(i).optJSONArray("timeAndPlaceList");
+            if (array != null) {
+                for (int j = 0; j < array.length(); j++) {
+                    JSONObject object = array.getJSONObject(j);
+                    String classroomName = object.getString("classroomName");
+                    String teachingBuildingName = object.getString("teachingBuildingName");
+                    String room = teachingBuildingName + classroomName;
+                    String weekDescription = object.getString("weekDescription");
+                    int start = object.getInt("classSessions");
+                    int step = object.getInt("continuingSession");
+                    int day = object.getInt("classDay");
+                    day = day + 1;
+                    if (day == 8) {
+                        day = 1;
+                    }
+                    String campusName = object.getString("campusName");
+                    String courseNumber = object.getString("coureNumber");
+                    String courseSequenceNumber = object.getString("coureSequenceNumber");
+                    String executiveEducationPlanNumber = object.getString("executiveEducationPlanNumber");
+                    String note = "";
+                    if (object.has("note")) {
+                        note = object.getString("note");
+                    }
+                    ScuSubject scuSubject = new ScuSubject();
+                    scuSubject.setTerm("2018-2019学年春");
+                    scuSubject.setCourseName(name);
+                    scuSubject.setClassroom(classroomName);
+                    scuSubject.setTeachingBuilding(teachingBuildingName);
+                    scuSubject.setTeacher(attendClassTeacher);
+                    scuSubject.setRoom(room);
+                    scuSubject.setWeekDescription(weekDescription);
+                    scuSubject.setWeekList(getWeekList(weekDescription));
+                    scuSubject.setStart(start);
+                    scuSubject.setStep(step);
+                    scuSubject.setDay(day);
+                    scuSubject.setColorRandom(-1);
+                    scuSubject.setTime(null);
+                    scuSubject.setCourseProperties(coursePropertiesName);
+                    scuSubject.setCampusName(campusName);
+                    scuSubject.setCoureNumber(courseNumber);
+                    scuSubject.setCoureSequenceNumber(courseSequenceNumber);
+                    scuSubject.setExamType(examTypeName);
+                    scuSubject.setCourseCategory(courseCategoryName);
+                    scuSubject.setRestrictedCondition(restrictedCondition);
+                    scuSubject.setProgramPlan(programPlanName);
+                    scuSubject.setStudyMode(studyModeName);
+                    scuSubject.setUnit("" + unit);
+                    scuSubject.setNote(note);
+                    scuSubjectList.add(scuSubject);
                 }
-                String campusName = object.getString("campusName");
-                String courseNumber = object.getString("coureNumber");
-                String courseSequenceNumber = object.getString("coureSequenceNumber");
-                String executiveEducationPlanNumber = object.getString("executiveEducationPlanNumber");
-                String note = "";
-                if (object.has("note")) {
-                    note = object.getString("note");
-                }
-                ScuSubject scuSubject = new ScuSubject();
-                scuSubject.setTerm("2018-2019学年春");
-                scuSubject.setCourseName(name);
-                scuSubject.setClassroom(classroomName);
-                scuSubject.setTeachingBuilding(teachingBuildingName);
-                scuSubject.setTeacher(attendClassTeacher);
-                scuSubject.setRoom(room);
-                scuSubject.setWeekDescription(weekDescription);
-                scuSubject.setWeekList(getWeekList(weekDescription));
-                scuSubject.setStart(start);
-                scuSubject.setStep(step);
-                scuSubject.setDay(day);
-                scuSubject.setColorRandom(-1);
-                scuSubject.setTime(null);
-                scuSubject.setCourseProperties(coursePropertiesName);
-                scuSubject.setCampusName(campusName);
-                scuSubject.setCoureNumber(courseNumber);
-                scuSubject.setCoureSequenceNumber(courseSequenceNumber);
-                scuSubject.setExamType(examTypeName);
-                scuSubject.setCourseCategory(courseCategoryName);
-                scuSubject.setRestrictedCondition(restrictedCondition);
-                scuSubject.setProgramPlan(programPlanName);
-                scuSubject.setStudyMode(studyModeName);
-                scuSubject.setUnit("" + unit);
-                scuSubject.setNote(note);
-                scuSubjectList.add(scuSubject);
             }
         }
         return scuSubjectList;

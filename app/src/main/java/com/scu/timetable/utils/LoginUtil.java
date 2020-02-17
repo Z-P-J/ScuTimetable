@@ -2,6 +2,7 @@ package com.scu.timetable.utils;
 
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.scu.timetable.model.SemesterInfo;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -233,8 +235,12 @@ public final class LoginUtil {
             return null;
         } else {
             Log.d("securityCheck", "set-cookie=" + response.header("Set-Cookie"));
-            sendMessage(2, cookie + "; " + response.header("Set-Cookie"));
+            String setCookie = response.header("Set-Cookie");
             Log.d("securityCheck", "cookie2=" + cookie);
+            if (!TextUtils.isEmpty(setCookie)) {
+                sendMessage(2, cookie + "; " + setCookie);
+            }
+            Log.d("securityCheck", "cookie2=" + response.cookies().toString());
             sendMessage(4, null);
             return response;
         }

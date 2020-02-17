@@ -43,7 +43,7 @@ public class TimetableWidget extends AppWidgetProvider {
                 }
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 int [] appIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, TimetableWidget.class));
-                appWidgetManager.updateAppWidget(appIds, TimetableWidgtHelper.refreshViews(context));
+                appWidgetManager.updateAppWidget(appIds, TimetableWidgtHelper.getInstance().refreshViews(context));
             }
         }
         super.onReceive(context, intent);
@@ -52,7 +52,7 @@ public class TimetableWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] iArr) {
         for (int i : iArr) {
-            appWidgetManager.updateAppWidget(i, TimetableWidgtHelper.refreshViews(context));
+            appWidgetManager.updateAppWidget(i, TimetableWidgtHelper.getInstance().refreshViews(context));
         }
     }
 
@@ -72,6 +72,6 @@ public class TimetableWidget extends AppWidgetProvider {
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int i, Bundle bundle) {
-        appWidgetManager.updateAppWidget(i, TimetableWidgtHelper.refreshViews(context));
+        appWidgetManager.updateAppWidget(i, TimetableWidgtHelper.getInstance().refreshViews(context));
     }
 }

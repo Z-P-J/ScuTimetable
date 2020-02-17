@@ -35,26 +35,39 @@ import java.util.UUID;
  */
 public final class TimetableWidgtHelper {
 
-    private static RemoteViews remoteViews;
+    private volatile static TimetableWidgtHelper helper;
+
+    private RemoteViews remoteViews;
     @IdRes
-    private static int res;
+    private int res;
 
     private static final SparseArray<List<ScuSubject>> SUBJECT_SPARSE_ARRAY = new SparseArray<>(7);
 
-    private static List<ScuSubject> scuSubjects;
+    private List<ScuSubject> scuSubjects;
 
-    private static PendingIntent pendingIntent;
+    private PendingIntent pendingIntent;
 
-    private static boolean showWeekends;
+    private boolean showWeekends;
 
-    private static int currentDay;
+    private int currentDay;
 
-    private static List<Integer> canHideRows = new ArrayList<>();
-    private static List<Integer> canHideColumns = new ArrayList<>();
+    private final List<Integer> canHideRows = new ArrayList<>();
+    private final List<Integer> canHideColumns = new ArrayList<>();
 
     private TimetableWidgtHelper() { }
 
-    public static RemoteViews refreshViews(Context context) {
+    public static TimetableWidgtHelper getInstance() {
+        if (helper == null) {
+            synchronized (TimetableWidgtHelper.class) {
+                if (helper == null) {
+                    helper = new TimetableWidgtHelper();
+                }
+            }
+        }
+        return helper;
+    }
+
+    public RemoteViews refreshViews(Context context) {
         boolean isSmartShowWeekends = isSmartShowWeekends();
         currentDay = DateUtil.dayOfWeek();
         showWeekends = true;
@@ -87,7 +100,7 @@ public final class TimetableWidgtHelper {
         return remoteViews;
     }
 
-    public static RemoteViews getRemoteViews(Context context) {
+    public RemoteViews getRemoteViews(Context context) {
         return remoteViews;
     }
 
@@ -97,7 +110,7 @@ public final class TimetableWidgtHelper {
 
     public static void toggleSmartShowWeekends(Context context) {
         SPHelper.putBoolean("widget_smart_show_weekends", !isSmartShowWeekends());
-        update(context);
+        getInstance().update(context);
     }
 
     public static boolean isTransparentMode() {
@@ -106,16 +119,16 @@ public final class TimetableWidgtHelper {
 
     public static void toggleTransparentMode(Context context) {
         SPHelper.putBoolean("widget_transparent_mode", !isTransparentMode());
-        update(context);
+        getInstance().update(context);
     }
 
-    private static void update(Context context) {
+    private void update(Context context) {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int [] appIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, TimetableWidget.class));
         appWidgetManager.updateAppWidget(appIds, refreshViews(context));
     }
 
-    private static boolean showTimetable(Context ctx) {
+    private boolean showTimetable(Context ctx) {
         if (TimetableHelper.isLogined(ctx) || TimetableHelper.isVisitorMode()) {
             remoteViews.setViewVisibility(R.id.widget_llyt_no_course, View.INVISIBLE);
             remoteViews.setViewVisibility(R.id.course_widget_4_4_week_course, View.VISIBLE);
@@ -134,13 +147,13 @@ public final class TimetableWidgtHelper {
         }
     }
 
-    private static void clickToLoginActivity(Context context, int i) {
+    private void clickToLoginActivity(Context context, int i) {
         Intent intent = new Intent(context, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         remoteViews.setOnClickPendingIntent(i, PendingIntent.getActivity(context, 17,intent, PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
-    private static void clickToVisitorMode(Context context, int i) {
+    private void clickToVisitorMode(Context context, int i) {
         Intent intent = new Intent();
         intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
         intent.putExtra("visitor_mode", true);
@@ -148,7 +161,7 @@ public final class TimetableWidgtHelper {
         remoteViews.setOnClickPendingIntent(i, pendingIntent);
     }
 
-    private static List<ScuSubject> getColorReflect(List<ScuSubject> schedules) {
+    private List<ScuSubject> getColorReflect(List<ScuSubject> schedules) {
         if (schedules == null || schedules.size() == 0) {
             return schedules;
         }
@@ -175,7 +188,7 @@ public final class TimetableWidgtHelper {
         return schedules;
     }
 
-    private static void initSubjects() {
+    private void initSubjects() {
         SUBJECT_SPARSE_ARRAY.clear();
         for (int i = 0; i < 7; i++) {
             List<ScuSubject> scuSubjectList = new ArrayList<>(12);
@@ -247,7 +260,7 @@ public final class TimetableWidgtHelper {
         }
     }
 
-    private static void showTimetable(Context context, @IdRes int i) {
+    private void showTimetable(Context context, @IdRes int i) {
         res = i;
         remoteViews.removeAllViews(i);
         //初始化节数
@@ -258,7 +271,7 @@ public final class TimetableWidgtHelper {
     }
 
     //初始化节数侧边栏
-    private static void initSlideBar(Context context) {
+    private void initSlideBar(Context context) {
         RemoteViews colum = new RemoteViews(context.getPackageName(), R.layout.course_widget_4_4_section_colum);
         int i = 1;
         while (i < 13) {
@@ -271,7 +284,7 @@ public final class TimetableWidgtHelper {
         remoteViews.addView(res, colum);
     }
 
-    private static void showTimetableWeekBar(Context context, @IdRes int resId) {
+    private void showTimetableWeekBar(Context context, @IdRes int resId) {
         remoteViews.removeAllViews(resId);
         remoteViews.addView(resId, new RemoteViews(context.getPackageName(), R.layout.course_widget_4_4_week_view_section_colum));
 
@@ -295,7 +308,7 @@ public final class TimetableWidgtHelper {
     }
 
     //初始化课程显示的每列
-    private static void initColumns(Context context) {
+    private void initColumns(Context context) {
         ScheduleColorPool colorPool = new ScheduleColorPool(context);
         for (int i = 1; i <= 7; i++) {
             if (!showWeekends) {
@@ -347,7 +360,7 @@ public final class TimetableWidgtHelper {
 
     //获取每个课程的view
     @LayoutRes
-    private static int getCourseViewRes(int step) {
+    private int getCourseViewRes(int step) {
         switch (step) {
             case 1:
                 return R.layout.course_widget_4_4_course_view_1;
@@ -367,7 +380,7 @@ public final class TimetableWidgtHelper {
     }
 
     @LayoutRes
-    private static int getDisplayViewRes(int step) {
+    private int getDisplayViewRes(int step) {
         switch (step) {
             case 1:
                 return R.layout.course_widget_4_4_display_view_1;
@@ -387,7 +400,7 @@ public final class TimetableWidgtHelper {
     }
 
     //设置点击事件
-    private static void onClick(Context context, RemoteViews remoteViews, int i) {
+    private void onClick(Context context, RemoteViews remoteViews, int i) {
         if (i > 0) {
             if (pendingIntent == null) {
                 Intent intent = new Intent(context, MainActivity.class);
