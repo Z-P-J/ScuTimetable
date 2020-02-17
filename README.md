@@ -1,6 +1,6 @@
 # scuTimetable
 一个简单的四川大学课程表android客户端（~~由于川大教务系统更新了，可能该软件已不能使用~~）。
-软件已上架手机乐园，下载地址：[https://soft.shouji.com.cn/down/1555815.html](https://soft.shouji.com.cn/down/1555815.html)
+软件已上架手机乐园，[下载地址](https://soft.shouji.com.cn/down/1555815.html)
 
 ## 截图
 <div>

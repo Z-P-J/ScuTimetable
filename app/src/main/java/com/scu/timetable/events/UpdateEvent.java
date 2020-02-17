@@ -4,7 +4,6 @@ import com.scu.timetable.model.UpdateInfo;
 
 public class UpdateEvent {
 
-    private String errorMsg;
     private UpdateInfo updateInfo;
     private boolean isLatestVersion = false;
 
@@ -14,15 +13,6 @@ public class UpdateEvent {
 
     public static UpdateEvent create() {
         return new UpdateEvent();
-    }
-
-    public UpdateEvent setErrorMsg(String errorMsg) {
-        this.errorMsg = errorMsg;
-        return this;
-    }
-
-    public String getErrorMsg() {
-        return errorMsg;
     }
 
     public UpdateEvent setUpdateInfo(UpdateInfo updateInfo) {

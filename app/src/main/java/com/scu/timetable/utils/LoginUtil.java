@@ -8,6 +8,7 @@ import com.scu.timetable.model.SemesterInfo;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.Connection;
+import com.zpj.http.core.ObservableTask;
 import com.zpj.http.parser.html.nodes.Document;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
@@ -24,11 +25,61 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.ObservableOnSubscribe;
+
 /**
  * @author Z-P-J
  * @date 2019/5/16 10:26
  */
 public final class LoginUtil {
+
+    public void onGetCookie(String cookie) {
+        SPHelper.putString("cookie", cookie);
+        if (loginCallback != null) {
+            loginCallback.onGetCookie(cookie);
+        }
+    }
+
+    public void onLoginSuccess() {
+        if (loginCallback != null) {
+            loginCallback.onLoginSuccess();
+        }
+    }
+
+    public void onLoginFailed() {
+        if (loginCallback != null) {
+            loginCallback.onLoginFailed();
+        }
+    }
+
+    public void onLoginError(String errorMsg) {
+        if (loginCallback != null) {
+            if (errorMsg.contains("badCredentials")) {
+                Log.d("重新登录", "重新登录");
+            } else if (errorMsg.contains("badCaptcha")) {
+                Log.d("验证码错误", "验证码错误");
+            }
+            loginCallback.onLoginError(errorMsg);
+        }
+    }
+
+    public void onGetTimetable(JSONObject jsonObject) {
+        if (loginCallback != null) {
+            loginCallback.onGetTimetable(jsonObject);
+        }
+    }
+
+    public void onGetTimetableFinished() {
+        if (loginCallback != null) {
+            loginCallback.onGetTimetableFinished();
+        }
+    }
+
+    public void onGetSemesters(String json) {
+        if (loginCallback != null) {
+            loginCallback.onGetSemesters(json);
+        }
+    }
 
     private static final class MyHandler extends Handler {
         private final WeakReference<LoginUtil> reference;
@@ -47,12 +98,18 @@ public final class LoginUtil {
 
     public interface LoginCallback {
         void onGetCookie(String cookie);
+
         void onLoginSuccess();
+
         void onLoginFailed();
-//        void onLoginError(Throwable e);
+
+        //        void onLoginError(Throwable e);
         void onLoginError(String errorMsg);
+
         void onGetTimetable(JSONObject jsonObject);
+
         void onGetTimetableFinished();
+
         void onGetSemesters(String json);
     }
 
@@ -131,66 +188,47 @@ public final class LoginUtil {
     }
 
     public void checkCaptcha(final String captcha) {
-        ExecutorHelper.submit(() -> {
-            try {
-                securityCheck(captcha);
-            } catch (IOException e) {
-                e.printStackTrace();
-                sendMessage(-1, e.getMessage());
-            }
-        });
+        new ObservableTask<>((ObservableOnSubscribe<Connection.Response>) emitter -> {
+            emitter.onNext(securityCheck(captcha));
+            emitter.onComplete();
+        })
+                .onError(e -> onLoginError(e.getMessage()))
+                .subscribe();
+//        ObservableTask<Document> task = securityCheck(captcha);
+//        if (task != null) {
+//            task.onError(e -> onLoginError(e.getMessage())).subscribe();
+//        }
     }
 
-    private Connection.Response securityCheck(final String captcha) throws IOException {
+    private Connection.Response securityCheck(final String captcha) throws Exception {
 
         String userName = EncryptionUtils.decryptByAES(SPHelper.getString("user_name", ""));
         String password = Md5Utils.md5Encrypt(EncryptionUtils.decryptByAES(SPHelper.getString("password", "")));
         if (userName.isEmpty() || password.isEmpty()) {
-            sendMessage(-1, "You have to log in first.");
-            return null;
+            throw new Exception("You have to log in first.");
         }
         final String cookie = SPHelper.getString("cookie", "");
         if (cookie.isEmpty()) {
-            sendMessage(-1, "You have to get the cookie first.");
-            return null;
+            throw new Exception("You have to get the cookie first.");
         }
 
-//        Connection.Response response = Jsoup.connect("http://zhjw.scu.edu.cn/logout")
-//                .followRedirects(true)
-//                .header("cookie", SPHelper.getString("cookie", ""))
-//                .userAgent(TimetableHelper.UA)
-//                .ignoreContentType(true)
-//                .ignoreHttpErrors(true)
-//                .execute();
-//        Log.d("securityCheck", "/logout body=" + response.body());
-//
-//        response = Jsoup.connect("http://202.115.47.141/login")
-//                .followRedirects(false)
-//                .userAgent(TimetableHelper.UA)
-//                .ignoreContentType(true)
-//                .execute();
-//
-//        String cookie = response.header("Set-Cookie");
-//        Log.d("securityCheck", "cookie1=" + cookie);
-//        sendMessage(2, cookie);
-
-        Connection.Response response = ZHttp.get("http://202.115.47.141/j_spring_security_check")
-                .method(Connection.Method.POST)
+        Connection.Response response = ZHttp.post("http://202.115.47.141/j_spring_security_check")
                 .onRedirect(redirectUrl -> true)
-                .header("Cookie", cookie)
+                .cookie(cookie)
                 .userAgent(TimetableHelper.UA)
-                .header("Referer", "http://202.115.47.141/login")
+                .referer("http://202.115.47.141/login")
                 .data("j_username", userName)
                 .data("j_password", password)
                 .data("j_captcha", captcha)
                 .data("_spring_security_remember_me", "on")
                 .ignoreHttpErrors(true)
                 .ignoreContentType(true)
-                .execute();
+                .syncExecute();
         Log.d("securityCheck", "location=" + response.header("location"));
         Log.d("securityCheck", "body=" + response.body());
         Log.d("securityCheck", "statusCode=" + response.statusCode());
-        if (response.statusCode() != 200 || response.body().contains("badCredentials") || response.body().contains("欢迎登录四川大学教务管理系统")) {
+        if (response.statusCode() != 200 || response.body().contains("badCredentials")
+                || response.body().contains("欢迎登录四川大学教务管理系统")) {
             sendMessage(3, null);
             return null;
         } else {
@@ -207,11 +245,11 @@ public final class LoginUtil {
         Document document = ZHttp.get("http://zhjw.scu.edu.cn/student/courseSelect/calendarSemesterCurriculum/index")
                 .header("cookie", SPHelper.getString("cookie", ""))
                 .header("Referer", "http://zhjw.scu.edu.cn/")
-                .toHtml();
+                .syncToHtml();
         Elements elements = document.getElementById("planCode").select("option");
         JSONArray jsonArray = new JSONArray();
         String currentSemesterCode = "2018-2019-2-1";
-        String currentSenesterName  = "2018-2019学年春(当前)";
+        String currentSenesterName = "2018-2019学年春(当前)";
         for (Element element : elements) {
             JSONObject jsonObject = new JSONObject();
             String semesterName = element.text().replaceAll("#", "").trim();
@@ -228,96 +266,85 @@ public final class LoginUtil {
             jsonObject.put("code", semesterCode);
             jsonArray.put(jsonObject);
         }
-        sendMessage(6, jsonArray.toString());
+        onGetSemesters(jsonArray.toString());
         TimetableHelper.setCurrentSemester(currentSemesterCode, currentSenesterName);
         return semesterInfoList;
     }
 
-    private void getTimetable(final String currentSemesterCode) throws Exception {
+    private JSONObject getTimetable(final String currentSemesterCode) throws Exception {
         JSONObject jsonObject = ZHttp.post("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
-//                .method(Connection.Method.POST)
                 .userAgent(TimetableHelper.UA)
                 .ignoreContentType(true)
                 .header("Cookie", SPHelper.getString("cookie", ""))
                 .header("Referer", "http://202.115.47.141/student/courseSelect/calendarSemesterCurriculum/index")
                 .data("planCode", currentSemesterCode)
-                .toJsonObject();
+                .syncToJsonObject();
 
         jsonObject.put("semester_code", currentSemesterCode);
-        sendMessage(5, jsonObject);
+        return jsonObject;
+    }
 
-//        Log.d("课程信息", "" + response.body());
+//    public static void main(String[] args) {
+//        Calendar calendar = Calendar.getInstance();
+//        int year = calendar.get(Calendar.YEAR);
+//        int month = calendar.get(Calendar.MONTH) + 1;
+//        int day = calendar.get(Calendar.DATE);
+//        System.out.println("year=" + year + " month=" + month + " day=" + day );
+//        ZHttp.get(String.format(Locale.CHINA, "http://jwc.scu.edu.cn/scdx/xl%d.html", year))
+//                .userAgent(TimetableHelper.UA)
+//                .ignoreContentType(true)
+//                .toHtml()
+//                .onSuccess(doc -> {
+//                    int currentWeek;
+//                    String firstDay = "";
+//                    String monthStr = "";
+//                    if (month == 1 || month == 2 || month == 3) {
+//                        firstDay = doc.select("table").get(1).select("tr").get(2).select("td").get(3).text().trim();
+//                        int first = Integer.parseInt(firstDay);
+//                        String info = doc.select("table").get(1).select("tr").get(2).select("td").get(10).select("p").get(1).select("strong").text();
+//                        System.out.println("info1=" + info);
+//                        if (first < 10) {
+//                            firstDay = "0" + firstDay;
+//                        }
 //
-//        String json = response.body().trim();
-//        if (json.startsWith("{\"allUnits\"")) {
-//            JSONObject jsonObject = new JSONObject(json);
-//            jsonObject.put("semester_code", currentSemesterCode);
-//            sendMessage(5, jsonObject);
-//        }
-    }
+//                        if (info.contains("3月") || first <= 10) {
+//                            //3
+//                            monthStr = "-03-";
+//                        } else {
+//                            //2
+//                            monthStr = "-02-";
+//                        }
+//
+//                    } else if (month == 7 || month == 8 || month == 9) {
+//                        firstDay = doc.select("table").get(0).select("tr").get(2).select("td").get(3).text().trim();
+//                        int first = Integer.parseInt(firstDay);
+//                        String info = doc.select("table").get(0).select("tr").get(2).select("td").get(10).select("p").get(1).select("strong").text();
+//                        System.out.println("info2=" + info);
+//                        if (first < 10) {
+//                            firstDay = "0" + firstDay;
+//                        }
+//                        if (info.contains("9月") || first <= 10) {
+//                            //9
+//                            monthStr = "-09-";
+//                        } else {
+//                            //8
+//                            monthStr = "-08-";
+//                        }
+//                    }
+//                    if (monthStr.equals("")) {
+//                        System.out.println("empty");
+//                        currentWeek = 1;
+//                    } else {
+//                        System.out.println(year + monthStr + firstDay);
+//                        currentWeek = -DateUtil.computeWeek(DateUtil.parse("2019-08-30"), DateUtil.parse(year + monthStr + firstDay));
+//                    }
+//                    System.out.println("currentWeek=" + currentWeek);
+//                })
+//                .subscribe();
+//    }
 
-    public static void main(String[] args) {
-        try {
-            int currentWeek;
-            Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH) + 1;
-            int day = calendar.get(Calendar.DATE);
-            System.out.println("year=" + year + " month=" + month + " day=" + day );
-            Document doc = ZHttp.get(String.format(Locale.CHINA, "http://jwc.scu.edu.cn/scdx/xl%d.html", year))
-                    .userAgent(TimetableHelper.UA)
-                    .ignoreContentType(true)
-                    .toHtml();
-            String firstDay = "";
-            String monthStr = "";
-            if (month == 1 || month == 2 || month == 3) {
-                firstDay = doc.select("table").get(1).select("tr").get(2).select("td").get(3).text().trim();
-                int first = Integer.parseInt(firstDay);
-                String info = doc.select("table").get(1).select("tr").get(2).select("td").get(10).select("p").get(1).select("strong").text();
-                System.out.println("info1=" + info);
-                if (first < 10) {
-                    firstDay = "0" + firstDay;
-                }
-
-                if (info.contains("3月") || first <= 10) {
-                    //3
-                    monthStr = "-03-";
-                } else {
-                    //2
-                    monthStr = "-02-";
-                }
-
-            } else if (month == 7 || month == 8 || month == 9) {
-                firstDay = doc.select("table").get(0).select("tr").get(2).select("td").get(3).text().trim();
-                int first = Integer.parseInt(firstDay);
-                String info = doc.select("table").get(0).select("tr").get(2).select("td").get(10).select("p").get(1).select("strong").text();
-                System.out.println("info2=" + info);
-                if (first < 10) {
-                    firstDay = "0" + firstDay;
-                }
-                if (info.contains("9月") || first <= 10) {
-                    //9
-                    monthStr = "-09-";
-                } else {
-                    //8
-                    monthStr = "-08-";
-                }
-            }
-            if (monthStr.equals("")) {
-                System.out.println("empty");
-                currentWeek = 1;
-            } else {
-                System.out.println(year + monthStr + firstDay);
-                currentWeek = -DateUtil.computeWeek(DateUtil.parse("2019-08-30"), DateUtil.parse(year + monthStr + firstDay));
-            }
-            System.out.println("currentWeek=" + currentWeek);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getCurrentWeek(Connection.Response response) {
-        Document document = ZHttp.parse(response.body());
+    private void getCurrentWeek(Document document) {
+//        Document document = ZHttp.parse(response.body());
         Elements elements = document.select("li");
         String text = elements.select(".light-red").get(0).select("a").get(0).text();
         Log.d("text", "text=" + text);
@@ -328,11 +355,11 @@ public final class LoginUtil {
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH) + 1;
                 int day = calendar.get(Calendar.DATE);
-                System.out.println("year=" + year + " month=" + month + " day=" + day );
+                System.out.println("year=" + year + " month=" + month + " day=" + day);
                 Document doc = ZHttp.get(String.format(Locale.CHINA, "http://jwc.scu.edu.cn/scdx/xl%d.html", year))
                         .userAgent(TimetableHelper.UA)
                         .ignoreContentType(true)
-                        .toHtml();
+                        .syncToHtml();
                 String firstDay = "";
                 String monthStr = "";
                 if (month == 1 || month == 2 || month == 3) {
@@ -390,43 +417,35 @@ public final class LoginUtil {
 
     private void login(final String captcha) {
         Log.d("captcha", "captcha=" + captcha);
-        ExecutorHelper.submit(() -> {
-            try {
-                Connection.Response response = securityCheck(captcha);
-                if (response != null) {
-                    getCurrentWeek(response);
+        new ObservableTask<>((ObservableOnSubscribe<Connection.Response>) emitter -> {
+            emitter.onNext(securityCheck(captcha));
+            emitter.onComplete();
+        })
+                .flatMap((ObservableTask.OnFlatMapListener<Connection.Response, JSONObject>) (res, emitter) -> {
+                    getCurrentWeek(res.parse());
                     for (SemesterInfo semester : getSemesters()) {
-                        getTimetable(semester.getSemesterCode());
+                        emitter.onNext(getTimetable(semester.getSemesterCode()));
                     }
-                    sendMessage(7, null);
-//                        String currentSemesterCode = getSemesters();
-//                        getTimetable(currentSemesterCode);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                sendMessage(-1, e.getMessage());
-            }
-        });
+                })
+                .onSuccess(this::onGetTimetable)
+                .onError(throwable -> onLoginError(throwable.getMessage()))
+                .onComplete(this::onGetTimetableFinished)
+                .subscribe();
     }
 
     public void login(final String captcha, final String semesterCode) {
         Log.d("captcha", "captcha=" + captcha);
-        ExecutorHelper.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Connection.Response response = securityCheck(captcha);
-                    if (response != null) {
-//                        getCurrentWeek(response);
-                        getTimetable(semesterCode);
-                        sendMessage(7, null);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    sendMessage(-1, e.getMessage());
-                }
-            }
-        });
+        new ObservableTask<>((ObservableOnSubscribe<Connection.Response>) emitter -> {
+            emitter.onNext(securityCheck(captcha));
+            emitter.onComplete();
+        })
+                .flatMap((ObservableTask.OnFlatMapListener<Connection.Response, JSONObject>) (data, emitter) -> {
+                    emitter.onNext(getTimetable(semesterCode));
+                })
+                .onSuccess(this::onGetTimetable)
+                .onError(throwable -> onLoginError(throwable.getMessage()))
+                .onComplete(this::onGetTimetableFinished)
+                .subscribe();
     }
 
     public void login(final String userName, final String password, final String captcha) {
@@ -436,23 +455,20 @@ public final class LoginUtil {
     }
 
     public void getCookie() {
-        ExecutorHelper.submit(() -> {
-            try {
-                Connection.Response response = ZHttp.get("http://202.115.47.141/login")
-                        .onRedirect(redirectUrl -> false)
-                        .userAgent(TimetableHelper.UA)
-                        .ignoreContentType(true)
-                        .execute();
-                Log.d("body=", "" + response.body());
-                Log.d("headers", response.headers().toString());
-                String cookie = response.header("Set-Cookie");
-                Log.d("cookie", "cookie=" + cookie);
-                sendMessage(2, cookie);
-            } catch (Exception e) {
-                e.printStackTrace();
-                sendMessage(-1, e.getMessage());
-            }
-        });
+        ZHttp.get("http://202.115.47.141/login")
+                .onRedirect(redirectUrl -> false)
+                .userAgent(TimetableHelper.UA)
+                .ignoreContentType(true)
+                .execute()
+                .onSuccess(response -> {
+                    Log.d("body=", "" + response.body());
+                    Log.d("headers", response.headers().toString());
+                    String cookie = response.header("Set-Cookie");
+                    Log.d("cookie", "cookie=" + cookie);
+                    onGetCookie(cookie);
+                })
+                .onError(e -> onLoginError(e.getMessage()))
+                .subscribe();
     }
 
 }

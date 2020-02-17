@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,6 +47,8 @@ import java.util.List;
  */
 public final class MainFragment extends BaseFragment implements View.OnClickListener {
 
+    private final static String TAG = "MainFragment";
+
     private Drawable expandMoreDrawable;
     private Drawable expandLessDrawable;
 
@@ -63,31 +66,6 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     private long firstTime = 0;
 
     private int currentWeek;
-
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.fragment_main);
-//
-//        AlarmService.start(this);
-//
-//        expandMoreDrawable = getResources().getDrawable(R.drawable.ic_expand_more_white_24dp);
-//        expandLessDrawable = getResources().getDrawable(R.drawable.ic_expand_less_white_24dp);
-//
-//        currentWeek = TimetableHelper.getCurrentWeek();
-//
-//        ImageView settings = findViewById(R.id.settins);
-//        settings.setOnClickListener(this);
-//        titleTextView = findViewById(R.id.id_title);
-//        toggleTitle(true);
-//        layout = findViewById(R.id.id_layout);
-//        layout.setOnClickListener(this);
-//        initTimetableView();
-//
-//        initData();
-//        UpdateUtil.with(this).checkUpdate(this);
-////        AlarmReceiver.startAlarm(this);
-//    }
 
     @Override
     protected int getLayoutId() {
@@ -267,90 +245,12 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                 })
                 .apply()
                 .show(view);
-
-//        CustomPopupMenuView.with(getContext(), R.layout.layout_menu)
-//                .setOrientation(LinearLayout.VERTICAL)
-//                .setBackgroundAlpha(getActivity(), 0.9f, 500)
-//                .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
-////                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_X, 350, 100, 0)
-////                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_Y, 350, -100, 0)
-////                .setAnimationAlphaShow(350, 0.0f, 1.0f)
-////                .setAnimationAlphaDismiss(350, 1.0f, 0.0f)
-//                .initViews(
-//                        1,
-//                        (popupMenuView, itemView, position) -> {
-//
-//                            FrameLayout toolsFrameLayout = itemView.findViewById(R.id.tools);
-//                            OptionMenuView tools = new OptionMenuView(getContext());
-//                            tools.setOrientation(LinearLayout.VERTICAL);
-//                            tools.inflate(R.menu.menu_tools, new MenuBuilder(getContext()));
-//                            tools.setOnOptionMenuClickListener((index, menu) -> {
-//                                if (!menu.isEnable()) {
-//                                    if (index == 0) {
-//                                        AToast.normal("请关闭智能显示周末后再试！");
-//                                    }
-//                                    return false;
-//                                }
-//                                popupMenuView.dismiss();
-//                                switch (index) {
-//                                    case 0:
-//                                        mTimetableView.isShowWeekends(menu.isChecked()).updateView();
-//                                        TimetableHelper.toggleShowWeekends();
-//                                        break;
-//                                    case 1:
-//                                        toggleTime(menu.isChecked());
-//                                        TimetableHelper.toggleShowTime();
-//                                        break;
-//                                    case 2:
-//                                        mTimetableView.isShowNotCurWeek(menu.isChecked()).updateView();
-//                                        TimetableHelper.toggleShowNotCurWeek();
-//                                        break;
-//                                    case 3:
-//                                        onWeekLeftLayoutClicked();
-//                                        break;
-//                                    case 4:
-//                                        showChooseSemesterDialog();
-//                                        break;
-//                                    case 5:
-//                                        showRefreshDialog();
-//                                        break;
-//                                    case 6:
-//                                        start(new EvaluationFragment());
-////                                        EvaluationDialogFragment dialogFragment = new EvaluationDialogFragment();
-////                                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-////                                        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-////                                        dialogFragment.show(fragmentTransaction, "evaluation");
-//                                        break;
-//                                    case 7:
-//                                        showSettingDialogFragment();
-//                                        break;
-//                                    default:
-//                                        break;
-//                                }
-//                                return true;
-//                            });
-//                            toolsFrameLayout.addView(tools);
-//
-//                            if (TimetableHelper.isSmartShowWeekends()) {
-//                                tools.setEnabled(0, false);
-//                            }
-//                            tools.setChecked(0, mTimetableView.isShowWeekends());
-//                            tools.setChecked(1, TimetableHelper.isShowTime());
-//                            tools.setChecked(2, TimetableHelper.isShowNotCurWeek());
-//
-//                        })
-//                .show(view);
     }
 
     private void showSubjectPopupView(final View view, final ScuSubject scuSubject) {
         CustomPopupMenuView.with(getContext(), R.layout.layout_subject_detail)
                 .setOrientation(LinearLayout.VERTICAL)
-//                .setBackgroundAlpha(MainActivity.this, 0.9f)
                 .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
-//                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_X, 350, 100, 0)
-//                .setAnimationTranslationShow(CustomPopupMenuView.DIRECTION_Y, 350, -100, 0)
-//                .setAnimationAlphaShow(350, 0.0f, 1.0f)
-//                .setAnimationAlphaDismiss(350, 1.0f, 0.0f)
                 .initViews(
                         1,
                         (popupMenuView, itemView, position) -> {
@@ -381,16 +281,6 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                             more.setOnClickListener(v -> {
                                 popupMenuView.dismiss();
                                 start(DetailFragment.newInstance(scuSubject));
-//                                DetailDialogFragment dialogFragment = new DetailDialogFragment();
-//                                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//                                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//                                dialogFragment.setCallback(new DetailDialogFragment.Callback() {
-//                                    @Override
-//                                    public ScuSubject fechSubject() {
-//                                        return scuSubject;
-//                                    }
-//                                });
-//                                dialogFragment.show(fragmentTransaction, "detail");
                             });
 
                             ImageView alarm = itemView.findViewById(R.id.subject_alarm);
@@ -460,139 +350,109 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                     }
                 })
                 .show();
-//        QXListDialog<SemesterInfo> dialog = new QXListDialog<>(this);
-//        dialog.setItemList(TimetableHelper.getSemesterList(this))
-//                .setItemRes(R.layout.layout_semester_item)
-//                .setGravity(Gravity.BOTTOM)
-//                .setEasyAdapterCallback(new EasyAdapter.EasyAdapterCallback<SemesterInfo>() {
-//                    @Override
-//                    public EasyAdapter.ViewHolder onCreateViewHolder(List<SemesterInfo> list, View itemView, int i) {
-//                        return null;
-//                    }
-//
-//                    @Override
-//                    public void onBindViewHolder(List<SemesterInfo> list, View itemView, int i) {
-//                        TextView textView = itemView.findViewById(R.id.text_view);
-//                        textView.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                if (TimetableHelper.getCurrentSemesterCode().equals(list.get(i).getSemesterCode())) {
-//                                    return;
-//                                }
-////                                Toast.makeText(MainActivity.this, "请输入验证码刷新课表！", Toast.LENGTH_SHORT).show();
-//                                TimetableHelper.setCurrentSemester(list.get(i).getSemesterCode(), list.get(i).getSemesterName());
-//                                initTimetableView();
-//                                initData();
-//                                dialog.dismiss();
-//                            }
-//                        });
-//                        textView.setText(list.get(i).getSemesterName());
-//                        if (TimetableHelper.getCurrentSemesterCode().equals(list.get(i).getSemesterCode())) {
-//                            textView.setTextColor(Color.BLACK);
-//                        }
-//                    }
-//                })
-//                .show();
     }
 
     private void showRefreshDialog() {
         ZDialog.with(getContext())
                 .setContentView(R.layout.layout_refresh)
-                .setOnViewCreateListener(new IDialog.OnViewCreateListener() {
-                    @Override
-                    public void onViewCreate(IDialog dialog, View view) {
-                        LinearLayout container = view.findViewById(R.id.container);
-                        LinearLayout statusLayout = view.findViewById(R.id.layout_status);
-                        TextView loadingDialogText = view.findViewById(R.id.loading_dialog_text);
+                .setOnViewCreateListener((dialog, view) -> {
+                    LinearLayout container = view.findViewById(R.id.container);
+                    LinearLayout statusLayout = view.findViewById(R.id.layout_status);
+                    TextView loadingDialogText = view.findViewById(R.id.loading_dialog_text);
 
-                        ImageView imgCatpcha = view.findViewById(R.id.img_captcha);
-                        CaptchaFetcher.fetchCaptcha(imgCatpcha);
-                        ImageView btnClose = view.findViewById(R.id.btn_close);
-                        btnClose.setOnClickListener(v -> dialog.dismiss());
-                        TextView changeCatpcha = view.findViewById(R.id.change_captcha);
-                        changeCatpcha.setOnClickListener(v -> CaptchaFetcher.fetchCaptcha(imgCatpcha));
-                        TextView btnRefresh = view.findViewById(R.id.btn_refresh);
-                        EditText captchaEdit = view.findViewById(R.id.captcha);
+                    ImageView imgCatpcha = view.findViewById(R.id.img_captcha);
+                    CaptchaFetcher.fetchCaptcha(imgCatpcha);
+                    ImageView btnClose = view.findViewById(R.id.btn_close);
+                    btnClose.setOnClickListener(v -> dialog.dismiss());
+                    TextView changeCatpcha = view.findViewById(R.id.change_captcha);
+                    changeCatpcha.setOnClickListener(v -> CaptchaFetcher.fetchCaptcha(imgCatpcha));
+                    TextView btnRefresh = view.findViewById(R.id.btn_refresh);
+                    EditText captchaEdit = view.findViewById(R.id.captcha);
 
-                        btnRefresh.setOnClickListener(v -> {
-                            String captcha = captchaEdit.getText().toString();
-                            if (TextUtils.isEmpty(captcha)) {
-                                AToast.normal("验证码为空！");
-                                return;
-                            }
-                            if (TimetableHelper.isVisitorMode()) {
-                                AToast.normal("您当前正处于游客模式，无法刷新课表！");
-                                return;
-                            }
-                            if (dialog instanceof ZDialog) {
-                                ZDialog zDialog = ((ZDialog) dialog);
-                                zDialog.setCancelable(false);
-                                zDialog.setCanceledOnTouchOutside(false);
-                            }
-                            statusLayout.setVisibility(View.VISIBLE);
-                            LoginUtil.with()
-                                    .setLoginCallback(new LoginUtil.LoginCallback() {
+                    btnRefresh.setOnClickListener(v -> {
+                        String captcha = captchaEdit.getText().toString();
+                        if (TextUtils.isEmpty(captcha)) {
+                            AToast.normal("验证码为空！");
+                            return;
+                        }
+                        if (TimetableHelper.isVisitorMode()) {
+                            AToast.normal("您当前正处于游客模式，无法刷新课表！");
+                            return;
+                        }
+                        if (dialog instanceof ZDialog) {
+                            ZDialog zDialog = ((ZDialog) dialog);
+                            zDialog.setCancelable(false);
+                            zDialog.setCanceledOnTouchOutside(false);
+                        }
+                        statusLayout.setVisibility(View.VISIBLE);
+                        LoginUtil.with()
+                                .setLoginCallback(new LoginUtil.LoginCallback() {
 
-                                        private void onError() {
-                                            loadingDialogText.setText("登录失败！");
-                                            statusLayout.setVisibility(View.GONE);
-                                            AToast.normal("登录失败，请重试！");
-                                            CaptchaFetcher.fetchCaptcha(imgCatpcha);
-                                            captchaEdit.setText("");
-                                            if (dialog instanceof ZDialog) {
-                                                ZDialog zDialog = ((ZDialog) dialog);
-                                                zDialog.setCancelable(true);
-                                                zDialog.setCanceledOnTouchOutside(true);
-                                            }
+                                    private void onError() {
+                                        loadingDialogText.setText("登录失败！");
+                                        statusLayout.setVisibility(View.GONE);
+                                        AToast.normal("登录失败，请重试！");
+                                        CaptchaFetcher.fetchCaptcha(imgCatpcha);
+                                        captchaEdit.setText("");
+                                        if (dialog instanceof ZDialog) {
+                                            ZDialog zDialog = ((ZDialog) dialog);
+                                            zDialog.setCancelable(true);
+                                            zDialog.setCanceledOnTouchOutside(true);
                                         }
+                                    }
 
-                                        @Override
-                                        public void onGetCookie(String cookie) { }
+                                    @Override
+                                    public void onGetCookie(String cookie) { }
 
-                                        @Override
-                                        public void onLoginSuccess() {
-                                            loadingDialogText.setText("登录成功!获取课表信息中。。。");
+                                    @Override
+                                    public void onLoginSuccess() {
+                                        Log.d(TAG, "onLoginSuccess");
+                                        loadingDialogText.setText("登录成功!获取课表信息中。。。");
+                                    }
+
+                                    @Override
+                                    public void onLoginFailed() {
+                                        Log.d(TAG, "onLoginFailed");
+                                        onError();
+                                    }
+
+                                    @Override
+                                    public void onLoginError(String errorMsg) {
+                                        Log.d(TAG, "onLoginError");
+                                        onError();
+                                    }
+
+                                    @Override
+                                    public void onGetTimetable(JSONObject jsonObject) {
+                                        Log.d(TAG, "onGetTimetable jsonObject=" + jsonObject);
+                                        try {
+                                            TimetableHelper.writeToJson(getContext(), jsonObject);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
+                                    }
 
-                                        @Override
-                                        public void onLoginFailed() {
-                                            onError();
-                                        }
+                                    @Override
+                                    public void onGetTimetableFinished() {
+                                        Log.d(TAG, "onGetTimetable onGetTimetableFinished");
+                                        AToast.normal("刷新课表成功！");
+                                        dialog.dismiss();
+                                        initTimetableView();
+                                        initData();
+                                    }
 
-                                        @Override
-                                        public void onLoginError(String errorMsg) {
-                                            onError();
+                                    @Override
+                                    public void onGetSemesters(String json) {
+                                        Log.d(TAG, "onGetTimetable onGetSemesters json=" + json);
+                                        try {
+                                            TimetableHelper.writeSemesterFile(getContext(), json);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
-
-                                        @Override
-                                        public void onGetTimetable(JSONObject jsonObject) {
-                                            try {
-                                                TimetableHelper.writeToJson(getContext(), jsonObject);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onGetTimetableFinished() {
-                                            AToast.normal("刷新课表成功！");
-                                            dialog.dismiss();
-                                            initTimetableView();
-                                            initData();
-                                        }
-
-                                        @Override
-                                        public void onGetSemesters(String json) {
-                                            try {
-                                                TimetableHelper.writeSemesterFile(getContext(), json);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    })
-                                    .login(captcha, TimetableHelper.getCurrentSemesterCode());
-                        });
-                    }
+                                    }
+                                })
+                                .login(captcha, TimetableHelper.getCurrentSemesterCode());
+                    });
                 })
                 .show();
     }

@@ -1,5 +1,6 @@
 package com.zpj.http.parser.html.select;
 
+import com.zpj.http.parser.html.nodes.NullElement;
 import com.zpj.http.utils.StringUtil;
 import com.zpj.http.utils.Validate;
 import com.zpj.http.parser.html.nodes.Element;
@@ -638,6 +639,14 @@ public class Elements extends ArrayList<Element> {
             if (el instanceof FormElement)
                 forms.add((FormElement) el);
         return forms;
+    }
+
+    @Override
+    public Element get(int index) {
+        if (index >= size() || index < 0) {
+            return new NullElement();
+        }
+        return super.get(index);
     }
 
 }

@@ -76,10 +76,10 @@ dependencies {
 
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
-//    implementation 'org.jsoup:jsoup:1.12.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.17'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.wang.avi:library:2.1.3'
-//    implementation 'com.labo.kaji:swipeawaydialog:0.1.1'
-//    implementation 'com.leon:lsettingviewlibrary:1.7.0'
+
     implementation project(':TimetableView')
     implementation project(':zdialog')
     implementation project(':lsettingviewlibrary')

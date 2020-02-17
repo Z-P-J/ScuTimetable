@@ -11,6 +11,7 @@ import com.scu.timetable.ui.fragment.MainFragment;
 import com.scu.timetable.ui.fragment.UpdateDialogFragment;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.UpdateUtil;
+import com.zpj.http.core.IHttp;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -29,7 +30,7 @@ public final class MainActivity extends SupportActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
 
         AlarmService.start(this);
 
@@ -39,14 +40,24 @@ public final class MainActivity extends SupportActivity {
         }
         loadRootFragment(R.id.content, mainFragment);
 
-        UpdateUtil.newInstance().checkUpdate(this);
+        UpdateUtil.with(this)
+                .setOnErrorListener(throwable -> AToast.error("检查更新出错 errorMsg:" + throwable.getMessage()))
+                .setOnSuccessListener(event -> {
+                    if (event.getUpdateInfo() != null) {
+                        AToast.normal("开始更新！");
+                        UpdateDialogFragment.newInstance(event.getUpdateInfo()).show(getSupportFragmentManager());
+                    } else if (event.isLatestVersion()) {
+                        AToast.normal("软件已是最新版");
+                    }
+                })
+                .checkUpdate();
     }
 
-    @Override
-    protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        EventBus.getDefault().unregister(this);
+//        super.onDestroy();
+//    }
 
     @Override
     public void onBackPressedSupport() {
@@ -68,16 +79,16 @@ public final class MainActivity extends SupportActivity {
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateEvent(UpdateEvent event) {
-        if (event.getUpdateInfo() != null) {
-            AToast.normal("开始更新！");
-//        http://tt.shouji.com.cn/wap/down/soft?id=1555815
-            UpdateDialogFragment.newInstance(event.getUpdateInfo()).show(getSupportFragmentManager());
-        } else if (event.isLatestVersion()) {
-            AToast.normal("软件已是最新版");
-        } else if (TextUtils.isEmpty(event.getErrorMsg())) {
-            AToast.error("检查更新出错 errorMsg:" + event.getErrorMsg());
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onUpdateEvent(UpdateEvent event) {
+//        if (event.getUpdateInfo() != null) {
+//            AToast.normal("开始更新！");
+////        http://tt.shouji.com.cn/wap/down/soft?id=1555815
+//            UpdateDialogFragment.newInstance(event.getUpdateInfo()).show(getSupportFragmentManager());
+//        } else if (event.isLatestVersion()) {
+//            AToast.normal("软件已是最新版");
+//        } else if (TextUtils.isEmpty(event.getErrorMsg())) {
+//            AToast.error("检查更新出错 errorMsg:" + event.getErrorMsg());
+//        }
+//    }
 }

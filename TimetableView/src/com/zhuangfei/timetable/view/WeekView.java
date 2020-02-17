@@ -293,9 +293,12 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView>, 
      * 重置背景色
      */
     public void resetBackground() {
-        layouts.get(preIndex - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
-//        layouts.get(preIndex - 1).setBackgroundColor(getContext().getResources().getColor(R.color.app_course_chooseweek_bg));
-        layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_current));
+        if (preIndex <= layouts.size()) {
+            layouts.get(preIndex - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
+        }
+        if (curWeek <= layouts.size()) {
+            layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_current));
+        }
     }
 
     /**

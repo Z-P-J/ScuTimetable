@@ -9,37 +9,31 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Proxy;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 
 import javax.net.ssl.SSLSocketFactory;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+
 public abstract class AbstractConnection implements Connection {
 
-    public static final String DEFAULT_UA =
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36";
-    private static final String USER_AGENT = "User-Agent";
-    private static final String REFERER = "Referer";
-    private static final String COOKIE = "Cookie";
-    public static final String CONTENT_TYPE = "Content-Type";
-    public static final String MULTIPART_FORM_DATA = "multipart/form-data";
-
     //    protected IHttp.OnRedirectListener onRedirectListener;
-    protected IHttp.OnSuccessListener onSuccessListener;
-    protected IHttp.OnErrorListener onErrorListener;
+//    protected IHttp.OnSubscribeListener onSubscribeListener;
+//    protected IHttp.OnSuccessListener onSuccessListener;
+//    protected IHttp.OnErrorListener onErrorListener;
+//    protected IHttp.OnCompleteListener onCompleteListener;
 
-    protected final Connection.Request req;
-    protected Connection.Response res;
+
+    protected final Request req;
+    protected Response res;
 
     public AbstractConnection() {
         req = createRequest();
@@ -106,6 +100,12 @@ public abstract class AbstractConnection implements Connection {
     }
 
     @Override
+    public Connection validateTLSCertificates(boolean value) {
+        req.validateTLSCertificates(value);
+        return this;
+    }
+
+    @Override
     public Connection data(String key, String value) {
         req.data(HttpKeyVal.create(key, value));
         return this;
@@ -147,10 +147,10 @@ public abstract class AbstractConnection implements Connection {
     @Override
     public Connection data(String... keyvals) {
         Validate.notNull(keyvals, "Data key value pairs must not be null");
-        Validate.isTrue(keyvals.length %2 == 0, "Must supply an even number of key value pairs");
+        Validate.isTrue(keyvals.length % 2 == 0, "Must supply an even number of key value pairs");
         for (int i = 0; i < keyvals.length; i += 2) {
             String key = keyvals[i];
-            String value = keyvals[i+1];
+            String value = keyvals[i + 1];
             Validate.notEmpty(key, "Data key must not be empty");
             Validate.notNull(value, "Data value must not be null");
             req.data(HttpKeyVal.create(key, value));
@@ -161,16 +161,16 @@ public abstract class AbstractConnection implements Connection {
     @Override
     public Connection data(Collection<KeyVal> data) {
         Validate.notNull(data, "Data collection must not be null");
-        for (Connection.KeyVal entry: data) {
+        for (KeyVal entry : data) {
             req.data(entry);
         }
         return this;
     }
 
     @Override
-    public Connection.KeyVal data(String key) {
+    public KeyVal data(String key) {
         Validate.notEmpty(key, "Data key must not be empty");
-        for (Connection.KeyVal keyVal : request().data()) {
+        for (KeyVal keyVal : request().data()) {
             if (keyVal.key().equals(key))
                 return keyVal;
         }
@@ -190,10 +190,10 @@ public abstract class AbstractConnection implements Connection {
     }
 
     @Override
-    public Connection headers(Map<String,String> headers) {
+    public Connection headers(Map<String, String> headers) {
         Validate.notNull(headers, "Header map must not be null");
-        for (Map.Entry<String,String> entry : headers.entrySet()) {
-            req.header(entry.getKey(),entry.getValue());
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            req.header(entry.getKey(), entry.getValue());
         }
         return this;
     }
@@ -201,7 +201,7 @@ public abstract class AbstractConnection implements Connection {
     @Override
     public Connection cookie(String cookie) {
         Validate.notNull(cookie, "Cookie must not be null");
-        req.header(COOKIE, cookie);
+        req.header(HttpHeader.COOKIE, cookie);
         return this;
     }
 
@@ -235,44 +235,137 @@ public abstract class AbstractConnection implements Connection {
 
     //------------------------------------------------------------------------------------------------------
 
-    public Connection.Request request() {
+    public Request request() {
         return req;
     }
 
-    public Connection.Response response() {
+    public Response response() {
         return res;
     }
 
     @Override
-    public String toStr() throws IOException {
-        res = execute();
+    public Response syncExecute() throws IOException {
+        return onExecute();
+    }
+
+    @Override
+    public String syncToStr() throws IOException {
+        res = onExecute();
         return res.body();
     }
 
     @Override
-    public Document toHtml() throws IOException {
-        res = execute();
+    public Document syncToHtml() throws IOException {
+        res = onExecute();
         return res.parse();
     }
 
     @Override
-    public JSONObject toJsonObject() throws IOException, JSONException {
-        res = execute();
+    public JSONObject syncToJsonObject() throws IOException, JSONException {
+        res = onExecute();
         return new JSONObject(res.body());
     }
 
     @Override
-    public JSONArray toJsonArray() throws IOException, JSONException {
-        res = execute();
+    public JSONArray syncToJsonArray() throws IOException, JSONException {
+        res = onExecute();
         return new JSONArray(res.body());
     }
 
     @Override
-    public Document toXml() throws IOException {
-        res = execute();
+    public Document syncToXml() throws IOException {
+        res = onExecute();
         return res.parse();
     }
 
+
+    @Override
+    public final ObservableTask<Response> execute() {
+        Observable<Response> observable = Observable.create(new ObservableOnSubscribe<Response>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<Response> emitter) throws Exception {
+                res = onExecute();
+                emitter.onNext(res);
+                emitter.onComplete();
+            }
+        });
+        return new ObservableTask<>(observable);
+    }
+
+    @Override
+    public final ObservableTask<String> toStr() {
+        Observable<String> observable = Observable.create(new ObservableOnSubscribe<String>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                res = onExecute();
+                emitter.onNext(res.body());
+                emitter.onComplete();
+            }
+        });
+        return new ObservableTask<>(observable);
+    }
+
+    @Override
+    public final ObservableTask<Document> toHtml() {
+        Observable<Document> observable = Observable.create(new ObservableOnSubscribe<Document>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<Document> emitter) throws Exception {
+                res = onExecute();
+                Document doc = res.parse();
+                emitter.onNext(doc);
+                emitter.onComplete();
+            }
+        });
+        return new ObservableTask<>(observable);
+    }
+
+    @Override
+    public final ObservableTask<JSONObject> toJsonObject() {
+        Observable<JSONObject> observable = Observable.create(new ObservableOnSubscribe<JSONObject>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<JSONObject> emitter) throws Exception {
+                res = onExecute();
+                JSONObject jsonArray = new JSONObject(res.body());
+                emitter.onNext(jsonArray);
+                emitter.onComplete();
+            }
+        });
+        return new ObservableTask<>(observable);
+    }
+
+    @Override
+    public final ObservableTask<JSONArray> toJsonArray() {
+        Observable<JSONArray> observable = Observable.create(new ObservableOnSubscribe<JSONArray>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<JSONArray> emitter) throws Exception {
+                res = onExecute();
+                JSONArray jsonArray = new JSONArray(res.body());
+                emitter.onNext(jsonArray);
+                emitter.onComplete();
+            }
+        });
+        return new ObservableTask<>(observable);
+    }
+
+    @Override
+    public final ObservableTask<Document> toXml() {
+        Observable<Document> observable = Observable.create(new ObservableOnSubscribe<Document>() {
+
+            @Override
+            public void subscribe(ObservableEmitter<Document> emitter) throws Exception {
+                res = onExecute();
+                Document doc = res.parse();
+                emitter.onNext(doc);
+                emitter.onComplete();
+            }
+        });
+        return new ObservableTask<>(observable);
+    }
 
 
     //-----------------------------------------------listeners-------------------------------------------------
@@ -284,48 +377,58 @@ public abstract class AbstractConnection implements Connection {
         return this;
     }
 
-    @Override
-    public final Connection onError(IHttp.OnErrorListener listener) {
-        this.onErrorListener = listener;
-        return this;
-    }
-
-    @Override
-    public final Connection onSuccess(IHttp.OnSuccessListener listener) {
-        this.onSuccessListener = listener;
-        return this;
-    }
-
-
-
+//    @Override
+//    public Connection onSubscribe(IHttp.OnSubscribeListener listener) {
+//        this.onSubscribeListener = listener;
+//        return this;
+//    }
+//
+//    @Override
+//    public final Connection onError(IHttp.OnErrorListener listener) {
+//        this.onErrorListener = listener;
+//        return this;
+//    }
+//
+//    @Override
+//    public final <T> Connection onSuccess(IHttp.OnSuccessListener<T> listener) {
+//        this.onSuccessListener = listener;
+//        return this;
+//    }
+//
+//    @Override
+//    public Connection onComplete(IHttp.OnCompleteListener listener) {
+//        this.onCompleteListener = listener;
+//        return this;
+//    }
 
     //----------------------------------------------------headers---------------------------------------------------
 
     @Override
     public Connection userAgent(String userAgent) {
         Validate.notNull(userAgent, "User-Agent must not be null");
-        req.header(USER_AGENT, userAgent);
+        req.header(HttpHeader.USER_AGENT, userAgent);
         return this;
     }
 
     @Override
-    public Connection referrer(String referrer) {
-        Validate.notNull(referrer, "Referrer must not be null");
-        req.header(REFERER, referrer);
+    public Connection referer(String referer) {
+        Validate.notNull(referer, "Referrer must not be null");
+        req.header(HttpHeader.REFERER, referer);
         return this;
     }
 
     @Override
     public Connection contentType(String contentType) {
         Validate.notNull(contentType, "Content-Type must not be null");
-        req.header(CONTENT_TYPE, contentType);
+        req.header(HttpHeader.CONTENT_TYPE, contentType);
         return this;
     }
 
     //-----------------------------------------------------abstract methods-----------------------------------------------------
     public abstract Request createRequest();
+
     //    public abstract Response createResponse();
-    public abstract Connection.Response execute() throws IOException;
+    public abstract Response onExecute() throws IOException;
 
     //-------------------------------------------------static methods---------------------------------------------------------
 

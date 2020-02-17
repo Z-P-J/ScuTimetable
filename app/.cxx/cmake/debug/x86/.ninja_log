@@ -1,0 +1,6 @@
+# ninja log v5
+114	1635	0	CMakeFiles/encryption.dir/native-lib.cpp.o	821fa9db1a35c4fd
+179	1678	0	CMakeFiles/encryption.dir/utils/Base64.cpp.o	c98dfd405e3f3565
+261	1731	0	CMakeFiles/encryption.dir/utils/AES.cpp.o	a762d0d62971a26e
+1	1753	0	CMakeFiles/encryption.dir/utils/encryption.cpp.o	4e1b49f6f577b910
+1754	2329	0	D:/Programming/AndroidProjects/ScuTimetable/app/build/intermediates/cmake/debug/obj/x86/libencryption.so	671d076b0545936c

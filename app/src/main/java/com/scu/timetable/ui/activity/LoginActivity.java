@@ -32,7 +32,8 @@ import me.yokeyword.fragmentation.SupportActivity;
  * @author Z-P-J
  * @date 2019
  */
-public final class LoginActivity extends SupportActivity implements View.OnClickListener, LoginUtil.LoginCallback {
+public final class LoginActivity extends SupportActivity
+        implements View.OnClickListener, LoginUtil.LoginCallback {
 
     private EditText userName;
     private EditText password;

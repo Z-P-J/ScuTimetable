@@ -1,9 +1,7 @@
 package com.zpj.http.core;
 
 import com.zpj.http.ZHttp;
-import com.zpj.http.exception.HttpStatusException;
 import com.zpj.http.exception.UncheckedIOException;
-import com.zpj.http.exception.UnsupportedMimeTypeException;
 import com.zpj.http.parser.html.Parser;
 import com.zpj.http.parser.html.nodes.Document;
 
@@ -12,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
@@ -115,11 +112,11 @@ public interface Connection {
     Connection maxBodySize(int bytes);
 
     /**
-     * Set the request referrer (aka "referer") header.
-     * @param referrer referrer to use
+     * Set the request referer (aka "referer") header.
+     * @param referer referer to use
      * @return this Connection, for chaining
      */
-    Connection referrer(String referrer);
+    Connection referer(String referer);
 
     Connection contentType(String contentType);
 
@@ -155,6 +152,27 @@ public interface Connection {
      * @return this Connection, for chaining
      */
     Connection ignoreContentType(boolean ignoreContentType);
+
+    /**
+     * Disable/enable TLS certificates validation for HTTPS requests.
+     * <p>
+     * By default this is <b>true</b>; all
+     * connections over HTTPS perform normal validation of certificates, and will abort requests if the provided
+     * certificate does not validate.
+     * </p>
+     * <p>
+     * Some servers use expired, self-generated certificates; or your JDK may not
+     * support SNI hosts. In which case, you may want to enable this setting.
+     * </p>
+     * <p>
+     * <b>Be careful</b> and understand why you need to disable these validations.
+     * </p>
+     * @param value if should validate TLS (SSL) certificates. <b>true</b> by default.
+     * @return this Connection, for chaining
+     * @deprecated as distributions (specifically Google Play) are starting to show warnings if these checks are
+     * disabled.
+     */
+    Connection validateTLSCertificates(boolean value);
 
     /**
      * Set custom SSL socket factory
@@ -320,22 +338,6 @@ public interface Connection {
 
 //    OutputStream outputStream() throws IOException;
 
-    String toStr() throws IOException;
-
-    Document toHtml() throws IOException;
-
-    JSONObject toJsonObject() throws IOException, JSONException;
-
-    JSONArray toJsonArray() throws IOException, JSONException;
-
-    Document toXml() throws IOException;
-
-    Connection onRedirect(IHttp.OnRedirectListener listener);
-
-    Connection onError(IHttp.OnErrorListener listener);
-
-    Connection onSuccess(IHttp.OnSuccessListener listener);
-
     /**
      * Execute the request.
      * @return a response object
@@ -345,7 +347,39 @@ public interface Connection {
      * @throws java.net.SocketTimeoutException if the connection times out
      * @throws IOException on error
      */
-    Response execute() throws IOException;
+    Response syncExecute() throws IOException;
+
+    String syncToStr() throws IOException;
+
+    Document syncToHtml() throws IOException;
+
+    JSONObject syncToJsonObject() throws IOException, JSONException;
+
+    JSONArray syncToJsonArray() throws IOException, JSONException;
+
+    Document syncToXml() throws IOException;
+
+    ObservableTask<Response> execute();
+
+    ObservableTask<String> toStr();
+
+    ObservableTask<Document> toHtml();
+
+    ObservableTask<JSONObject> toJsonObject();
+
+    ObservableTask<JSONArray> toJsonArray();
+
+    ObservableTask<Document> toXml();
+
+    Connection onRedirect(IHttp.OnRedirectListener listener);
+
+//    Connection onError(IHttp.OnErrorListener listener);
+//
+//    Connection onSuccess(IHttp.OnSuccessListener listener);
+//
+//    Connection onComplete(IHttp.OnCompleteListener listener);
+//
+//    Connection onSubscribe(IHttp.OnSubscribeListener listener);
 
     /**
      * Get the request object associated with this connection
@@ -613,6 +647,22 @@ public interface Connection {
          * @return this Request, for chaining
          */
         Request ignoreContentType(boolean ignoreContentType);
+
+        /**
+         * Get the current state of TLS (SSL) certificate validation.
+         * @return true if TLS cert validation enabled
+         * @deprecated
+         */
+        boolean validateTLSCertificates();
+
+        /**
+         * Set TLS certificate validation. <b>True</b> by default.
+         * @param value set false to ignore TLS (SSL) certificates
+         * @deprecated as distributions (specifically Google Play) are starting to show warnings if these checks are
+         * disabled. This method will be removed in the next release.
+         * @see #sslSocketFactory(SSLSocketFactory)
+         */
+        void validateTLSCertificates(boolean value);
 
         /**
          * Get the current custom SSL socket factory, if any.

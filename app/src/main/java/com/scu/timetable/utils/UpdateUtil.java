@@ -13,11 +13,11 @@ import com.scu.timetable.events.UpdateEvent;
 import com.scu.timetable.model.UpdateInfo;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.http.ZHttp;
+import com.zpj.http.core.IHttp;
+import com.zpj.http.core.ObservableTask;
 import com.zpj.http.parser.html.nodes.Document;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.net.Proxy;
@@ -27,12 +27,17 @@ import java.net.Proxy;
  */
 public final class UpdateUtil {
 
-    private UpdateUtil() {
+    private final Context context;
+    private IHttp.OnSuccessListener<UpdateEvent> onSuccessListener;
+    private IHttp.OnErrorListener onErrorListener;
 
+
+    private UpdateUtil(Context context) {
+        this.context = context;
     }
 
-    public static UpdateUtil newInstance() {
-        return new UpdateUtil();
+    public static UpdateUtil with(Context context) {
+        return new UpdateUtil(context);
     }
 
     public static synchronized String getVersionName(Context context){
@@ -47,67 +52,137 @@ public final class UpdateUtil {
         return versionName;
     }
 
-    public void checkUpdate(Context context) {
-        ExecutorHelper.submit(() -> {
-            try {
-                Document document = ZHttp.get("http://tt.shouji.com.cn/androidv3/soft_show.jsp?id=1555815")
-                        .proxy(Proxy.NO_PROXY)
-                        .header("Connection", "Keep-Alive")
-                        .header("Referer", "https://wap.shouji.com.cn/")
+    public UpdateUtil setOnErrorListener(IHttp.OnErrorListener onErrorListener) {
+        this.onErrorListener = onErrorListener;
+        return this;
+    }
+
+    public UpdateUtil setOnSuccessListener(IHttp.OnSuccessListener<UpdateEvent> onSuccessListener) {
+        this.onSuccessListener = onSuccessListener;
+        return this;
+    }
+
+    public void checkUpdate() {
+        ZHttp.get("http://tt.shouji.com.cn/androidv3/soft_show.jsp?id=1555815")
+                .proxy(Proxy.NO_PROXY)
+                .header("Connection", "Keep-Alive")
+                .header("Referer", "https://wap.shouji.com.cn/")
 //                            .header("User-Agent", TimetableHelper.UA)
-                        .header("Accept-Encoding", "gzip")
-                        .toHtml();
-                String versionName = document.select("versionname").get(0).text();
+                .header("Accept-Encoding", "gzip")
+                .toHtml()
+                .flatMap((ObservableTask.OnFlatMapListener<Document, UpdateEvent>) (document, emitter) -> {
+                    String versionName = document.selectFirst("versionname").text();
 
-                String newVersionName = versionName.trim();
-                Log.d("newVersionName", "newVersionName=" + newVersionName);
+                    String newVersionName = versionName.trim();
+                    Log.d("newVersionName", "newVersionName=" + newVersionName);
 
-                String ignoreVersion = SPHelper.getString("ignore_version", "");
-                if (ignoreVersion.equals(newVersionName)) {
-                    return;
-                }
-
-                String baseinfof = document.select("baseinfof").get(0).text();
-                Log.d("baseinfof", "baseinfof=" + baseinfof);
-
-                String currentVersionName = getVersionName(context).trim();
-                Log.d("currentVersionName", "currentVersionName=" + newVersionName);
-
-                boolean isNew = compareVersions(currentVersionName, newVersionName);
-                Log.d("isNew", "isNew=" + isNew);
-
-                if (isNew) {
-                    String updateContent = "";
-                    String fileSize = "";
-                    String updateTime = "";
-                    Elements elements = document.select("introduce");
-                    for (Element element : elements) {
-                        String title = element.select("introducetitle").get(0).text();
-                        if ("更新内容".equals(title)) {
-                            updateContent = element.select("introduceContent").get(0).text();
-                            Log.d("更新内容", "更新内容=" + updateContent);
-                        } else if ("软件信息".equals(title)) {
-                            String content = element.select("introduceContent").get(0).text();
-                            fileSize = content.substring(content.indexOf("大小：") + 3, content.indexOf("MB") + 2);
-                            int index = content.indexOf("更新：");
-                            updateTime = content.substring(index + 3, index + 13);
-                        }
+                    String ignoreVersion = SPHelper.getString("ignore_version", "");
+                    if (ignoreVersion.equals(newVersionName)) {
+                        return;
                     }
-                    UpdateInfo bean = new UpdateInfo();
-                    bean.setVersionName(versionName);
-                    bean.setUpdateContent(updateContent);
-                    bean.setFileSize(fileSize);
-                    bean.setUpdateTime(updateTime);
-                    Log.d("bean", "bean=" + bean.toString());
-                    EventBus.getDefault().post(UpdateEvent.create().setUpdateInfo(bean));
-                } else {
-                    EventBus.getDefault().post(UpdateEvent.create().setLatestVersion(true));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                EventBus.getDefault().post(UpdateEvent.create().setErrorMsg(e.getMessage()));
-            }
-        });
+
+                    String baseinfof = document.selectFirst("baseinfof").text();
+                    Log.d("baseinfof", "baseinfof=" + baseinfof);
+
+                    String currentVersionName = getVersionName(context).trim();
+                    Log.d("currentVersionName", "currentVersionName=" + newVersionName);
+
+                    boolean isNew = compareVersions(currentVersionName, newVersionName);
+                    Log.d("isNew", "isNew=" + isNew);
+
+                    if (isNew) {
+                        String updateContent = "";
+                        String fileSize = "";
+                        String updateTime = "";
+                        Elements elements = document.select("introduce");
+                        for (Element element : elements) {
+                            String title = element.selectFirst("introducetitle").text();
+                            if ("更新内容".equals(title)) {
+                                updateContent = element.select("introduceContent").get(0).text();
+                                Log.d("更新内容", "更新内容=" + updateContent);
+                            } else if ("软件信息".equals(title)) {
+                                String content = element.selectFirst("introduceContent").text();
+                                fileSize = content.substring(content.indexOf("大小：") + 3, content.indexOf("MB") + 2);
+                                int index = content.indexOf("更新：");
+                                updateTime = content.substring(index + 3, index + 13);
+                            }
+                        }
+                        UpdateInfo bean = new UpdateInfo();
+                        bean.setVersionName(versionName);
+                        bean.setUpdateContent(updateContent);
+                        bean.setFileSize(fileSize);
+                        bean.setUpdateTime(updateTime);
+                        Log.d("bean", "bean=" + bean.toString());
+//                            EventBus.getDefault().post(UpdateEvent.create().setUpdateInfo(bean));
+                        emitter.onNext(UpdateEvent.create().setUpdateInfo(bean));
+                    } else {
+//                            EventBus.getDefault().post(UpdateEvent.create().setLatestVersion(true));
+                        emitter.onNext(UpdateEvent.create().setLatestVersion(true));
+                    }
+                })
+                .onSuccess(onSuccessListener)
+                .onError(onErrorListener)
+                .subscribe();
+//        ExecutorHelper.submit(() -> {
+//            try {
+//                Document document = ZHttp.get("http://tt.shouji.com.cn/androidv3/soft_show.jsp?id=1555815")
+//                        .proxy(Proxy.NO_PROXY)
+//                        .header("Connection", "Keep-Alive")
+//                        .header("Referer", "https://wap.shouji.com.cn/")
+////                            .header("User-Agent", TimetableHelper.UA)
+//                        .header("Accept-Encoding", "gzip")
+//                        .toHtml();
+//                String versionName = document.select("versionname").get(0).text();
+//
+//                String newVersionName = versionName.trim();
+//                Log.d("newVersionName", "newVersionName=" + newVersionName);
+//
+//                String ignoreVersion = SPHelper.getString("ignore_version", "");
+//                if (ignoreVersion.equals(newVersionName)) {
+//                    return;
+//                }
+//
+//                String baseinfof = document.select("baseinfof").get(0).text();
+//                Log.d("baseinfof", "baseinfof=" + baseinfof);
+//
+//                String currentVersionName = getVersionName(context).trim();
+//                Log.d("currentVersionName", "currentVersionName=" + newVersionName);
+//
+//                boolean isNew = compareVersions(currentVersionName, newVersionName);
+//                Log.d("isNew", "isNew=" + isNew);
+//
+//                if (isNew) {
+//                    String updateContent = "";
+//                    String fileSize = "";
+//                    String updateTime = "";
+//                    Elements elements = document.select("introduce");
+//                    for (Element element : elements) {
+//                        String title = element.select("introducetitle").get(0).text();
+//                        if ("更新内容".equals(title)) {
+//                            updateContent = element.select("introduceContent").get(0).text();
+//                            Log.d("更新内容", "更新内容=" + updateContent);
+//                        } else if ("软件信息".equals(title)) {
+//                            String content = element.select("introduceContent").get(0).text();
+//                            fileSize = content.substring(content.indexOf("大小：") + 3, content.indexOf("MB") + 2);
+//                            int index = content.indexOf("更新：");
+//                            updateTime = content.substring(index + 3, index + 13);
+//                        }
+//                    }
+//                    UpdateInfo bean = new UpdateInfo();
+//                    bean.setVersionName(versionName);
+//                    bean.setUpdateContent(updateContent);
+//                    bean.setFileSize(fileSize);
+//                    bean.setUpdateTime(updateTime);
+//                    Log.d("bean", "bean=" + bean.toString());
+//                    EventBus.getDefault().post(UpdateEvent.create().setUpdateInfo(bean));
+//                } else {
+//                    EventBus.getDefault().post(UpdateEvent.create().setLatestVersion(true));
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                EventBus.getDefault().post(UpdateEvent.create().setErrorMsg(e.getMessage()));
+//            }
+//        });
     }
 
     public boolean compareVersions(String oldVersion, String newVersion) {

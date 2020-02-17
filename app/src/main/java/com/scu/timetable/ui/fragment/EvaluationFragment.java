@@ -24,6 +24,7 @@ import com.scu.timetable.ui.view.ElasticScrollView;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
 import com.scu.timetable.utils.LoginUtil;
+import com.zpj.http.core.IHttp;
 import com.zpj.popupmenuview.CustomPopupMenuView;
 import com.zpj.dialog.ZAlertDialog;
 import com.zpj.dialog.base.IDialog;
@@ -89,26 +90,12 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
         }
     };
 
-//    @Nullable
+
 //    @Override
-//    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        FrameLayout frameLayout = new FrameLayout(getContext());
-//        View view = inflater.inflate(R.layout.fragment_evaluation, null, false);
-//        frameLayout.addView(view);
-//        background = new FrameLayout(getContext());
-//        background.setBackgroundColor(Color.BLACK);
-//        background.setAlpha(currentAlpha);
-//        frameLayout.addView(background);
-//        initView(view);
-//        return frameLayout;
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        EventBus.getDefault().register(this);
 //    }
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-    }
 
     @Override
     protected int getLayoutId() {
@@ -147,11 +134,11 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
         evaluationButton.setOnClickListener(this);
     }
 
-    @Override
-    public void onDestroyView() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroyView();
-    }
+//    @Override
+//    public void onDestroyView() {
+//        EventBus.getDefault().unregister(this);
+//        super.onDestroyView();
+//    }
 
     @Override
     public boolean onBackPressedSupport() {
@@ -361,7 +348,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
     private void newEvaluation() {
         if (hasEvaluation()) {
             startEvaluation();
-            EvaluationUtil.with(this).post(scrollToBottomRunnable);
+            post(scrollToBottomRunnable);
         }
     }
 
@@ -373,7 +360,16 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
 //                    .getEvaluationPage(bean.getEvaluatedPeople(), bean.getEvaluatedPeopleNum(), bean.getQuestionnaireCoding(),
 //                            bean.getQuestionnaireName(), bean.getEvaluationContentNumber(), bean.getEvaluationContent());
             EvaluationUtil.with(this)
-                    .getEvaluationPage(bean);
+                    .getEvaluationPage(bean, event -> {
+                        currentEvent = event;
+                        if (event.getConnection() != null) {
+                            countDownView = new TextView(_mActivity);
+                            countDownView.setText(String.format(Locale.getDefault(), COUNT_DOWN_TEXT, 10));
+                            consoleView.addView(countDownView);
+                            timer.start();
+                            post(scrollToBottomRunnable);
+                        }
+                    });
         }
     }
 
@@ -395,7 +391,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
         TextView textView = new TextView(_mActivity);
         textView.setText(msg);
         consoleView.addView(textView);
-        EvaluationUtil.with(this).post(scrollToBottomRunnable);
+        post(scrollToBottomRunnable);
     }
 
     private void consoleLog(String msg, int color) {
@@ -403,19 +399,19 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
         textView.setText(msg);
         textView.setTextColor(color);
         consoleView.addView(textView);
-        EvaluationUtil.with(this).post(scrollToBottomRunnable);
+        post(scrollToBottomRunnable);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEvaluationEvent(EvaluationEvent event) {
-        currentEvent = event;
-        if (event.getConnection() != null) {
-            countDownView = new TextView(_mActivity);
-            countDownView.setText(String.format(Locale.getDefault(), COUNT_DOWN_TEXT, 10));
-            consoleView.addView(countDownView);
-            timer.start();
-            EvaluationUtil.with(this).post(scrollToBottomRunnable);
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onEvaluationEvent(EvaluationEvent event) {
+//        currentEvent = event;
+//        if (event.getConnection() != null) {
+//            countDownView = new TextView(_mActivity);
+//            countDownView.setText(String.format(Locale.getDefault(), COUNT_DOWN_TEXT, 10));
+//            consoleView.addView(countDownView);
+//            timer.start();
+//            EvaluationUtil.with(this).post(scrollToBottomRunnable);
+//        }
+//    }
 
 }
