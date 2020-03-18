@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.zpj.popupmenuview.ElasticScrollView
+<com.zpj.widget.ElasticScrollView
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -34,13 +34,6 @@
 
         </FrameLayout>
 
-        <!--<com.zpj.popupmenuview.OptionMenuView-->
-        <!--android:id="@+id/tools"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
-
-        <!--</com.zpj.popupmenuview.OptionMenuView>-->
-
     </LinearLayout>
 
-</com.zpj.popupmenuview.ElasticScrollView>
+</com.zpj.widget.ElasticScrollView>

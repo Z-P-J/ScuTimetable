@@ -16,22 +16,17 @@ import android.widget.TextView;
 
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
+import com.zpj.popup.ZPopup;
 import com.scu.timetable.R;
 import com.scu.timetable.events.EvaluationEvent;
 import com.scu.timetable.model.EvaluationInfo;
-import com.scu.timetable.ui.fragment.base.BaseFragment;
+import com.scu.timetable.ui.popup.MoreInfoPopup;
 import com.scu.timetable.ui.view.ElasticScrollView;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
 import com.scu.timetable.utils.LoginUtil;
-import com.zpj.http.core.IHttp;
-import com.zpj.popupmenuview.CustomPopupMenuView;
-import com.zpj.dialog.ZAlertDialog;
-import com.zpj.dialog.base.IDialog;
+import com.zpj.fragmentation.BaseFragment;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,6 +98,11 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
     }
 
     @Override
+    protected boolean supportSwipeBack() {
+        return true;
+    }
+
+    @Override
     protected void initView(View view, @Nullable Bundle savedInstanceState) {
         TextView headerTitle = view.findViewById(R.id.header_title);
         ImageView backBtn = view.findViewById(R.id.btn_back);
@@ -143,20 +143,14 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
     @Override
     public boolean onBackPressedSupport() {
         if (isEvaluating) {
-            ZAlertDialog.with(getContext())
+            ZPopup.alert(context)
                     .setTitle("确认返回！")
-                    .setTitleTextColor(Color.RED)
                     .setContent("返回后将终止评教，确认返回？")
-                    .setPositiveButton(new IDialog.OnClickListener() {
-                        @Override
-                        public void onClick(IDialog dialog) {
-                            dialog.dismiss();
-                            timer.cancel();
-                            setSwipeBackEnable(true);
-                            pop();
-                        }
+                    .setConfirmButton(() -> {
+                        timer.cancel();
+                        setSwipeBackEnable(true);
+                        pop();
                     })
-                    .setPositiveButtonTextColor(Color.RED)
                     .show();
             return true;
         }
@@ -165,37 +159,10 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
     }
 
     private void showInfoPopupView(View view, final String title, final String content) {
-        CustomPopupMenuView.with(getContext(), R.layout.layout_text)
-                .setOrientation(LinearLayout.VERTICAL)
-                .setBackgroundAlpha(getActivity(), 0.8f, 500)
-                .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
-//                        .setAnimationTranslationShow(EasyDialog.DIRECTION_X, 350, 100, 0)
-//                        .setAnimationTranslationShow(EasyDialog.DIRECTION_Y, 350, -100, 0)
-                .setAnimationAlphaShow(350, 0.0f, 1.0f)
-                .setAnimationAlphaDismiss(350, 1.0f, 0.0f)
-                .initViews(
-                        1,
-                        (popupMenuView, itemView, position) -> {
-                            TextView titleView = itemView.findViewById(R.id.title);
-                            titleView.setText(title);
-                            TextView contentView = itemView.findViewById(R.id.content);
-
-                            StringBuilder content2 = new StringBuilder(content);
-                            if (title.length() >= content2.length()) {
-                                for (int i = 0; i < title.length() * 4; i++) {
-                                    content2.append(" ");
-                                }
-                            }
-                            contentView.setText(content2.toString());
-                            ImageView btnClose = itemView.findViewById(R.id.btn_close);
-                            btnClose.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    popupMenuView.dismiss();
-                                }
-                            });
-                        })
-                .show(view);
+        new MoreInfoPopup(context)
+                .setTitle(title)
+                .setContent(content)
+                .show();
     }
 
     @Override

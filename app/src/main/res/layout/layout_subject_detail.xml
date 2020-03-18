@@ -1,10 +1,11 @@
-<com.zpj.popupmenuview.ElasticScrollView
+<com.zpj.widget.ElasticScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:scrollbars="none"
     android:fillViewport="true"
+    android:background="@color/white"
     >
 
     <LinearLayout
@@ -335,4 +336,4 @@
 
     </LinearLayout>
 
-</com.zpj.popupmenuview.ElasticScrollView>
+</com.zpj.widget.ElasticScrollView>

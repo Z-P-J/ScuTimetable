@@ -1,10 +1,15 @@
 include ':app',
         ':TimetableView',
-        ':zdialog',
+//        ':zdialog',
         ':lsettingviewlibrary',
         ':zpopup',
-        ':switchbutton',
+//        ':switchbutton',
         ':statebutton',
         ':zdownloader',
         ':atoast',
-        ':titlebar'
+        ':zutils',
+        ':ztoolbar',
+        ':fragmentation',
+        ':statelayout',
+        ':zwidget',
+        ':zrecyclerview'

@@ -13,6 +13,7 @@ import com.zpj.http.core.ObservableTask;
 import com.zpj.http.parser.html.nodes.Document;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
+import com.zpj.utils.PrefsHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -281,7 +282,7 @@ public final class LoginUtil {
         JSONObject jsonObject = ZHttp.post("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
                 .userAgent(TimetableHelper.UA)
                 .ignoreContentType(true)
-                .header("Cookie", SPHelper.getString("cookie", ""))
+                .header("Cookie", PrefsHelper.with().getString("cookie", ""))
                 .header("Referer", "http://202.115.47.141/student/courseSelect/calendarSemesterCurriculum/index")
                 .data("planCode", currentSemesterCode)
                 .syncToJsonObject();

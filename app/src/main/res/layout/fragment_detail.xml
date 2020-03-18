@@ -11,7 +11,7 @@
 
     <include layout="@layout/layout_header"/>
 
-    <com.zpj.popupmenuview.ElasticScrollView
+    <com.zpj.widget.ElasticScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
@@ -167,7 +167,7 @@
 
         </LinearLayout>
 
-    </com.zpj.popupmenuview.ElasticScrollView>
+    </com.zpj.widget.ElasticScrollView>
 
 </LinearLayout>
 <!--<android.support.design.widget.CoordinatorLayout-->
@@ -227,7 +227,7 @@
 <!--        android:layout_height="wrap_content"-->
 <!--        app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
-<!--        <com.zpj.popupmenuview.ElasticScrollView-->
+<!--        <com.zpj.widget.ElasticScrollView-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="match_parent"-->
 <!--            android:scrollbars="none"-->
@@ -383,7 +383,7 @@
 
 <!--            </LinearLayout>-->
 
-<!--        </com.zpj.popupmenuview.ElasticScrollView>-->
+<!--        </com.zpj.widget.ElasticScrollView>-->
 
 <!--    </android.support.v4.widget.NestedScrollView>-->
 

@@ -1,5 +1,7 @@
 package com.scu.timetable.model;
 
+import android.support.annotation.NonNull;
+
 /**
  * @author Z-P-J
  * @date 2019/6/1 16:23
@@ -23,5 +25,11 @@ public class SemesterInfo {
 
     public void setSemesterName(String semesterName) {
         this.semesterName = semesterName;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return semesterName;
     }
 }

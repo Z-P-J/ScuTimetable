@@ -10,6 +10,7 @@ import com.scu.timetable.utils.FileUtil;
 import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.config.DownloaderConfig;
+import com.zpj.utils.ZUtils;
 
 /**
  * @author Z-P-J
@@ -23,6 +24,7 @@ public final class Application extends android.app.Application {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
         }
+        ZUtils.init(this);
         SPHelper.init(this);
         AToast.onInit(this);
         DownloaderConfig config = DownloaderConfig.with(this)

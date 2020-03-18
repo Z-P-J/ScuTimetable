@@ -2,7 +2,7 @@ package com.scu.timetable.events;
 
 import com.scu.timetable.model.UpdateInfo;
 
-public class UpdateEvent {
+public class UpdateEvent extends BaseEvent {
 
     private UpdateInfo updateInfo;
     private boolean isLatestVersion = false;

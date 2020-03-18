@@ -3,7 +3,6 @@ package com.scu.timetable.ui.activity;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,13 +15,13 @@ import android.widget.TextView;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
+import com.scu.timetable.ui.popup.MoreInfoPopup;
 import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EncryptionUtils;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.content.SPHelper;
-import com.zpj.popupmenuview.CustomPopupMenuView;
 
 import org.json.JSONObject;
 
@@ -200,21 +199,25 @@ public final class LoginActivity extends SupportActivity
                 updateWidget(true);
             }
         } else if (id == R.id.btn_info) {
-            CustomPopupMenuView.with(this, R.layout.layout_text)
-                    .setOrientation(LinearLayout.VERTICAL)
-//                    .setBackgroundAlpha(this, 0.9f, 500)
-                    .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
-                    .initViews(
-                            1,
-                            (popupMenuView, itemView, position) -> {
-                                TextView titleView = itemView.findViewById(R.id.title);
-                                titleView.setText("关于游客模式");
-                                TextView contentView = itemView.findViewById(R.id.content);
-                                contentView.setText("在该模式下会显示软件内置的一个课程表，并且在该模式下有些功能不能使用！");
-                                ImageView btnClose = itemView.findViewById(R.id.btn_close);
-                                btnClose.setOnClickListener(v1 -> popupMenuView.dismiss());
-                            })
-                    .show(v);
+            new MoreInfoPopup(LoginActivity.this)
+                    .setTitle("关于游客模式")
+                    .setContent("在该模式下会显示软件内置的一个课程表，并且在该模式下有些功能不能使用！")
+                    .show();
+//            CustomPopupMenuView.with(this, R.layout.layout_text)
+//                    .setOrientation(LinearLayout.VERTICAL)
+////                    .setBackgroundAlpha(this, 0.9f, 500)
+//                    .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
+//                    .initViews(
+//                            1,
+//                            (popupMenuView, itemView, position) -> {
+//                                TextView titleView = itemView.findViewById(R.id.title);
+//                                titleView.setText("关于游客模式");
+//                                TextView contentView = itemView.findViewById(R.id.content);
+//                                contentView.setText("在该模式下会显示软件内置的一个课程表，并且在该模式下有些功能不能使用！");
+//                                ImageView btnClose = itemView.findViewById(R.id.btn_close);
+//                                btnClose.setOnClickListener(v1 -> popupMenuView.dismiss());
+//                            })
+//                    .show(v);
         }
     }
 

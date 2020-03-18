@@ -6,38 +6,31 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.felix.atoast.library.AToast;
+import com.zpj.popup.ZPopup;
+import com.scu.timetable.R;
+import com.scu.timetable.events.RefreshEvent;
+import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.model.SemesterInfo;
 import com.scu.timetable.ui.activity.LoginActivity;
-import com.scu.timetable.R;
-import com.scu.timetable.model.ScuSubject;
-import com.scu.timetable.ui.fragment.base.BaseFragment;
-import com.scu.timetable.ui.widget.DetailLayout;
-import com.scu.timetable.utils.CaptchaFetcher;
-import com.scu.timetable.utils.LoginUtil;
+import com.scu.timetable.ui.popup.RefreshPopup;
+import com.scu.timetable.ui.popup.SubjectDetailPopup;
 import com.scu.timetable.utils.TimetableHelper;
-import com.scu.timetable.utils.content.SPHelper;
 import com.zhuangfei.timetable.TimetableView;
 import com.zhuangfei.timetable.listener.ISchedule;
 import com.zhuangfei.timetable.listener.IWeekView;
 import com.zhuangfei.timetable.listener.OnSlideBuildAdapter;
 import com.zhuangfei.timetable.model.Schedule;
 import com.zhuangfei.timetable.view.WeekView;
-import com.zpj.popupmenuview.CustomPopupMenuView;
-import com.zpj.popupmenuview.popup.EverywherePopup;
-import com.zpj.dialog.ZDialog;
-import com.zpj.dialog.ZListDialog;
-import com.zpj.dialog.base.IDialog;
+import com.zpj.fragmentation.BaseFragment;
+import com.zpj.utils.PrefsHelper;
 
-import org.json.JSONObject;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +72,9 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
 
     @Override
     protected void initView(View view, @Nullable Bundle savedInstanceState) {
+
+        EventBus.getDefault().register(this);
+
         expandMoreDrawable = getResources().getDrawable(R.drawable.ic_expand_more_white_24dp);
         expandLessDrawable = getResources().getDrawable(R.drawable.ic_expand_less_white_24dp);
 
@@ -96,6 +92,12 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
         initTimetableView();
 
         initData();
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     private void toggleTitle(boolean tag) {
@@ -190,40 +192,23 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     }
 
     public void showMenu(View view) {
-
-        EverywherePopup.create(getContext())
+        ZPopup.attachList(view)
                 .addItems(
-//                        "显示周末",
-//                        "显示节次时间",
-//                        "显示非本周课程",
                         "修改当前周",
                         "切换学期",
                         "刷新课表",
                         "一键评教",
-                        "设置")
-                .addIcons(
-//                        R.drawable.ic_weekend_black_24dp,
-//                        R.drawable.ic_access_time_black_24dp,
-//                        R.drawable.ic_event_note_black_24dp,
+                        "设置"
+                )
+                .addIconIds(
                         R.drawable.ic_lock_black_24dp,
                         R.drawable.ic_event_note_black_24dp,
                         R.drawable.ic_refresh_black_24dp,
                         R.drawable.ic_refresh_black_24dp,
-                        R.drawable.ic_settings_black_24dp)
-                .setOnItemClickListener((title, position) -> {
+                        R.drawable.ic_settings_black_24dp
+                )
+                .setOnSelectListener((position, text) -> {
                     switch (position) {
-//                        case 0:
-//                            mTimetableView.isShowWeekends(!mTimetableView.isShowWeekends()).updateView();
-//                            TimetableHelper.toggleShowWeekends();
-//                            break;
-//                        case 1:
-//                            toggleTime(!TimetableHelper.isShowTime());
-//                            TimetableHelper.toggleShowTime();
-//                            break;
-//                        case 2:
-//                            mTimetableView.isShowNotCurWeek(!TimetableHelper.isShowNotCurWeek()).updateView();
-//                            TimetableHelper.toggleShowNotCurWeek();
-//                            break;
                         case 0:
                             onWeekLeftLayoutClicked();
                             break;
@@ -243,218 +228,44 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                             break;
                     }
                 })
-                .apply()
-                .show(view);
-    }
-
-    private void showSubjectPopupView(final View view, final ScuSubject scuSubject) {
-        CustomPopupMenuView.with(getContext(), R.layout.layout_subject_detail)
-                .setOrientation(LinearLayout.VERTICAL)
-                .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
-                .initViews(
-                        1,
-                        (popupMenuView, itemView, position) -> {
-                            TextView courseName = itemView.findViewById(R.id.course_name);
-                            DetailLayout teacherName = itemView.findViewById(R.id.teacher_name);
-                            DetailLayout classRoom = itemView.findViewById(R.id.class_room);
-                            DetailLayout classTime = itemView.findViewById(R.id.class_time);
-//                            TextView courseSequenceNum = itemView.findViewById(R.id.course_sequence_num);
-//                            TextView courseNum = itemView.findViewById(R.id.course_num);
-
-                            courseName.setText(scuSubject.getCourseName());
-                            teacherName.setContent(scuSubject.getTeacher());
-                            classRoom.setContent(scuSubject.getRoom());
-                            classTime.setContent(scuSubject.getClassTime());
-
-                            if (!TextUtils.isEmpty(scuSubject.getNote())) {
-                                DetailLayout noteLayout = itemView.findViewById(R.id.layout_note);
-                                noteLayout.setVisibility(View.VISIBLE);
-                                noteLayout.setContent(scuSubject.getNote());
-                            }
-
-                            ImageView note = itemView.findViewById(R.id.subject_note);
-                            note.setOnClickListener(v -> {
-                                popupMenuView.dismiss();
-                                showSubjectNote(scuSubject);
-                            });
-                            ImageView more = itemView.findViewById(R.id.subject_more);
-                            more.setOnClickListener(v -> {
-                                popupMenuView.dismiss();
-                                start(DetailFragment.newInstance(scuSubject));
-                            });
-
-                            ImageView alarm = itemView.findViewById(R.id.subject_alarm);
-                            alarm.setOnClickListener(v -> {
-                                //todo alarm
-                                AToast.normal("提醒功能未实现！");
-                            });
-                        })
-                .show(view, -1);
-    }
-
-    private void showSubjectNote(final ScuSubject subject) {
-        ZDialog.with(getContext())
-                .setContentView(R.layout.layout_subject_note)
-                .setOnViewCreateListener((dialog, view) -> {
-                    TextView noteTitle = view.findViewById(R.id.note_title);
-                    ImageView btnClose = view.findViewById(R.id.btn_close);
-                    ImageView btnSave = view.findViewById(R.id.btn_save);
-                    EditText editText = view.findViewById(R.id.edit_text);
-
-                    noteTitle.setText(subject.getCourseName() + "的备注");
-                    editText.setText(subject.getNote());
-                    editText.setSelection(subject.getNote().length());
-                    btnClose.setOnClickListener(v -> dialog.dismiss());
-                    btnSave.setOnClickListener(v -> {
-                        String note = editText.getText().toString();
-                        if (subject.getNote().isEmpty() && editText.getText().toString().isEmpty()) {
-                            AToast.normal("请输入备注！");
-                            return;
-                        }
-                        if (TimetableHelper.saveNote(getContext(), subject, note)) {
-                            dialog.dismiss();
-                            AToast.normal("保存成功！");
-                            subject.setNote(note);
-                        } else {
-                            AToast.normal("保存失败，请重试！");
-                        }
-                    });
-                })
                 .show();
     }
 
+    private void showSubjectPopupView(final View view, final ScuSubject scuSubject) {
+        new SubjectDetailPopup(context, scuSubject).show();
+    }
+
     private void showChooseSemesterDialog() {
-        ZListDialog<SemesterInfo> dialog = new ZListDialog<>(getContext());
-        dialog.setItemList(TimetableHelper.getSemesterList(getContext()))
+        List<SemesterInfo> list = TimetableHelper.getSemesterList(getContext());
+        int selected = -1;
+        for (int i = 0; i < list.size(); i++) {
+            if (TimetableHelper.getCurrentSemesterCode().equals(list.get(i).getSemesterCode())) {
+                selected = i;
+                break;
+            }
+        }
+        ZPopup.bottomList(context, SemesterInfo.class)
+                .setData(list)
                 .setTitle("切换学期")
-                .setItemRes(R.layout.layout_semester_item)
-//                .setGravity(Gravity.BOTTOM)
-                .setOnBindChildView((holder, list, position, payload) -> {
-                    TextView textView = holder.getTextView(R.id.text_view);
-                    textView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (TimetableHelper.getCurrentSemesterCode().equals(list.get(position).getSemesterCode())) {
-                                return;
-                            }
-//                                Toast.makeText(MainActivity.this, "请输入验证码刷新课表！", Toast.LENGTH_SHORT).show();
-                            TimetableHelper.setCurrentSemester(list.get(position).getSemesterCode(), list.get(position).getSemesterName());
-                            initTimetableView();
-                            initData();
-                            dialog.dismiss();
-                        }
-                    });
-                    textView.setText(list.get(position).getSemesterName());
-                    if (TimetableHelper.getCurrentSemesterCode().equals(list.get(position).getSemesterCode())) {
-                        textView.setTextColor(Color.BLACK);
+                .setCheckedPosition(selected)
+                .setOnSelectListener((popup, position, item) -> {
+                    if (TimetableHelper.getCurrentSemesterCode().equals(item.getSemesterCode())) {
+                        return;
                     }
+                    TimetableHelper.setCurrentSemester(item.getSemesterCode(), item.getSemesterName());
+                    initTimetableView();
+                    initData();
+                    postDelay(popup::dismiss, 50);
                 })
                 .show();
     }
 
     private void showRefreshDialog() {
-        ZDialog.with(getContext())
-                .setContentView(R.layout.layout_refresh)
-                .setOnViewCreateListener((dialog, view) -> {
-                    LinearLayout container = view.findViewById(R.id.container);
-                    LinearLayout statusLayout = view.findViewById(R.id.layout_status);
-                    TextView loadingDialogText = view.findViewById(R.id.loading_dialog_text);
-
-                    ImageView imgCatpcha = view.findViewById(R.id.img_captcha);
-                    CaptchaFetcher.fetchCaptcha(imgCatpcha);
-                    ImageView btnClose = view.findViewById(R.id.btn_close);
-                    btnClose.setOnClickListener(v -> dialog.dismiss());
-                    TextView changeCatpcha = view.findViewById(R.id.change_captcha);
-                    changeCatpcha.setOnClickListener(v -> CaptchaFetcher.fetchCaptcha(imgCatpcha));
-                    TextView btnRefresh = view.findViewById(R.id.btn_refresh);
-                    EditText captchaEdit = view.findViewById(R.id.captcha);
-
-                    btnRefresh.setOnClickListener(v -> {
-                        String captcha = captchaEdit.getText().toString();
-                        if (TextUtils.isEmpty(captcha)) {
-                            AToast.normal("验证码为空！");
-                            return;
-                        }
-                        if (TimetableHelper.isVisitorMode()) {
-                            AToast.normal("您当前正处于游客模式，无法刷新课表！");
-                            return;
-                        }
-                        if (dialog instanceof ZDialog) {
-                            ZDialog zDialog = ((ZDialog) dialog);
-                            zDialog.setCancelable(false);
-                            zDialog.setCanceledOnTouchOutside(false);
-                        }
-                        statusLayout.setVisibility(View.VISIBLE);
-                        LoginUtil.with()
-                                .setLoginCallback(new LoginUtil.LoginCallback() {
-
-                                    private void onError() {
-                                        loadingDialogText.setText("登录失败！");
-                                        statusLayout.setVisibility(View.GONE);
-                                        AToast.normal("登录失败，请重试！");
-                                        CaptchaFetcher.fetchCaptcha(imgCatpcha);
-                                        captchaEdit.setText("");
-                                        if (dialog instanceof ZDialog) {
-                                            ZDialog zDialog = ((ZDialog) dialog);
-                                            zDialog.setCancelable(true);
-                                            zDialog.setCanceledOnTouchOutside(true);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onGetCookie(String cookie) { }
-
-                                    @Override
-                                    public void onLoginSuccess() {
-                                        Log.d(TAG, "onLoginSuccess");
-                                        loadingDialogText.setText("登录成功!获取课表信息中。。。");
-                                    }
-
-                                    @Override
-                                    public void onLoginFailed() {
-                                        Log.d(TAG, "onLoginFailed");
-                                        onError();
-                                    }
-
-                                    @Override
-                                    public void onLoginError(String errorMsg) {
-                                        Log.d(TAG, "onLoginError");
-                                        onError();
-                                    }
-
-                                    @Override
-                                    public void onGetTimetable(JSONObject jsonObject) {
-                                        Log.d(TAG, "onGetTimetable jsonObject=" + jsonObject);
-                                        try {
-                                            TimetableHelper.writeToJson(getContext(), jsonObject);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onGetTimetableFinished() {
-                                        Log.d(TAG, "onGetTimetable onGetTimetableFinished");
-                                        AToast.normal("刷新课表成功！");
-                                        dialog.dismiss();
-                                        initTimetableView();
-                                        initData();
-                                    }
-
-                                    @Override
-                                    public void onGetSemesters(String json) {
-                                        Log.d(TAG, "onGetTimetable onGetSemesters json=" + json);
-                                        try {
-                                            TimetableHelper.writeSemesterFile(getContext(), json);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                })
-                                .login(captcha, TimetableHelper.getCurrentSemesterCode());
-                    });
-                })
-                .show();
+        try {
+            ZPopup.custom(context, RefreshPopup.class).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void showSettingDialogFragment() {
@@ -462,7 +273,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
         settingFragment.setOnDismissListener(new SettingFragment.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                if (!TimetableHelper.isVisitorMode() && !SPHelper.getBoolean("logined", false)) {
+                if (!TimetableHelper.isVisitorMode() && !PrefsHelper.with().getBoolean("logined", false)) {
                     startActivity(new Intent(getContext(), LoginActivity.class));
                     getActivity().finish();
                     return;
@@ -568,6 +379,12 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     public void showWeekView() {
         toggleTitle(false);
         mWeekView.isShow(true);
+    }
+
+    @Subscribe
+    public void onRefreshEvent(RefreshEvent event) {
+        initTimetableView();
+        initData();
     }
 
 }

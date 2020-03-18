@@ -9,10 +9,10 @@ import com.felix.atoast.library.AToast;
 import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
-import com.scu.timetable.ui.fragment.base.BaseFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
+import com.zpj.fragmentation.BaseFragment;
 
 public class DetailFragment extends BaseFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
 
@@ -29,6 +29,11 @@ public class DetailFragment extends BaseFragment implements View.OnClickListener
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_detail;
+    }
+
+    @Override
+    protected boolean supportSwipeBack() {
+        return true;
     }
 
     @Override

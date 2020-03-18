@@ -2,32 +2,29 @@ package com.scu.timetable.ui.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
 import com.leon.lib.settingview.LSettingItem;
+import com.zpj.popup.ZPopup;
 import com.scu.timetable.R;
-import com.scu.timetable.ui.fragment.base.BaseFragment;
+import com.scu.timetable.ui.popup.MoreInfoPopup;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.TextUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.scu.timetable.utils.UpdateUtil;
-import com.scu.timetable.utils.content.SPHelper;
-import com.zpj.popupmenuview.CustomPopupMenuView;
-import com.zpj.dialog.ZAlertDialog;
-import com.zpj.dialog.base.IDialog;
+import com.zpj.fragmentation.BaseFragment;
+import com.zpj.utils.PrefsHelper;
 
-public class SettingFragment extends BaseFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
+public class SettingFragment extends BaseFragment
+        implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
 
     private OnDismissListener onDismissListener;
 
@@ -36,6 +33,11 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_settings;
+    }
+
+    @Override
+    protected boolean supportSwipeBack() {
+        return true;
     }
 
     @Override
@@ -139,38 +141,10 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void showInfoPopupView(View view, final String title, final String content) {
-        CustomPopupMenuView.with(getContext(), R.layout.layout_text)
-                .setOrientation(LinearLayout.VERTICAL)
-                .setBackgroundAlpha(getActivity(), 0.8f, 500)
-                .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
-//                        .setAnimationTranslationShow(EasyDialog.DIRECTION_X, 350, 100, 0)
-//                        .setAnimationTranslationShow(EasyDialog.DIRECTION_Y, 350, -100, 0)
-                .setAnimationAlphaShow(350, 0.0f, 1.0f)
-                .setAnimationAlphaDismiss(350, 1.0f, 0.0f)
-                .initViews(
-                        1,
-                        (popupMenuView, itemView, position) -> {
-                            TextView titleView = itemView.findViewById(R.id.title);
-                            titleView.setText(title);
-                            TextView contentView = itemView.findViewById(R.id.content);
-
-                            StringBuilder content2 = new StringBuilder(content);
-                            if (title.length() >= content2.length()) {
-                                for (int i = 0; i < title.length() * 4; i++) {
-                                    content2.append(" ");
-                                }
-                            }
-                            contentView.setText(content2.toString());
-                            ImageView btnClose = itemView.findViewById(R.id.btn_close);
-                            btnClose.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    popupMenuView.dismiss();
-
-                                }
-                            });
-                        })
-                .show(view);
+        new MoreInfoPopup(context)
+                .setTitle(title)
+                .setContent(content)
+                .show();
     }
 
     @Override
@@ -179,22 +153,17 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         if (id == R.id.btn_back) {
             pop();
         } else if (id == R.id.btn_logout){
-            ZAlertDialog.with(getContext())
+            ZPopup.alert(context)
                     .setTitle("注销登录！")
-                    .setTitleTextColor(Color.RED)
                     .setContent("注销后需重新登录才能查看课表，确认注销？")
-                    .setPositiveButton(new IDialog.OnClickListener() {
-                        @Override
-                        public void onClick(IDialog dialog) {
-                            if (TimetableHelper.isVisitorMode()) {
-                                AToast.normal("您当前正处于游客模式，无法注销登录！");
-                                return;
-                            }
-                            SPHelper.putBoolean("logined", false);
-                            pop();
+                    .setConfirmButton(() -> {
+                        if (TimetableHelper.isVisitorMode()) {
+                            AToast.normal("您当前正处于游客模式，无法注销登录！");
+                            return;
                         }
+                        PrefsHelper.with().putBoolean("logined", false);
+                        pop();
                     })
-                    .setPositiveButtonTextColor(Color.RED)
                     .show();
         }
     }

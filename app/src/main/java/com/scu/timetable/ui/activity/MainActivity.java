@@ -1,17 +1,15 @@
 package com.scu.timetable.ui.activity;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
-import com.scu.timetable.events.UpdateEvent;
+import com.scu.timetable.events.StartFragmentEvent;
 import com.scu.timetable.service.AlarmService;
 import com.scu.timetable.ui.fragment.MainFragment;
-import com.scu.timetable.ui.fragment.UpdateDialogFragment;
+import com.scu.timetable.ui.popup.UpdatePopup;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.UpdateUtil;
-import com.zpj.http.core.IHttp;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -29,6 +27,7 @@ public final class MainActivity extends SupportActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         setContentView(R.layout.activity_main);
 //        EventBus.getDefault().register(this);
 
@@ -45,7 +44,8 @@ public final class MainActivity extends SupportActivity {
                 .setOnSuccessListener(event -> {
                     if (event.getUpdateInfo() != null) {
                         AToast.normal("开始更新！");
-                        UpdateDialogFragment.newInstance(event.getUpdateInfo()).show(getSupportFragmentManager());
+                        new UpdatePopup(MainActivity.this, event.getUpdateInfo()).show();
+//                        UpdateDialogFragment.newInstance(event.getUpdateInfo()).show(getSupportFragmentManager());
                     } else if (event.isLatestVersion()) {
                         AToast.normal("软件已是最新版");
                     }
@@ -53,11 +53,11 @@ public final class MainActivity extends SupportActivity {
                 .checkUpdate();
     }
 
-//    @Override
-//    protected void onDestroy() {
-//        EventBus.getDefault().unregister(this);
-//        super.onDestroy();
-//    }
+    @Override
+    protected void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
+    }
 
     @Override
     public void onBackPressedSupport() {
@@ -91,4 +91,10 @@ public final class MainActivity extends SupportActivity {
 //            AToast.error("检查更新出错 errorMsg:" + event.getErrorMsg());
 //        }
 //    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStartFragmentEvent(StartFragmentEvent event) {
+        start(event.getFragment());
+    }
+
 }

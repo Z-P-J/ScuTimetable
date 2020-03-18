@@ -3,7 +3,7 @@ package com.scu.timetable.events;
 import com.scu.timetable.model.EvaluationInfo;
 import com.zpj.http.core.Connection;
 
-public class EvaluationEvent {
+public class EvaluationEvent extends BaseEvent {
 
     private EvaluationInfo bean;
     private Connection connection;
