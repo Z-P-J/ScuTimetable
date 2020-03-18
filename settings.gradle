@@ -1,14 +1,10 @@
 include ':app',
         ':TimetableView',
-//        ':easydialog',
         ':zdialog',
         ':lsettingviewlibrary',
         ':zpopup',
-//        ':swipeawaydialog',
         ':switchbutton',
         ':statebutton',
-//        ':xupdate-lib',
         ':zdownloader',
         ':atoast',
-        ':titlebar',
-        ':zhttp'
+        ':titlebar'

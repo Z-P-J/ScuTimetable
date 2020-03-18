@@ -5,15 +5,14 @@
       <module fileurl="file://$PROJECT_DIR$/ScuTimetable.iml" filepath="$PROJECT_DIR$/ScuTimetable.iml" group="ScuTimetable" />
       <module fileurl="file://$PROJECT_DIR$/TimetableView/TimetableView.iml" filepath="$PROJECT_DIR$/TimetableView/TimetableView.iml" group="ScuTimetable/TimetableView" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="ScuTimetable/app" />
-      <module fileurl="file://$PROJECT_DIR$/atoast/atoast.iml" filepath="$PROJECT_DIR$/atoast/atoast.iml" />
+      <module fileurl="file://$PROJECT_DIR$/atoast/atoast.iml" filepath="$PROJECT_DIR$/atoast/atoast.iml" group="ScuTimetable/atoast" />
       <module fileurl="file://$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" filepath="$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" group="ScuTimetable/lsettingviewlibrary" />
       <module fileurl="file://$PROJECT_DIR$/statebutton/statebutton.iml" filepath="$PROJECT_DIR$/statebutton/statebutton.iml" group="ScuTimetable/statebutton" />
       <module fileurl="file://$PROJECT_DIR$/switchbutton/switchbutton.iml" filepath="$PROJECT_DIR$/switchbutton/switchbutton.iml" group="ScuTimetable/switchbutton" />
-      <module fileurl="file://$PROJECT_DIR$/titlebar/titlebar.iml" filepath="$PROJECT_DIR$/titlebar/titlebar.iml" />
-      <module fileurl="file://$PROJECT_DIR$/zdialog/zdialog.iml" filepath="$PROJECT_DIR$/zdialog/zdialog.iml" />
-      <module fileurl="file://$PROJECT_DIR$/zdownloader/zdownloader.iml" filepath="$PROJECT_DIR$/zdownloader/zdownloader.iml" />
-      <module fileurl="file://$PROJECT_DIR$/zhttp/zhttp.iml" filepath="$PROJECT_DIR$/zhttp/zhttp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/zpopup/zpopup.iml" filepath="$PROJECT_DIR$/zpopup/zpopup.iml" />
+      <module fileurl="file://$PROJECT_DIR$/titlebar/titlebar.iml" filepath="$PROJECT_DIR$/titlebar/titlebar.iml" group="ScuTimetable/titlebar" />
+      <module fileurl="file://$PROJECT_DIR$/zdialog/zdialog.iml" filepath="$PROJECT_DIR$/zdialog/zdialog.iml" group="ScuTimetable/zdialog" />
+      <module fileurl="file://$PROJECT_DIR$/zdownloader/zdownloader.iml" filepath="$PROJECT_DIR$/zdownloader/zdownloader.iml" group="ScuTimetable/zdownloader" />
+      <module fileurl="file://$PROJECT_DIR$/zpopup/zpopup.iml" filepath="$PROJECT_DIR$/zpopup/zpopup.iml" group="ScuTimetable/zpopup" />
     </modules>
   </component>
 </project>
