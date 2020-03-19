@@ -8,7 +8,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
-import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.utils.PrefsHelper;
 
 import java.io.IOException;
 
@@ -62,7 +62,7 @@ public final class CaptchaFetcher {
 //                imageView.post(new Runnable() {
 //                    @Override
 //                    public void run() {
-//                        SPHelper.putString("cookie", cookie2);
+//                        PrefsHelper.with().putString("cookie", cookie2);
 //                        Glide.with(imageView.getContext())
 //                                .load(getUrl(cookie2))
 //                                .apply(OPTIONS)
@@ -80,9 +80,9 @@ public final class CaptchaFetcher {
     }
 
     public static void fetchCaptcha(ImageView imageView) {
-        fetchCaptcha(SPHelper.getString("cookie", ""), imageView);
+        fetchCaptcha(PrefsHelper.with().getString("cookie", ""), imageView);
 //        Glide.with(imageView.getContext())
-//                .load(getUrl(SPHelper.getString("cookie", "")))
+//                .load(getUrl(PrefsHelper.with().getString("cookie", "")))
 //                .apply(OPTIONS)
 //                .into(imageView);
     }

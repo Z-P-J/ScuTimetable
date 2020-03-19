@@ -11,7 +11,7 @@ import android.util.Log;
 
 import com.scu.timetable.events.UpdateEvent;
 import com.scu.timetable.model.UpdateInfo;
-import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.utils.PrefsHelper;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.IHttp;
 import com.zpj.http.core.ObservableTask;
@@ -76,7 +76,7 @@ public final class UpdateUtil {
                     String newVersionName = versionName.trim();
                     Log.d("newVersionName", "newVersionName=" + newVersionName);
 
-                    String ignoreVersion = SPHelper.getString("ignore_version", "");
+                    String ignoreVersion = PrefsHelper.with().getString("ignore_version", "");
                     if (ignoreVersion.equals(newVersionName)) {
                         return;
                     }
@@ -137,7 +137,7 @@ public final class UpdateUtil {
 //                String newVersionName = versionName.trim();
 //                Log.d("newVersionName", "newVersionName=" + newVersionName);
 //
-//                String ignoreVersion = SPHelper.getString("ignore_version", "");
+//                String ignoreVersion = PrefsHelper.with().getString("ignore_version", "");
 //                if (ignoreVersion.equals(newVersionName)) {
 //                    return;
 //                }

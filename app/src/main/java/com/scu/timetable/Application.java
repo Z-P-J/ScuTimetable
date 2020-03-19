@@ -7,7 +7,6 @@ import android.util.Log;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.utils.EncryptionUtils;
 import com.scu.timetable.utils.FileUtil;
-import com.scu.timetable.utils.content.SPHelper;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.config.DownloaderConfig;
 import com.zpj.utils.ZUtils;
@@ -25,7 +24,6 @@ public final class Application extends android.app.Application {
             StrictMode.setVmPolicy(builder.build());
         }
         ZUtils.init(this);
-        SPHelper.init(this);
         AToast.onInit(this);
         DownloaderConfig config = DownloaderConfig.with(this)
                 .setDownloadPath(FileUtil.getDiskCacheDir(this));

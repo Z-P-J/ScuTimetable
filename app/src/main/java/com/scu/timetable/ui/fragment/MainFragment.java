@@ -166,8 +166,6 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                         int width = view.getMeasuredWidth();
                         int[] location = new int[2];
                         view.getLocationOnScreen(location);
-//                        testX = location[0] + width / 2;
-//                        testY = location[1] + height / 2 - StatusBarUtil.getStatusBarHeight(MainFragment.this);
                         ScuSubject scuSubject = (ScuSubject) scheduleList.get(0).getScheduleEnable();
 //                        AnimatorUtil.circleAnimator(test, testX, testY, 500);
                         display(scheduleList);

@@ -7,7 +7,5 @@ include ':app',
         ':zutils',
         ':ztoolbar',
         ':fragmentation',
-        ':statelayout',
         ':zwidget',
-        ':zrecyclerview',
         ':zsetting'

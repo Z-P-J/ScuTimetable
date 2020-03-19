@@ -8,7 +8,8 @@ import android.util.Log;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.model.SemesterInfo;
-import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.utils.PrefsHelper;
+import com.zpj.utils.PrefsHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -178,7 +179,7 @@ public final class TimetableHelper {
     }
 
     public static boolean isLogined(Context context) {
-        if (SPHelper.getBoolean("logined", false) && FileUtil.hasJsonFile(context, String.format(FILE_NAME, getCurrentSemesterCode()))) {
+        if (PrefsHelper.with().getBoolean("logined", false) && FileUtil.hasJsonFile(context, String.format(FILE_NAME, getCurrentSemesterCode()))) {
             String date = getCurrentDate();
             if (!date.isEmpty()) {
                 Date oldDate = DateUtil.parse(date);
@@ -260,23 +261,23 @@ public final class TimetableHelper {
     }
 
     public static void setCurrentWeek(int week) {
-        SPHelper.putInt("current_weak", week);
+        PrefsHelper.with().putInt("current_weak", week);
     }
 
     public static int getCurrentWeek() {
-        return SPHelper.getInt("current_weak", 1);
+        return PrefsHelper.with().getInt("current_weak", 1);
     }
 
     public static void setCurrentDate(String date) {
-        SPHelper.putString("current_date", date);
+        PrefsHelper.with().putString("current_date", date);
     }
 
     private static String getCurrentDate() {
-        return SPHelper.getString("current_date", "");
+        return PrefsHelper.with().getString("current_date", "");
     }
 
     public static boolean isShowWeekends() {
-        boolean showWeekends = SPHelper.getBoolean("show_weekends", false);
+        boolean showWeekends = PrefsHelper.with().getBoolean("show_weekends", false);
         if (isSmartShowWeekends()) {
             int day = DateUtil.dayOfWeek();
             if (day == 1 || day == 7) {
@@ -287,59 +288,59 @@ public final class TimetableHelper {
     }
 
     public static boolean isShowWeekendsOrin() {
-        return SPHelper.getBoolean("show_weekends", false);
+        return PrefsHelper.with().getBoolean("show_weekends", false);
     }
 
     public static void toggleShowWeekends() {
-        SPHelper.putBoolean("show_weekends", !isShowWeekendsOrin());
+        PrefsHelper.with().putBoolean("show_weekends", !isShowWeekendsOrin());
     }
 
     public static boolean isShowTime() {
-        return SPHelper.getBoolean("show_time", true);
+        return PrefsHelper.with().getBoolean("show_time", true);
     }
 
     public static void toggleShowTime() {
-        SPHelper.putBoolean("show_time", !isShowTime());
+        PrefsHelper.with().putBoolean("show_time", !isShowTime());
     }
 
     public static void toggleSpeech() {
-        SPHelper.putBoolean("text_to_speech", !isSpeech());
+        PrefsHelper.with().putBoolean("text_to_speech", !isSpeech());
     }
 
     public static boolean isSpeech() {
-        return SPHelper.getBoolean("text_to_speech", true);
+        return PrefsHelper.with().getBoolean("text_to_speech", true);
     }
 
     public static boolean isShowNotCurWeek() {
-        return SPHelper.getBoolean("show_not_cur_week", true);
+        return PrefsHelper.with().getBoolean("show_not_cur_week", true);
     }
 
     public static void toggleShowNotCurWeek() {
-        SPHelper.putBoolean("show_not_cur_week", !isShowNotCurWeek());
+        PrefsHelper.with().putBoolean("show_not_cur_week", !isShowNotCurWeek());
     }
 
     public static boolean isSmartShowWeekends() {
-        return SPHelper.getBoolean("smart_show_weekends", true);
+        return PrefsHelper.with().getBoolean("smart_show_weekends", true);
     }
 
     public static void toggleSmartShowWeekends() {
-        SPHelper.putBoolean("smart_show_weekends", !isSmartShowWeekends());
+        PrefsHelper.with().putBoolean("smart_show_weekends", !isSmartShowWeekends());
     }
 
     public static boolean sundayIsFirstDay() {
-        return SPHelper.getBoolean("sunday_is_first_day", true);
+        return PrefsHelper.with().getBoolean("sunday_is_first_day", true);
     }
 
     public static void toggleSundayIsFirstDay() {
-        SPHelper.putBoolean("sunday_is_first_day", !sundayIsFirstDay());
+        PrefsHelper.with().putBoolean("sunday_is_first_day", !sundayIsFirstDay());
     }
 
     public static boolean isVisitorMode() {
-        return SPHelper.getBoolean("visitor_mode", false);
+        return PrefsHelper.with().getBoolean("visitor_mode", false);
     }
 
     public static boolean startVisitorMode(Context context) {
-        SPHelper.putBoolean("visitor_mode", true);
+        PrefsHelper.with().putBoolean("visitor_mode", true);
         if (!FileUtil.hasJsonFile(context, VISITOR_FILE_NAME)) {
             try {
                 FileUtil.writeToJson(context, VISITOR_FILE_NAME, FileUtil.readAssetFile(context, "timetable.json"));
@@ -354,12 +355,12 @@ public final class TimetableHelper {
     }
 
     public static void closeVisitorMode() {
-        SPHelper.putBoolean("visitor_mode", false);
+        PrefsHelper.with().putBoolean("visitor_mode", false);
     }
 
     public static void setCurrentSemester(final String currentSemesterCode, final String currentSenesterName) {
-        SPHelper.putString("current_semester_code", currentSemesterCode);
-        SPHelper.putString("current_semester_name", currentSenesterName);
+        PrefsHelper.with().putString("current_semester_code", currentSemesterCode);
+        PrefsHelper.with().putString("current_semester_name", currentSenesterName);
     }
 
     public static List<SemesterInfo> getSemesterList(Context context) {
@@ -384,11 +385,11 @@ public final class TimetableHelper {
     }
 
     public static String getCurrentSemesterCode() {
-        return SPHelper.getString("current_semester_code", "2018-2019-2-1");
+        return PrefsHelper.with().getString("current_semester_code", "2018-2019-2-1");
     }
 
     public static String getCurrentSemesterName() {
-        return SPHelper.getString("current_semester_name", "2018-2019学年春(当前)");
+        return PrefsHelper.with().getString("current_semester_name", "2018-2019学年春(当前)");
     }
 
 }

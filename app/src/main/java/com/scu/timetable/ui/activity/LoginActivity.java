@@ -21,7 +21,7 @@ import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EncryptionUtils;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
-import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.utils.PrefsHelper;
 
 import org.json.JSONObject;
 
@@ -118,8 +118,8 @@ public final class LoginActivity extends SupportActivity
 
         //http://202.115.47.141/img/captcha.jpg?60
 
-        userName.setText(EncryptionUtils.decryptByAES(SPHelper.getString("user_name", "")));
-        password.setText(EncryptionUtils.decryptByAES(SPHelper.getString("password", "")));
+        userName.setText(EncryptionUtils.decryptByAES(PrefsHelper.with().getString("user_name", "")));
+        password.setText(EncryptionUtils.decryptByAES(PrefsHelper.with().getString("password", "")));
 
     }
 
@@ -232,8 +232,8 @@ public final class LoginActivity extends SupportActivity
     public void onLoginSuccess() {
 //        Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
         msgText.setText("获取课表数据中...");
-        SPHelper.putString("user_name", EncryptionUtils.encryptByAES(userName.getText().toString()));
-        SPHelper.putString("password", EncryptionUtils.encryptByAES(password.getText().toString()));
+        PrefsHelper.with().putString("user_name", EncryptionUtils.encryptByAES(userName.getText().toString()));
+        PrefsHelper.with().putString("password", EncryptionUtils.encryptByAES(password.getText().toString()));
     }
 
     @Override
@@ -261,7 +261,7 @@ public final class LoginActivity extends SupportActivity
     @Override
     public void onGetTimetableFinished() {
         msgText.setText("获取课表数据成功！");
-        SPHelper.putBoolean("logined", true);
+        PrefsHelper.with().putBoolean("logined", true);
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         //发送广播。更新桌面插件

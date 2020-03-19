@@ -20,7 +20,7 @@ import com.scu.timetable.ui.activity.MainActivity;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.widget.TimetableWidget;
-import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.utils.PrefsHelper;
 import com.zhuangfei.timetable.model.ScheduleColorPool;
 
 import java.util.ArrayList;
@@ -105,20 +105,20 @@ public final class TimetableWidgtHelper {
     }
 
     public static boolean isSmartShowWeekends() {
-        return SPHelper.getBoolean("widget_smart_show_weekends", true);
+        return PrefsHelper.with().getBoolean("widget_smart_show_weekends", true);
     }
 
     public static void toggleSmartShowWeekends(Context context) {
-        SPHelper.putBoolean("widget_smart_show_weekends", !isSmartShowWeekends());
+        PrefsHelper.with().putBoolean("widget_smart_show_weekends", !isSmartShowWeekends());
         getInstance().update(context);
     }
 
     public static boolean isTransparentMode() {
-        return SPHelper.getBoolean("widget_transparent_mode", false);
+        return PrefsHelper.with().getBoolean("widget_transparent_mode", false);
     }
 
     public static void toggleTransparentMode(Context context) {
-        SPHelper.putBoolean("widget_transparent_mode", !isTransparentMode());
+        PrefsHelper.with().putBoolean("widget_transparent_mode", !isTransparentMode());
         getInstance().update(context);
     }
 

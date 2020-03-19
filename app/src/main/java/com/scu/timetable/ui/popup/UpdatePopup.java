@@ -16,7 +16,7 @@ import com.scu.timetable.R;
 import com.scu.timetable.model.UpdateInfo;
 import com.scu.timetable.ui.view.NumberProgressBar;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.utils.PrefsHelper;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.config.MissionConfig;
 import com.zpj.downloader.constant.Error;
@@ -175,7 +175,7 @@ public class UpdatePopup extends CenterPopup implements View.OnClickListener {
         } else if (i == R.id.tv_ignore) {
             //点击忽略按钮
             AToast.normal("忽略更新");
-            SPHelper.putString("ignore_version", appVersion.getContentTextView().getText().toString());
+            PrefsHelper.with().putString("ignore_version", appVersion.getContentTextView().getText().toString());
             dismiss();
         }
     }

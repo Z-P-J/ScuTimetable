@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.scu.timetable.model.SemesterInfo;
-import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.utils.PrefsHelper;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.Connection;
 import com.zpj.http.core.ObservableTask;
@@ -37,7 +37,7 @@ import io.reactivex.ObservableOnSubscribe;
 public final class LoginUtil {
 
     public void onGetCookie(String cookie) {
-        SPHelper.putString("cookie", cookie);
+        PrefsHelper.with().putString("cookie", cookie);
         if (loginCallback != null) {
             loginCallback.onGetCookie(cookie);
         }
@@ -154,7 +154,7 @@ public final class LoginUtil {
             }
         } else if (msg.what == 2) {
             String cookie = (String) msg.obj;
-            SPHelper.putString("cookie", cookie);
+            PrefsHelper.with().putString("cookie", cookie);
             if (loginCallback != null) {
                 loginCallback.onGetCookie(cookie);
             }
@@ -205,12 +205,12 @@ public final class LoginUtil {
 
     private Connection.Response securityCheck(final String captcha) throws Exception {
 
-        String userName = EncryptionUtils.decryptByAES(SPHelper.getString("user_name", ""));
-        String password = Md5Utils.md5Encrypt(EncryptionUtils.decryptByAES(SPHelper.getString("password", "")));
+        String userName = EncryptionUtils.decryptByAES(PrefsHelper.with().getString("user_name", ""));
+        String password = Md5Utils.md5Encrypt(EncryptionUtils.decryptByAES(PrefsHelper.with().getString("password", "")));
         if (userName.isEmpty() || password.isEmpty()) {
             throw new Exception("You have to log in first.");
         }
-        final String cookie = SPHelper.getString("cookie", "");
+        final String cookie = PrefsHelper.with().getString("cookie", "");
         if (cookie.isEmpty()) {
             throw new Exception("You have to get the cookie first.");
         }
@@ -250,7 +250,7 @@ public final class LoginUtil {
     private List<SemesterInfo> getSemesters() throws IOException, JSONException {
         List<SemesterInfo> semesterInfoList = new ArrayList<>();
         Document document = ZHttp.get("http://zhjw.scu.edu.cn/student/courseSelect/calendarSemesterCurriculum/index")
-                .header("cookie", SPHelper.getString("cookie", ""))
+                .header("cookie", PrefsHelper.with().getString("cookie", ""))
                 .header("Referer", "http://zhjw.scu.edu.cn/")
                 .syncToHtml();
         Elements elements = document.getElementById("planCode").select("option");
@@ -456,8 +456,8 @@ public final class LoginUtil {
     }
 
     public void login(final String userName, final String password, final String captcha) {
-        SPHelper.putString("user_name", EncryptionUtils.encryptByAES(userName));
-        SPHelper.putString("password", EncryptionUtils.encryptByAES(password));
+        PrefsHelper.with().putString("user_name", EncryptionUtils.encryptByAES(userName));
+        PrefsHelper.with().putString("password", EncryptionUtils.encryptByAES(password));
         login(captcha);
     }
 

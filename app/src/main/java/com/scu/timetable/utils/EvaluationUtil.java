@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.scu.timetable.events.EvaluationEvent;
 import com.scu.timetable.model.EvaluationInfo;
-import com.scu.timetable.utils.content.SPHelper;
+import com.zpj.utils.PrefsHelper;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.Connection;
 import com.zpj.http.core.IHttp;
@@ -117,7 +117,7 @@ public final class EvaluationUtil {
     public void getEvaluationSubjects() {
         ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
                 .onRedirect(redirectUrl -> false)
-                .header("Cookie", SPHelper.getString("cookie", ""))
+                .header("Cookie", PrefsHelper.with().getString("cookie", ""))
                 .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
                 .userAgent(TimetableHelper.UA)
                 .ignoreHttpErrors(true)
@@ -130,7 +130,7 @@ public final class EvaluationUtil {
 //            try {
 //                String doc = ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
 //                        .onRedirect(redirectUrl -> false)
-//                        .header("Cookie", SPHelper.getString("cookie", ""))
+//                        .header("Cookie", PrefsHelper.with().getString("cookie", ""))
 //                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
 //                        .userAgent(TimetableHelper.UA)
 //                        .ignoreHttpErrors(true)
@@ -152,7 +152,7 @@ public final class EvaluationUtil {
 //            try {
 //                Document doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
 //                        .followRedirects(true)
-//                        .header("cookie", SPHelper.getString("cookie", ""))
+//                        .header("cookie", PrefsHelper.with().getString("cookie", ""))
 //                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
 //                        .userAgent(TimetableHelper.UA)
 //                        .data("evaluatedPeople", evaluatedPeople)
@@ -176,7 +176,7 @@ public final class EvaluationUtil {
 //                    Connection connection = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
 //                            .method(Connection.Method.POST)
 //                            .followRedirects(false)
-//                            .header("cookie", SPHelper.getString("cookie", ""))
+//                            .header("cookie", PrefsHelper.with().getString("cookie", ""))
 //                            .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
 //                            .data("tokenValue", tokenValue)
 //                            .data("questionnaireCode", questionnaireCode)
@@ -247,7 +247,7 @@ public final class EvaluationUtil {
         ZHttp.post("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
                 .method(Connection.Method.POST)
                 .onRedirect(redirectUrl -> true)
-                .header("cookie", SPHelper.getString("cookie", ""))
+                .header("cookie", PrefsHelper.with().getString("cookie", ""))
                 .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
                 .userAgent(TimetableHelper.UA)
                 .data("evaluatedPeople", bean.getEvaluatedPeople())
@@ -271,7 +271,7 @@ public final class EvaluationUtil {
                         Connection connection = ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
                                 .method(Connection.Method.POST)
                                 .onRedirect(redirectUrl -> false)
-                                .cookie(SPHelper.getString("cookie", ""))
+                                .cookie(PrefsHelper.with().getString("cookie", ""))
                                 .referer("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
                                 .data("tokenValue", tokenValue)
                                 .data("evaluatedPeopleNumber", bean.getEvaluatedPeopleNum())
@@ -318,7 +318,7 @@ public final class EvaluationUtil {
 //                Document doc = ZHttp.post("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
 //                        .method(Connection.Method.POST)
 //                        .onRedirect(redirectUrl -> true)
-//                        .header("cookie", SPHelper.getString("cookie", ""))
+//                        .header("cookie", PrefsHelper.with().getString("cookie", ""))
 //                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
 //                        .userAgent(TimetableHelper.UA)
 //                        .data("evaluatedPeople", bean.getEvaluatedPeople())
@@ -332,7 +332,7 @@ public final class EvaluationUtil {
 ////                Document doc = Jsoup.parse(response.body());
 ////                Document doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
 ////                        .followRedirects(true)
-////                        .header("cookie", SPHelper.getString("cookie", ""))
+////                        .header("cookie", PrefsHelper.with().getString("cookie", ""))
 ////                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
 ////                        .userAgent(TimetableHelper.UA)
 ////                        .data("evaluatedPeople", bean.getEvaluatedPeople())
@@ -354,7 +354,7 @@ public final class EvaluationUtil {
 //                    Connection connection = ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
 //                            .method(Connection.Method.POST)
 //                            .onRedirect(redirectUrl -> false)
-//                            .header("cookie", SPHelper.getString("cookie", ""))
+//                            .header("cookie", PrefsHelper.with().getString("cookie", ""))
 //                            .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
 //                            .data("tokenValue", tokenValue)
 ////                            .data("questionnaireCode", questionnaireCode)

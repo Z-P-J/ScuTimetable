@@ -10,13 +10,13 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.zpj.popup.R;
 import com.zpj.popup.XPopup;
 import com.zpj.popup.core.BasePopupView;
 import com.zpj.popup.core.CenterPopupView;
 import com.zpj.popup.interfaces.OnCancelListener;
 import com.zpj.popup.interfaces.OnConfirmListener;
-import com.zpj.popup.R;
-import com.zpj.utils.ScreenUtils;
+import com.zpj.popup.util.XPopupUtils;
 
 public class AlertPopup extends CenterPopupView implements View.OnClickListener {
 
@@ -110,7 +110,7 @@ public class AlertPopup extends CenterPopupView implements View.OnClickListener 
             @Override
             public void onGlobalLayout() {
                 textView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int padding = ScreenUtils.dp2pxInt(context, 16);
+                int padding = XPopupUtils.dp2px(context, 16);
                 textView.setPadding(padding, padding, padding, padding);
             }
         });
