@@ -3,6 +3,8 @@
     <color name="colorPrimary">#79cdcd</color>
     <color name="colorPrimaryDark">#79cdcd</color>
     <color name="colorAccent">#79cdcd</color>
+    <color name="switcher_checked_color">@color/colorPrimary</color>
+
 
 
 

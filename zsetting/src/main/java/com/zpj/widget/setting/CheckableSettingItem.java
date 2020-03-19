@@ -58,7 +58,7 @@ public abstract class CheckableSettingItem extends ZSettingItem {
         }
     }
 
-    public void setListener(OnCheckableItemClickListener listener) {
+    public void setOnItemClickListener(OnCheckableItemClickListener listener) {
         this.listener = listener;
     }
 

@@ -13,7 +13,6 @@
       <module fileurl="file://$PROJECT_DIR$/zpopup/zpopup.iml" filepath="$PROJECT_DIR$/zpopup/zpopup.iml" group="ScuTimetable/zpopup" />
       <module fileurl="file://$PROJECT_DIR$/zrecyclerview/zrecyclerview.iml" filepath="$PROJECT_DIR$/zrecyclerview/zrecyclerview.iml" group="ScuTimetable/zrecyclerview" />
       <module fileurl="file://$PROJECT_DIR$/zsetting/zsetting.iml" filepath="$PROJECT_DIR$/zsetting/zsetting.iml" group="ScuTimetable/zsetting" />
-      <module fileurl="file://$PROJECT_DIR$/zswitcher/zswitcher.iml" filepath="$PROJECT_DIR$/zswitcher/zswitcher.iml" group="ScuTimetable/zswitcher" />
       <module fileurl="file://$PROJECT_DIR$/ztoolbar/ztoolbar.iml" filepath="$PROJECT_DIR$/ztoolbar/ztoolbar.iml" group="ScuTimetable/ztoolbar" />
       <module fileurl="file://$PROJECT_DIR$/zutils/zutils.iml" filepath="$PROJECT_DIR$/zutils/zutils.iml" group="ScuTimetable/zutils" />
       <module fileurl="file://$PROJECT_DIR$/zwidget/zwidget.iml" filepath="$PROJECT_DIR$/zwidget/zwidget.iml" group="ScuTimetable/zwidget" />

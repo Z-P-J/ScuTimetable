@@ -10,5 +10,4 @@ include ':app',
         ':statelayout',
         ':zwidget',
         ':zrecyclerview',
-        ':zswitcher',
         ':zsetting'

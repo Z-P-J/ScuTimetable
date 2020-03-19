@@ -24,7 +24,7 @@ public class CommonSettingItem extends ZSettingItem {
         super(context, attrs, defStyleAttr);
     }
 
-    public void setListener(OnCommonItemClickListener listener) {
+    public void setOnItemClickListener(OnCommonItemClickListener listener) {
         this.listener = listener;
     }
 

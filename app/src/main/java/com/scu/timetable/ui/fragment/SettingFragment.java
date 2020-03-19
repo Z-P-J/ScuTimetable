@@ -53,44 +53,44 @@ public class SettingFragment extends BaseFragment
 
         SwitchSettingItem smartShowWeekends = view.findViewById(R.id.item_smart_show_weekends);
         smartShowWeekends.setChecked(TimetableHelper.isSmartShowWeekends());
-        smartShowWeekends.setListener(this);
+        smartShowWeekends.setOnItemClickListener(this);
 
         SwitchSettingItem itemMondayIsFirstDay = view.findViewById(R.id.item_monday_is_first_day);
         itemMondayIsFirstDay.setChecked(!TimetableHelper.sundayIsFirstDay());
-        itemMondayIsFirstDay.setListener(this);
+        itemMondayIsFirstDay.setOnItemClickListener(this);
 
         itemShowWeekends = view.findViewById(R.id.item_show_weekends);
         itemShowWeekends.setChecked(TimetableHelper.isShowWeekendsOrin());
         if (TimetableHelper.isSmartShowWeekends()) {
             itemShowWeekends.setEnabled(false);
         }
-        itemShowWeekends.setListener(this);
+        itemShowWeekends.setOnItemClickListener(this);
 
         SwitchSettingItem itemShowNonThisWeek = view.findViewById(R.id.item_show_non_this_week);
         itemShowNonThisWeek.setChecked(TimetableHelper.isShowNotCurWeek());
-        itemShowNonThisWeek.setListener(this);
+        itemShowNonThisWeek.setOnItemClickListener(this);
 
         SwitchSettingItem itemShowTime = view.findViewById(R.id.item_show_time);
         itemShowTime.setChecked(TimetableHelper.isShowTime());
-        itemShowTime.setListener(this);
+        itemShowTime.setOnItemClickListener(this);
 
         SwitchSettingItem itemSpeech = view.findViewById(R.id.item_speech);
         itemSpeech.setChecked(TimetableHelper.isSpeech());
-        itemSpeech.setListener(this);
+        itemSpeech.setOnItemClickListener(this);
 
         CommonSettingItem itemChangeCurrentWeek = view.findViewById(R.id.item_change_current_week);
-        itemChangeCurrentWeek.setListener(this);
+        itemChangeCurrentWeek.setOnItemClickListener(this);
 
         CommonSettingItem itemNotification = view.findViewById(R.id.item_notification);
-        itemNotification.setListener(this);
+        itemNotification.setOnItemClickListener(this);
 
         SwitchSettingItem itemWidgetSmartShowWeekends = view.findViewById(R.id.item_widget_smart_show_weekends);
         itemWidgetSmartShowWeekends.setChecked(TimetableWidgtHelper.isSmartShowWeekends());
-        itemWidgetSmartShowWeekends.setListener(this);
+        itemWidgetSmartShowWeekends.setOnItemClickListener(this);
 
         SwitchSettingItem itemWidgetTransparentMode = view.findViewById(R.id.item_widget_transparent_mode);
         itemWidgetTransparentMode.setChecked(TimetableWidgtHelper.isTransparentMode());
-        itemWidgetTransparentMode.setListener(this);
+        itemWidgetTransparentMode.setOnItemClickListener(this);
 
         StateButton btnLogout = view.findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(this);
