@@ -1,9 +1,6 @@
 include ':app',
         ':TimetableView',
-//        ':zdialog',
-        ':lsettingviewlibrary',
         ':zpopup',
-//        ':switchbutton',
         ':statebutton',
         ':zdownloader',
         ':atoast',
@@ -12,4 +9,6 @@ include ':app',
         ':fragmentation',
         ':statelayout',
         ':zwidget',
-        ':zrecyclerview'
+        ':zrecyclerview',
+        ':zswitcher',
+        ':zsetting'

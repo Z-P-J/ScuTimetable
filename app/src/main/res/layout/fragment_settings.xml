@@ -24,7 +24,7 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="16dp"
                 app:cardUseCompatPadding="true"
                 app:cardElevation="5dp"
                 app:cardBackgroundColor="#eeffffff"
@@ -56,92 +56,72 @@
                         android:background="#99999999"
                         />
 
-                    <com.leon.lib.settingview.LSettingItem
+                    <com.zpj.widget.setting.SwitchSettingItem
                         android:id="@+id/item_smart_show_weekends"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="true"
-                        app:leftText="智能显示周末"
-                        app:rightStyle="iconSwitch"
-                        app:showInfoBtn="true"
-                        app:leftIcon="@drawable/ic_color_lens_black_24dp"
+                        app:z_setting_titleText="智能显示周末"
+                        app:z_setting_infoText="当前时间为周末时才显示周末的课程"
+                        app:z_setting_leftIcon="@drawable/ic_color_lens_black_24dp"
                         />
 
-                    <com.leon.lib.settingview.LSettingItem
+                    <com.zpj.widget.setting.SwitchSettingItem
                         android:id="@+id/item_monday_is_first_day"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="true"
-                        app:leftText="星期一为周一"
-                        app:rightStyle="iconSwitch"
-                        app:showInfoBtn="true"
-                        app:leftIcon="@drawable/ic_next_week_black_24dp"
+                        app:z_setting_titleText="星期一为周一"
+                        app:z_setting_infoText="将星期一作为周一，默认为星期天"
+                        app:z_setting_leftIcon="@drawable/ic_next_week_black_24dp"
                         />
 
-                    <com.leon.lib.settingview.LSettingItem
+                    <com.zpj.widget.setting.SwitchSettingItem
                         android:id="@+id/item_show_weekends"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="true"
-                        app:leftText="显示周末"
-                        app:rightStyle="iconSwitch"
-                        app:showInfoBtn="true"
-                        app:leftIcon="@drawable/ic_weekend_black_24dp"
+                        app:z_setting_titleText="显示周末"
+                        app:z_setting_infoText="显示周末课程"
+                        app:z_setting_leftIcon="@drawable/ic_weekend_black_24dp"
                         />
 
-                    <com.leon.lib.settingview.LSettingItem
+                    <com.zpj.widget.setting.SwitchSettingItem
                         android:id="@+id/item_show_non_this_week"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="true"
-                        app:leftText="显示非本周课程"
-                        app:rightStyle="iconSwitch"
-                        app:showInfoBtn="true"
-                        app:leftIcon="@drawable/ic_event_note_black_24dp"
+                        app:z_setting_titleText="显示非本周课程"
+                        app:z_setting_infoText="以灰色状态显示非本周课程"
+                        app:z_setting_leftIcon="@drawable/ic_event_note_black_24dp"
                         />
 
-                    <com.leon.lib.settingview.LSettingItem
+                    <com.zpj.widget.setting.SwitchSettingItem
                         android:id="@+id/item_show_time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="true"
-                        app:leftText="显示节次时间"
-                        app:rightStyle="iconSwitch"
-                        app:showInfoBtn="true"
-                        app:leftIcon="@drawable/ic_access_time_black_24dp"
+                        app:z_setting_titleText="显示节次时间"
+                        app:z_setting_leftIcon="@drawable/ic_access_time_black_24dp"
                         />
 
-                    <com.leon.lib.settingview.LSettingItem
+                    <com.zpj.widget.setting.SwitchSettingItem
                         android:id="@+id/item_speech"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="true"
-                        app:leftText="语音播报"
-                        app:rightStyle="iconSwitch"
-                        app:showInfoBtn="false"
-                        app:leftIcon="@drawable/ic_access_alarm_black_24dp"
+                        app:z_setting_titleText="语音播报"
+                        app:z_setting_leftIcon="@drawable/ic_access_alarm_black_24dp"
                         />
 
-                    <com.leon.lib.settingview.LSettingItem
+                    <com.zpj.widget.setting.CommonSettingItem
                         android:id="@+id/item_change_current_week"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="true"
-                        app:leftText="修改当前周次"
-                        app:showInfoBtn="false"
-                        android:layout_marginBottom="10dp"
-                        app:leftIcon="@drawable/ic_assignment_late_black_24dp"
+                        app:z_setting_titleText="修改当前周次"
+                        app:z_setting_leftIcon="@drawable/ic_assignment_late_black_24dp"
                         />
 
-                    <com.leon.lib.settingview.LSettingItem
+                    <com.zpj.widget.setting.CommonSettingItem
                         android:id="@+id/item_notification"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="false"
-                        app:leftText="通知设置"
-                        app:showInfoBtn="false"
-                        android:layout_marginBottom="10dp"
-                        app:leftIcon="@drawable/ic_notifications_black_24dp"
+                        app:z_setting_titleText="通知设置"
+                        app:z_setting_leftIcon="@drawable/ic_notifications_black_24dp"
                         />
 
                 </LinearLayout>
@@ -154,7 +134,7 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="16dp"
                 app:cardUseCompatPadding="true"
                 app:cardElevation="5dp"
                 app:cardBackgroundColor="#eeffffff"
@@ -185,33 +165,24 @@
                         android:layout_marginEnd="15dp"
                         android:background="#99999999"/>
 
-                    <com.leon.lib.settingview.LSettingItem
+                    <com.zpj.widget.setting.SwitchSettingItem
                         android:id="@+id/item_widget_smart_show_weekends"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="true"
-                        app:leftText="智能显示周末"
-                        app:rightStyle="iconSwitch"
-                        app:showInfoBtn="false"
-                        app:leftIcon="@drawable/ic_color_lens_black_24dp"
+                        app:z_setting_titleText="智能显示周末"
+                        app:z_setting_leftIcon="@drawable/ic_color_lens_black_24dp"
                         />
 
-                    <com.leon.lib.settingview.LSettingItem
+                    <com.zpj.widget.setting.SwitchSettingItem
                         android:id="@+id/item_widget_transparent_mode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:isShowUnderLine="false"
-                        app:leftText="透明模式"
-                        app:rightStyle="iconSwitch"
-                        app:showInfoBtn="true"
-                        android:layout_marginBottom="10dp"
-                        app:leftIcon="@drawable/ic_format_color_fill_black_24dp"
+                        app:z_setting_titleText="透明模式"
+                        app:z_setting_infoText="桌面插件背景透明"
+                        app:z_setting_leftIcon="@drawable/ic_format_color_fill_black_24dp"
                         />
 
                 </LinearLayout>
-
-
-
 
             </android.support.v7.widget.CardView>
 

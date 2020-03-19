@@ -16,6 +16,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import me.yokeyword.fragmentation.SupportActivity;
+import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator;
+import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
 /**
  * @author Z-P-J
@@ -79,7 +81,13 @@ public final class MainActivity extends SupportActivity {
         }
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Override
+    public FragmentAnimator onCreateFragmentAnimator() {
+        return new DefaultHorizontalAnimator();
+    }
+
+
+    //    @Subscribe(threadMode = ThreadMode.MAIN)
 //    public void onUpdateEvent(UpdateEvent event) {
 //        if (event.getUpdateInfo() != null) {
 //            AToast.normal("开始更新！");

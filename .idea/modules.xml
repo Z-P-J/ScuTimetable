@@ -7,12 +7,13 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="ScuTimetable/app" />
       <module fileurl="file://$PROJECT_DIR$/atoast/atoast.iml" filepath="$PROJECT_DIR$/atoast/atoast.iml" group="ScuTimetable/atoast" />
       <module fileurl="file://$PROJECT_DIR$/fragmentation/fragmentation.iml" filepath="$PROJECT_DIR$/fragmentation/fragmentation.iml" group="ScuTimetable/fragmentation" />
-      <module fileurl="file://$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" filepath="$PROJECT_DIR$/lsettingviewlibrary/lsettingviewlibrary.iml" group="ScuTimetable/lsettingviewlibrary" />
       <module fileurl="file://$PROJECT_DIR$/statebutton/statebutton.iml" filepath="$PROJECT_DIR$/statebutton/statebutton.iml" group="ScuTimetable/statebutton" />
       <module fileurl="file://$PROJECT_DIR$/statelayout/statelayout.iml" filepath="$PROJECT_DIR$/statelayout/statelayout.iml" group="ScuTimetable/statelayout" />
       <module fileurl="file://$PROJECT_DIR$/zdownloader/zdownloader.iml" filepath="$PROJECT_DIR$/zdownloader/zdownloader.iml" group="ScuTimetable/zdownloader" />
       <module fileurl="file://$PROJECT_DIR$/zpopup/zpopup.iml" filepath="$PROJECT_DIR$/zpopup/zpopup.iml" group="ScuTimetable/zpopup" />
       <module fileurl="file://$PROJECT_DIR$/zrecyclerview/zrecyclerview.iml" filepath="$PROJECT_DIR$/zrecyclerview/zrecyclerview.iml" group="ScuTimetable/zrecyclerview" />
+      <module fileurl="file://$PROJECT_DIR$/zsetting/zsetting.iml" filepath="$PROJECT_DIR$/zsetting/zsetting.iml" group="ScuTimetable/zsetting" />
+      <module fileurl="file://$PROJECT_DIR$/zswitcher/zswitcher.iml" filepath="$PROJECT_DIR$/zswitcher/zswitcher.iml" group="ScuTimetable/zswitcher" />
       <module fileurl="file://$PROJECT_DIR$/ztoolbar/ztoolbar.iml" filepath="$PROJECT_DIR$/ztoolbar/ztoolbar.iml" group="ScuTimetable/ztoolbar" />
       <module fileurl="file://$PROJECT_DIR$/zutils/zutils.iml" filepath="$PROJECT_DIR$/zutils/zutils.iml" group="ScuTimetable/zutils" />
       <module fileurl="file://$PROJECT_DIR$/zwidget/zwidget.iml" filepath="$PROJECT_DIR$/zwidget/zwidget.iml" group="ScuTimetable/zwidget" />

@@ -11,8 +11,6 @@ import android.widget.ImageView;
 
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
-import com.leon.lib.settingview.LSettingItem;
-import com.zpj.popup.ZPopup;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.popup.MoreInfoPopup;
 import com.scu.timetable.ui.widget.DetailLayout;
@@ -21,14 +19,22 @@ import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.fragmentation.BaseFragment;
+import com.zpj.popup.ZPopup;
 import com.zpj.utils.PrefsHelper;
+import com.zpj.widget.setting.CheckableSettingItem;
+import com.zpj.widget.setting.CommonSettingItem;
+import com.zpj.widget.setting.OnCheckableItemClickListener;
+import com.zpj.widget.setting.OnCommonItemClickListener;
+import com.zpj.widget.setting.SwitchSettingItem;
 
 public class SettingFragment extends BaseFragment
-        implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
+        implements View.OnClickListener,
+        OnCheckableItemClickListener,
+        OnCommonItemClickListener {
 
     private OnDismissListener onDismissListener;
 
-    private LSettingItem itemShowWeekends;
+    private SwitchSettingItem itemShowWeekends;
 
     @Override
     protected int getLayoutId() {
@@ -45,74 +51,46 @@ public class SettingFragment extends BaseFragment
         ImageView btnBack = view.findViewById(R.id.btn_back);
         btnBack.setOnClickListener(this);
 
-        LSettingItem smartShowWeekends = view.findViewById(R.id.item_smart_show_weekends);
+        SwitchSettingItem smartShowWeekends = view.findViewById(R.id.item_smart_show_weekends);
         smartShowWeekends.setChecked(TimetableHelper.isSmartShowWeekends());
-        smartShowWeekends.setmOnLSettingItemClick(this);
-        smartShowWeekends.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于智能显示周末",
-                "开启该功能后将只会在当前时间为周末时才显示周末的课程，当前时间不为周末时则隐藏周末的课程。该选项启用后将不能使用“显示周末”选项。")
-        );
+        smartShowWeekends.setListener(this);
 
-        LSettingItem itemMondayIsFirstDay = view.findViewById(R.id.item_monday_is_first_day);
+        SwitchSettingItem itemMondayIsFirstDay = view.findViewById(R.id.item_monday_is_first_day);
         itemMondayIsFirstDay.setChecked(!TimetableHelper.sundayIsFirstDay());
-        itemMondayIsFirstDay.setmOnLSettingItemClick(this);
-        itemMondayIsFirstDay.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于设置星期一为周一",
-                "默认星期天为周一。不排除有些人喜欢将星期一作为周一，所以增加设置星期一为周一的选项。")
-        );
+        itemMondayIsFirstDay.setListener(this);
 
         itemShowWeekends = view.findViewById(R.id.item_show_weekends);
         itemShowWeekends.setChecked(TimetableHelper.isShowWeekendsOrin());
         if (TimetableHelper.isSmartShowWeekends()) {
-            itemShowWeekends.setEnable(false);
+            itemShowWeekends.setEnabled(false);
         }
-        itemShowWeekends.setmOnLSettingItemClick(this);
-        itemShowWeekends.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于显示周末",
-                "显示周末。")
-        );
+        itemShowWeekends.setListener(this);
 
-        LSettingItem itemShowNonThisWeek = view.findViewById(R.id.item_show_non_this_week);
+        SwitchSettingItem itemShowNonThisWeek = view.findViewById(R.id.item_show_non_this_week);
         itemShowNonThisWeek.setChecked(TimetableHelper.isShowNotCurWeek());
-        itemShowNonThisWeek.setmOnLSettingItemClick(this);
-        itemShowNonThisWeek.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于显示非本周课程",
-                "开启该选项将显示不在本周上课的课程。")
-        );
+        itemShowNonThisWeek.setListener(this);
 
-        LSettingItem itemShowTime = view.findViewById(R.id.item_show_time);
+        SwitchSettingItem itemShowTime = view.findViewById(R.id.item_show_time);
         itemShowTime.setChecked(TimetableHelper.isShowTime());
-        itemShowTime.setmOnLSettingItemClick(this);
-        itemShowTime.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于显示节次时间",
-                "开启该选项将在侧边栏显示该节课的上课时间。")
-        );
+        itemShowTime.setListener(this);
 
-        LSettingItem itemSpeech = view.findViewById(R.id.item_speech);
+        SwitchSettingItem itemSpeech = view.findViewById(R.id.item_speech);
         itemSpeech.setChecked(TimetableHelper.isSpeech());
-        itemSpeech.setmOnLSettingItemClick(this);
+        itemSpeech.setListener(this);
 
-        LSettingItem itemChangeCurrentWeek = view.findViewById(R.id.item_change_current_week);
-        itemChangeCurrentWeek.setmOnLSettingItemClick(this);
+        CommonSettingItem itemChangeCurrentWeek = view.findViewById(R.id.item_change_current_week);
+        itemChangeCurrentWeek.setListener(this);
 
-        LSettingItem itemNotification = view.findViewById(R.id.item_notification);
-        itemNotification.setmOnLSettingItemClick(this);
+        CommonSettingItem itemNotification = view.findViewById(R.id.item_notification);
+        itemNotification.setListener(this);
 
-        LSettingItem itemWidgetSmartShowWeekends = view.findViewById(R.id.item_widget_smart_show_weekends);
+        SwitchSettingItem itemWidgetSmartShowWeekends = view.findViewById(R.id.item_widget_smart_show_weekends);
         itemWidgetSmartShowWeekends.setChecked(TimetableWidgtHelper.isSmartShowWeekends());
-        itemWidgetSmartShowWeekends.setmOnLSettingItemClick(this);
-        itemWidgetSmartShowWeekends.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于桌面插件的智能显示周末",
-                "桌面插件默认开启智能显示周末")
-        );
+        itemWidgetSmartShowWeekends.setListener(this);
 
-        LSettingItem itemWidgetTransparentMode = view.findViewById(R.id.item_widget_transparent_mode);
+        SwitchSettingItem itemWidgetTransparentMode = view.findViewById(R.id.item_widget_transparent_mode);
         itemWidgetTransparentMode.setChecked(TimetableWidgtHelper.isTransparentMode());
-        itemWidgetTransparentMode.setmOnLSettingItemClick(this);
-        itemWidgetTransparentMode.setmOnBtnInfoClick(v -> showInfoPopupView(v,
-                "关于透明模式",
-                "炫酷的透明模式，并且将充分利用桌面空间来显示您的课程")
-        );
+        itemWidgetTransparentMode.setListener(this);
 
         StateButton btnLogout = view.findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(this);
@@ -152,7 +130,7 @@ public class SettingFragment extends BaseFragment
         int id = v.getId();
         if (id == R.id.btn_back) {
             pop();
-        } else if (id == R.id.btn_logout){
+        } else if (id == R.id.btn_logout) {
             ZPopup.alert(context)
                     .setTitle("注销登录！")
                     .setContent("注销后需重新登录才能查看课表，确认注销？")
@@ -165,37 +143,6 @@ public class SettingFragment extends BaseFragment
                         pop();
                     })
                     .show();
-        }
-    }
-
-    @Override
-    public void click(View view, boolean isChecked) {
-        int id = view.getId();
-        if (id == R.id.item_smart_show_weekends) {
-            TimetableHelper.toggleSmartShowWeekends();
-            itemShowWeekends.setEnable(!TimetableHelper.isSmartShowWeekends());
-        } else if (id == R.id.item_monday_is_first_day) {
-            TimetableHelper.toggleSundayIsFirstDay();
-        } else if (id == R.id.item_show_non_this_week) {
-            TimetableHelper.toggleShowNotCurWeek();
-        } else if (id == R.id.item_show_weekends) {
-            if (TimetableHelper.isSmartShowWeekends()) {
-                AToast.normal("关闭智能显示周末后启用！");
-            } else {
-                TimetableHelper.toggleShowWeekends();
-            }
-        } else if (id == R.id.item_show_time) {
-            TimetableHelper.toggleShowTime();
-        } else if (id == R.id.item_speech) {
-            TimetableHelper.toggleSpeech();
-        } else if (id == R.id.item_change_current_week) {
-            TimetableHelper.openChangeCurrentWeekDialog(getContext(), null);
-        } else if (id == R.id.item_notification) {
-            goSetting();
-        }else if (id == R.id.item_widget_smart_show_weekends) {
-            TimetableWidgtHelper.toggleSmartShowWeekends(getContext());
-        } else if (id == R.id.item_widget_transparent_mode) {
-            TimetableWidgtHelper.toggleTransparentMode(getContext());
         }
     }
 
@@ -221,6 +168,43 @@ public class SettingFragment extends BaseFragment
 
     public void setOnDismissListener(OnDismissListener onDismissListener) {
         this.onDismissListener = onDismissListener;
+    }
+
+    @Override
+    public void onItemClick(CheckableSettingItem item) {
+        int id = item.getId();
+        if (id == R.id.item_smart_show_weekends) {
+            TimetableHelper.toggleSmartShowWeekends();
+            itemShowWeekends.setEnabled(!TimetableHelper.isSmartShowWeekends());
+        } else if (id == R.id.item_monday_is_first_day) {
+            TimetableHelper.toggleSundayIsFirstDay();
+        } else if (id == R.id.item_show_non_this_week) {
+            TimetableHelper.toggleShowNotCurWeek();
+        } else if (id == R.id.item_show_weekends) {
+            if (TimetableHelper.isSmartShowWeekends()) {
+                AToast.normal("关闭智能显示周末后启用！");
+            } else {
+                TimetableHelper.toggleShowWeekends();
+            }
+        } else if (id == R.id.item_show_time) {
+            TimetableHelper.toggleShowTime();
+        } else if (id == R.id.item_speech) {
+            TimetableHelper.toggleSpeech();
+        } else if (id == R.id.item_widget_smart_show_weekends) {
+            TimetableWidgtHelper.toggleSmartShowWeekends(getContext());
+        } else if (id == R.id.item_widget_transparent_mode) {
+            TimetableWidgtHelper.toggleTransparentMode(getContext());
+        }
+    }
+
+    @Override
+    public void onItemClick(CommonSettingItem item) {
+        int id = item.getId();
+        if (id == R.id.item_change_current_week) {
+            TimetableHelper.openChangeCurrentWeekDialog(getContext(), null);
+        } else if (id == R.id.item_notification) {
+            goSetting();
+        }
     }
 
     public interface OnDismissListener {

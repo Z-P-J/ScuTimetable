@@ -5,16 +5,12 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.felix.atoast.library.AToast;
-import com.leon.lib.settingview.LSettingItem;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.scu.timetable.utils.TimetableHelper;
-import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.zpj.fragmentation.BaseFragment;
 
-public class DetailFragment extends BaseFragment implements View.OnClickListener, LSettingItem.OnLSettingItemClick {
+public class DetailFragment extends BaseFragment implements View.OnClickListener {
 
     private ScuSubject subject;
 
@@ -76,30 +72,6 @@ public class DetailFragment extends BaseFragment implements View.OnClickListener
         int id = v.getId();
         if (id == R.id.btn_back) {
             pop();
-        }
-    }
-
-    @Override
-    public void click(View view, boolean isChecked) {
-        int id = view.getId();
-        if (id == R.id.item_smart_show_weekends) {
-            TimetableHelper.toggleSmartShowWeekends();
-        } else if (id == R.id.item_monday_is_first_day) {
-            TimetableHelper.toggleSundayIsFirstDay();
-        } else if (id == R.id.item_show_non_this_week) {
-            TimetableHelper.toggleShowNotCurWeek();
-        } else if (id == R.id.item_show_weekends) {
-            if (TimetableHelper.isSmartShowWeekends()) {
-                AToast.normal("关闭智能显示周末后启用");
-            } else {
-                TimetableHelper.toggleShowWeekends();
-            }
-        } else if (id == R.id.item_show_time) {
-            TimetableHelper.toggleShowTime();
-        } else if (id == R.id.item_change_current_week) {
-            TimetableHelper.openChangeCurrentWeekDialog(getContext(), null);
-        } else if (id == R.id.item_widget_smart_show_weekends) {
-            TimetableWidgtHelper.toggleSmartShowWeekends(getContext());
         }
     }
 
