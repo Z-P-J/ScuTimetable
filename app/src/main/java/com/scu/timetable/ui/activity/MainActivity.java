@@ -10,14 +10,13 @@ import com.scu.timetable.ui.fragment.MainFragment;
 import com.scu.timetable.ui.popup.UpdatePopup;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.UpdateUtil;
+import com.zpj.fragmentation.SupportActivity;
+import com.zpj.fragmentation.anim.DefaultHorizontalAnimator;
+import com.zpj.fragmentation.anim.FragmentAnimator;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import me.yokeyword.fragmentation.SupportActivity;
-import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator;
-import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
 /**
  * @author Z-P-J

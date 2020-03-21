@@ -90,23 +90,21 @@
 
 
 ## 该项目使用或参考了以下开源库
-[ZDownloader(自己开发的多线程下载框架，用于该项目应用更新)](https://github.com/Z-P-J/ZDownloader)
+[ZDownloader](https://github.com/Z-P-J/ZDownloader)
 
-[ZDialog(自己开发Dialog库)](https://github.com/Z-P-J/ZDialog)
+[ZDialog](https://github.com/Z-P-J/ZDialog)
 
-[ZHttp(自己基于Jsoup开发的网络请求库)](https://github.com/Z-P-J/ZHttp)
+[ZHttp](https://github.com/Z-P-J/ZHttp)
+
+[ZSettingItem](https://github.com/Z-P-J/ZSettingItem)
+
+[Fragmentation](https://github.com/Z-P-J/Fragmentation)
 
 [TimetableView](https://github.com/zfman/TimetableView)
 
-[jsoup](https://github.com/jhy/jsoup)
-
 [Glide](https://github.com/bumptech/glide)
 
-[Fragmentation](https://github.com/YoKeyword/Fragmentation)
-
 [SwitchButton](https://github.com/zcweng/SwitchButton)
-
-[LSettingView](https://github.com/leonHua/LSettingView)
 
 [StateButton](https://github.com/niniloveyou/StateButton)
 

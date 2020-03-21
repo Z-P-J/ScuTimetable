@@ -10,7 +10,7 @@
 
     <include layout="@layout/layout_header"/>
 
-    <com.zpj.widget.ElasticScrollView
+    <com.scu.timetable.ui.widget.ElasticScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
@@ -267,7 +267,7 @@
 
             <com.deadline.statebutton.StateButton
                 android:id="@+id/btn_logout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:radius="10dp"
                 android:text="注销登录"
@@ -282,12 +282,12 @@
                 app:pressedTextColor="#aaffffff"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                android:layout_marginStart="56dp"
+                android:layout_marginEnd="56dp"
                 />
 
         </LinearLayout>
 
-    </com.zpj.widget.ElasticScrollView>
+    </com.scu.timetable.ui.widget.ElasticScrollView>
 
 </LinearLayout>

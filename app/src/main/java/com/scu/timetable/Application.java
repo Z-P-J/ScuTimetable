@@ -6,9 +6,9 @@ import android.util.Log;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.utils.EncryptionUtils;
-import com.scu.timetable.utils.FileUtil;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.config.DownloaderConfig;
+import com.zpj.utils.FileUtils;
 import com.zpj.utils.ZUtils;
 
 /**
@@ -23,11 +23,11 @@ public final class Application extends android.app.Application {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
         }
-        ZUtils.init(this);
+//        ZUtils.init(this);
         AToast.onInit(this);
         DownloaderConfig config = DownloaderConfig.with(this)
-                .setDownloadPath(FileUtil.getDiskCacheDir(this));
-        Log.d("cachePath", "cachePath=" + FileUtil.getDiskCacheDir(this));
+                .setDownloadPath(FileUtils.getDiskCacheDir(this));
+        Log.d("cachePath", "cachePath=" + FileUtils.getDiskCacheDir(this));
         ZDownloader.init(config);
 
         String test = "kseugrbfjkhdlf";

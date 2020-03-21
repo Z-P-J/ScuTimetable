@@ -16,16 +16,15 @@ import android.widget.TextView;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.popup.MoreInfoPopup;
-import com.scu.timetable.utils.AnimatorUtil;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EncryptionUtils;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
+import com.zpj.fragmentation.SupportActivity;
+import com.zpj.utils.AnimatorUtils;
 import com.zpj.utils.PrefsHelper;
 
 import org.json.JSONObject;
-
-import me.yokeyword.fragmentation.SupportActivity;
 
 /**
  * @author Z-P-J
@@ -38,8 +37,6 @@ public final class LoginActivity extends SupportActivity
     private EditText password;
     private EditText captcha;
     private ImageView captchaImg;
-//    private String[] shijian = {"8:15-9:00", "9:10-9:55", "10:15-11:00", "11:10-11:55", "11:55-1:50", "13:50-14:35", "14:45-15:30", "15:40-16:25", "16:50-17:35", "17:45-18:30", "18:30-19:20", "19:20-20:05", "20:15-21:00", "21:10-21:55", "22:05-22:50"};
-
     private String cookie;
 
     private View progress;
@@ -88,7 +85,7 @@ public final class LoginActivity extends SupportActivity
         middleLayout = findViewById(R.id.layout_middle);
 
 //        middleLayout.setVisibility(View.VISIBLE);
-        AnimatorUtil.showViewAnimator(middleLayout, 1000);
+        AnimatorUtils.showViewAnimator(middleLayout, 1000);
 
         TextView mBtnLogin = findViewById(R.id.main_btn_login);
         mBtnLogin.setOnClickListener(this);
@@ -124,14 +121,14 @@ public final class LoginActivity extends SupportActivity
     }
 
     private void onError() {
-        AnimatorUtil.hideViewAnimator(progress, 500, new AnimatorListener() {
+        AnimatorUtils.hideViewAnimator(progress, 500, new AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) { }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 progress.setVisibility(View.GONE);
-                AnimatorUtil.showViewAnimator(middleLayout, 500);
+                AnimatorUtils.showViewAnimator(middleLayout, 500);
                 visitorLayout.setVisibility(View.VISIBLE);
                 captcha.setText("");
                 CaptchaFetcher.fetchCaptcha(cookie, captchaImg);
@@ -152,14 +149,14 @@ public final class LoginActivity extends SupportActivity
         if (userName.getText().toString().isEmpty() || password.getText().toString().isEmpty() || captcha.getText().toString().isEmpty()) {
             AToast.normal("请输入正确的信息");
         } else {
-            AnimatorUtil.hideViewAnimator(middleLayout, 500, new AnimatorListener() {
+            AnimatorUtils.hideViewAnimator(middleLayout, 500, new AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) { }
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     progress.setVisibility(View.VISIBLE);
-                    AnimatorUtil.shakeAnimator(progress, 1000);
+                    AnimatorUtils.shakeAnimator(progress, 1000);
                     middleLayout.setVisibility(View.INVISIBLE);
                     visitorLayout.setVisibility(View.GONE);
                     msgText.setText("登录中...");

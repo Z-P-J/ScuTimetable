@@ -253,7 +253,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                     TimetableHelper.setCurrentSemester(item.getSemesterCode(), item.getSemesterName());
                     initTimetableView();
                     initData();
-                    postDelay(popup::dismiss, 50);
+                    postDelayed(popup::dismiss, 50);
                 })
                 .show();
     }

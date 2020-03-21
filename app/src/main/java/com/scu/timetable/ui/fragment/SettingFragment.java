@@ -14,7 +14,7 @@ import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.popup.MoreInfoPopup;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.scu.timetable.utils.TextUtil;
+import com.scu.timetable.utils.SuperLinkUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.scu.timetable.utils.UpdateUtil;
@@ -100,14 +100,14 @@ public class SettingFragment extends BaseFragment
 
         String link2 = "https://github.com/Z-P-J/ScuTimetable";
         DetailLayout linkOpenSource = view.findViewById(R.id.link_open_source);
-        TextUtil.setSuperlink(linkOpenSource.getContentTextView(), link2, link2);
+        SuperLinkUtil.setSuperLink(linkOpenSource.getContentTextView(), link2, link2);
 
         String link = "https://github.com/Z-P-J";
         DetailLayout linkGithub = view.findViewById(R.id.link_github);
-        TextUtil.setSuperlink(linkGithub.getContentTextView(), link, link);
+        SuperLinkUtil.setSuperLink(linkGithub.getContentTextView(), link, link);
 
         DetailLayout linkSjly = view.findViewById(R.id.link_sjly);
-        TextUtil.setSuperlink(linkSjly.getContentTextView(), "我好像在哪儿见过您", "https://www.shouji.com.cn/user/5544802/home.html");
+        SuperLinkUtil.setSuperLink(linkSjly.getContentTextView(), "我好像在哪儿见过您", "https://www.shouji.com.cn/user/5544802/home.html");
     }
 
     @Override

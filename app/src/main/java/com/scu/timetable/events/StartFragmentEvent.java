@@ -1,6 +1,6 @@
 package com.scu.timetable.events;
 
-import me.yokeyword.fragmentation.SupportFragment;
+import com.zpj.fragmentation.SupportFragment;
 
 public class StartFragmentEvent extends BaseEvent {
 

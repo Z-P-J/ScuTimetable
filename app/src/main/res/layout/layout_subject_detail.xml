@@ -1,4 +1,4 @@
-<com.zpj.widget.ElasticScrollView
+<com.scu.timetable.ui.widget.ElasticScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -336,4 +336,4 @@
 
     </LinearLayout>
 
-</com.zpj.widget.ElasticScrollView>
+</com.scu.timetable.ui.widget.ElasticScrollView>

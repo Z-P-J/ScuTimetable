@@ -1,11 +1,5 @@
 include ':app',
         ':TimetableView',
         ':zpopup',
-        ':statebutton',
-        ':zdownloader',
-        ':atoast',
-        ':zutils',
-        ':ztoolbar',
-        ':fragmentation',
-        ':zwidget',
-        ':zsetting'
+//        ':statebutton',
+        ':zdownloader'

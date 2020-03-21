@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.zpj.widget.ElasticScrollView
+        <com.scu.timetable.ui.widget.ElasticScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
@@ -195,7 +195,7 @@
 
             </LinearLayout>
 
-        </com.zpj.widget.ElasticScrollView>
+        </com.scu.timetable.ui.widget.ElasticScrollView>
 
     </android.support.v4.widget.NestedScrollView>
 

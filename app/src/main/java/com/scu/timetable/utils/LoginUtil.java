@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.scu.timetable.model.SemesterInfo;
+import com.zpj.utils.CipherUtils;
 import com.zpj.utils.PrefsHelper;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.Connection;
@@ -206,7 +207,7 @@ public final class LoginUtil {
     private Connection.Response securityCheck(final String captcha) throws Exception {
 
         String userName = EncryptionUtils.decryptByAES(PrefsHelper.with().getString("user_name", ""));
-        String password = Md5Utils.md5Encrypt(EncryptionUtils.decryptByAES(PrefsHelper.with().getString("password", "")));
+        String password = CipherUtils.md5Encrypt(EncryptionUtils.decryptByAES(PrefsHelper.with().getString("password", "")));
         if (userName.isEmpty() || password.isEmpty()) {
             throw new Exception("You have to log in first.");
         }

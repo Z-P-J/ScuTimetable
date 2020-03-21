@@ -123,66 +123,6 @@ public final class UpdateUtil {
                 .onSuccess(onSuccessListener)
                 .onError(onErrorListener)
                 .subscribe();
-//        ExecutorHelper.submit(() -> {
-//            try {
-//                Document document = ZHttp.get("http://tt.shouji.com.cn/androidv3/soft_show.jsp?id=1555815")
-//                        .proxy(Proxy.NO_PROXY)
-//                        .header("Connection", "Keep-Alive")
-//                        .header("Referer", "https://wap.shouji.com.cn/")
-////                            .header("User-Agent", TimetableHelper.UA)
-//                        .header("Accept-Encoding", "gzip")
-//                        .toHtml();
-//                String versionName = document.select("versionname").get(0).text();
-//
-//                String newVersionName = versionName.trim();
-//                Log.d("newVersionName", "newVersionName=" + newVersionName);
-//
-//                String ignoreVersion = PrefsHelper.with().getString("ignore_version", "");
-//                if (ignoreVersion.equals(newVersionName)) {
-//                    return;
-//                }
-//
-//                String baseinfof = document.select("baseinfof").get(0).text();
-//                Log.d("baseinfof", "baseinfof=" + baseinfof);
-//
-//                String currentVersionName = getVersionName(context).trim();
-//                Log.d("currentVersionName", "currentVersionName=" + newVersionName);
-//
-//                boolean isNew = compareVersions(currentVersionName, newVersionName);
-//                Log.d("isNew", "isNew=" + isNew);
-//
-//                if (isNew) {
-//                    String updateContent = "";
-//                    String fileSize = "";
-//                    String updateTime = "";
-//                    Elements elements = document.select("introduce");
-//                    for (Element element : elements) {
-//                        String title = element.select("introducetitle").get(0).text();
-//                        if ("更新内容".equals(title)) {
-//                            updateContent = element.select("introduceContent").get(0).text();
-//                            Log.d("更新内容", "更新内容=" + updateContent);
-//                        } else if ("软件信息".equals(title)) {
-//                            String content = element.select("introduceContent").get(0).text();
-//                            fileSize = content.substring(content.indexOf("大小：") + 3, content.indexOf("MB") + 2);
-//                            int index = content.indexOf("更新：");
-//                            updateTime = content.substring(index + 3, index + 13);
-//                        }
-//                    }
-//                    UpdateInfo bean = new UpdateInfo();
-//                    bean.setVersionName(versionName);
-//                    bean.setUpdateContent(updateContent);
-//                    bean.setFileSize(fileSize);
-//                    bean.setUpdateTime(updateTime);
-//                    Log.d("bean", "bean=" + bean.toString());
-//                    EventBus.getDefault().post(UpdateEvent.create().setUpdateInfo(bean));
-//                } else {
-//                    EventBus.getDefault().post(UpdateEvent.create().setLatestVersion(true));
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                EventBus.getDefault().post(UpdateEvent.create().setErrorMsg(e.getMessage()));
-//            }
-//        });
     }
 
     public boolean compareVersions(String oldVersion, String newVersion) {
