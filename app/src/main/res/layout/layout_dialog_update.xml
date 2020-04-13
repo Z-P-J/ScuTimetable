@@ -123,15 +123,32 @@
 
             </LinearLayout>
 
-            <Button
+<!--            <Button-->
+<!--                android:id="@+id/btn_update"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:minHeight="40dp"-->
+<!--                android:text="升级"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textSize="15sp" />-->
+
+            <com.deadline.statebutton.StateButton
                 android:id="@+id/btn_update"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:minHeight="40dp"
+                app:radius="10dp"
                 android:text="升级"
-                android:textColor="@android:color/white"
-                android:textSize="15sp" />
+                app:round="true"
+                app:normalBackgroundColor="#aaf60707"
+                app:pressedBackgroundColor="#eef60707"
+                android:layout_gravity="center"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:normalTextColor="@color/white"
+                app:pressedTextColor="#aaffffff"
+                />
 
             <TextView
                 android:id="@+id/tv_ignore"

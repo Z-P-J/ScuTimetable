@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:textColor="@color/_xpopup_text_normal_color"
+            android:textColor="@color/_xpopup_text_major_color"
             android:textSize="15sp" />
 
         <Space
@@ -49,5 +49,12 @@
         </FrameLayout>
     </LinearLayout>
 
-    <include layout="@layout/_xpopup_divider" />
+    <View
+        android:layout_width="match_parent"
+        android:id="@+id/xpopup_divider"
+        android:background="@color/_xpopup_list_divider"
+        android:layout_height=".45dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"/>
+
 </LinearLayout>

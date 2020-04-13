@@ -2,6 +2,7 @@ package com.zpj.popup.core;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,7 +27,9 @@ import com.zpj.popup.animator.TranslateAlphaAnimator;
 import com.zpj.popup.animator.TranslateAnimator;
 import com.zpj.popup.enums.PopupStatus;
 import com.zpj.popup.impl.FullScreenPopup;
+import com.zpj.popup.interfaces.OnDismissListener;
 import com.zpj.popup.interfaces.XPopupCallback;
+import com.zpj.popup.util.ActivityUtils;
 import com.zpj.popup.util.KeyboardUtils;
 import com.zpj.popup.util.XPopupUtils;
 import com.zpj.popup.util.navbar.NavigationBarObserver;
@@ -41,7 +44,7 @@ import static com.zpj.popup.enums.PopupAnimation.NoAnimation;
  * Description: 弹窗基类
  * Create by lxj, at 2018/12/7
  */
-public abstract class BasePopup extends FrameLayout implements OnNavigationBarListener {
+public abstract class BasePopup<T extends BasePopup> extends FrameLayout implements OnNavigationBarListener {
     private static Stack<BasePopup> stack = new Stack<>(); //静态存储所有弹窗对象
     public PopupInfo popupInfo = new PopupInfo();
     protected final Context context;
@@ -50,6 +53,8 @@ public abstract class BasePopup extends FrameLayout implements OnNavigationBarLi
     private int touchSlop;
     public PopupStatus popupStatus = PopupStatus.Dismiss;
     private boolean isCreated = false;
+    private OnDismissListener onDismissListener;
+
 
     public BasePopup(@NonNull Context context) {
         super(context);
@@ -146,9 +151,13 @@ public abstract class BasePopup extends FrameLayout implements OnNavigationBarLi
         }
     }
 
-    public BasePopup setPopupCallback(XPopupCallback callback) {
+    protected T self() {
+        return (T) this;
+    }
+
+    public T setPopupCallback(XPopupCallback callback) {
         popupInfo.xPopupCallback = callback;
-        return this;
+        return self();
     }
 
     @Override
@@ -187,9 +196,15 @@ public abstract class BasePopup extends FrameLayout implements OnNavigationBarLi
         setLayoutParams(params);
     }
 
-    public BasePopup show() {
-        if (getParent() != null) return this;
-        final Activity activity = (Activity) getContext();
+    public T setOnDismissListener(OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+        return self();
+    }
+
+    public T show() {
+        if (getParent() != null) return self();
+        final Activity activity = ActivityUtils.getActivity(context);
+//        final Activity activity = (Activity) getContext();
         popupInfo.decorView = (ViewGroup) activity.getWindow().getDecorView();
         KeyboardUtils.registerSoftInputChangedListener(activity, this, new KeyboardUtils.OnSoftInputChangedListener() {
             @Override
@@ -218,7 +233,7 @@ public abstract class BasePopup extends FrameLayout implements OnNavigationBarLi
                 init();
             }
         });
-        return this;
+        return self();
     }
 
     protected void doAfterShow() {
@@ -234,8 +249,8 @@ public abstract class BasePopup extends FrameLayout implements OnNavigationBarLi
             if (BasePopup.this instanceof FullScreenPopup) focusAndProcessBackPress();
             if (popupInfo != null && popupInfo.xPopupCallback != null)
                 popupInfo.xPopupCallback.onShow();
-            if (XPopupUtils.getDecorViewInvisibleHeight((Activity) getContext()) > 0 && !hasMoveUp) {
-                XPopupUtils.moveUpToKeyboard(XPopupUtils.getDecorViewInvisibleHeight((Activity) getContext()), BasePopup.this);
+            if (XPopupUtils.getDecorViewInvisibleHeight(ActivityUtils.getActivity(context)) > 0 && !hasMoveUp) {
+                XPopupUtils.moveUpToKeyboard(XPopupUtils.getDecorViewInvisibleHeight(ActivityUtils.getActivity(context)), BasePopup.this);
             }
         }
     };
@@ -549,7 +564,7 @@ public abstract class BasePopup extends FrameLayout implements OnNavigationBarLi
                     stack.get(stack.size() - 1).focusAndProcessBackPress();
                 } else {
                     // 让根布局拿焦点，避免布局内RecyclerView类似布局获取焦点导致布局滚动
-                    View needFocusView = ((Activity) getContext()).findViewById(android.R.id.content);
+                    View needFocusView = ActivityUtils.getActivity(context).findViewById(android.R.id.content);
                     needFocusView.setFocusable(true);
                     needFocusView.setFocusableInTouchMode(true);
                 }
@@ -594,6 +609,9 @@ public abstract class BasePopup extends FrameLayout implements OnNavigationBarLi
      * 消失动画执行完毕后执行
      */
     protected void onDismiss() {
+        if (onDismissListener != null) {
+            onDismissListener.onDismiss();
+        }
     }
 
     protected void onHide() {
@@ -651,6 +669,17 @@ public abstract class BasePopup extends FrameLayout implements OnNavigationBarLi
             return true;
         }
         return super.onTouchEvent(event);
+    }
+
+    public T setCancelable(boolean cancelable) {
+        popupInfo.isDismissOnTouchOutside = cancelable;
+        popupInfo.isDismissOnBackPressed = cancelable;
+        return self();
+    }
+
+    public T setCanceledOnTouchOutside(boolean cancelable) {
+        popupInfo.isDismissOnTouchOutside = cancelable;
+        return self();
     }
 
 

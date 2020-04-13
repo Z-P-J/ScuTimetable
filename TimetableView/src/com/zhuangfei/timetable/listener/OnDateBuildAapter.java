@@ -1,6 +1,7 @@
 package com.zhuangfei.timetable.listener;
 
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -185,13 +186,13 @@ public class OnDateBuildAapter implements ISchedule.OnDateBuildListener {
         if (!timetableView.isShowWeekends() && timetableView.getSundayIsFirstDay()) {
             for (int i = 2; i < 7; i++) {
                 if (monthTextViews[i - 1] != null) {
-                    monthTextViews[i - 1].setText(weekDates.get(i) + "日");
+                    monthTextViews[i - 1].setText(weekDates.get(0) + "/" + weekDates.get(i));
                 }
             }
         } else {
             for (int i = 1; i < 8; i++) {
                 if (monthTextViews[i] != null) {
-                    monthTextViews[i].setText(weekDates.get(i) + "日");
+                    monthTextViews[i].setText(weekDates.get(0) + "/" + weekDates.get(i));
                 }
             }
         }
@@ -225,7 +226,7 @@ public class OnDateBuildAapter implements ISchedule.OnDateBuildListener {
         int month = Integer.parseInt(weekDates.get(0));
         first.setLayoutParams(lp);
         monthTextViews[0].setText(month + "\n月");
-        monthTextViews[0].setTextColor(Color.WHITE);
+        monthTextViews[0].setTextColor(Color.BLACK);
         return first;
     }
 
@@ -233,17 +234,17 @@ public class OnDateBuildAapter implements ISchedule.OnDateBuildListener {
         View v = mInflate.inflate(R.layout.item_dateview, null, false);
         TextView dayTextView = v.findViewById(R.id.id_week_day);
         dayTextViews[pos] = dayTextView;
-        dayTextView.setTextColor(Color.WHITE);
+        dayTextView.setTextColor(Color.GRAY);
         dayTextView.setText(dateArray[pos]);
 
         TextView monthTextView = v.findViewById(R.id.id_week_date);
         monthTextViews[pos] = monthTextView;
-        monthTextView.setTextColor(Color.WHITE);
+        monthTextView.setTextColor(Color.GRAY);
         layouts[pos] = v.findViewById(R.id.id_week_layout);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(width, height);
         layouts[pos].setLayoutParams(lp);
-        monthTextView.setText(weekDates.get(pos) + "日");
+        monthTextView.setText(weekDates.get(0) + "/" + weekDates.get(pos));
 
         return v;
     }
@@ -272,7 +273,13 @@ public class OnDateBuildAapter implements ISchedule.OnDateBuildListener {
         if (layouts.length > weekDay && layouts[weekDay] != null) {
 //            layouts[weekDay].setBackgroundColor(
 //                    ColorUtils.alphaColor(Color.parseColor("#BFF6F4"), alpha));
-            layouts[weekDay].setBackground(layouts[weekDay].getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
+            View layout = layouts[weekDay];
+            TextView idWeekDay = layout.findViewById(R.id.id_week_day);
+            TextView idWeekDate = layout.findViewById(R.id.id_week_date);
+            Resources resources = layout.getResources();
+            idWeekDay.setTextColor(resources.getColor(R.color.colorPrimary));
+            idWeekDate.setTextColor(resources.getColor(R.color.colorPrimary));
+            layout.setBackground(resources.getDrawable(R.drawable.weekview_thisweek));
         }
     }
 }

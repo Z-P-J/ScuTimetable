@@ -6,7 +6,7 @@ import android.widget.ImageView;
 
 import java.io.File;
 
-public interface XPopupImageLoader<T>{
+public interface IImageLoader<T>{
     void loadImage(int position, @NonNull T uri, @NonNull ImageView imageView);
 
     /**

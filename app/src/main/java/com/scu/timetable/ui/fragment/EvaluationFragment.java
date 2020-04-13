@@ -3,12 +3,14 @@ package com.scu.timetable.ui.fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -36,7 +38,10 @@ import java.util.Locale;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class EvaluationFragment extends BaseFragment implements View.OnClickListener, LoginUtil.LoginCallback, EvaluationUtil.EvaluationCallback {
+public class EvaluationFragment extends BaseFragment
+        implements View.OnClickListener,
+        LoginUtil.LoginCallback,
+        EvaluationUtil.EvaluationCallback {
 
     private FrameLayout background;
 
@@ -104,20 +109,6 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
 
     @Override
     protected void initView(View view, @Nullable Bundle savedInstanceState) {
-        TextView headerTitle = view.findViewById(R.id.header_title);
-        ImageView backBtn = view.findViewById(R.id.btn_back);
-        backBtn.setOnClickListener(v -> pop());
-        ImageView infoBtn = view.findViewById(R.id.btn_info);
-        infoBtn.setVisibility(View.VISIBLE);
-        infoBtn.setOnClickListener(v -> showInfoPopupView(
-                infoBtn,
-                "关于一键评教",
-                "1.一键评教将自动对未评教的教师或助教进行评教。\n" +
-                        "2.由于教务系统服务器的限制，每成功评教一次将等待两分钟。\n" +
-                        "3.教师或助教的主观评价将从默认的十几条评价中随机选择。"
-        ));
-        headerTitle.setText("一键评教");
-
         scrollView = view.findViewById(R.id.scroll_view);
 
         consoleView = view.findViewById(R.id.console_view);
@@ -134,7 +125,23 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
         evaluationButton.setOnClickListener(this);
     }
 
-//    @Override
+    @Override
+    public void toolbarRightImageButton(@NonNull ImageButton imageButton) {
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showInfoPopupView(
+                        imageButton,
+                        "关于一键评教",
+                        "1.一键评教将自动对未评教的教师或助教进行评教。\n" +
+                                "2.由于教务系统服务器的限制，每成功评教一次将等待两分钟。\n" +
+                                "3.教师或助教的主观评价将从默认的十几条评价中随机选择。"
+                );
+            }
+        });
+    }
+
+    //    @Override
 //    public void onDestroyView() {
 //        EventBus.getDefault().unregister(this);
 //        super.onDestroyView();
@@ -146,7 +153,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
             ZPopup.alert(context)
                     .setTitle("确认返回！")
                     .setContent("返回后将终止评教，确认返回？")
-                    .setConfirmButton(() -> {
+                    .setConfirmButton(popup -> {
                         timer.cancel();
                         setSwipeBackEnable(true);
                         pop();
@@ -168,9 +175,7 @@ public class EvaluationFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.btn_back) {
-            pop();
-        } else if (id == R.id.btn_evaluation) {
+        if (id == R.id.btn_evaluation) {
             String captcha = captchaEdit.getText().toString();
             if (TextUtils.isEmpty(captcha)) {
                 AToast.normal("验证码为空！");

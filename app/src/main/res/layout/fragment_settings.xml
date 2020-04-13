@@ -2,13 +2,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:orientation="vertical"
-    android:background="@drawable/background_login"
+    android:background="@color/white"
     android:id="@+id/container"
     >
 
-    <include layout="@layout/layout_header"/>
+    <com.zpj.widget.toolbar.ZToolBar
+        android:id="@+id/tool_bar"
+        style="@style/ToolBarStyle"
+        app:z_toolbar_centerText="设置"
+        />
 
     <com.scu.timetable.ui.widget.ElasticScrollView
         android:layout_width="match_parent"
@@ -53,7 +56,7 @@
                         android:layout_height="1px"
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="15dp"
-                        android:background="#99999999"
+                        android:background="#eeeeee"
                         />
 
                     <com.zpj.widget.setting.SwitchSettingItem
@@ -163,7 +166,7 @@
                         android:layout_height="1px"
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="15dp"
-                        android:background="#99999999"/>
+                        android:background="#eeeeee"/>
 
                     <com.zpj.widget.setting.SwitchSettingItem
                         android:id="@+id/item_widget_smart_show_weekends"
@@ -220,7 +223,7 @@
                         android:layout_height="1px"
                         android:layout_marginStart="15dp"
                         android:layout_marginEnd="15dp"
-                        android:background="#99999999"/>
+                        android:background="#eeeeee"/>
 
                     <com.scu.timetable.ui.widget.DetailLayout
                         android:id="@+id/app_version"

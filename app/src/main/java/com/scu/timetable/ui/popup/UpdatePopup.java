@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
 import com.zpj.popup.core.CenterPopup;
 import com.scu.timetable.R;
@@ -45,7 +46,7 @@ public class UpdatePopup extends CenterPopup implements View.OnClickListener {
     /**
      * 版本更新
      */
-    private Button mBtnUpdate;
+    private StateButton mBtnUpdate;
     /**
      * 后台更新
      */
@@ -116,7 +117,7 @@ public class UpdatePopup extends CenterPopup implements View.OnClickListener {
 
     private void setDialogTheme(int color, int topResId) {
         mIvTop.setImageResource(topResId);
-        mBtnUpdate.setBackgroundColor(color);
+//        mBtnUpdate.setBackgroundColor(color);
         mBtnBackgroundUpdate.setBackgroundColor(color);
 //        mBtnUpdate.setBackgroundDrawable(DrawableUtils.getDrawable(UpdateUtils.dip2px(4, getActivity()), color));
 //        mBtnBackgroundUpdate.setBackgroundDrawable(DrawableUtils.getDrawable(UpdateUtils.dip2px(4, getActivity()), color));

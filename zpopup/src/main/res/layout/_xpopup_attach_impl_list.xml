@@ -8,8 +8,15 @@
     app:cornerRadius="8dp"
     app:shadowFluidShape="adsorption"
     app:shadowColor="#bdbdbd"
-    app:shadowStartAlpha="10"
-    app:shadowSize="0dp">
+    app:shadowStartAlpha="120"
+    app:shadowSize="4dp"
+    >
+
+<!--    app:cornerRadius="8dp"-->
+<!--    app:shadowFluidShape="adsorption"-->
+<!--    app:shadowColor="#bdbdbd"-->
+<!--    app:shadowStartAlpha="10"-->
+<!--    app:shadowSize="4dp"-->
 
     <com.zpj.popup.widget.VerticalRecyclerView
         android:id="@+id/recyclerView"

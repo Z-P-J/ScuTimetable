@@ -35,7 +35,7 @@ import com.zpj.popup.XPopup;
 import com.zpj.popup.enums.PopupStatus;
 import com.zpj.popup.interfaces.OnDragChangeListener;
 import com.zpj.popup.interfaces.OnSrcViewUpdateListener;
-import com.zpj.popup.interfaces.XPopupImageLoader;
+import com.zpj.popup.interfaces.IImageLoader;
 import com.zpj.popup.photoview.OnPopupDismissListener;
 import com.zpj.popup.photoview.OnPopupShowListener;
 import com.zpj.popup.photoview.PhotoView;
@@ -61,7 +61,7 @@ public class ImageViewerPopupView<T> extends BasePopupView implements OnDragChan
     protected HackyViewPager pager;
     protected ArgbEvaluator argbEvaluator = new ArgbEvaluator();
     protected List<T> urls = new ArrayList<>();
-    protected XPopupImageLoader<T> imageLoader;
+    protected IImageLoader<T> imageLoader;
     protected OnSrcViewUpdateListener srcViewUpdateListener;
     protected int position;
     protected Rect rect = null;
@@ -334,7 +334,7 @@ public class ImageViewerPopupView<T> extends BasePopupView implements OnDragChan
         return this;
     }
 
-    public ImageViewerPopupView<T> setXPopupImageLoader(XPopupImageLoader<T> imageLoader) {
+    public ImageViewerPopupView<T> setXPopupImageLoader(IImageLoader<T> imageLoader) {
         this.imageLoader = imageLoader;
         return this;
     }

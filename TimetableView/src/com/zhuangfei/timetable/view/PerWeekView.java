@@ -178,6 +178,7 @@ public class PerWeekView extends View {
         grayColor=ta.getColor(R.styleable.PerWeekView_gray_color,Color.rgb(207,219,219));
         lightColor=ta.getColor(R.styleable.PerWeekView_light_color,Color.parseColor("#3FCAB8"));
         radius= (int) ta.getDimension(R.styleable.PerWeekView_radius,defRadius);
+        ta.recycle();
     }
 
     @Override

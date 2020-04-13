@@ -244,18 +244,18 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView>, 
                 public void onClick(View view) {
                     resetBackground();
                     preIndex = tmp;
-                    perLayout.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_white));
+                    perLayout.setBackground(getContext().getResources().getDrawable(R.drawable.weekview_white));
                     onWeekItemClickedListener().onWeekClicked(tmp);
                 }
             });
 
-            perLayout.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
+            perLayout.setBackground(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
             layouts.add(perLayout);
             textViews.add(bottomText);
             container.addView(view);
         }
         if (curWeek > 0 && curWeek <= layouts.size()) {
-            layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_current));
+            layouts.get(curWeek - 1).setBackground(getContext().getResources().getDrawable(R.drawable.weekview_current));
         }
         return this;
     }
@@ -284,7 +284,7 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView>, 
         }
 
         if (curWeek > 0 && curWeek <= layouts.size()) {
-            layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_current));
+            layouts.get(curWeek - 1).setBackground(getContext().getResources().getDrawable(R.drawable.weekview_current));
         }
         return this;
     }
@@ -294,10 +294,10 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView>, 
      */
     public void resetBackground() {
         if (preIndex <= layouts.size()) {
-            layouts.get(preIndex - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
+            layouts.get(preIndex - 1).setBackground(getContext().getResources().getDrawable(R.drawable.weekview_thisweek));
         }
         if (curWeek <= layouts.size()) {
-            layouts.get(curWeek - 1).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.weekview_current));
+            layouts.get(curWeek - 1).setBackground(getContext().getResources().getDrawable(R.drawable.weekview_current));
         }
     }
 

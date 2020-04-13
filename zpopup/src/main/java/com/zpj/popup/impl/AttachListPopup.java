@@ -1,10 +1,12 @@
 package com.zpj.popup.impl;
 
 import android.content.Context;
+import android.graphics.PointF;
 import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.zpj.popup.core.AttachPopup;
+import com.zpj.popup.core.BasePopup;
 import com.zpj.popup.widget.VerticalRecyclerView;
 import com.zpj.popup.R;
 import com.zpj.recyclerview.EasyRecyclerView;
@@ -28,15 +30,17 @@ public class AttachListPopup<T> extends AttachPopup {
     private final List<T> items = new ArrayList<>();
     private final List<Integer> iconIds = new ArrayList<>();
 
-    public AttachListPopup(@NonNull View view) {
-        this(view.getContext());
-//        atView = view;
-        popupInfo.atView = view;
-        popupInfo.hasShadowBg = false;
-    }
+//    public AttachListPopup(@NonNull View view) {
+//        this(view.getContext());
+////        atView = view;
+//        popupInfo.atView = view;
+//        popupInfo.hasShadowBg = false;
+//    }
 
-    private AttachListPopup(@NonNull Context context) {
+    public AttachListPopup(@NonNull Context context) {
         super(context);
+//        popupInfo.atView = view;
+        popupInfo.hasShadowBg = false;
     }
 
     /**
@@ -92,30 +96,24 @@ public class AttachListPopup<T> extends AttachPopup {
                     if (popupInfo.autoDismiss) dismiss();
                 })
                 .build();
+    }
 
-//        final EasyAdapter<String> adapter = new EasyAdapter<String>(items, bindItemLayoutId == 0 ? R.layout._xpopup_adapter_text : bindItemLayoutId) {
-//            @Override
-//            protected void bind(@NonNull ViewHolder holder, @NonNull String s, int position) {
-//                holder.setText(R.id.tv_text, s);
-//                if (iconIds.size() > position) {
-//                    holder.getView(R.id.iv_image).setVisibility(VISIBLE);
-//                    holder.getView(R.id.iv_image).setBackgroundResource(iconIds.get(position));
-//                } else {
-//                    holder.getView(R.id.iv_image).setVisibility(GONE);
-//                }
-//                holder.getView(R.id.xpopup_divider).setVisibility(GONE);
-//            }
-//        };
-//        adapter.setOnItemClickListener(new MultiItemTypeAdapter.SimpleOnItemClickListener() {
-//            @Override
-//            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-//                if (selectListener != null) {
-//                    selectListener.onSelect(position, adapter.getData().get(position));
-//                }
-//                if (popupInfo.autoDismiss) dismiss();
-//            }
-//        });
-//        recyclerView.setAdapter(adapter);
+    @Override
+    public BasePopup show() {
+        if (popupInfo.atView == null && popupInfo.touchPoint == null) {
+            popupInfo.touchPoint = new PointF(0, 0);
+        }
+        return super.show();
+    }
+
+    public void show(View atView) {
+        popupInfo.atView = atView;
+        show();
+    }
+
+    public void show(float x, float y) {
+        popupInfo.touchPoint = new PointF(x, y);
+        show();
     }
 
     public AttachListPopup<T> setItems(List<T> items) {

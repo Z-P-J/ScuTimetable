@@ -3,6 +3,8 @@ package com.zhuangfei.timetable.model;
 import android.content.Context;
 import android.util.Log;
 
+import com.zhuangfei.timetable.TimetableView;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -175,6 +177,7 @@ public class ScheduleSupport {
             }
             mySubject.setColorRandom(color);
         }
+
 
         return schedules;
     }

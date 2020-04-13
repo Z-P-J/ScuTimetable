@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
+    <color name="colorPrimary">#79cdcd</color>
+    <color name="colorPrimaryDark">#79cdcd</color>
+    <color name="colorAccent">#79cdcd</color>
+
     <color name="layer_grid_line">#000000</color>
 
     <!-- <color name="app_mainclolr">#00BCD4</color> -->

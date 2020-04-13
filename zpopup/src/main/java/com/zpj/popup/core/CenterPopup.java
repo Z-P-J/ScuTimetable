@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 
 import com.zpj.popup.animator.PopupAnimator;
 import com.zpj.popup.animator.ScaleAlphaAnimator;
+import com.zpj.popup.impl.LoadingPopup;
 import com.zpj.popup.util.XPopupUtils;
 import com.zpj.popup.R;
 
@@ -19,10 +20,12 @@ import static com.zpj.popup.enums.PopupAnimation.ScaleAlphaFromCenter;
  * Description: 在中间显示的Popup
  * Create by dance, at 2018/12/8
  */
-public class CenterPopup extends BasePopup {
+public class CenterPopup<T extends CenterPopup> extends BasePopup<T> {
     protected FrameLayout centerPopupContainer;
     protected int bindLayoutId;
     protected int bindItemLayoutId;
+    private View contentView;
+
     public CenterPopup(@NonNull Context context) {
         super(context);
         centerPopupContainer = findViewById(R.id.centerPopupContainer);
@@ -33,13 +36,27 @@ public class CenterPopup extends BasePopup {
         return R.layout._xpopup_center_popup_view;
     }
 
+    public T setContentView(View contentView) {
+        this.contentView = contentView;
+        return self();
+    }
+
+    public T bindLayout(int layoutId){
+        bindLayoutId = layoutId;
+        return (T) this;
+    }
+
     @Override
     protected void initPopupContent() {
         super.initPopupContent();
-        View contentView = LayoutInflater.from(getContext()).inflate(getImplLayoutId(), centerPopupContainer, false);
+        if (getImplLayoutId() > 0) {
+            contentView = LayoutInflater.from(getContext()).inflate(getImplLayoutId(), centerPopupContainer, false);
+        }
+        centerPopupContainer.addView(contentView);
+
         LayoutParams params = (LayoutParams) contentView.getLayoutParams();
         params.gravity = Gravity.CENTER;
-        centerPopupContainer.addView(contentView, params);
+//        centerPopupContainer.addView(contentView, params);
         getPopupContentView().setTranslationX(popupInfo.offsetX);
         getPopupContentView().setTranslationY(popupInfo.offsetY);
         XPopupUtils.applyPopupSize((ViewGroup) getPopupContentView(), getMaxWidth(), getMaxHeight());

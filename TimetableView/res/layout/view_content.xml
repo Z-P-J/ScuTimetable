@@ -26,7 +26,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginBottom="5dp"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/weekPanel_2"
@@ -34,7 +37,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginBottom="5dp"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/weekPanel_3"
@@ -42,7 +48,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginBottom="5dp"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/weekPanel_4"
@@ -50,7 +59,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginBottom="5dp"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/weekPanel_5"
@@ -58,7 +70,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginBottom="5dp"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/weekPanel_6"
@@ -66,7 +81,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginBottom="5dp"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/weekPanel_7"
@@ -74,7 +92,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginBottom="5dp"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical">
+
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

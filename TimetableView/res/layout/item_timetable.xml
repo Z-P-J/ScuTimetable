@@ -9,10 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/item_corner_style"
-        android:gravity="center_horizontal|top"
+        android:gravity="center"
         android:padding="2dp"
         android:textColor="@color/app_white"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        />
 
     <TextView
         android:id="@+id/id_course_item_count"

@@ -78,11 +78,12 @@ dependencies {
     implementation 'org.linwg1988:lcardview:1.5.2'
     implementation 'com.github.chaichuanfa:atoast:0.0.2'
     implementation 'com.github.niniloveyou:StateButton:v1.0.0'
+    implementation 'com.github.maning0303:MNCrashMonitor:V1.1.1'
 
     implementation 'com.zpj.http:ZHttp:1.0.0'
-    implementation 'com.zpj.widget:ZToolBar:1.0.0'
-    implementation 'com.zpj.utils:ZUtils:1.0.0'
-    implementation 'com.zpj.widget:ZSettingItem:1.0.1'
+    implementation 'com.zpj.widget:ZToolBar:1.0.3'
+    implementation 'com.zpj.utils:ZUtils:1.0.1'
+    implementation 'com.zpj.widget:ZSettingItem:1.0.2'
     implementation 'com.zpj.widget:Fragmentation:1.0.0'
 
     implementation project(':TimetableView')

@@ -197,9 +197,9 @@ public abstract class AttachPopup extends BasePopup {
                     if (isShowUpToTarget()) {
                         //说明上面的空间比较大，应显示在atView上方
                         // translationX: 在左边就和atView左边对齐，在右边就和其右边对齐
-                        translationY = rect.top - getPopupContentView().getMeasuredHeight() - defaultOffsetY;
+                        translationY = rect.top + rect.height() - getPopupContentView().getMeasuredHeight() - defaultOffsetY;
                     } else {
-                        translationY = rect.bottom + defaultOffsetY;
+                        translationY = rect.bottom - rect.height() + defaultOffsetY;
                     }
                     getPopupContentView().setTranslationX(translationX);
                     getPopupContentView().setTranslationY(translationY);

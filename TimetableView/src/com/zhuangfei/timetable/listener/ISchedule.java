@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zhuangfei.timetable.TimetableView;
-import com.zhuangfei.timetable.TimetableWrapper;
 import com.zhuangfei.timetable.model.Schedule;
 
 import java.util.List;
@@ -206,6 +205,6 @@ public interface ISchedule {
 
     interface OnConfigHandleListener{
         void onParseConfig(String key, String value, TimetableView mView);
-        void onParseConfig(String key, String value, TimetableWrapper mView);
+//        void onParseConfig(String key, String value, TimetableWrapper mView);
     }
 }

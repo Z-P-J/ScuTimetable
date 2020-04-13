@@ -19,6 +19,7 @@ public class OnSlideBuildAdapter implements ISchedule.OnSlideBuildListener {
 
     //时刻，每个元素保存每节课的开始时间
     protected String[] times;
+    protected String[] endTimes;
 
     //节次文本的颜色、字号
     protected int textColor = Color.BLACK;
@@ -26,7 +27,7 @@ public class OnSlideBuildAdapter implements ISchedule.OnSlideBuildListener {
 
     //时刻文本的颜色、字号
     protected float timeTextSize = 12;
-    protected int timeTextColor = Color.GRAY;
+    protected int timeTextColor = Color.BLACK;
 
     //侧边栏背景色
     protected int background = Color.WHITE;
@@ -40,6 +41,11 @@ public class OnSlideBuildAdapter implements ISchedule.OnSlideBuildListener {
      */
     public OnSlideBuildAdapter setTimes(String[] times) {
         this.times = times;
+        return this;
+    }
+
+    public OnSlideBuildAdapter setEndTimes(String[] endTimes) {
+        this.endTimes = endTimes;
         return this;
     }
 
@@ -107,6 +113,7 @@ public class OnSlideBuildAdapter implements ISchedule.OnSlideBuildListener {
         View view = inflater.inflate(R.layout.item_slide_time, null, false);
         TextView numberTextView = view.findViewById(R.id.item_slide_number);
         TextView timeTextView = view.findViewById(R.id.item_slide_time);
+        TextView tvEndTime = view.findViewById(R.id.tv_end_time);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 itemHeight);
         lp.setMargins(0, marTop, 0, 0);
@@ -116,13 +123,19 @@ public class OnSlideBuildAdapter implements ISchedule.OnSlideBuildListener {
         numberTextView.setTextSize(textSize);
         numberTextView.setTextColor(textColor);
 
-        if (times == null) {
-            timeTextView.setText("");
-        }
         if (times != null && pos >= 0 && pos < times.length) {
             timeTextView.setText(times[pos]);
             timeTextView.setTextColor(timeTextColor);
             timeTextView.setTextSize(timeTextSize);
+        } else {
+            timeTextView.setText("");
+        }
+        if (endTimes != null && pos >= 0 && pos < endTimes.length) {
+            tvEndTime.setText(endTimes[pos]);
+            tvEndTime.setTextColor(timeTextColor);
+            tvEndTime.setTextSize(timeTextSize);
+        } else {
+            tvEndTime.setText("");
         }
         return view;
     }

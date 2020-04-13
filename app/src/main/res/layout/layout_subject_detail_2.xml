@@ -1,0 +1,197 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="none"
+    android:fillViewport="true"
+    android:background="@drawable/bg_top_round"
+    >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        >
+
+        <TextView
+            android:id="@+id/course_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="课程信息"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:padding="16dp"
+            android:textColor="@color/black"
+            android:singleLine="false"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:maxEms="6"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_style"
+            android:padding="12dp"
+            android:layout_margin="8dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="课程名"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:id="@+id/tv_course_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="大学英语"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/black"
+                android:maxLines="1"
+                android:ellipsize="end"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_style"
+            android:padding="12dp"
+            android:layout_margin="8dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="教室"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:id="@+id/tv_course_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="综合楼"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/black"
+                android:maxLines="1"
+                android:ellipsize="end"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_style"
+            android:padding="12dp"
+            android:layout_margin="8dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="老师"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:id="@+id/tv_course_teacher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="XXX"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/black"
+                android:maxLines="1"
+                android:ellipsize="end"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_style"
+            android:padding="12dp"
+            android:layout_margin="8dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="时间"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:id="@+id/tv_course_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 - 17周 | 1 - 2节 |（10:00 - 11:00）"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/black"
+                />
+
+        </RelativeLayout>
+
+        <com.scu.timetable.ui.widget.DetailLayout
+            android:id="@+id/layout_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:left_text="备注"
+            app:right_text="test"
+            android:visibility="gone"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            >
+
+            <ImageView
+                android:id="@+id/subject_more"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:src="@drawable/ic_event_note_black_24dp"
+                android:tint="@color/colorPrimary"
+                android:background="?attr/actionBarItemBackground"
+                android:layout_marginEnd="18dp"
+                />
+
+            <ImageView
+                android:id="@+id/subject_note"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:src="@drawable/ic_class_black_24dp"
+                android:tint="@color/colorPrimary"
+                android:background="?attr/actionBarItemBackground"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                />
+
+            <ImageView
+                android:id="@+id/subject_alarm"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:src="@drawable/ic_access_alarms_black_24dp"
+                android:tint="@color/colorPrimary"
+                android:background="?attr/actionBarItemBackground"
+                android:layout_marginStart="8dp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

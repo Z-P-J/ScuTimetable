@@ -27,6 +27,7 @@ import com.zpj.popup.animator.TranslateAnimator;
 import com.zpj.popup.enums.PopupStatus;
 import com.zpj.popup.impl.FullScreenPopupView;
 import com.zpj.popup.interfaces.XPopupCallback;
+import com.zpj.popup.util.ActivityUtils;
 import com.zpj.popup.util.KeyboardUtils;
 import com.zpj.popup.util.XPopupUtils;
 import com.zpj.popup.util.navbar.NavigationBarObserver;
@@ -189,7 +190,7 @@ public abstract class BasePopupView extends FrameLayout implements OnNavigationB
 
     public BasePopupView show() {
         if (getParent() != null) return this;
-        final Activity activity = (Activity) getContext();
+        final Activity activity = ActivityUtils.getActivity(context);
         popupInfo.decorView = (ViewGroup) activity.getWindow().getDecorView();
         KeyboardUtils.registerSoftInputChangedListener(activity, this, new KeyboardUtils.OnSoftInputChangedListener() {
             @Override
@@ -234,8 +235,8 @@ public abstract class BasePopupView extends FrameLayout implements OnNavigationB
             if (BasePopupView.this instanceof FullScreenPopupView) focusAndProcessBackPress();
             if (popupInfo != null && popupInfo.xPopupCallback != null)
                 popupInfo.xPopupCallback.onShow();
-            if (XPopupUtils.getDecorViewInvisibleHeight((Activity) getContext()) > 0 && !hasMoveUp) {
-                XPopupUtils.moveUpToKeyboard(XPopupUtils.getDecorViewInvisibleHeight((Activity) getContext()), BasePopupView.this);
+            if (XPopupUtils.getDecorViewInvisibleHeight(ActivityUtils.getActivity(context)) > 0 && !hasMoveUp) {
+                XPopupUtils.moveUpToKeyboard(XPopupUtils.getDecorViewInvisibleHeight(ActivityUtils.getActivity(context)), BasePopupView.this);
             }
         }
     };
@@ -549,7 +550,7 @@ public abstract class BasePopupView extends FrameLayout implements OnNavigationB
                     stack.get(stack.size() - 1).focusAndProcessBackPress();
                 } else {
                     // 让根布局拿焦点，避免布局内RecyclerView类似布局获取焦点导致布局滚动
-                    View needFocusView = ((Activity) getContext()).findViewById(android.R.id.content);
+                    View needFocusView = ActivityUtils.getActivity(context).findViewById(android.R.id.content);
                     needFocusView.setFocusable(true);
                     needFocusView.setFocusableInTouchMode(true);
                 }

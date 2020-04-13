@@ -188,15 +188,23 @@ public class SimpleOperater extends AbsOperater {
         countTextView.setText("");
         countTextView.setVisibility(View.GONE);
 
+        int textColor = Color.WHITE;
         GradientDrawable gd = new GradientDrawable();
         if (isThisWeek) {
             textView.setTextColor(mView.itemTextColorWithThisWeek());
             Map<String, Integer> colorMap = mView.colorPool().getColorMap();
             if (!colorMap.isEmpty() && colorMap.containsKey(subject.getName())) {
+//                textColor = colorMap.get(subject.getName());
+
+//                gd.setColor(ColorUtils.alphaColor(ColorUtils.getBrighterColor(colorMap.get(subject.getName())), mView.itemAlpha()));
                 gd.setColor(ColorUtils.alphaColor(colorMap.get(subject.getName()), mView.itemAlpha()));
             } else {
-                gd.setColor(mView.colorPool().getColorAutoWithAlpha(subject.getColorRandom(), mView.itemAlpha()));
+                textColor = mView.colorPool().getColorAutoWithAlpha(subject.getColorRandom(), mView.itemAlpha());
+//                gd.setColor(ColorUtils.getBrighterColor(textColor));
+                gd.setColor(textColor);
+                textColor = ColorUtils.getDarkerColor(textColor);
             }
+            gd.setAlpha(0x20);
             gd.setCornerRadius(mView.corner(true));
 
             List<Schedule> clist = ScheduleSupport.findSubjects(subject, originData);
@@ -214,7 +222,8 @@ public class SimpleOperater extends AbsOperater {
                 countTextView.setText(count + "");
             }
         } else {
-            textView.setTextColor(mView.itemTextColorWithNotThis());
+            textColor = mView.itemTextColorWithNotThis();
+//            textView.setTextColor(mView.itemTextColorWithNotThis());
             Map<String, Integer> colorMap = mView.colorPool().getColorMap();
             if (!colorMap.isEmpty() && mView.colorPool().isIgnoreUserlessColor() && colorMap.containsKey(subject.getName())) {
                 gd.setColor(ColorUtils.alphaColor(colorMap.get(subject.getName()), mView.itemAlpha()));
@@ -225,6 +234,7 @@ public class SimpleOperater extends AbsOperater {
         }
 
         textView.setBackground(gd);
+        textView.setTextColor(textColor);
         mView.onItemBuildListener().onItemUpdate(layout, textView, countTextView, subject, gd);
 
         textView.setOnClickListener(new View.OnClickListener() {

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.scu.timetable.ui.popup.SubjectDetailPopup2;
 import com.zpj.popup.ZPopup;
 import com.scu.timetable.R;
 import com.scu.timetable.events.RefreshEvent;
@@ -109,6 +110,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
 
         mWeekView.source(scuSubjects).showView();
         mTimetableView.source(scuSubjects)
+                .cornerAll(16)
                 .isShowWeekends(TimetableHelper.isShowWeekends())
                 .isShowNotCurWeek(TimetableHelper.isShowNotCurWeek())
 //                .callback(new ISchedule.OnScrollViewBuildListener() {
@@ -125,8 +127,8 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     protected void modifySlideBgColor(int color) {
         OnSlideBuildAdapter listener = (OnSlideBuildAdapter) mTimetableView.onSlideBuildListener();
         listener.setBackground(color);
-        listener.setTextColor(Color.GRAY);
-        listener.setTimeTextColor(Color.GRAY);
+        listener.setTextColor(Color.BLACK);
+        listener.setTimeTextColor(getResources().getColor(R.color.black_transparent_50));
         mTimetableView.updateSlideView();
     }
 
@@ -190,7 +192,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     }
 
     public void showMenu(View view) {
-        ZPopup.attachList(view)
+        ZPopup.attachList(context)
                 .addItems(
                         "修改当前周",
                         "切换学期",
@@ -226,11 +228,12 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                             break;
                     }
                 })
-                .show();
+                .show(view);
     }
 
     private void showSubjectPopupView(final View view, final ScuSubject scuSubject) {
-        new SubjectDetailPopup(context, scuSubject).show();
+//        new SubjectDetailPopup(context, scuSubject).show();
+        new SubjectDetailPopup2(context, scuSubject).show();
     }
 
     private void showChooseSemesterDialog() {
@@ -305,6 +308,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     private void toggleTime(boolean showTime) {
         OnSlideBuildAdapter listener = (OnSlideBuildAdapter) mTimetableView.onSlideBuildListener();
         listener.setTimes(showTime ? TimetableHelper.TIMES_1 : null);
+        listener.setEndTimes(showTime ? TimetableHelper.TIMES_END_1 : null);
         mTimetableView.updateSlideView();
     }
 

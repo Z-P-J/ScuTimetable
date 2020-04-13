@@ -82,4 +82,16 @@
         <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 
+    <style name="ToolBarStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="z_toolbar_fillStatusBar">true</item>
+        <item name="z_toolbar_statusBarColor">@color/white</item>
+        <item name="z_toolbar_titleBarColor">@color/white</item>
+        <item name="z_toolbar_leftType">imageButton</item>
+        <item name="z_toolbar_bottomShadowHeight">1dp</item>
+        <item name="z_toolbar_bottomShadowStartColor">#e0e0e0</item>
+        <item name="z_toolbar_bottomShadowEndColor">#40eeeeee</item>
+    </style>
+
 </resources>

@@ -56,7 +56,7 @@ public abstract class PartShadowPopupView extends AttachPopupView {
 
         //1. apply width and height
         int rotation = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
-        ViewGroup.MarginLayoutParams params = (MarginLayoutParams) getPopupContentView().getLayoutParams();
+        MarginLayoutParams params = (MarginLayoutParams) getPopupContentView().getLayoutParams();
         if(rotation==0){
             params.width = getMeasuredWidth(); // 满宽
         }else if(rotation==1 || rotation==3){

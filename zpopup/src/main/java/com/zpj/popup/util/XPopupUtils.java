@@ -42,7 +42,7 @@ import com.zpj.popup.impl.FullScreenPopup;
 import com.zpj.popup.impl.FullScreenPopupView;
 import com.zpj.popup.impl.PartShadowPopup;
 import com.zpj.popup.impl.PartShadowPopupView;
-import com.zpj.popup.interfaces.XPopupImageLoader;
+import com.zpj.popup.interfaces.IImageLoader;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -320,7 +320,7 @@ public class XPopupUtils {
      */
     public static boolean isNavBarVisible(Context context) {
         boolean isVisible = false;
-        ViewGroup decorView = (ViewGroup) ((Activity) context).getWindow().getDecorView();
+        ViewGroup decorView = (ViewGroup) ActivityUtils.getActivity(context).getWindow().getDecorView();
         for (int i = 0, count = decorView.getChildCount(); i < count; i++) {
             final View child = decorView.getChildAt(i);
             final int id = child.getId();
@@ -355,7 +355,7 @@ public class XPopupUtils {
 
     private static Context mContext;
 
-    public static <T> void saveBmpToAlbum(final Context context, final XPopupImageLoader<T> imageLoader, final T uri) {
+    public static <T> void saveBmpToAlbum(final Context context, final IImageLoader<T> imageLoader, final T uri) {
         final Handler mainHandler = new Handler(Looper.getMainLooper());
         final ExecutorService executor = Executors.newSingleThreadExecutor();
         mContext = context;

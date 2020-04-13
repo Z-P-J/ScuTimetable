@@ -5,6 +5,7 @@ import android.os.StrictMode;
 import android.util.Log;
 
 import com.felix.atoast.library.AToast;
+import com.maning.librarycrashmonitor.MCrashMonitor;
 import com.scu.timetable.utils.EncryptionUtils;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.config.DownloaderConfig;
@@ -23,6 +24,9 @@ public final class Application extends android.app.Application {
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
         }
+        MCrashMonitor.init(this, true, file -> {
+//                MCrashMonitor.startCrashShowPage(getContext());
+        });
 //        ZUtils.init(this);
         AToast.onInit(this);
         DownloaderConfig config = DownloaderConfig.with(this)

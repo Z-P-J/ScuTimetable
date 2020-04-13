@@ -48,8 +48,6 @@ public class SettingFragment extends BaseFragment
 
     @Override
     protected void initView(View view, @Nullable Bundle savedInstanceState) {
-        ImageView btnBack = view.findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(this);
 
         SwitchSettingItem smartShowWeekends = view.findViewById(R.id.item_smart_show_weekends);
         smartShowWeekends.setChecked(TimetableHelper.isSmartShowWeekends());
@@ -128,13 +126,11 @@ public class SettingFragment extends BaseFragment
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.btn_back) {
-            pop();
-        } else if (id == R.id.btn_logout) {
+        if (id == R.id.btn_logout) {
             ZPopup.alert(context)
                     .setTitle("注销登录！")
                     .setContent("注销后需重新登录才能查看课表，确认注销？")
-                    .setConfirmButton(() -> {
+                    .setConfirmButton(popup -> {
                         if (TimetableHelper.isVisitorMode()) {
                             AToast.normal("您当前正处于游客模式，无法注销登录！");
                             return;

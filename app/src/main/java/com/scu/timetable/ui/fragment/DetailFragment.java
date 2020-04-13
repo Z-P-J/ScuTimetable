@@ -10,7 +10,7 @@ import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.zpj.fragmentation.BaseFragment;
 
-public class DetailFragment extends BaseFragment implements View.OnClickListener {
+public class DetailFragment extends BaseFragment {
 
     private ScuSubject subject;
 
@@ -34,7 +34,7 @@ public class DetailFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     protected void initView(View view, @Nullable Bundle savedInstanceState) {
-        TextView headerTitle = view.findViewById(R.id.header_title);
+
         DetailLayout courseName = view.findViewById(R.id.course_name);
         DetailLayout teacherName = view.findViewById(R.id.teacher_name);
         DetailLayout classTime = view.findViewById(R.id.class_time);
@@ -48,7 +48,7 @@ public class DetailFragment extends BaseFragment implements View.OnClickListener
         DetailLayout studyMode = view.findViewById(R.id.study_mode);
         DetailLayout restrictedCondition = view.findViewById(R.id.restricted_condition);
 
-        headerTitle.setText(subject.getCourseName());
+        setToolbarTitle(subject.getCourseName());
         courseName.setContent(subject.getCourseName());
         teacherName.setContent(subject.getTeacher());
         classTime.setContent(subject.getClassTime());
@@ -65,14 +65,6 @@ public class DetailFragment extends BaseFragment implements View.OnClickListener
 
     public void setSubject(ScuSubject subject) {
         this.subject = subject;
-    }
-
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.btn_back) {
-            pop();
-        }
     }
 
 }
