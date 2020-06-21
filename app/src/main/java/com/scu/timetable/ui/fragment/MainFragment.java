@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.zagum.expandicon.ExpandIconView;
 import com.scu.timetable.ui.popup.SubjectDetailPopup2;
 import com.zpj.popup.ZPopup;
 import com.scu.timetable.R;
@@ -49,6 +50,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     //控件
     private TimetableView mTimetableView;
     private WeekView mWeekView;
+    private ExpandIconView expandIconView;
 
     private LinearLayout layout;
     private TextView titleTextView;
@@ -84,10 +86,10 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
         ImageView settings = view.findViewById(R.id.settins);
         settings.setOnClickListener(this);
         titleTextView = view.findViewById(R.id.id_title);
-        toggleTitle(true);
         layout = view.findViewById(R.id.id_layout);
         layout.setOnClickListener(this);
         //获取控件
+        expandIconView = view.findViewById(R.id.expand_icon);
         mWeekView = view.findViewById(R.id.id_weekview);
         mTimetableView = view.findViewById(R.id.id_timetableView);
         initTimetableView();
@@ -99,10 +101,6 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
-    }
-
-    private void toggleTitle(boolean tag) {
-        titleTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, tag ? expandMoreDrawable : expandLessDrawable, null);
     }
 
     private void initData() {
@@ -370,7 +368,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
      */
     public void hideWeekView() {
         mWeekView.isShow(false);
-        toggleTitle(true);
+        expandIconView.switchState();
 //        titleTextView.setTextColor(Color.WHITE);
         int cur = mTimetableView.curWeek();
         mTimetableView.onDateBuildListener()
@@ -379,8 +377,8 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     }
 
     public void showWeekView() {
-        toggleTitle(false);
         mWeekView.isShow(true);
+        expandIconView.switchState();
     }
 
     @Subscribe

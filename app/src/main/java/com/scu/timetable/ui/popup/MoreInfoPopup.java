@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.zpj.popup.core.CenterPopup;
 import com.scu.timetable.R;
 
-public class MoreInfoPopup extends CenterPopup {
+public class MoreInfoPopup extends CenterPopup<MoreInfoPopup> {
 
     private String title;
     private String content;

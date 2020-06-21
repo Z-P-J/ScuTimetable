@@ -28,6 +28,7 @@ public class AbstractInputPopup<T extends AbstractAlertPopup> extends AbstractAl
 
     public AbstractInputPopup(@NonNull Context context) {
         super(context);
+//        setContent(R.layout._xpopup_center_impl_check);
     }
 
 //    /**
@@ -138,15 +139,15 @@ public class AbstractInputPopup<T extends AbstractAlertPopup> extends AbstractAl
 
     protected void applyPrimary(){
         super.applyPrimaryColor();
-        XPopupUtils.setCursorDrawableColor(et_input, XPopup.getPrimaryColor());
-        et_input.post(new Runnable() {
-            @Override
-            public void run() {
-                BitmapDrawable defaultDrawable = XPopupUtils.createBitmapDrawable(getResources(), et_input.getMeasuredWidth(), Color.parseColor("#888888"));
-                BitmapDrawable focusDrawable = XPopupUtils.createBitmapDrawable(getResources(), et_input.getMeasuredWidth(), XPopup.getPrimaryColor());
-                et_input.setBackgroundDrawable(XPopupUtils.createSelector(defaultDrawable, focusDrawable));
-            }
-        });
+        XPopupUtils.setCursorDrawableColor(et_input, getColorPrimary());
+//        et_input.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                BitmapDrawable defaultDrawable = XPopupUtils.createBitmapDrawable(getResources(), et_input.getMeasuredWidth(), Color.parseColor("#888888"));
+//                BitmapDrawable focusDrawable = XPopupUtils.createBitmapDrawable(getResources(), et_input.getMeasuredWidth(), XPopup.getPrimaryColor());
+//                et_input.setBackgroundDrawable(XPopupUtils.createSelector(defaultDrawable, focusDrawable));
+//            }
+//        });
 
     }
 

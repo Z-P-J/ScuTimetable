@@ -8,14 +8,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.felix.atoast.library.AToast;
-import com.zpj.popup.core.BottomPopupView;
 import com.scu.timetable.R;
 import com.scu.timetable.events.StartFragmentEvent;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.fragment.DetailFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
+import com.zpj.popup.core.BottomPopup;
 
-public class SubjectDetailPopup extends BottomPopupView {
+public class SubjectDetailPopup extends BottomPopup<SubjectDetailPopup> {
 
     private final ScuSubject subject;
     

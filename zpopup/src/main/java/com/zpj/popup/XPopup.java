@@ -5,27 +5,13 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.zpj.popup.animator.PopupAnimator;
-import com.zpj.popup.core.AttachPopupView;
-import com.zpj.popup.core.BasePopupView;
-import com.zpj.popup.core.BottomPopupView;
-import com.zpj.popup.core.CenterPopupView;
-import com.zpj.popup.core.ImageViewerPopupView;
 import com.zpj.popup.core.PopupInfo;
-import com.zpj.popup.core.PositionPopupView;
 import com.zpj.popup.enums.PopupAnimation;
 import com.zpj.popup.enums.PopupPosition;
 import com.zpj.popup.enums.PopupType;
-import com.zpj.popup.impl.BottomListPopupView;
-import com.zpj.popup.impl.LoadingPopupView;
-import com.zpj.popup.interfaces.IImageLoader;
-import com.zpj.popup.interfaces.OnSelectListener;
-import com.zpj.popup.interfaces.OnSrcViewUpdateListener;
 import com.zpj.popup.interfaces.XPopupCallback;
-
-import java.util.List;
 
 
 public class XPopup {
@@ -439,58 +425,58 @@ public class XPopup {
 //            return asCenterList(title, data, iconIds, -1, selectListener);
 //        }
 
-        /**
-         * 显示在中间加载的弹窗
-         *
-         * @return
-         */
-        public LoadingPopupView asLoading(String title) {
-            popupType(PopupType.Center);
-            LoadingPopupView popupView = new LoadingPopupView(this.context)
-                    .setTitle(title);
-            popupView.popupInfo = this.popupInfo;
-            return popupView;
-        }
+//        /**
+//         * 显示在中间加载的弹窗
+//         *
+//         * @return
+//         */
+//        public LoadingPopupView asLoading(String title) {
+//            popupType(PopupType.Center);
+//            LoadingPopupView popupView = new LoadingPopupView(this.context)
+//                    .setTitle(title);
+//            popupView.popupInfo = this.popupInfo;
+//            return popupView;
+//        }
+//
+//        public LoadingPopupView asLoading() {
+//            return asLoading(null);
+//        }
 
-        public LoadingPopupView asLoading() {
-            return asLoading(null);
-        }
-
-        /**
-         * 显示在底部的列表Popup
-         *
-         * @param title           标题，可以不传，不传则不显示
-         * @param data            显示的文本数据
-         * @param iconIds         图标的id数组，可以没有
-         * @param checkedPosition 选中的位置，传-1为不选中
-         * @param selectListener  选中条目的监听器
-         * @return
-         */
-        public BottomListPopupView asBottomList(String title, String[] data, int[] iconIds, int checkedPosition, boolean enableDrag, OnSelectListener selectListener) {
-            popupType(PopupType.Bottom);
-            BottomListPopupView popupView = new BottomListPopupView(this.context)
-                    .setStringData(title, data, iconIds)
-                    .setCheckedPosition(checkedPosition)
-                    .setOnSelectListener(selectListener);
-            popupView.popupInfo = this.popupInfo;
-            return popupView;
-        }
-
-        public BottomListPopupView asBottomList(String title, String[] data, OnSelectListener selectListener) {
-            return asBottomList(title, data, null, -1, true, selectListener);
-        }
-
-        public BottomListPopupView asBottomList(String title, String[] data, int[] iconIds, OnSelectListener selectListener) {
-            return asBottomList(title, data, iconIds, -1, true, selectListener);
-        }
-
-        public BottomListPopupView asBottomList(String title, String[] data, int[] iconIds, int checkedPosition, OnSelectListener selectListener) {
-            return asBottomList(title, data, iconIds, checkedPosition, true, selectListener);
-        }
-
-        public BottomListPopupView asBottomList(String title, String[] data, int[] iconIds, boolean enableDrag, OnSelectListener selectListener) {
-            return asBottomList(title, data, iconIds, -1, enableDrag, selectListener);
-        }
+//        /**
+//         * 显示在底部的列表Popup
+//         *
+//         * @param title           标题，可以不传，不传则不显示
+//         * @param data            显示的文本数据
+//         * @param iconIds         图标的id数组，可以没有
+//         * @param checkedPosition 选中的位置，传-1为不选中
+//         * @param selectListener  选中条目的监听器
+//         * @return
+//         */
+//        public BottomListPopupView asBottomList(String title, String[] data, int[] iconIds, int checkedPosition, boolean enableDrag, OnSelectListener selectListener) {
+//            popupType(PopupType.Bottom);
+//            BottomListPopupView popupView = new BottomListPopupView(this.context)
+//                    .setStringData(title, data, iconIds)
+//                    .setCheckedPosition(checkedPosition)
+//                    .setOnSelectListener(selectListener);
+//            popupView.popupInfo = this.popupInfo;
+//            return popupView;
+//        }
+//
+//        public BottomListPopupView asBottomList(String title, String[] data, OnSelectListener selectListener) {
+//            return asBottomList(title, data, null, -1, true, selectListener);
+//        }
+//
+//        public BottomListPopupView asBottomList(String title, String[] data, int[] iconIds, OnSelectListener selectListener) {
+//            return asBottomList(title, data, iconIds, -1, true, selectListener);
+//        }
+//
+//        public BottomListPopupView asBottomList(String title, String[] data, int[] iconIds, int checkedPosition, OnSelectListener selectListener) {
+//            return asBottomList(title, data, iconIds, checkedPosition, true, selectListener);
+//        }
+//
+//        public BottomListPopupView asBottomList(String title, String[] data, int[] iconIds, boolean enableDrag, OnSelectListener selectListener) {
+//            return asBottomList(title, data, iconIds, -1, enableDrag, selectListener);
+//        }
 
 
 //        /**
@@ -517,112 +503,112 @@ public class XPopup {
 //            return asAttachList(data, iconIds, 0, 0, selectListener);
 //        }
 
-        /**
-         * 大图浏览类型弹窗，单张图片使用场景
-         *
-         * @param srcView 源View，就是你点击的那个ImageView，弹窗消失的时候需回到该位置。如果实在没有这个View，可以传空，但是动画变的非常僵硬，适用于在Webview点击场景
-         * @return
-         */
-        public ImageViewerPopupView asImageViewer(ImageView srcView, Object url, IImageLoader imageLoader) {
-            popupType(PopupType.ImageViewer);
-            ImageViewerPopupView popupView = new ImageViewerPopupView(this.context)
-                    .setSingleSrcView(srcView, url)
-                    .setXPopupImageLoader(imageLoader);
-            popupView.popupInfo = this.popupInfo;
-            return popupView;
-        }
+//        /**
+//         * 大图浏览类型弹窗，单张图片使用场景
+//         *
+//         * @param srcView 源View，就是你点击的那个ImageView，弹窗消失的时候需回到该位置。如果实在没有这个View，可以传空，但是动画变的非常僵硬，适用于在Webview点击场景
+//         * @return
+//         */
+//        public ImageViewerPopupView asImageViewer(ImageView srcView, Object url, IImageLoader imageLoader) {
+//            popupType(PopupType.ImageViewer);
+//            ImageViewerPopupView popupView = new ImageViewerPopupView(this.context)
+//                    .setSingleSrcView(srcView, url)
+//                    .setXPopupImageLoader(imageLoader);
+//            popupView.popupInfo = this.popupInfo;
+//            return popupView;
+//        }
+//
+//        /**
+//         * 大图浏览类型弹窗，单张图片使用场景
+//         *
+//         * @param srcView           源View，就是你点击的那个ImageView，弹窗消失的时候需回到该位置。如果实在没有这个View，可以传空，但是动画变的非常僵硬，适用于在Webview点击场景
+//         * @param url               资源id，url或者文件路径
+//         * @param isInfinite        是否需要无限滚动，默认为false
+//         * @param placeholderColor  占位View的填充色，默认为-1
+//         * @param placeholderStroke 占位View的边框色，默认为-1
+//         * @param placeholderRadius 占位View的圆角大小，默认为-1
+//         * @param isShowSaveBtn     是否显示保存按钮，默认显示
+//         * @return
+//         */
+//        public ImageViewerPopupView asImageViewer(ImageView srcView, Object url, boolean isInfinite, int placeholderColor, int placeholderStroke, int placeholderRadius,
+//                                                  boolean isShowSaveBtn, IImageLoader imageLoader) {
+//            popupType(PopupType.ImageViewer);
+//            ImageViewerPopupView popupView = new ImageViewerPopupView(this.context)
+//                    .setSingleSrcView(srcView, url)
+//                    .isInfinite(isInfinite)
+//                    .setPlaceholderColor(placeholderColor)
+//                    .setPlaceholderStrokeColor(placeholderStroke)
+//                    .setPlaceholderRadius(placeholderRadius)
+//                    .isShowSaveButton(isShowSaveBtn)
+//                    .setXPopupImageLoader(imageLoader);
+//            popupView.popupInfo = this.popupInfo;
+//            return popupView;
+//        }
+//
+//        /**
+//         * 大图浏览类型弹窗，多张图片使用场景
+//         *
+//         * @param srcView               源View，就是你点击的那个ImageView，弹窗消失的时候需回到该位置。如果实在没有这个View，可以传空，但是动画变的非常僵硬，适用于在Webview点击场景
+//         * @param currentPosition       指定显示图片的位置
+//         * @param urls                  图片url集合
+//         * @param srcViewUpdateListener 当滑动ViewPager切换图片后，需要更新srcView，此时会执行该回调，你需要调用updateSrcView方法。
+//         * @return
+//         */
+//        public ImageViewerPopupView asImageViewer(ImageView srcView, int currentPosition, List<Object> urls,
+//                                                  OnSrcViewUpdateListener srcViewUpdateListener, IImageLoader imageLoader) {
+//            return asImageViewer(srcView, currentPosition, urls, false,false, -1, -1, -1, true, srcViewUpdateListener, imageLoader);
+//        }
+//
+//        /**
+//         * 大图浏览类型弹窗，多张图片使用场景
+//         *
+//         * @param srcView               源View，就是你点击的那个ImageView，弹窗消失的时候需回到该位置。如果实在没有这个View，可以传空，但是动画变的非常僵硬，适用于在Webview点击场景
+//         * @param currentPosition       指定显示图片的位置
+//         * @param urls                  图片url集合
+//         * @param isInfinite            是否需要无限滚动，默认为false
+//         * @param isShowPlaceHolder     是否显示默认的占位View，默认为false
+//         * @param placeholderColor      占位View的填充色，默认为-1
+//         * @param placeholderStroke     占位View的边框色，默认为-1
+//         * @param placeholderRadius     占位View的圆角大小，默认为-1
+//         * @param isShowSaveBtn         是否显示保存按钮，默认显示
+//         * @param srcViewUpdateListener 当滑动ViewPager切换图片后，需要更新srcView，此时会执行该回调，你需要调用updateSrcView方法。
+//         * @return
+//         */
+//        public ImageViewerPopupView asImageViewer(ImageView srcView, int currentPosition, List<Object> urls,
+//                                                  boolean isInfinite, boolean isShowPlaceHolder,
+//                                                  int placeholderColor, int placeholderStroke, int placeholderRadius, boolean isShowSaveBtn,
+//                                                  OnSrcViewUpdateListener srcViewUpdateListener, IImageLoader imageLoader) {
+//            popupType(PopupType.ImageViewer);
+//            ImageViewerPopupView popupView = new ImageViewerPopupView(this.context)
+//                    .setSrcView(srcView, currentPosition)
+//                    .setImageUrls(urls)
+//                    .isInfinite(isInfinite)
+//                    .isShowPlaceholder(isShowPlaceHolder)
+//                    .setPlaceholderColor(placeholderColor)
+//                    .setPlaceholderStrokeColor(placeholderStroke)
+//                    .setPlaceholderRadius(placeholderRadius)
+//                    .isShowSaveButton(isShowSaveBtn)
+//                    .setSrcViewUpdateListener(srcViewUpdateListener)
+//                    .setXPopupImageLoader(imageLoader);
+//            popupView.popupInfo = this.popupInfo;
+//            return popupView;
+//        }
 
-        /**
-         * 大图浏览类型弹窗，单张图片使用场景
-         *
-         * @param srcView           源View，就是你点击的那个ImageView，弹窗消失的时候需回到该位置。如果实在没有这个View，可以传空，但是动画变的非常僵硬，适用于在Webview点击场景
-         * @param url               资源id，url或者文件路径
-         * @param isInfinite        是否需要无限滚动，默认为false
-         * @param placeholderColor  占位View的填充色，默认为-1
-         * @param placeholderStroke 占位View的边框色，默认为-1
-         * @param placeholderRadius 占位View的圆角大小，默认为-1
-         * @param isShowSaveBtn     是否显示保存按钮，默认显示
-         * @return
-         */
-        public ImageViewerPopupView asImageViewer(ImageView srcView, Object url, boolean isInfinite, int placeholderColor, int placeholderStroke, int placeholderRadius,
-                                                  boolean isShowSaveBtn, IImageLoader imageLoader) {
-            popupType(PopupType.ImageViewer);
-            ImageViewerPopupView popupView = new ImageViewerPopupView(this.context)
-                    .setSingleSrcView(srcView, url)
-                    .isInfinite(isInfinite)
-                    .setPlaceholderColor(placeholderColor)
-                    .setPlaceholderStrokeColor(placeholderStroke)
-                    .setPlaceholderRadius(placeholderRadius)
-                    .isShowSaveButton(isShowSaveBtn)
-                    .setXPopupImageLoader(imageLoader);
-            popupView.popupInfo = this.popupInfo;
-            return popupView;
-        }
-
-        /**
-         * 大图浏览类型弹窗，多张图片使用场景
-         *
-         * @param srcView               源View，就是你点击的那个ImageView，弹窗消失的时候需回到该位置。如果实在没有这个View，可以传空，但是动画变的非常僵硬，适用于在Webview点击场景
-         * @param currentPosition       指定显示图片的位置
-         * @param urls                  图片url集合
-         * @param srcViewUpdateListener 当滑动ViewPager切换图片后，需要更新srcView，此时会执行该回调，你需要调用updateSrcView方法。
-         * @return
-         */
-        public ImageViewerPopupView asImageViewer(ImageView srcView, int currentPosition, List<Object> urls,
-                                                  OnSrcViewUpdateListener srcViewUpdateListener, IImageLoader imageLoader) {
-            return asImageViewer(srcView, currentPosition, urls, false,false, -1, -1, -1, true, srcViewUpdateListener, imageLoader);
-        }
-
-        /**
-         * 大图浏览类型弹窗，多张图片使用场景
-         *
-         * @param srcView               源View，就是你点击的那个ImageView，弹窗消失的时候需回到该位置。如果实在没有这个View，可以传空，但是动画变的非常僵硬，适用于在Webview点击场景
-         * @param currentPosition       指定显示图片的位置
-         * @param urls                  图片url集合
-         * @param isInfinite            是否需要无限滚动，默认为false
-         * @param isShowPlaceHolder     是否显示默认的占位View，默认为false
-         * @param placeholderColor      占位View的填充色，默认为-1
-         * @param placeholderStroke     占位View的边框色，默认为-1
-         * @param placeholderRadius     占位View的圆角大小，默认为-1
-         * @param isShowSaveBtn         是否显示保存按钮，默认显示
-         * @param srcViewUpdateListener 当滑动ViewPager切换图片后，需要更新srcView，此时会执行该回调，你需要调用updateSrcView方法。
-         * @return
-         */
-        public ImageViewerPopupView asImageViewer(ImageView srcView, int currentPosition, List<Object> urls,
-                                                  boolean isInfinite, boolean isShowPlaceHolder,
-                                                  int placeholderColor, int placeholderStroke, int placeholderRadius, boolean isShowSaveBtn,
-                                                  OnSrcViewUpdateListener srcViewUpdateListener, IImageLoader imageLoader) {
-            popupType(PopupType.ImageViewer);
-            ImageViewerPopupView popupView = new ImageViewerPopupView(this.context)
-                    .setSrcView(srcView, currentPosition)
-                    .setImageUrls(urls)
-                    .isInfinite(isInfinite)
-                    .isShowPlaceholder(isShowPlaceHolder)
-                    .setPlaceholderColor(placeholderColor)
-                    .setPlaceholderStrokeColor(placeholderStroke)
-                    .setPlaceholderRadius(placeholderRadius)
-                    .isShowSaveButton(isShowSaveBtn)
-                    .setSrcViewUpdateListener(srcViewUpdateListener)
-                    .setXPopupImageLoader(imageLoader);
-            popupView.popupInfo = this.popupInfo;
-            return popupView;
-        }
-
-        public BasePopupView asCustom(BasePopupView popupView) {
-            if (popupView instanceof CenterPopupView) {
-                popupType(PopupType.Center);
-            } else if (popupView instanceof BottomPopupView) {
-                popupType(PopupType.Bottom);
-            } else if (popupView instanceof AttachPopupView) {
-                popupType(PopupType.AttachView);
-            } else if (popupView instanceof ImageViewerPopupView) {
-                popupType(PopupType.ImageViewer);
-            } else if (popupView instanceof PositionPopupView) {
-                popupType(PopupType.Position);
-            }
-            popupView.popupInfo = this.popupInfo;
-            return popupView;
-        }
+//        public BasePopupView asCustom(BasePopupView popupView) {
+//            if (popupView instanceof CenterPopupView) {
+//                popupType(PopupType.Center);
+//            } else if (popupView instanceof BottomPopupView) {
+//                popupType(PopupType.Bottom);
+//            } else if (popupView instanceof AttachPopupView) {
+//                popupType(PopupType.AttachView);
+//            } else if (popupView instanceof ImageViewerPopupView) {
+//                popupType(PopupType.ImageViewer);
+//            } else if (popupView instanceof PositionPopupView) {
+//                popupType(PopupType.Position);
+//            }
+//            popupView.popupInfo = this.popupInfo;
+//            return popupView;
+//        }
 
     }
 }

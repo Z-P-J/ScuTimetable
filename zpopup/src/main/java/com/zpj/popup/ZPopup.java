@@ -6,10 +6,14 @@ import android.view.View;
 import com.zpj.popup.core.BasePopup;
 import com.zpj.popup.core.CenterPopup;
 import com.zpj.popup.core.ImageViewerPopup;
+import com.zpj.popup.core.ImageViewerPopup2;
 import com.zpj.popup.impl.AlertPopup;
 import com.zpj.popup.impl.AttachListPopup;
 import com.zpj.popup.impl.BottomListPopup;
+import com.zpj.popup.impl.BottomSelectPopup;
 import com.zpj.popup.impl.CenterListPopup;
+import com.zpj.popup.impl.CenterSelectPopup;
+import com.zpj.popup.impl.CheckPopup;
 import com.zpj.popup.impl.InputPopup;
 import com.zpj.popup.impl.LoadingPopup;
 
@@ -44,6 +48,10 @@ public class ZPopup {
         return new InputPopup(context);
     }
 
+    public static CheckPopup check(Context context) {
+        return new CheckPopup(context);
+    }
+
     public static LoadingPopup loading(Context context) {
         return new LoadingPopup(context);
     }
@@ -72,8 +80,20 @@ public class ZPopup {
         return new BottomListPopup<>(context);
     }
 
+    public static <T> CenterSelectPopup<T> centerSelect(Context context, Class<T> clazz) {
+        return new CenterSelectPopup<>(context);
+    }
+
+    public static <T> BottomSelectPopup<T> bottomSelect(Context context, Class<T> clazz) {
+        return new BottomSelectPopup<>(context);
+    }
+
     public static ImageViewerPopup<String> imageViewer(Context context) {
         return new ImageViewerPopup<>(context);
+    }
+
+    public static ImageViewerPopup2<String> imageViewer2(Context context) {
+        return new ImageViewerPopup2<>(context);
     }
 
     public static <T> ImageViewerPopup<T> imageViewer(Context context, Class<T> clazz) {

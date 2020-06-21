@@ -10,9 +10,9 @@ import com.scu.timetable.R;
 import com.scu.timetable.events.StartFragmentEvent;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.fragment.DetailFragment;
-import com.zpj.popup.core.BottomPopupView;
+import com.zpj.popup.core.BottomPopup;
 
-public class SubjectDetailPopup2 extends BottomPopupView {
+public class SubjectDetailPopup2 extends BottomPopup<SubjectDetailPopup2> {
 
     private final ScuSubject subject;
 

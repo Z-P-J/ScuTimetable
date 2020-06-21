@@ -233,6 +233,7 @@ public class SimpleOperater extends AbsOperater {
             gd.setCornerRadius(mView.corner(false));
         }
 
+//        gd.setStroke(1, textColor);
         textView.setBackground(gd);
         textView.setTextColor(textColor);
         mView.onItemBuildListener().onItemUpdate(layout, textView, countTextView, subject, gd);

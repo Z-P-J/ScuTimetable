@@ -20,9 +20,10 @@ import com.zpj.popup.util.XPopupUtils;
  * Description: 宽高撑满的全屏弹窗
  * Create by lxj, at 2019/2/1
  */
-public class FullScreenPopup extends CenterPopup {
+public class FullScreenPopup<T extends FullScreenPopup> extends CenterPopup<T> {
     public FullScreenPopup(@NonNull Context context) {
         super(context);
+        centerPopupContainer.setRadius(0);
     }
 
     @Override

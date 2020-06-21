@@ -24,7 +24,7 @@ import com.zpj.downloader.constant.Error;
 import com.zpj.downloader.core.DownloadMission;
 import com.zpj.downloader.util.FileUtil;
 
-public class UpdatePopup extends CenterPopup implements View.OnClickListener {
+public class UpdatePopup extends CenterPopup<UpdatePopup> implements View.OnClickListener {
 
     //======顶部========//
     /**

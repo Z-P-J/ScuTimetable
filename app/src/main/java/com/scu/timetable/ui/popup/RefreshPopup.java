@@ -20,7 +20,7 @@ import com.scu.timetable.utils.TimetableHelper;
 
 import org.json.JSONObject;
 
-public class RefreshPopup extends CenterPopup {
+public class RefreshPopup extends CenterPopup<RefreshPopup> {
 
     private static final String TAG = "RefreshPopup";
     

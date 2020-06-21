@@ -2,6 +2,7 @@ package com.zpj.popup.core;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,7 @@ import static com.zpj.popup.enums.PopupAnimation.ScaleAlphaFromCenter;
  * Create by dance, at 2018/12/8
  */
 public class CenterPopup<T extends CenterPopup> extends BasePopup<T> {
-    protected FrameLayout centerPopupContainer;
+    protected CardView centerPopupContainer;
     protected int bindLayoutId;
     protected int bindItemLayoutId;
     private View contentView;
@@ -49,14 +50,16 @@ public class CenterPopup<T extends CenterPopup> extends BasePopup<T> {
     @Override
     protected void initPopupContent() {
         super.initPopupContent();
-        if (getImplLayoutId() > 0) {
-            contentView = LayoutInflater.from(getContext()).inflate(getImplLayoutId(), centerPopupContainer, false);
+        View contentView = getContentView();
+        ViewGroup.LayoutParams layoutParams = contentView.getLayoutParams();
+        LayoutParams params;
+        if (layoutParams == null) {
+            params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        } else {
+            params = (LayoutParams) layoutParams;
         }
-        centerPopupContainer.addView(contentView);
-
-        LayoutParams params = (LayoutParams) contentView.getLayoutParams();
         params.gravity = Gravity.CENTER;
-//        centerPopupContainer.addView(contentView, params);
+        centerPopupContainer.addView(contentView, params);
         getPopupContentView().setTranslationX(popupInfo.offsetX);
         getPopupContentView().setTranslationY(popupInfo.offsetY);
         XPopupUtils.applyPopupSize((ViewGroup) getPopupContentView(), getMaxWidth(), getMaxHeight());
@@ -66,6 +69,13 @@ public class CenterPopup<T extends CenterPopup> extends BasePopup<T> {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         setTranslationY(0);
+    }
+
+    protected View getContentView() {
+        if (contentView != null) {
+            return contentView;
+        }
+        return LayoutInflater.from(getContext()).inflate(getImplLayoutId(), centerPopupContainer, false);
     }
 
     /**

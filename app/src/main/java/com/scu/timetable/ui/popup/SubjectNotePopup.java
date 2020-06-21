@@ -12,7 +12,7 @@ import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.utils.TimetableHelper;
 
-public class SubjectNotePopup extends CenterPopup {
+public class SubjectNotePopup extends CenterPopup<SubjectNotePopup> {
     
     private final ScuSubject subject;
     
