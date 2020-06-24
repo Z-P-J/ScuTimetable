@@ -105,7 +105,7 @@ public class SettingFragment extends BaseFragment
         SuperLinkUtil.setSuperLink(linkGithub.getContentTextView(), link, link);
 
         DetailLayout linkSjly = view.findViewById(R.id.link_sjly);
-        SuperLinkUtil.setSuperLink(linkSjly.getContentTextView(), "我好像在哪儿见过您", "https://www.shouji.com.cn/user/5544802/home.html");
+        SuperLinkUtil.setSuperLink(linkSjly.getContentTextView(), "天蓝蓝的", "https://www.shouji.com.cn/user/5544802/home.html");
     }
 
     @Override

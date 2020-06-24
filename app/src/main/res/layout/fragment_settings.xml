@@ -11,286 +11,229 @@
         android:id="@+id/tool_bar"
         style="@style/ToolBarStyle"
         app:z_toolbar_centerText="设置"
+        app:z_toolbar_bottomShadowHeight="0dp"
         />
 
-    <com.scu.timetable.ui.widget.ElasticScrollView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        >
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <com.scu.timetable.ui.widget.ElasticScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            >
 
-            <android.support.v7.widget.CardView
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardUseCompatPadding="true"
-                app:cardElevation="5dp"
-                app:cardBackgroundColor="#eeffffff"
-                >
+                android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:orientation="vertical"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    >
+                    android:text="应用设置"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:textColor="@color/colorPrimary"
+                    />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="应用设置"
-                        android:gravity="center_vertical"
-                        android:padding="5dp"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="15dp"
-                        android:textColor="@color/colorPrimary"
-                        android:layout_marginTop="10dp"
-                        />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="#eeeeee"
+                    />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginEnd="15dp"
-                        android:background="#eeeeee"
-                        />
-
-                    <com.zpj.widget.setting.SwitchSettingItem
-                        android:id="@+id/item_smart_show_weekends"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:z_setting_titleText="智能显示周末"
-                        app:z_setting_infoText="当前时间为周末时才显示周末的课程"
-                        app:z_setting_leftIcon="@drawable/ic_color_lens_black_24dp"
-                        />
-
-                    <com.zpj.widget.setting.SwitchSettingItem
-                        android:id="@+id/item_monday_is_first_day"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:z_setting_titleText="星期一为周一"
-                        app:z_setting_infoText="将星期一作为周一，默认为星期天"
-                        app:z_setting_leftIcon="@drawable/ic_next_week_black_24dp"
-                        />
-
-                    <com.zpj.widget.setting.SwitchSettingItem
-                        android:id="@+id/item_show_weekends"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:z_setting_titleText="显示周末"
-                        app:z_setting_infoText="显示周末课程"
-                        app:z_setting_leftIcon="@drawable/ic_weekend_black_24dp"
-                        />
-
-                    <com.zpj.widget.setting.SwitchSettingItem
-                        android:id="@+id/item_show_non_this_week"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:z_setting_titleText="显示非本周课程"
-                        app:z_setting_infoText="以灰色状态显示非本周课程"
-                        app:z_setting_leftIcon="@drawable/ic_event_note_black_24dp"
-                        />
-
-                    <com.zpj.widget.setting.SwitchSettingItem
-                        android:id="@+id/item_show_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:z_setting_titleText="显示节次时间"
-                        app:z_setting_leftIcon="@drawable/ic_access_time_black_24dp"
-                        />
-
-                    <com.zpj.widget.setting.SwitchSettingItem
-                        android:id="@+id/item_speech"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:z_setting_titleText="语音播报"
-                        app:z_setting_leftIcon="@drawable/ic_access_alarm_black_24dp"
-                        />
-
-                    <com.zpj.widget.setting.CommonSettingItem
-                        android:id="@+id/item_change_current_week"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:z_setting_titleText="修改当前周次"
-                        app:z_setting_leftIcon="@drawable/ic_assignment_late_black_24dp"
-                        />
-
-                    <com.zpj.widget.setting.CommonSettingItem
-                        android:id="@+id/item_notification"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:z_setting_titleText="通知设置"
-                        app:z_setting_leftIcon="@drawable/ic_notifications_black_24dp"
-                        />
-
-                </LinearLayout>
-
-
-
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardUseCompatPadding="true"
-                app:cardElevation="5dp"
-                app:cardBackgroundColor="#eeffffff"
-                >
-
-                <LinearLayout
-                    android:orientation="vertical"
+                <com.zpj.widget.setting.SwitchSettingItem
+                    android:id="@+id/item_smart_show_weekends"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    >
+                    app:z_setting_titleText="智能显示周末"
+                    app:z_setting_infoText="当前时间为周末时才显示周末的课程"
+                    app:z_setting_leftIcon="@drawable/ic_color_lens_black_24dp"
+                    />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="桌面插件设置"
-                        android:gravity="center_vertical"
-                        android:padding="5dp"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="15dp"
-                        android:textColor="@color/colorPrimary"
-                        android:layout_marginTop="10dp"
-                        />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginEnd="15dp"
-                        android:background="#eeeeee"/>
-
-                    <com.zpj.widget.setting.SwitchSettingItem
-                        android:id="@+id/item_widget_smart_show_weekends"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:z_setting_titleText="智能显示周末"
-                        app:z_setting_leftIcon="@drawable/ic_color_lens_black_24dp"
-                        />
-
-                    <com.zpj.widget.setting.SwitchSettingItem
-                        android:id="@+id/item_widget_transparent_mode"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:z_setting_titleText="透明模式"
-                        app:z_setting_infoText="桌面插件背景透明"
-                        app:z_setting_leftIcon="@drawable/ic_format_color_fill_black_24dp"
-                        />
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="10dp"
-                app:cardUseCompatPadding="true"
-                app:cardElevation="5dp"
-                app:cardBackgroundColor="#eeffffff"
-                >
-
-                <LinearLayout
-                    android:orientation="vertical"
+                <com.zpj.widget.setting.SwitchSettingItem
+                    android:id="@+id/item_monday_is_first_day"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    >
+                    app:z_setting_titleText="星期一为周一"
+                    app:z_setting_infoText="将星期一作为周一，默认为星期天"
+                    app:z_setting_leftIcon="@drawable/ic_next_week_black_24dp"
+                    />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="关于"
-                        android:gravity="center_vertical"
-                        android:padding="5dp"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="15dp"
-                        android:textColor="@color/colorPrimary"
-                        />
+                <com.zpj.widget.setting.SwitchSettingItem
+                    android:id="@+id/item_show_weekends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:z_setting_titleText="显示周末"
+                    app:z_setting_infoText="显示周末课程"
+                    app:z_setting_leftIcon="@drawable/ic_weekend_black_24dp"
+                    />
 
-                    <View
-                        android:id="@+id/underline"
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginEnd="15dp"
-                        android:background="#eeeeee"/>
+                <com.zpj.widget.setting.SwitchSettingItem
+                    android:id="@+id/item_show_non_this_week"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:z_setting_titleText="显示非本周课程"
+                    app:z_setting_infoText="以灰色状态显示非本周课程"
+                    app:z_setting_leftIcon="@drawable/ic_event_note_black_24dp"
+                    />
 
-                    <com.scu.timetable.ui.widget.DetailLayout
-                        android:id="@+id/app_version"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:left_text="软件版本"
-                        app:right_text="V 1.3.0"
-                        />
+                <com.zpj.widget.setting.SwitchSettingItem
+                    android:id="@+id/item_show_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:z_setting_titleText="显示节次时间"
+                    app:z_setting_leftIcon="@drawable/ic_access_time_black_24dp"
+                    />
 
-                    <com.scu.timetable.ui.widget.DetailLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:left_text="软件作者"
-                        app:right_text="Z-P-J"
-                        />
+                <com.zpj.widget.setting.SwitchSettingItem
+                    android:id="@+id/item_speech"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:z_setting_titleText="语音播报"
+                    app:z_setting_leftIcon="@drawable/ic_access_alarm_black_24dp"
+                    />
 
-                    <com.scu.timetable.ui.widget.DetailLayout
-                        android:id="@+id/link_open_source"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:left_text="软件开源"
-                        app:right_text="https://github.com/Z-P-J/ScuTimetable"
-                        />
+                <com.zpj.widget.setting.CommonSettingItem
+                    android:id="@+id/item_change_current_week"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:z_setting_titleText="修改当前周次"
+                    app:z_setting_leftIcon="@drawable/ic_assignment_late_black_24dp"
+                    />
 
-                    <com.scu.timetable.ui.widget.DetailLayout
-                        android:id="@+id/link_github"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:left_text="Github主页"
-                        app:right_text="https://github.com/Z-P-J"
-                        />
+                <com.zpj.widget.setting.CommonSettingItem
+                    android:id="@+id/item_notification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:z_setting_titleText="通知设置"
+                    app:z_setting_leftIcon="@drawable/ic_notifications_black_24dp"
+                    />
 
-                    <com.scu.timetable.ui.widget.DetailLayout
-                        android:id="@+id/link_sjly"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:left_text="手机乐园主页"
-                        app:right_text="https://www.shouji.com.cn/user/5544802/home.html"
-                        />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="桌面插件设置"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:textColor="@color/colorPrimary"
+                    />
 
-                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="#eeeeee"/>
 
-            </android.support.v7.widget.CardView>
+                <com.zpj.widget.setting.SwitchSettingItem
+                    android:id="@+id/item_widget_smart_show_weekends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:z_setting_titleText="智能显示周末"
+                    app:z_setting_leftIcon="@drawable/ic_color_lens_black_24dp"
+                    />
 
-            <com.deadline.statebutton.StateButton
-                android:id="@+id/btn_logout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:radius="10dp"
-                android:text="注销登录"
-                app:round="true"
-                app:normalBackgroundColor="#aaf60707"
-                app:pressedBackgroundColor="#eef60707"
-                android:layout_gravity="center"
-                android:textSize="18sp"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                app:normalTextColor="@color/white"
-                app:pressedTextColor="#aaffffff"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:layout_marginStart="56dp"
-                android:layout_marginEnd="56dp"
-                />
+                <com.zpj.widget.setting.SwitchSettingItem
+                    android:id="@+id/item_widget_transparent_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:z_setting_titleText="透明模式"
+                    app:z_setting_infoText="桌面插件背景透明"
+                    app:z_setting_leftIcon="@drawable/ic_format_color_fill_black_24dp"
+                    />
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="关于"
+                    android:gravity="center_vertical"
+                    android:padding="5dp"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:textColor="@color/colorPrimary"
+                    />
 
-    </com.scu.timetable.ui.widget.ElasticScrollView>
+                <View
+                    android:id="@+id/underline"
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="#eeeeee"/>
+
+                <com.scu.timetable.ui.widget.DetailLayout
+                    android:id="@+id/app_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:left_text="软件版本"
+                    app:right_text="V 1.3.0"
+                    />
+
+                <com.scu.timetable.ui.widget.DetailLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:left_text="软件作者"
+                    app:right_text="Z-P-J"
+                    />
+
+                <com.scu.timetable.ui.widget.DetailLayout
+                    android:id="@+id/link_open_source"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:left_text="软件开源"
+                    app:right_text="https://github.com/Z-P-J/ScuTimetable"
+                    />
+
+                <com.scu.timetable.ui.widget.DetailLayout
+                    android:id="@+id/link_github"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:left_text="Github主页"
+                    app:right_text="https://github.com/Z-P-J"
+                    />
+
+                <com.scu.timetable.ui.widget.DetailLayout
+                    android:id="@+id/link_sjly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:left_text="手机乐园主页"
+                    app:right_text="https://www.shouji.com.cn/user/5544802/home.html"
+                    />
+
+                <com.deadline.statebutton.StateButton
+                    android:id="@+id/btn_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:radius="10dp"
+                    android:text="注销登录"
+                    app:round="true"
+                    app:normalBackgroundColor="#aaf60707"
+                    app:pressedBackgroundColor="#eef60707"
+                    android:layout_gravity="center"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:normalTextColor="@color/white"
+                    app:pressedTextColor="#aaffffff"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginEnd="56dp"
+                    />
+
+            </LinearLayout>
+
+        </com.scu.timetable.ui.widget.ElasticScrollView>
+
+    </FrameLayout>
 
 </LinearLayout>
