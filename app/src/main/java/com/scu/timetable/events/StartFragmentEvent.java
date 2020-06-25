@@ -13,4 +13,9 @@ public class StartFragmentEvent extends BaseEvent {
     public SupportFragment getFragment() {
         return fragment;
     }
+
+    public static void start(SupportFragment fragment) {
+        new StartFragmentEvent(fragment).post();
+    }
+
 }

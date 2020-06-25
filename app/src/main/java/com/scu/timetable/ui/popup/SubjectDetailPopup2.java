@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
-import com.scu.timetable.events.StartFragmentEvent;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.fragment.DetailFragment;
 import com.zpj.popup.core.BottomPopup;
@@ -48,7 +47,7 @@ public class SubjectDetailPopup2 extends BottomPopup<SubjectDetailPopup2> {
         ImageView more = findViewById(R.id.subject_more);
         more.setOnClickListener(v -> {
             dismiss();
-            new StartFragmentEvent(DetailFragment.newInstance(subject)).post();
+            DetailFragment.start(subject);
         });
 
         ImageView alarm = findViewById(R.id.subject_alarm);

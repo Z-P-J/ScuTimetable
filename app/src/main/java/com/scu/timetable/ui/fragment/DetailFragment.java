@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.scu.timetable.R;
+import com.scu.timetable.events.StartFragmentEvent;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.zpj.fragmentation.BaseFragment;
@@ -20,6 +21,10 @@ public class DetailFragment extends BaseFragment {
         fragment.setSubject(subject);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static void start(ScuSubject subject) {
+        StartFragmentEvent.start(newInstance(subject));
     }
 
     @Override

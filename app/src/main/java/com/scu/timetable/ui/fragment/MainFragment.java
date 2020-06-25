@@ -6,13 +6,19 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.zagum.expandicon.ExpandIconView;
+import com.scu.timetable.events.HideLoadingEvent;
+import com.scu.timetable.events.ShowLoadingEvent;
 import com.scu.timetable.ui.popup.SubjectDetailPopup2;
+import com.zpj.http.core.Connection;
+import com.zpj.http.core.IHttp;
+import com.zpj.http.core.ObservableTask;
 import com.zpj.popup.ZPopup;
 import com.scu.timetable.R;
 import com.scu.timetable.events.RefreshEvent;
@@ -29,6 +35,8 @@ import com.zhuangfei.timetable.listener.OnSlideBuildAdapter;
 import com.zhuangfei.timetable.model.Schedule;
 import com.zhuangfei.timetable.view.WeekView;
 import com.zpj.fragmentation.BaseFragment;
+import com.zpj.popup.impl.LoadingPopup;
+import com.zpj.popup.interfaces.OnDismissListener;
 import com.zpj.utils.PrefsHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,6 +44,9 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 /**
  * @author Z-P-J
@@ -104,9 +115,37 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initData() {
-        scuSubjects = TimetableHelper.getSubjects(getContext());
+//        LoadingPopup popup = ZPopup.loading(context).setTitle("切换中...").show();
+//        new ObservableTask<>((ObservableOnSubscribe<List<ScuSubject>>) emitter -> {
+//            scuSubjects = TimetableHelper.getSubjects(context);
+//            emitter.onNext(scuSubjects);
+//            emitter.onComplete();
+//        })
+//                .onSuccess(data -> {
+//                    mWeekView.source(scuSubjects).showView();
+//                    mTimetableView.source(scuSubjects)
+//                            .cornerAll(16)
+//                            .isShowWeekends(TimetableHelper.isShowWeekends())
+//                            .isShowNotCurWeek(TimetableHelper.isShowNotCurWeek())
+////                .callback(new ISchedule.OnScrollViewBuildListener() {
+////                    @Override
+////                    public View getScrollView(LayoutInflater mInflate) {
+////                        return mInflate.inflate(R.layout.custom_myscrollview, null, false);
+////                    }
+////                })
+//                            .showView();
+//                    toggleTime(TimetableHelper.isShowTime());
+//                    modifySlideBgColor(Color.TRANSPARENT);
+//                    popup.dismiss();
+//                })
+//                .onError(throwable -> popup.dismiss())
+//                .subscribe();
+        long time1 = System.currentTimeMillis();
+        scuSubjects = TimetableHelper.getSubjects(context);
+        long time2 = System.currentTimeMillis();
 
         mWeekView.source(scuSubjects).showView();
+        long time3 = System.currentTimeMillis();
         mTimetableView.source(scuSubjects)
                 .cornerAll(16)
                 .isShowWeekends(TimetableHelper.isShowWeekends())
@@ -118,8 +157,14 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
 //                    }
 //                })
                 .showView();
+        long time4 = System.currentTimeMillis();
         toggleTime(TimetableHelper.isShowTime());
         modifySlideBgColor(Color.TRANSPARENT);
+        long time5 = System.currentTimeMillis();
+        Log.d(TAG, "deltaTime1=" + (time2 - time1));
+        Log.d(TAG, "deltaTime2=" + (time3 - time2));
+        Log.d(TAG, "deltaTime3=" + (time4 - time3));
+        Log.d(TAG, "deltaTime4=" + (time5 - time4));
     }
 
     protected void modifySlideBgColor(int color) {
@@ -252,9 +297,12 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                         return;
                     }
                     TimetableHelper.setCurrentSemester(item.getSemesterCode(), item.getSemesterName());
-                    initTimetableView();
+//                    ShowLoadingEvent.post("切换中");
+                    popup.dismiss();
+                })
+                .setOnDismissListener(() -> {
                     initData();
-                    postDelayed(popup::dismiss, 50);
+//                    HideLoadingEvent.postEvent();
                 })
                 .show();
     }

@@ -1,9 +1,12 @@
 package com.scu.timetable.ui.activity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
+import com.scu.timetable.events.HideLoadingEvent;
+import com.scu.timetable.events.ShowLoadingEvent;
 import com.scu.timetable.events.StartFragmentEvent;
 import com.scu.timetable.service.AlarmService;
 import com.scu.timetable.ui.fragment.MainFragment;
@@ -13,6 +16,8 @@ import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.fragmentation.SupportActivity;
 import com.zpj.fragmentation.anim.DefaultHorizontalAnimator;
 import com.zpj.fragmentation.anim.FragmentAnimator;
+import com.zpj.popup.ZPopup;
+import com.zpj.popup.impl.LoadingPopup;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -24,6 +29,8 @@ import org.greenrobot.eventbus.ThreadMode;
 public final class MainActivity extends SupportActivity {
 
     private long firstTime = 0;
+
+    private LoadingPopup loadingPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,11 @@ public final class MainActivity extends SupportActivity {
                     }
                 })
                 .checkUpdate();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -102,6 +114,26 @@ public final class MainActivity extends SupportActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStartFragmentEvent(StartFragmentEvent event) {
         start(event.getFragment());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowLoadingEvent(ShowLoadingEvent event) {
+        if (loadingPopup != null && event.isUpdate()) {
+            loadingPopup.setTitle(event.getText());
+            return;
+        }
+        loadingPopup = null;
+        loadingPopup = ZPopup.loading(MainActivity.this)
+                .setTitle(event.getText())
+                .show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHideLoadingEvent(HideLoadingEvent event) {
+        if (loadingPopup != null) {
+            loadingPopup.dismiss();
+            loadingPopup = null;
+        }
     }
 
 }

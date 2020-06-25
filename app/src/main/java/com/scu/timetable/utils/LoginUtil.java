@@ -280,11 +280,14 @@ public final class LoginUtil {
     }
 
     private JSONObject getTimetable(final String currentSemesterCode) throws Exception {
-        JSONObject jsonObject = ZHttp.post("http://202.115.47.141/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/callback")
+//        http://zhjw.scu.edu.cn/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/past/callback
+        // 当前课表
+        // http://zhjw.scu.edu.cn/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/curr/callback
+        JSONObject jsonObject = ZHttp.post("http://zhjw.scu.edu.cn/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/past/callback")
                 .userAgent(TimetableHelper.UA)
                 .ignoreContentType(true)
-                .header("Cookie", PrefsHelper.with().getString("cookie", ""))
-                .header("Referer", "http://202.115.47.141/student/courseSelect/calendarSemesterCurriculum/index")
+                .cookie(PrefsHelper.with().getString("cookie", ""))
+                .referer("http://zhjw.scu.edu.cn/student/courseSelect/thisSemesterCurriculum/index")
                 .data("planCode", currentSemesterCode)
                 .syncToJsonObject();
 
@@ -353,9 +356,11 @@ public final class LoginUtil {
 
     private void getCurrentWeek(Document document) {
 //        Document document = ZHttp.parse(response.body());
-        Elements elements = document.select("li");
-        String text = elements.select(".light-red").get(0).select("a").get(0).text();
-        Log.d("text", "text=" + text);
+//        Elements elements = document.select("li");
+        Log.d("getCurrentWeek", "light-red=" + document.selectFirst("li.light-red"));
+        Log.d("getCurrentWeek", "a=" + document.selectFirst("li.light-red").selectFirst("a"));
+        String text = document.selectFirst("li.light-red").selectFirst("a").text();
+        Log.d("getCurrentWeek", "text=" + text);
         int currentWeek;
         if (text.contains("假期")) {
             try {
@@ -469,7 +474,7 @@ public final class LoginUtil {
                 .ignoreContentType(true)
                 .execute()
                 .onSuccess(response -> {
-                    Log.d("body=", "" + response.body());
+//                    Log.d("body=", "" + response.body());
                     Log.d("headers", response.headers().toString());
                     String cookie = response.header("Set-Cookie");
                     Log.d("cookie", "cookie=" + cookie);

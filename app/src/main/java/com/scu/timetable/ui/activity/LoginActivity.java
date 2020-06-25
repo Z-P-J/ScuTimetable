@@ -3,6 +3,7 @@ package com.scu.timetable.ui.activity;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -71,6 +72,11 @@ public final class LoginActivity extends SupportActivity
             }
         }, 500);
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     private void updateWidget(boolean isLogined) {
