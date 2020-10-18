@@ -43,6 +43,8 @@ public class EvaluationFragment extends BaseFragment
         LoginUtil.LoginCallback,
         EvaluationUtil.EvaluationCallback {
 
+    private static final String TAG = "EvaluationFragment";
+
     private FrameLayout background;
 
     private float currentAlpha = 0.0f;
@@ -196,11 +198,12 @@ public class EvaluationFragment extends BaseFragment
 
     @Override
     public void onGetCookie(String cookie) {
-
+        Log.d(TAG, "onGetCookie cookie=" + cookie);
     }
 
     @Override
     public void onLoginSuccess() {
+        Log.d(TAG, "onLoginSuccess");
         EvaluationUtil.with(this)
 //                .setEvaluationCallback(this)
                 .getEvaluationSubjects();
@@ -208,6 +211,7 @@ public class EvaluationFragment extends BaseFragment
 
     @Override
     public void onLoginFailed() {
+        Log.d(TAG, "onLoginFailed");
         consoleLog("出错了( ˃ ˄ ˂̥̥ )", Color.RED);
         notEvaluatedCount.incrementAndGet();
         timer.cancel();
@@ -216,6 +220,7 @@ public class EvaluationFragment extends BaseFragment
 
     @Override
     public void onLoginError(String errorMsg) {
+        Log.d(TAG, "onLoginError errorMsg=" + errorMsg);
         consoleLog("出错了( ˃ ˄ ˂̥̥ ) " + errorMsg, Color.RED);
         notEvaluatedCount.incrementAndGet();
         timer.cancel();
@@ -234,6 +239,7 @@ public class EvaluationFragment extends BaseFragment
     @Override
     public void onGetEvaluationSubjects(String json) {
 //        consoleLog(json);
+        Log.d(TAG, "onGetEvaluationSubjects json=" + json);
         consoleLog("获取评教教师和助教成功\n");
         try {
             JSONObject jsonObject = new JSONObject(json);
@@ -292,6 +298,7 @@ public class EvaluationFragment extends BaseFragment
 
     @Override
     public void onEvaluationError(String errMsg) {
+        Log.d(TAG, "onEvaluationError errMsg=" + errMsg);
         consoleLog(errMsg, Color.RED);
         notEvaluatedCount.incrementAndGet();
 //        checkFinished();
@@ -303,6 +310,7 @@ public class EvaluationFragment extends BaseFragment
 
     @Override
     public void onEvaluationFailed(String msg) {
+        Log.d(TAG, "onEvaluationFailed msg=" + msg);
         consoleLog(msg, Color.RED);
         notEvaluatedCount.incrementAndGet();
 //        checkFinished();
@@ -311,6 +319,7 @@ public class EvaluationFragment extends BaseFragment
 
     @Override
     public void onEvaluationSuccess(String msg) {
+        Log.d(TAG, "onEvaluationSuccess msg=" + msg);
         consoleLog(msg, Color.GREEN);
         evaluatedCount.incrementAndGet();
 //        checkFinished();

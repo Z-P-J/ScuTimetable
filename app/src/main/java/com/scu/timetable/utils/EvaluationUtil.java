@@ -107,18 +107,18 @@ public final class EvaluationUtil {
         this.callback = callback;
     }
 
-    public synchronized static EvaluationUtil with(EvaluationCallback callback) {
-        if (evaluationUtil == null) {
-            evaluationUtil = new EvaluationUtil(callback);
-        }
-        return evaluationUtil;
+    public static EvaluationUtil with(EvaluationCallback callback) {
+//        if (evaluationUtil == null) {
+//            evaluationUtil = new EvaluationUtil(callback);
+//        }
+        return new EvaluationUtil(callback);
     }
 
     public void getEvaluationSubjects() {
         ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
                 .onRedirect(redirectUrl -> false)
-                .header("Cookie", PrefsHelper.with().getString("cookie", ""))
-                .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
+                .cookie(PrefsHelper.with().getString("cookie", ""))
+                .referer("http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
                 .userAgent(TimetableHelper.UA)
                 .ignoreHttpErrors(true)
                 .ignoreContentType(true)
@@ -126,23 +126,6 @@ public final class EvaluationUtil {
                 .onSuccess(this::onGetEvaluationSubjects)
                 .onError(throwable -> onEvaluationError(throwable.getMessage()))
                 .subscribe();
-//        ExecutorHelper.submit(() -> {
-//            try {
-//                String doc = ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
-//                        .onRedirect(redirectUrl -> false)
-//                        .header("Cookie", PrefsHelper.with().getString("cookie", ""))
-//                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
-//                        .userAgent(TimetableHelper.UA)
-//                        .ignoreHttpErrors(true)
-//                        .ignoreContentType(true)
-//                        .toStr();
-//                sendMessage(1, doc);
-//                Log.d("getEvaluationSubjects", "body=" + doc);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                sendMessage(-1, e.getMessage());
-//            }
-//        });
     }
 
 //    public void getEvaluationPage(final String evaluatedPeople, final String evaluatedPeopleNumber,
@@ -312,120 +295,6 @@ public final class EvaluationUtil {
                         + bean.getEvaluatedPeople() + " " + bean.getEvaluationContent()
                         + " 评教出错了！ 错误信息：" + e.getMessage()))
                 .subscribe();
-
-//        ExecutorHelper.submit(() -> {
-//            try {
-//                Document doc = ZHttp.post("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
-//                        .method(Connection.Method.POST)
-//                        .onRedirect(redirectUrl -> true)
-//                        .header("cookie", PrefsHelper.with().getString("cookie", ""))
-//                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
-//                        .userAgent(TimetableHelper.UA)
-//                        .data("evaluatedPeople", bean.getEvaluatedPeople())
-//                        .data("evaluatedPeopleNumber", bean.getEvaluatedPeopleNum())
-//                        .data("questionnaireCode", bean.getQuestionnaireCoding())
-//                        .data("questionnaireName", bean.getQuestionnaireName())
-//                        .data("evaluationContentNumber", bean.getEvaluationContentNumber())
-//                        .data("evaluationContentContent", "")
-//                        .toHtml();
-//                Log.d("getEvaluationPage", "body=" + doc.body());
-////                Document doc = Jsoup.parse(response.body());
-////                Document doc = Jsoup.connect("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
-////                        .followRedirects(true)
-////                        .header("cookie", PrefsHelper.with().getString("cookie", ""))
-////                        .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
-////                        .userAgent(TimetableHelper.UA)
-////                        .data("evaluatedPeople", bean.getEvaluatedPeople())
-////                        .data("evaluatedPeopleNumber", bean.getEvaluatedPeopleNum())
-////                        .data("questionnaireCode", bean.getQuestionnaireCoding())
-////                        .data("questionnaireName", bean.getQuestionnaireName())
-////                        .data("evaluationContentNumber", bean.getEvaluationContentNumber())
-////                        .data("evaluationContentContent", "")
-////                        .post();
-//                Element element = doc.getElementById("tokenValue");
-//                final String tokenValue = element.val();
-//                Log.d("tokenValue", "tokenValue=" + tokenValue);
-//                final Element table = doc.getElementsByClass("table-box").get(0);
-//                Log.d("table", "table=" + table);
-//                Elements inputs = table.select("input.ace");
-//                Log.d("inputs", "inputs=" + inputs.toString());
-//
-//                if (!tokenValue.isEmpty()) {
-//                    Connection connection = ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
-//                            .method(Connection.Method.POST)
-//                            .onRedirect(redirectUrl -> false)
-//                            .header("cookie", PrefsHelper.with().getString("cookie", ""))
-//                            .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
-//                            .data("tokenValue", tokenValue)
-////                            .data("questionnaireCode", questionnaireCode)
-////                            .data("evaluationContentNumber", evaluationContentNumber)
-////                            .data("evaluatedPeopleNumber", evaluatedPeopleNumber)
-//                            .data("evaluatedPeopleNumber", bean.getEvaluatedPeopleNum())
-//                            .data("questionnaireCode", bean.getQuestionnaireCoding())
-//                            .data("evaluationContentNumber", bean.getEvaluationContentNumber())
-//                            .data("count", "0")
-//                            .data("zgpj", getRandomEvaluation(bean.getQuestionnaireName()))
-//                            .ignoreHttpErrors(true)
-//                            .ignoreContentType(true);
-//                    Map<String, String> map = new HashMap<>();
-//
-//                    int randomNum1 = (int) (Math.random() * inputs.size()) / 5;
-//                    int randomNum2 = (int) (Math.random() * inputs.size()) / 5;
-//                    int count = 0;
-//                    for (Element input : inputs) {
-//                        String name = input.attr("name");
-//                        Log.d("name", name);
-//                        if (map.containsKey(name)) {
-//                            continue;
-//                        }
-////                        if (count == randomNum1 || count == randomNum2) {
-////                            connection.data(name, "10_0.8");
-////                        } else {
-////                            connection.data(name, "10_1");
-////                        }
-//                        connection.data(name, "10_1");
-//                        map.put(name, "");
-//                        count++;
-//                    }
-//                    Log.d("map", "map.size=" + map.size());
-//                    EventBus.getDefault().post(
-//                            EvaluationEvent.create()
-//                                    .setConnection(connection)
-//                                    .setEvaluationBean(bean)
-//                    );
-//
-////                    Connection.Response response = connection.execute();
-////                    Log.d("getEvaluationPage", "result1=" + response.body());
-////                    JSONObject jsonObject = new JSONObject(response.body());
-////                    String result = jsonObject.getString("result");
-////                    Log.d("getEvaluationPage", "resultMsg=" + result);
-////                    if ("error".equals(result)) {
-//////                        connection.data("tokenValue", jsonObject.getString("token"));
-//////                        response = connection.execute();
-////                        sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！");
-////                        return;
-////                    } else if ("/logout".equals(result)) {
-////                        // 重新登录
-//////                        response = Jsoup.connect("http://zhjw.scu.edu.cn/logout")
-//////                                .followRedirects(true)
-//////                                .userAgent(TimetableHelper.UA)
-//////                                .ignoreContentType(true)
-//////                                .execute();
-////                        Log.d("getEvaluationPage", "/logout");
-////                        sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！请重新登录");
-////                        return;
-////                    } else {
-//////                        Log.d("getEvaluationPage", "result2=" + response.body());
-////                        sendMessage(4, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教成功！");
-////                        return;
-////                    }
-//                }
-////                sendMessage(3, questionnaireName + " " + evaluatedPeople + " " + evaluationContent + " 评教失败！");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                sendMessage(-1, bean.getQuestionnaireName() + " " + bean.getEvaluatedPeople() + " " + bean.getEvaluationContent() + " 评教出错了！ 错误信息：" + e.getMessage());
-//            }
-//        });
     }
 
     public void evaluation(EvaluationInfo bean, Connection connection) {

@@ -10,7 +10,6 @@ import com.scu.timetable.utils.EncryptionUtils;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.config.DownloaderConfig;
 import com.zpj.utils.FileUtils;
-import com.zpj.utils.ZUtils;
 
 /**
  * @author Z-P-J
