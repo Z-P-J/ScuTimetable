@@ -7,7 +7,9 @@ import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +26,7 @@ import com.scu.timetable.utils.TimetableHelper;
 import com.zpj.fragmentation.SupportActivity;
 import com.zpj.utils.AnimatorUtils;
 import com.zpj.utils.PrefsHelper;
+import com.zpj.utils.StatusBarUtils;
 
 import org.json.JSONObject;
 
@@ -50,8 +53,11 @@ public final class LoginActivity extends SupportActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        long start = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
+        Log.d("LoginActivity", "duration000-1=" + (System.currentTimeMillis() - start));
         setContentView(R.layout.activity_login);
+        Log.d("LoginActivity", "duration000-2=" + (System.currentTimeMillis() - start));
 
         TimetableHelper.closeVisitorMode();
         LoginUtil.with().postDelayed(new Runnable() {
@@ -62,15 +68,19 @@ public final class LoginActivity extends SupportActivity
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     finish();
                 } else {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                     updateWidget(false);
                     initView();
 //                    getCookie();
                     LoginUtil.with()
                             .setLoginCallback(LoginActivity.this)
                             .getCookie();
+                    StatusBarUtils.transparentStatusBar(getWindow());
                 }
             }
         }, 500);
+
+        Log.d("LoginActivity", "duration000-3=" + (System.currentTimeMillis() - start));
 
     }
 

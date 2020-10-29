@@ -27,6 +27,16 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <style name="StartTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
     <!--继承Theme.AppCompat.NoActionBar，不显示标题栏-->
     <style name="Transparent_Theme" parent="AppThemeNoActionbar">
         <!--不设置activity进入和退出动画样式-->
