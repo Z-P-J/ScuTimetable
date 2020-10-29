@@ -249,5 +249,15 @@ public class UpdatePopup extends CenterPopup<UpdatePopup> implements View.OnClic
                 dismiss();
             }
         }
+
+        @Override
+        public void onDelete() {
+
+        }
+
+        @Override
+        public void onClear() {
+
+        }
     };
 }

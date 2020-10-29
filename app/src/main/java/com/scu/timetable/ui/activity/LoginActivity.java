@@ -1,11 +1,16 @@
 package com.scu.timetable.ui.activity;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.felix.atoast.library.AToast;
+import com.lxj.xpermission.PermissionConstants;
+import com.lxj.xpermission.XPermission;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.popup.MoreInfoPopup;
 import com.scu.timetable.utils.CaptchaFetcher;
@@ -24,6 +31,7 @@ import com.scu.timetable.utils.EncryptionUtils;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.zpj.fragmentation.SupportActivity;
+import com.zpj.popup.ZPopup;
 import com.zpj.utils.AnimatorUtils;
 import com.zpj.utils.PrefsHelper;
 import com.zpj.utils.StatusBarUtils;
@@ -60,25 +68,7 @@ public final class LoginActivity extends SupportActivity
         Log.d("LoginActivity", "duration000-2=" + (System.currentTimeMillis() - start));
 
         TimetableHelper.closeVisitorMode();
-        LoginUtil.with().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (TimetableHelper.isLogined(LoginActivity.this)) {
-                    updateWidget(true);
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    finish();
-                } else {
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-                    updateWidget(false);
-                    initView();
-//                    getCookie();
-                    LoginUtil.with()
-                            .setLoginCallback(LoginActivity.this)
-                            .getCookie();
-                    StatusBarUtils.transparentStatusBar(getWindow());
-                }
-            }
-        }, 500);
+        postDelayed(this::showRequestPermissionPopup, 500);
 
         Log.d("LoginActivity", "duration000-3=" + (System.currentTimeMillis() - start));
 
@@ -244,14 +234,14 @@ public final class LoginActivity extends SupportActivity
     @Override
     public void onLoginSuccess() {
 //        Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
-        msgText.setText("获取课表数据中...");
+        msgText.setText(R.string.text_getting_data);
         PrefsHelper.with().putString("user_name", EncryptionUtils.encryptByAES(userName.getText().toString()));
         PrefsHelper.with().putString("password", EncryptionUtils.encryptByAES(password.getText().toString()));
     }
 
     @Override
     public void onLoginFailed() {
-        AToast.normal("登录失败！");
+        AToast.normal(R.string.text_login_failed);
         onError();
     }
 
@@ -273,7 +263,7 @@ public final class LoginActivity extends SupportActivity
 
     @Override
     public void onGetTimetableFinished() {
-        msgText.setText("获取课表数据成功！");
+        msgText.setText(R.string.text_getting_data_successfully);
         PrefsHelper.with().putBoolean("logined", true);
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
@@ -290,4 +280,54 @@ public final class LoginActivity extends SupportActivity
             e.printStackTrace();
         }
     }
+
+    private void showRequestPermissionPopup() {
+        if (hasStoragePermissions(getApplicationContext())) {
+            requestPermission();
+        } else {
+            ZPopup.alert(this)
+                    .setTitle(R.string.title_permission)
+                    .setContent(getString(R.string.content_permission))
+                    .setConfirmButton(R.string.text_apply, popup -> requestPermission())
+                    .setCancelButton(R.string.text_decline, () -> ActivityCompat.finishAfterTransition(LoginActivity.this))
+                    .show();
+        }
+    }
+
+    private boolean hasStoragePermissions(Context context) {
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        XPermission.create(getApplicationContext(), PermissionConstants.STORAGE)
+                .callback(new XPermission.SimpleCallback() {
+                    @Override
+                    public void onGranted() {
+                        if (TimetableHelper.isLogined(LoginActivity.this)) {
+                            postDelayed(() -> {
+                                updateWidget(true);
+                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                                finish();
+                            }, 500);
+                        } else {
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                            StatusBarUtils.transparentStatusBar(getWindow());
+                            updateWidget(false);
+                            initView();
+                            LoginUtil.with()
+                                    .setLoginCallback(LoginActivity.this)
+                                    .getCookie();
+                        }
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        showRequestPermissionPopup();
+                    }
+                }).request();
+    }
+
 }

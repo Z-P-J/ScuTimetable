@@ -3,14 +3,12 @@ package com.zpj.downloader.core;
 import android.util.Log;
 
 import com.zpj.downloader.constant.Error;
-import com.zpj.downloader.constant.ErrorCode;
-import com.zpj.downloader.constant.ResponseCode;
 import com.zpj.downloader.util.io.BufferedRandomAccessFile;
-import com.zpj.downloader.util.permission.PermissionUtil;
 
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 
 public class DownloadRunnable implements Runnable {
@@ -19,30 +17,30 @@ public class DownloadRunnable implements Runnable {
     private static final int BUFFER_SIZE = 512;
 
     private final DownloadMission mMission;
-    private int mId;
+    private final int mId;
 
     private final byte[] buf = new byte[BUFFER_SIZE];
 
     private BufferedRandomAccessFile f;
+//    private RandomAccessFile f;
 
     DownloadRunnable(DownloadMission mission, int id) {
         mMission = mission;
         mId = id;
         try {
-            f = new BufferedRandomAccessFile(mMission.getFilePath(), "rw");
-        } catch (IOException e) {
+//            f = new BufferedRandomAccessFile(mMission.getFilePath(), "rw");
+			f = new BufferedRandomAccessFile(mMission.getFilePath(), "rw");
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-            if (e instanceof FileNotFoundException) {
-				notifyError(Error.FILE_NOT_FOUND);
-			} else {
-				if (PermissionUtil.checkStoragePermissions(DownloadManagerImpl.getInstance().getContext())) {
-					notifyError(new Error(e.getMessage()));
-				} else {
-					notifyError(Error.WITHOUT_STORAGE_PERMISSIONS);
-				}
-			}
-        }
-    }
+			notifyError(Error.FILE_NOT_FOUND);
+		}
+	}
+
+//	DownloadRunnable(DownloadMission mission, RandomAccessFile f, int id) {
+//		mMission = mission;
+//		mId = id;
+//		this.f = f;
+//	}
 
     @Override
     public void run() {
@@ -54,6 +52,7 @@ public class DownloadRunnable implements Runnable {
 					notifyError(Error.SERVER_UNSUPPORTED);
 					return;
 				} else {
+					RandomAccessFile f = new RandomAccessFile(mMission.getFilePath(), "rw");
 					f.seek(0);
 					BufferedInputStream ipt = new BufferedInputStream(conn.getInputStream());
 
@@ -70,7 +69,7 @@ public class DownloadRunnable implements Runnable {
 						}
 						total += len;
 						f.write(buf, 0, len);
-						f.flush();
+//						f.flush();
 						notifyProgress(len);
 //						notifyProgress(total - lastTotal);
 //						lastTotal = total;
@@ -83,9 +82,9 @@ public class DownloadRunnable implements Runnable {
 						Log.d(TAG, "writeTime=" + (System.currentTimeMillis() - readFinishedTime));
 					}
 
-//					f.close();
 					ipt.close();
 					conn.disconnect();
+
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -104,12 +103,12 @@ public class DownloadRunnable implements Runnable {
 				long time0 = System.currentTimeMillis();
 
 				if (Thread.currentThread().isInterrupted()) {
-					return;
+					break;
 				}
 
-				long position = mMission.getPosition();
+				long position = mMission.getNextPosition();
 				Log.d(TAG, "id=" + mId + " position=" + position + " blocks=" + mMission.getBlocks());
-				if (position < 0 || position > mMission.getBlocks()) {
+				if (position < 0 || position >= mMission.getBlocks()) {
 					break;
 				}
 
@@ -163,6 +162,7 @@ public class DownloadRunnable implements Runnable {
 					long time_1 = System.currentTimeMillis();
 					Log.d("timetimetimetime" + mId, "ttttttttt=" + (time_1 - time_0));
 
+//					RandomAccessFile f = new RandomAccessFile(mMission.getFilePath(), "rw");
 					f.seek(start);
 					BufferedInputStream ipt = new BufferedInputStream(conn.getInputStream());
 					long time1 = System.currentTimeMillis();
@@ -201,6 +201,7 @@ public class DownloadRunnable implements Runnable {
 					Log.d("timetimetimetime" + mId, "tempTime2=" + tempTime2);
 					Log.d("timetimetimetime" + mId, "tempTime3=" + tempTime3);
 					Log.d("timetimetimetime" + mId, "tempTime4=" + tempTime4);
+//					f.close();
 					ipt.close();
 					conn.disconnect();
 
@@ -211,10 +212,21 @@ public class DownloadRunnable implements Runnable {
 
 					Log.d(TAG, mId + ":errorCode=" + mMission.getErrCode());
 					Log.d(TAG, mId + ":isRunning=" + mMission.isRunning());
+					Log.d(TAG, mId + ":isPause=" + mMission.isPause());
 					Log.d(TAG, mId + ":blocks=" + mMission.getBlocks());
-					mMission.preserveBlock(position);
 
-					// TODO We should save progress for each thread
+					if (mMission.isPause()) {
+						notifyProgress(-total);
+						mMission.onPositionDownloadFailed(position);
+						break;
+					} else {
+						long temp = System.currentTimeMillis();
+//						f.flush();
+						Log.d("timetimetimetime" + mId, "time4444=" + (System.currentTimeMillis() - temp));
+						f.flush();
+						mMission.onBlockFinished(position);
+						Log.d("DownloadRunnableLog", "position " + position + " finished");
+					}
 				} catch (IOException e) {
 
 					notifyProgress(-total);
@@ -228,7 +240,9 @@ public class DownloadRunnable implements Runnable {
         Log.d(TAG, "thread " + mId + " exited main loop");
         Log.d(TAG, "mMission.getDone()=" + mMission.getDone());
         Log.d(TAG, "mMission.getLength()=" + mMission.getLength());
-        if (mMission.getErrCode() == -1 && mMission.isRunning() && (mMission.getDone() == mMission.getLength() || mMission.isFallback())) {
+//		File file = mMission.getFile();
+//		 || (file != null && mMission.getLength() == file.length())
+        if (mMission.getErrCode() == -1 && mMission.isRunning() && (mMission.getDone() == mMission.getLength()) || mMission.isFallback()) {
             Log.d(TAG, "no error has happened, notifying");
             notifyFinished();
         }
@@ -237,7 +251,7 @@ public class DownloadRunnable implements Runnable {
 //            Log.d(TAG, "The mission has been paused. Passing.");
 //        }
         try {
-            f.flush();
+//            f.flush();
             f.close();
         } catch (IOException e) {
             e.printStackTrace();

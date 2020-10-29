@@ -2,6 +2,7 @@ package com.scu.timetable.ui.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
@@ -88,7 +89,7 @@ public final class MainActivity extends SupportActivity {
             firstTime = System.currentTimeMillis();
         } else {
             TimetableHelper.closeVisitorMode();
-            finish();
+            ActivityCompat.finishAfterTransition(this);
         }
     }
 

@@ -7,5 +7,13 @@
     <string name="course_widget_init_tip">课表加载中…</string>
     <string name="goto_login">登录课程表</string>
     <string name="no_login_body_tip">登录后可查看课程\n前往登录课程表</string>
+    <string name="title_permission">权限申请</string>
+    <string name="content_permission">"本软件需要读写手机存储的权限用于文件的下载与查看，是否申请该权限？"</string>
+
+    <string name="text_apply">去申请</string>
+    <string name="text_decline">拒绝</string>
+    <string name="text_login_failed">登录失败！</string>
+    <string name="text_getting_data">获取课表数据中…</string>
+    <string name="text_getting_data_successfully">获取课表数据中…</string>
 
 </resources>
