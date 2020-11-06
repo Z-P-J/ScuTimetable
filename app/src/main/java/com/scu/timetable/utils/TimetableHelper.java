@@ -59,13 +59,29 @@ public final class TimetableHelper {
     }
 
     private static String getFileName() {
-        String currentSemesterCode = getCurrentSemesterCode();
-        return isVisitorMode() ? VISITOR_FILE_NAME : String.format(FILE_NAME, currentSemesterCode);
+        return getFileName(getCurrentSemesterCode());
+//        String currentSemesterCode = getCurrentSemesterCode();
+//        return isVisitorMode() ? VISITOR_FILE_NAME : String.format(FILE_NAME, currentSemesterCode);
+    }
+
+    private static String getFileName(String semesterCode) {
+        return isVisitorMode() ? VISITOR_FILE_NAME : String.format(FILE_NAME, semesterCode);
     }
 
     public static List<ScuSubject> getSubjects(Context context) {
         try {
             String json = JsonUtil.readFromJson(context, getFileName());
+            return getSubjects(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("getSubjects", "e.getMessage=" + e.getMessage());
+        }
+        return new ArrayList<>(0);
+    }
+
+    public static List<ScuSubject> getSubjects(Context context, SemesterInfo semesterInfo) {
+        try {
+            String json = JsonUtil.readFromJson(context, getFileName(semesterInfo.getSemesterCode()));
             return getSubjects(json);
         } catch (Exception e) {
             e.printStackTrace();

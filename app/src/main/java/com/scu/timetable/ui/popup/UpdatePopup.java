@@ -1,8 +1,8 @@
 package com.scu.timetable.ui.popup;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,19 +12,23 @@ import android.widget.TextView;
 
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
-import com.zpj.popup.core.CenterPopup;
 import com.scu.timetable.R;
 import com.scu.timetable.model.UpdateInfo;
 import com.scu.timetable.ui.view.NumberProgressBar;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.zpj.utils.PrefsHelper;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.config.MissionConfig;
 import com.zpj.downloader.constant.Error;
 import com.zpj.downloader.core.DownloadMission;
 import com.zpj.downloader.util.FileUtil;
+import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
+import com.zpj.utils.PrefsHelper;
 
-public class UpdatePopup extends CenterPopup<UpdatePopup> implements View.OnClickListener {
+/**
+ * @author Z-P-J
+ */
+public class UpdatePopup extends CenterDialogFragment
+        implements View.OnClickListener {
 
     //======顶部========//
     /**
@@ -63,27 +67,29 @@ public class UpdatePopup extends CenterPopup<UpdatePopup> implements View.OnClic
     /**
      * 底部关闭
      */
-    private LinearLayout mLlClose;
     private ImageView mIvClose;
 
-    private final UpdateInfo updateInfo;
+    private UpdateInfo updateInfo;
 
     private DownloadMission mission;
-    
-    public UpdatePopup(@NonNull Context context, UpdateInfo updateInfo) {
-        super(context);
+
+    public UpdatePopup() {
+        setCancelable(false);
+    }
+
+    public UpdatePopup setUpdateInfo(UpdateInfo updateInfo) {
         this.updateInfo = updateInfo;
+        return this;
     }
 
     @Override
-    protected int getImplLayoutId() {
+    protected int getContentLayoutId() {
         return R.layout.layout_dialog_update;
     }
 
     @Override
-    protected void onCreate() {
-        super.onCreate();
-
+    protected void initView(View view, @Nullable Bundle savedInstanceState) {
+        super.initView(view, savedInstanceState);
         ZDownloader.clearAll();
 
         //顶部图片
@@ -104,15 +110,12 @@ public class UpdatePopup extends CenterPopup<UpdatePopup> implements View.OnClic
         //进度条
         mNumberProgressBar = findViewById(R.id.npb_progress);
 
-        //关闭按钮+线 的整个布局
-        mLlClose = findViewById(R.id.ll_close);
         //关闭按钮
         mIvClose = findViewById(R.id.iv_close);
 
         setDialogTheme(Color.parseColor("#FFE94339"), R.drawable.xupdate_bg_app_top);
         initUpdateInfo();
         initListeners();
-        
     }
 
     private void setDialogTheme(int color, int topResId) {
@@ -158,13 +161,9 @@ public class UpdatePopup extends CenterPopup<UpdatePopup> implements View.OnClic
 //            } else {
 //                installApp();
 //            }
-//            "http://tt.shouji.com.cn/wap/down/soft?id=1555815"
-//            "https://down.shouji.com.cn/wap/wdown/soft?id=182765"
-
-            mission = ZDownloader.download("https://down.shouji.com.cn/wap/down/app/package?package=" + getContext().getPackageName(), MissionConfig.with());
-//            DownloadMission mission = DownloadMission.create("https://down.shouji.com.cn/wap/wdown/soft?id=182765", "", MissionConfig.with());
-//            mission = QXDownloader.download("http://tt.shouji.com.cn/wap/down/soft?id=1555815");
+            mission = DownloadMission.create(updateInfo.getDownloadUrl(), null, MissionConfig.with());
             mission.addListener(missionListener);
+            mission.start();
         } else if (i == R.id.btn_background_update) {
             //点击后台更新按钮
             AToast.normal("后台更新");
@@ -195,7 +194,7 @@ public class UpdatePopup extends CenterPopup<UpdatePopup> implements View.OnClic
         @Override
         public void onStart() {
             Log.d("onStart", "onStart");
-            if (isShow()) {
+            if (isSupportVisible()) {
                 mNumberProgressBar.setVisibility(View.VISIBLE);
                 mNumberProgressBar.setProgress(0);
                 mNumberProgressBar.setMax(100);
@@ -226,7 +225,7 @@ public class UpdatePopup extends CenterPopup<UpdatePopup> implements View.OnClic
         @Override
         public void onProgress(DownloadMission.UpdateInfo update) {
             Log.d("progress", "progress=" + update.getProgress());
-            if (isShow()) {
+            if (isSupportVisible()) {
                 mNumberProgressBar.setProgress(Math.round(update.getProgress()));
             }
         }
@@ -234,7 +233,7 @@ public class UpdatePopup extends CenterPopup<UpdatePopup> implements View.OnClic
         @Override
         public void onFinish() {
             Log.d("onFinish", "onFinish");
-            if (isShow()) {
+            if (isSupportVisible()) {
                 mBtnBackgroundUpdate.setVisibility(View.GONE);
                 dismiss();
             }
@@ -244,7 +243,7 @@ public class UpdatePopup extends CenterPopup<UpdatePopup> implements View.OnClic
         @Override
         public void onError(Error e) {
             Log.d("errCode", "errCode=" + e);
-            if (isShow()) {
+            if (isSupportVisible()) {
                 AToast.normal(e.getErrorMsg());
                 dismiss();
             }

@@ -1,7 +1,7 @@
 package com.scu.timetable.ui.popup;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -11,32 +11,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.felix.atoast.library.AToast;
-import com.zpj.popup.core.CenterPopup;
 import com.scu.timetable.R;
 import com.scu.timetable.events.RefreshEvent;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
+import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
 
 import org.json.JSONObject;
 
-public class RefreshPopup extends CenterPopup<RefreshPopup> {
+public class RefreshPopup extends CenterDialogFragment {
 
     private static final String TAG = "RefreshPopup";
-    
-    public RefreshPopup(@NonNull Context context) {
-        super(context);
-    }
 
     @Override
-    protected int getImplLayoutId() {
+    protected int getContentLayoutId() {
         return R.layout.layout_refresh;
     }
 
     @Override
-    protected void onCreate() {
-        super.onCreate();
-
+    protected void initView(View view, @Nullable Bundle savedInstanceState) {
+        super.initView(view, savedInstanceState);
         LinearLayout container = findViewById(R.id.container);
         LinearLayout statusLayout = findViewById(R.id.layout_status);
         TextView loadingDialogText = findViewById(R.id.loading_dialog_text);
@@ -134,4 +129,5 @@ public class RefreshPopup extends CenterPopup<RefreshPopup> {
                     .login(captcha, TimetableHelper.getCurrentSemesterCode());
         });
     }
+
 }

@@ -1,30 +1,27 @@
 package com.scu.timetable.ui.popup;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zpj.popup.core.CenterPopup;
 import com.scu.timetable.R;
+import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
 
-public class MoreInfoPopup extends CenterPopup<MoreInfoPopup> {
+public class MoreInfoPopup extends CenterDialogFragment {
 
     private String title;
     private String content;
 
-    public MoreInfoPopup(@NonNull Context context) {
-        super(context);
-    }
-
     @Override
-    protected int getImplLayoutId() {
+    protected int getContentLayoutId() {
         return R.layout.layout_text;
     }
 
     @Override
-    protected void onCreate() {
-        super.onCreate();
+    protected void initView(View view, @Nullable Bundle savedInstanceState) {
+        super.initView(view, savedInstanceState);
         TextView titleView = findViewById(R.id.title);
         titleView.setText(title);
         TextView contentView = findViewById(R.id.content);

@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
-import com.zpj.popup.ZPopup;
 import com.scu.timetable.R;
 import com.scu.timetable.events.EvaluationEvent;
 import com.scu.timetable.model.EvaluationInfo;
@@ -28,6 +27,7 @@ import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
 import com.scu.timetable.utils.LoginUtil;
 import com.zpj.fragmentation.BaseFragment;
+import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -152,15 +152,15 @@ public class EvaluationFragment extends BaseFragment
     @Override
     public boolean onBackPressedSupport() {
         if (isEvaluating) {
-            ZPopup.alert(context)
+            new AlertDialogFragment()
                     .setTitle("确认返回！")
                     .setContent("返回后将终止评教，确认返回？")
-                    .setConfirmButton(popup -> {
+                    .setPositiveButton(popup -> {
                         timer.cancel();
                         setSwipeBackEnable(true);
                         pop();
                     })
-                    .show();
+                    .show(context);
             return true;
         }
         pop();
@@ -168,10 +168,10 @@ public class EvaluationFragment extends BaseFragment
     }
 
     private void showInfoPopupView(View view, final String title, final String content) {
-        new MoreInfoPopup(context)
+        new MoreInfoPopup()
                 .setTitle(title)
                 .setContent(content)
-                .show();
+                .show(context);
     }
 
     @Override

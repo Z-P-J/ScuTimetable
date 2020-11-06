@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.scu.timetable.events.UpdateEvent;
@@ -65,62 +66,86 @@ public final class UpdateUtil {
     public void checkUpdate() {
         ZHttp.get("http://tt.shouji.com.cn/androidv3/soft_show.jsp?id=1555815")
                 .proxy(Proxy.NO_PROXY)
-                .header("Connection", "Keep-Alive")
-                .header("Referer", "https://wap.shouji.com.cn/")
-//                            .header("User-Agent", TimetableHelper.UA)
-                .header("Accept-Encoding", "gzip")
+                .referer("https://wap.shouji.com.cn/")
+                .ignoreContentType(true)
                 .toHtml()
-                .flatMap((ObservableTask.OnFlatMapListener<Document, UpdateEvent>) (document, emitter) -> {
-                    String versionName = document.selectFirst("versionname").text();
+//                .flatMap((ObservableTask.OnFlatMapListener<Document, UpdateEvent>) (document, emitter) -> {
+//
+//                })
+                .onSuccess(new IHttp.OnSuccessListener<Document>() {
+                    @Override
+                    public void onSuccess(Document document) throws Exception {
+                        String versionName = document.selectFirst("versionname").text();
 
-                    String newVersionName = versionName.trim();
-                    Log.d("newVersionName", "newVersionName=" + newVersionName);
+                        String newVersionName = versionName.trim();
+                        Log.d("newVersionName", "newVersionName=" + newVersionName);
 
-                    String ignoreVersion = PrefsHelper.with().getString("ignore_version", "");
-                    if (ignoreVersion.equals(newVersionName)) {
-                        return;
-                    }
-
-                    String baseinfof = document.selectFirst("baseinfof").text();
-                    Log.d("baseinfof", "baseinfof=" + baseinfof);
-
-                    String currentVersionName = getVersionName(context).trim();
-                    Log.d("currentVersionName", "currentVersionName=" + newVersionName);
-
-                    boolean isNew = compareVersions(currentVersionName, newVersionName);
-                    Log.d("isNew", "isNew=" + isNew);
-
-                    if (isNew) {
-                        String updateContent = "";
-                        String fileSize = "";
-                        String updateTime = "";
-                        Elements elements = document.select("introduce");
-                        for (Element element : elements) {
-                            String title = element.selectFirst("introducetitle").text();
-                            if ("更新内容".equals(title)) {
-                                updateContent = element.select("introduceContent").get(0).text();
-                                Log.d("更新内容", "更新内容=" + updateContent);
-                            } else if ("软件信息".equals(title)) {
-                                String content = element.selectFirst("introduceContent").text();
-                                fileSize = content.substring(content.indexOf("大小：") + 3, content.indexOf("MB") + 2);
-                                int index = content.indexOf("更新：");
-                                updateTime = content.substring(index + 3, index + 13);
-                            }
+                        String ignoreVersion = PrefsHelper.with().getString("ignore_version", "");
+                        if (ignoreVersion.equals(newVersionName)) {
+                            return;
                         }
-                        UpdateInfo bean = new UpdateInfo();
-                        bean.setVersionName(versionName);
-                        bean.setUpdateContent(updateContent);
-                        bean.setFileSize(fileSize);
-                        bean.setUpdateTime(updateTime);
-                        Log.d("bean", "bean=" + bean.toString());
+
+                        String baseinfof = document.selectFirst("baseinfof").text();
+                        Log.d("baseinfof", "baseinfof=" + baseinfof);
+
+                        String currentVersionName = getVersionName(context).trim();
+                        Log.d("currentVersionName", "currentVersionName=" + newVersionName);
+
+                        boolean isNew = compareVersions(currentVersionName, newVersionName);
+                        Log.d("isNew", "isNew=" + isNew);
+
+                        if (isNew) {
+                            String updateContent = "";
+                            String fileSize = "";
+                            String updateTime = "";
+                            Elements elements = document.select("introduce");
+                            for (Element element : elements) {
+                                String title = element.selectFirst("introducetitle").text();
+                                if ("更新内容".equals(title)) {
+                                    updateContent = element.select("introduceContent").get(0).text();
+                                    Log.d("更新内容", "更新内容=" + updateContent);
+                                } else if ("软件信息".equals(title)) {
+                                    String content = element.selectFirst("introduceContent").text();
+                                    fileSize = content.substring(content.indexOf("大小：") + 3, content.indexOf("MB") + 2);
+                                    int index = content.indexOf("更新：");
+                                    updateTime = content.substring(index + 3, index + 13);
+                                }
+                            }
+                            UpdateInfo bean = new UpdateInfo();
+                            bean.setVersionName(versionName);
+                            bean.setUpdateContent(updateContent);
+                            bean.setFileSize(fileSize);
+                            bean.setUpdateTime(updateTime);
+                            Log.d("bean", "bean=" + bean.toString());
 //                            EventBus.getDefault().post(UpdateEvent.create().setUpdateInfo(bean));
-                        emitter.onNext(UpdateEvent.create().setUpdateInfo(bean));
-                    } else {
+
+
+
+
+                            ZHttp.get("http://tt.shouji.com.cn/wap/down/cmwap/package?sjly=199&id=1555815&package=" + context.getPackageName())
+                                    .proxy(Proxy.NO_PROXY)
+                                    .referer("https://wap.shouji.com.cn/")
+                                    .ignoreContentType(true)
+                                    .toXml()
+                                    .onSuccess(data -> {
+                                        String url = data.selectFirst("url").text();
+                                        if (TextUtils.isEmpty(url)) {
+                                            onSuccessListener.onSuccess(UpdateEvent.create().setLatestVersion(true));
+                                        } else {
+                                            bean.setDownloadUrl(url);
+                                            onSuccessListener.onSuccess(UpdateEvent.create().setUpdateInfo(bean));
+                                        }
+                                    })
+                                    .onError(onErrorListener)
+                                    .subscribe();
+
+                        } else {
 //                            EventBus.getDefault().post(UpdateEvent.create().setLatestVersion(true));
-                        emitter.onNext(UpdateEvent.create().setLatestVersion(true));
+//                            emitter.onNext(UpdateEvent.create().setLatestVersion(true));
+                            onSuccessListener.onSuccess(UpdateEvent.create().setLatestVersion(true));
+                        }
                     }
                 })
-                .onSuccess(onSuccessListener)
                 .onError(onErrorListener)
                 .subscribe();
     }

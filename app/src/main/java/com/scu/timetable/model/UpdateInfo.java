@@ -6,10 +6,19 @@ package com.scu.timetable.model;
  */
 public class UpdateInfo {
 
+    private String downloadUrl;
     private String versionName;
     private String fileSize;
     private String updateTime;
     private String updateContent;
+
+    public String getDownloadUrl() {
+        return downloadUrl;
+    }
+
+    public void setDownloadUrl(String downloadUrl) {
+        this.downloadUrl = downloadUrl;
+    }
 
     public String getVersionName() {
         return versionName;

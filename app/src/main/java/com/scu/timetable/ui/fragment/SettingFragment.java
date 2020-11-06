@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
@@ -19,7 +18,7 @@ import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.fragmentation.BaseFragment;
-import com.zpj.popup.ZPopup;
+import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.utils.PrefsHelper;
 import com.zpj.widget.setting.CheckableSettingItem;
 import com.zpj.widget.setting.CommonSettingItem;
@@ -117,20 +116,20 @@ public class SettingFragment extends BaseFragment
     }
 
     private void showInfoPopupView(View view, final String title, final String content) {
-        new MoreInfoPopup(context)
+        new MoreInfoPopup()
                 .setTitle(title)
                 .setContent(content)
-                .show();
+                .show(context);
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.btn_logout) {
-            ZPopup.alert(context)
+            new AlertDialogFragment()
                     .setTitle("注销登录！")
                     .setContent("注销后需重新登录才能查看课表，确认注销？")
-                    .setConfirmButton(popup -> {
+                    .setPositiveButton(popup -> {
                         if (TimetableHelper.isVisitorMode()) {
                             AToast.normal("您当前正处于游客模式，无法注销登录！");
                             return;
@@ -138,7 +137,7 @@ public class SettingFragment extends BaseFragment
                         PrefsHelper.with().putBoolean("logined", false);
                         pop();
                     })
-                    .show();
+                    .show(context);
         }
     }
 

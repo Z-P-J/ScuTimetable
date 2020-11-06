@@ -6,8 +6,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/zdownloader/ScuTimetable-zdownloader.iml" filepath="$PROJECT_DIR$/.idea/modules/zdownloader/ScuTimetable-zdownloader.iml" group="ScuTimetable/zdownloader" />
       <module fileurl="file://$PROJECT_DIR$/TimetableView/TimetableView.iml" filepath="$PROJECT_DIR$/TimetableView/TimetableView.iml" group="ScuTimetable/TimetableView" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="ScuTimetable/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fragmentation/fragmentation.iml" filepath="$PROJECT_DIR$/.idea/modules/fragmentation/fragmentation.iml" group="ScuTimetable/fragmentation" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fragmentation-dialog/fragmentation-dialog.iml" filepath="$PROJECT_DIR$/.idea/modules/fragmentation-dialog/fragmentation-dialog.iml" group="ScuTimetable/fragmentation-dialog" />
       <module fileurl="file://$PROJECT_DIR$/zdownloader/zdownloader.iml" filepath="$PROJECT_DIR$/zdownloader/zdownloader.iml" group="ScuTimetable/zdownloader" />
-      <module fileurl="file://$PROJECT_DIR$/zpopup/zpopup.iml" filepath="$PROJECT_DIR$/zpopup/zpopup.iml" group="ScuTimetable/zpopup" />
     </modules>
   </component>
 </project>

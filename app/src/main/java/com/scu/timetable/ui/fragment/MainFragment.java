@@ -13,20 +13,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.zagum.expandicon.ExpandIconView;
-import com.scu.timetable.events.HideLoadingEvent;
-import com.scu.timetable.events.ShowLoadingEvent;
-import com.scu.timetable.ui.popup.SubjectDetailPopup2;
-import com.zpj.http.core.Connection;
-import com.zpj.http.core.IHttp;
-import com.zpj.http.core.ObservableTask;
-import com.zpj.popup.ZPopup;
 import com.scu.timetable.R;
 import com.scu.timetable.events.RefreshEvent;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.model.SemesterInfo;
 import com.scu.timetable.ui.activity.LoginActivity;
 import com.scu.timetable.ui.popup.RefreshPopup;
-import com.scu.timetable.ui.popup.SubjectDetailPopup;
+import com.scu.timetable.ui.popup.SubjectDetailPopup2;
 import com.scu.timetable.utils.TimetableHelper;
 import com.zhuangfei.timetable.TimetableView;
 import com.zhuangfei.timetable.listener.ISchedule;
@@ -35,8 +28,8 @@ import com.zhuangfei.timetable.listener.OnSlideBuildAdapter;
 import com.zhuangfei.timetable.model.Schedule;
 import com.zhuangfei.timetable.view.WeekView;
 import com.zpj.fragmentation.BaseFragment;
-import com.zpj.popup.impl.LoadingPopup;
-import com.zpj.popup.interfaces.OnDismissListener;
+import com.zpj.fragmentation.dialog.impl.AttachListDialogFragment;
+import com.zpj.fragmentation.dialog.impl.BottomListDialogFragment;
 import com.zpj.utils.PrefsHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,18 +38,12 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-
 /**
  * @author Z-P-J
  */
 public final class MainFragment extends BaseFragment implements View.OnClickListener {
 
     private final static String TAG = "MainFragment";
-
-    private Drawable expandMoreDrawable;
-    private Drawable expandLessDrawable;
 
     //控件
     private TimetableView mTimetableView;
@@ -66,11 +53,6 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     private LinearLayout layout;
     private TextView titleTextView;
     private List<ScuSubject> scuSubjects = new ArrayList<>();
-
-    //记录切换的周次，不一定是当前周
-    private int target = -1;
-
-    private long firstTime = 0;
 
     private int currentWeek;
 
@@ -88,9 +70,6 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     protected void initView(View view, @Nullable Bundle savedInstanceState) {
 
         EventBus.getDefault().register(this);
-
-        expandMoreDrawable = getResources().getDrawable(R.drawable.ic_expand_more_white_24dp);
-        expandLessDrawable = getResources().getDrawable(R.drawable.ic_expand_less_white_24dp);
 
         currentWeek = TimetableHelper.getCurrentWeek();
 
@@ -235,7 +214,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     }
 
     public void showMenu(View view) {
-        ZPopup.attachList(context)
+        new AttachListDialogFragment<String>()
                 .addItems(
                         "修改当前周",
                         "切换学期",
@@ -250,7 +229,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                         R.drawable.ic_refresh_black_24dp,
                         R.drawable.ic_settings_black_24dp
                 )
-                .setOnSelectListener((position, text) -> {
+                .setOnSelectListener((dialog, position, text) -> {
                     switch (position) {
                         case 0:
                             onWeekLeftLayoutClicked();
@@ -270,13 +249,16 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                         default:
                             break;
                     }
+                    dialog.dismiss();
                 })
-                .show(view);
+                .setAttachView(view)
+                .show(context);
     }
 
     private void showSubjectPopupView(final View view, final ScuSubject scuSubject) {
-//        new SubjectDetailPopup(context, scuSubject).show();
-        new SubjectDetailPopup2(context, scuSubject).show();
+        new SubjectDetailPopup2()
+                .setSubject(scuSubject)
+                .show(context);
     }
 
     private void showChooseSemesterDialog() {
@@ -288,7 +270,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                 break;
             }
         }
-        ZPopup.bottomList(context, SemesterInfo.class)
+        new BottomListDialogFragment<SemesterInfo>()
                 .setData(list)
                 .setTitle("切换学期")
                 .setCheckedPosition(selected)
@@ -304,15 +286,11 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
                     initData();
 //                    HideLoadingEvent.postEvent();
                 })
-                .show();
+                .show(context);
     }
 
     private void showRefreshDialog() {
-        try {
-            ZPopup.custom(context, RefreshPopup.class).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new RefreshPopup().show(context);
     }
 
     private void showSettingDialogFragment() {
@@ -322,7 +300,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
             public void onDismiss(DialogInterface dialog) {
                 if (!TimetableHelper.isVisitorMode() && !PrefsHelper.with().getBoolean("logined", false)) {
                     startActivity(new Intent(getContext(), LoginActivity.class));
-                    getActivity().finish();
+                    _mActivity.finish();
                     return;
                 }
                 boolean sundayIsFirstDay = TimetableHelper.sundayIsFirstDay();
@@ -344,11 +322,6 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
             }
         });
         start(settingFragment);
-//        SettingsDialogFragment dialogFragment = new SettingsDialogFragment();
-//        dialogFragment.setOnDismissListener();
-//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//        dialogFragment.show(fragmentTransaction, "setting");
     }
 
     private void toggleTime(boolean showTime) {

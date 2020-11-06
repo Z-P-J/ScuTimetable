@@ -31,7 +31,7 @@ import com.scu.timetable.utils.EncryptionUtils;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.zpj.fragmentation.SupportActivity;
-import com.zpj.popup.ZPopup;
+import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.utils.AnimatorUtils;
 import com.zpj.utils.PrefsHelper;
 import com.zpj.utils.StatusBarUtils;
@@ -202,25 +202,11 @@ public final class LoginActivity extends SupportActivity
                 updateWidget(true);
             }
         } else if (id == R.id.btn_info) {
-            new MoreInfoPopup(LoginActivity.this)
+            new MoreInfoPopup()
                     .setTitle("关于游客模式")
                     .setContent("在该模式下会显示软件内置的一个课程表，并且在该模式下有些功能不能使用！")
-                    .show();
-//            CustomPopupMenuView.with(this, R.layout.layout_text)
-//                    .setOrientation(LinearLayout.VERTICAL)
-////                    .setBackgroundAlpha(this, 0.9f, 500)
-//                    .setPopupViewBackgroundColor(Color.parseColor("#eeffffff"))
-//                    .initViews(
-//                            1,
-//                            (popupMenuView, itemView, position) -> {
-//                                TextView titleView = itemView.findViewById(R.id.title);
-//                                titleView.setText("关于游客模式");
-//                                TextView contentView = itemView.findViewById(R.id.content);
-//                                contentView.setText("在该模式下会显示软件内置的一个课程表，并且在该模式下有些功能不能使用！");
-//                                ImageView btnClose = itemView.findViewById(R.id.btn_close);
-//                                btnClose.setOnClickListener(v1 -> popupMenuView.dismiss());
-//                            })
-//                    .show(v);
+                    .show(LoginActivity.this);
+
         }
     }
 
@@ -285,12 +271,12 @@ public final class LoginActivity extends SupportActivity
         if (hasStoragePermissions(getApplicationContext())) {
             requestPermission();
         } else {
-            ZPopup.alert(this)
+            new AlertDialogFragment()
                     .setTitle(R.string.title_permission)
                     .setContent(getString(R.string.content_permission))
-                    .setConfirmButton(R.string.text_apply, popup -> requestPermission())
-                    .setCancelButton(R.string.text_decline, () -> ActivityCompat.finishAfterTransition(LoginActivity.this))
-                    .show();
+                    .setPositiveButton(R.string.text_apply, dialog -> requestPermission())
+                    .setNegativeButton(R.string.text_decline, dialog -> ActivityCompat.finishAfterTransition(LoginActivity.this))
+                    .show(this);
         }
     }
 

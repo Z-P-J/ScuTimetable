@@ -17,8 +17,7 @@ import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.fragmentation.SupportActivity;
 import com.zpj.fragmentation.anim.DefaultHorizontalAnimator;
 import com.zpj.fragmentation.anim.FragmentAnimator;
-import com.zpj.popup.ZPopup;
-import com.zpj.popup.impl.LoadingPopup;
+import com.zpj.fragmentation.dialog.impl.LoadingDialogFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,14 +30,13 @@ public final class MainActivity extends SupportActivity {
 
     private long firstTime = 0;
 
-    private LoadingPopup loadingPopup;
+    private LoadingDialogFragment loadingDialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         setContentView(R.layout.activity_main);
-//        EventBus.getDefault().register(this);
 
         AlarmService.start(this);
 
@@ -48,13 +46,20 @@ public final class MainActivity extends SupportActivity {
         }
         loadRootFragment(R.id.content, mainFragment);
 
+//        TestFragment mainFragment = findFragment(TestFragment.class);
+//        if (mainFragment == null) {
+//            mainFragment = new TestFragment();
+//        }
+//        loadRootFragment(R.id.content, mainFragment);
+
         UpdateUtil.with(this)
                 .setOnErrorListener(throwable -> AToast.error("检查更新出错 errorMsg:" + throwable.getMessage()))
                 .setOnSuccessListener(event -> {
                     if (event.getUpdateInfo() != null) {
                         AToast.normal("开始更新！");
-                        new UpdatePopup(MainActivity.this, event.getUpdateInfo()).show();
-//                        UpdateDialogFragment.newInstance(event.getUpdateInfo()).show(getSupportFragmentManager());
+                        new UpdatePopup()
+                                .setUpdateInfo(event.getUpdateInfo())
+                                .show(MainActivity.this);
                     } else if (event.isLatestVersion()) {
                         AToast.normal("软件已是最新版");
                     }
@@ -119,21 +124,24 @@ public final class MainActivity extends SupportActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShowLoadingEvent(ShowLoadingEvent event) {
-        if (loadingPopup != null && event.isUpdate()) {
-            loadingPopup.setTitle(event.getText());
-            return;
+        if (loadingDialogFragment != null) {
+            if (event.isUpdate()) {
+                loadingDialogFragment.setTitle(event.getText());
+                return;
+            }
+            loadingDialogFragment.dismiss();
         }
-        loadingPopup = null;
-        loadingPopup = ZPopup.loading(MainActivity.this)
-                .setTitle(event.getText())
-                .show();
+        loadingDialogFragment = null;
+        loadingDialogFragment = new LoadingDialogFragment().setTitle(event.getText());
+        loadingDialogFragment.show(MainActivity.this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideLoadingEvent(HideLoadingEvent event) {
-        if (loadingPopup != null) {
-            loadingPopup.dismiss();
-            loadingPopup = null;
+        if (loadingDialogFragment != null) {
+            loadingDialogFragment.setOnDismissListener(event.getOnDismissListener());
+            loadingDialogFragment.dismiss();
+            loadingDialogFragment = null;
         }
     }
 
