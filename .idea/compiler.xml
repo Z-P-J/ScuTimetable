@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="ScuTimetable.app" target="1.8" />
+      <module name="ScuTimetable.fragmentation" target="1.8" />
+      <module name="ScuTimetable.fragmentation-dialog" target="1.8" />
+      <module name="ScuTimetable.TimetableView" target="1.8" />
+      <module name="ScuTimetable.zdownloader" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
