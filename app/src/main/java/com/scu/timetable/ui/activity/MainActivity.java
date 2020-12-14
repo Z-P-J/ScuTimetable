@@ -11,7 +11,7 @@ import com.scu.timetable.events.ShowLoadingEvent;
 import com.scu.timetable.events.StartFragmentEvent;
 import com.scu.timetable.service.AlarmService;
 import com.scu.timetable.ui.fragment.MainFragment;
-import com.scu.timetable.ui.popup.UpdatePopup;
+import com.scu.timetable.ui.fragment.dialog.UpdateDialog;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.fragmentation.SupportActivity;
@@ -57,7 +57,7 @@ public final class MainActivity extends SupportActivity {
                 .setOnSuccessListener(event -> {
                     if (event.getUpdateInfo() != null) {
                         AToast.normal("开始更新！");
-                        new UpdatePopup()
+                        new UpdateDialog()
                                 .setUpdateInfo(event.getUpdateInfo())
                                 .show(MainActivity.this);
                     } else if (event.isLatestVersion()) {

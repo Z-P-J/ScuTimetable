@@ -124,6 +124,8 @@ public class ImageViewerDialogFragment2<T> extends FullScreenDialogFragment {
                 public View getProgress(Context context) {
                     ProgressBar progressBar = new ProgressBar(context);
                     progressBar.setMax(100);
+//                    int size = ScreenUtils.dp2pxInt(context, 48);
+//                    progressBar.setLayoutParams(new ViewGroup.LayoutParams(size, size));
                     return progressBar;
                 }
 
@@ -154,22 +156,27 @@ public class ImageViewerDialogFragment2<T> extends FullScreenDialogFragment {
         dialogView.onCreate(build, this);
     }
 
-    @Override
-    public BaseDialogFragment show(SupportFragment fragment) {
-        build.checkParam();
-        return super.show(fragment);
-    }
+//    @Override
+//    public BaseDialogFragment show(SupportFragment fragment) {
+//        build.checkParam();
+//        return super.show(fragment);
+//    }
+//
+//    @Override
+//    public BaseDialogFragment show(SupportActivity activity) {
+//        build.checkParam();
+//        return super.show(activity);
+//    }
+//
+//    @Override
+//    public BaseDialogFragment show(Context context) {
+//        build.checkParam();
+//        return super.show(context);
+//    }
 
     @Override
-    public BaseDialogFragment show(SupportActivity activity) {
+    protected void onBeforeShow() {
         build.checkParam();
-        return super.show(activity);
-    }
-
-    @Override
-    public BaseDialogFragment show(Context context) {
-        build.checkParam();
-        return super.show(context);
     }
 
     @Override
@@ -271,7 +278,7 @@ public class ImageViewerDialogFragment2<T> extends FullScreenDialogFragment {
                             new ObservableTask<File>(
                                     emitter -> {
                                         File file = Glide.with(ContextUtils.getApplicationContext())
-                                                .downloadOnly()
+                                                .asFile()
                                                 .load(url)
                                                 .submit()
                                                 .get();

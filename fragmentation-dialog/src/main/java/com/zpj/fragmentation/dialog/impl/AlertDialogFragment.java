@@ -4,30 +4,34 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
 import com.zpj.fragmentation.dialog.R;
+import com.zpj.fragmentation.dialog.utils.DialogThemeUtils;
 import com.zpj.utils.ContextUtils;
 import com.zpj.utils.ScreenUtils;
 
 public class AlertDialogFragment extends CenterDialogFragment
         implements View.OnClickListener {
 
-    protected TextView tv_title, tv_cancel, tv_confirm;
-    protected String title, cancelText, confirmText;
+    protected TextView tv_title, tv_cancel, tv_confirm, tv_neutral;
+    protected String title, cancelText, neutralText, confirmText;
+    protected int positionBtnColor, neutralBtnColor, negativeBtnColor;
 
     protected CharSequence content;
 
     protected View contentView;
+    private LinearLayout llButtons;
 
-    protected OnNegativeButtonClickListener cancelListener;
-    protected OnPositiveButtonClickListener confirmListener;
+    protected OnButtonClickListener cancelListener;
+    protected OnButtonClickListener confirmListener;
+    protected OnButtonClickListener onNeutralButtonClickListener;
 
     protected boolean isHideCancel = false;
     protected boolean autoDismiss = true;
@@ -46,12 +50,20 @@ public class AlertDialogFragment extends CenterDialogFragment
         FrameLayout flContent = findViewById(R.id.fl_content);
         tv_title = findViewById(R.id.tv_title);
         tv_cancel = findViewById(R.id.tv_cancel);
+        tv_neutral = findViewById(R.id.tv_neutral);
+        if (onNeutralButtonClickListener != null) {
+            tv_neutral.setVisibility(View.VISIBLE);
+        }
         tv_confirm = findViewById(R.id.tv_confirm);
+        tv_title.setTextColor(DialogThemeUtils.getMajorTextColor(context));
+
+        llButtons = findViewById(R.id.ll_buttons);
 
 
         if (contentView == null && !TextUtils.isEmpty(content)) {
             TextView textView = new TextView(context);
             textView.setText(content);
+            textView.setTextColor(DialogThemeUtils.getNormalTextColor(context));
 //        textView.setTextColor(context.getResources().getColor(R.color._xpopup_text_normal_color));
             textView.setTextSize(14);
             textView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -78,6 +90,7 @@ public class AlertDialogFragment extends CenterDialogFragment
 
         tv_cancel.setOnClickListener(this);
         tv_confirm.setOnClickListener(this);
+        tv_neutral.setOnClickListener(this);
 
         if (!TextUtils.isEmpty(title)) {
             tv_title.setText(title);
@@ -91,8 +104,29 @@ public class AlertDialogFragment extends CenterDialogFragment
         if (!TextUtils.isEmpty(confirmText)) {
             tv_confirm.setText(confirmText);
         }
+        if (!TextUtils.isEmpty(neutralText)) {
+            tv_neutral.setText(neutralText);
+        }
 
         if (isHideCancel) tv_cancel.setVisibility(View.GONE);
+
+
+//        MaxHeightScrollView scrollView = findViewById(R.id.scroll_view);
+//        contentView
+//                .getViewTreeObserver()
+//                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//                    @Override
+//                    public void onGlobalLayout() {
+//                        contentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                        Log.d("contentView.contentV", "tv_title.getMeasuredHeight()=" + tv_title.getHeight() + " llButtons.getMeasuredHeight()=" + llButtons.getHeight());
+//                        int max = getMaxHeight() - tv_title.getHeight() - ScreenUtils.dp2pxInt(context, 60);
+//                        if (contentView.getMeasuredHeight() < max) {
+//                            max = contentView.getMeasuredHeight();
+//                        }
+//                        scrollView.setMaxHeight(max);
+////                        scrollView.setMaxHeight(contentView.getHeight());
+//                    }
+//                });
 
     }
 
@@ -107,35 +141,49 @@ public class AlertDialogFragment extends CenterDialogFragment
     @Override
     public void onClick(View v) {
         if (v == tv_cancel) {
-//            runnable = () -> {
-//                if (cancelListener != null) cancelListener.onClick(AlertDialogFragment.this);
-//            };
+            if (cancelListener != null) {
+                cancelListener.onClick(this);
+            }
             if (autoDismiss) {
                 dismiss();
             }
-            if (cancelListener != null) cancelListener.onClick(this);
 
         } else if (v == tv_confirm) {
-//            runnable = () -> {
-//                if (confirmListener != null) confirmListener.onClick(AlertDialogFragment.this);
-//            };
+            if (confirmListener != null) {
+                confirmListener.onClick(this);
+            }
             if (autoDismiss) {
                 dismiss();
             }
-            if (confirmListener != null) confirmListener.onClick(this);
 
+        }  else if (v == tv_neutral) {
+            if (onNeutralButtonClickListener != null) {
+                onNeutralButtonClickListener.onClick(this);
+            }
+            if (autoDismiss) {
+                dismiss();
+            }
         }
     }
 
     protected void applyPrimaryColor() {
-//        tv_cancel.setTextColor(XPopup.getPrimaryColor());
-        tv_confirm.setTextColor(getColorPrimary());
-    }
+        if (positionBtnColor == 0) {
+            tv_confirm.setTextColor(DialogThemeUtils.getPositiveTextColor(context));
+        } else {
+            tv_confirm.setTextColor(positionBtnColor);
+        }
 
-    public int getColorPrimary(){
-        TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        return typedValue.data;
+        if (neutralBtnColor == 0) {
+            tv_cancel.setTextColor(DialogThemeUtils.getNegativeTextColor(context));
+        } else {
+            tv_neutral.setTextColor(neutralBtnColor);
+        }
+
+        if (negativeBtnColor == 0) {
+            tv_cancel.setTextColor(DialogThemeUtils.getNegativeTextColor(context));
+        } else {
+            tv_cancel.setTextColor(negativeBtnColor);
+        }
     }
 
     public AlertDialogFragment setAutoDismiss(boolean autoDismiss) {
@@ -143,37 +191,54 @@ public class AlertDialogFragment extends CenterDialogFragment
         return this;
     }
 
-    public AlertDialogFragment setPositiveButton(OnPositiveButtonClickListener listener) {
+    public AlertDialogFragment setPositiveButton(OnButtonClickListener listener) {
         this.confirmListener = listener;
         return this;
     }
 
-    public AlertDialogFragment setPositiveButton(String btnStr, OnPositiveButtonClickListener listener) {
+    public AlertDialogFragment setPositiveButton(String btnStr, OnButtonClickListener listener) {
         this.confirmText = btnStr;
         this.confirmListener = listener;
         return this;
     }
 
-    public AlertDialogFragment setPositiveButton(int btnStrId, OnPositiveButtonClickListener listener) {
+    public AlertDialogFragment setPositiveButton(int btnStrId, OnButtonClickListener listener) {
         this.confirmText = ContextUtils.getApplicationContext().getString(btnStrId);
         this.confirmListener = listener;
         return this;
     }
 
-    public AlertDialogFragment setNegativeButton(OnNegativeButtonClickListener listener) {
+    public AlertDialogFragment setNegativeButton(OnButtonClickListener listener) {
         this.cancelListener = listener;
         return this;
     }
 
-    public AlertDialogFragment setNegativeButton(String btnStr, OnNegativeButtonClickListener listener) {
+    public AlertDialogFragment setNegativeButton(String btnStr, OnButtonClickListener listener) {
         this.cancelText = btnStr;
         this.cancelListener = listener;
         return this;
     }
 
-    public AlertDialogFragment setNegativeButton(int btnStrId, OnNegativeButtonClickListener listener) {
+    public AlertDialogFragment setNegativeButton(int btnStrId, OnButtonClickListener listener) {
         this.cancelText = ContextUtils.getApplicationContext().getString(btnStrId);
         this.cancelListener = listener;
+        return this;
+    }
+
+    public AlertDialogFragment setNeutralButton(OnButtonClickListener listener) {
+        this.onNeutralButtonClickListener = listener;
+        return this;
+    }
+
+    public AlertDialogFragment setNeutralButton(String btnStr, OnButtonClickListener listener) {
+        this.neutralText = btnStr;
+        this.onNeutralButtonClickListener = listener;
+        return this;
+    }
+
+    public AlertDialogFragment setNeutralButton(int btnStrId, OnButtonClickListener listener) {
+        this.neutralText = ContextUtils.getApplicationContext().getString(btnStrId);
+        this.onNeutralButtonClickListener = listener;
         return this;
     }
 
@@ -222,16 +287,34 @@ public class AlertDialogFragment extends CenterDialogFragment
         return this;
     }
 
+    public AlertDialogFragment setPositionButtonnColor(int positionBtnColor) {
+        this.positionBtnColor = positionBtnColor;
+        return this;
+    }
+
+    public AlertDialogFragment setNeutralButtonColor(int neutralBtnColor) {
+        this.neutralBtnColor = neutralBtnColor;
+        return this;
+    }
+
+    public AlertDialogFragment setNegativeButtonColor(int negativeBtnColor) {
+        this.negativeBtnColor = negativeBtnColor;
+        return this;
+    }
 
     public interface OnViewCreateListener {
         void onViewCreate(AlertDialogFragment fragment, View view);
     }
 
-    public interface OnPositiveButtonClickListener  {
-        void onClick(AlertDialogFragment fragment);
-    }
+//    public interface OnPositiveButtonClickListener  {
+//        void onClick(AlertDialogFragment fragment);
+//    }
+//
+//    public interface OnNegativeButtonClickListener {
+//        void onClick(AlertDialogFragment fragment);
+//    }
 
-    public interface OnNegativeButtonClickListener {
+    public interface OnButtonClickListener {
         void onClick(AlertDialogFragment fragment);
     }
 

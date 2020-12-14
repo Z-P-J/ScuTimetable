@@ -1,4 +1,4 @@
-package com.scu.timetable.ui.popup;
+package com.scu.timetable.ui.fragment.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,11 +13,11 @@ import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.utils.TimetableHelper;
 import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
 
-public class SubjectNotePopup extends CenterDialogFragment {
+public class SubjectNoteDialog extends CenterDialogFragment {
     
     private ScuSubject subject;
 
-    public SubjectNotePopup setSubject(ScuSubject subject) {
+    public SubjectNoteDialog setSubject(ScuSubject subject) {
         this.subject = subject;
         return this;
     }

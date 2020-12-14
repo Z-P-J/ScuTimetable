@@ -21,7 +21,8 @@ import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.events.EvaluationEvent;
 import com.scu.timetable.model.EvaluationInfo;
-import com.scu.timetable.ui.popup.MoreInfoPopup;
+import com.scu.timetable.ui.fragment.base.SkinFragment;
+import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
 import com.scu.timetable.ui.view.ElasticScrollView;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
@@ -38,7 +39,7 @@ import java.util.Locale;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class EvaluationFragment extends BaseFragment
+public class EvaluationFragment extends SkinFragment
         implements View.OnClickListener,
         LoginUtil.LoginCallback,
         EvaluationUtil.EvaluationCallback {
@@ -168,7 +169,7 @@ public class EvaluationFragment extends BaseFragment
     }
 
     private void showInfoPopupView(View view, final String title, final String content) {
-        new MoreInfoPopup()
+        new MoreInfoDialog()
                 .setTitle(title)
                 .setContent(content)
                 .show(context);

@@ -13,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,13 +27,13 @@ import com.lxj.xpermission.PermissionConstants;
 import com.lxj.xpermission.XPermission;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.activity.MainActivity;
-import com.scu.timetable.ui.popup.MoreInfoPopup;
+import com.scu.timetable.ui.fragment.base.SkinFragment;
+import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EncryptionUtils;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.zpj.fragmentation.BaseFragment;
-import com.zpj.fragmentation.SupportActivity;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.utils.AnimatorUtils;
 import com.zpj.utils.PrefsHelper;
@@ -46,7 +45,7 @@ import org.json.JSONObject;
  * @author Z-P-J
  * @date 2019
  */
-public final class LoginFragment extends BaseFragment
+public final class LoginFragment extends SkinFragment
         implements View.OnClickListener, LoginUtil.LoginCallback {
 
     private EditText userName;
@@ -74,7 +73,6 @@ public final class LoginFragment extends BaseFragment
         TimetableHelper.closeVisitorMode();
         postDelayed(this::showRequestPermissionPopup, 500);
     }
-
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -205,7 +203,7 @@ public final class LoginFragment extends BaseFragment
                 _mActivity.finish();
             }
         } else if (id == R.id.btn_info) {
-            new MoreInfoPopup()
+            new MoreInfoDialog()
                     .setTitle("关于游客模式")
                     .setContent("在该模式下会显示软件内置的一个课程表，并且在该模式下有些功能不能使用！")
                     .show(LoginFragment.this);

@@ -8,10 +8,11 @@ import android.widget.TextView;
 import com.scu.timetable.R;
 import com.scu.timetable.events.StartFragmentEvent;
 import com.scu.timetable.model.ScuSubject;
+import com.scu.timetable.ui.fragment.base.SkinFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.zpj.fragmentation.BaseFragment;
 
-public class DetailFragment extends BaseFragment {
+public class DetailFragment extends SkinFragment {
 
     private ScuSubject subject;
 

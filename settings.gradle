@@ -1,6 +1,5 @@
 include ':app',
         ':TimetableView',
-//        ':zpopup',
         ':zdownloader',
         ':fragmentation',
         ':fragmentation-dialog'

@@ -2,6 +2,7 @@ package com.zpj.fragmentation.dialog.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -47,6 +48,8 @@ public abstract class BaseDialogFragment extends AbstractDialogFragment {
     protected IDialog.OnDismissListener onDismissListener;
 
     private ISupportFragment preFragment;
+
+    protected Drawable bgDrawable;
 
     @Override
     protected final int getLayoutId() {
@@ -179,11 +182,13 @@ public abstract class BaseDialogFragment extends AbstractDialogFragment {
     }
 
     public BaseDialogFragment show(SupportFragment fragment) {
+        onBeforeShow();
         fragment.start(this);
         return this;
     }
 
     public BaseDialogFragment show(Context context) {
+        onBeforeShow();
         Activity activity = ContextUtils.getActivity(context);
         if (activity instanceof SupportActivity) {
             ((SupportActivity) activity).start(this);
@@ -199,6 +204,7 @@ public abstract class BaseDialogFragment extends AbstractDialogFragment {
     }
 
     public BaseDialogFragment show(SupportActivity activity) {
+        onBeforeShow();
         activity.start(this);
         return this;
     }
@@ -301,6 +307,10 @@ public abstract class BaseDialogFragment extends AbstractDialogFragment {
         }
     }
 
+    protected void onBeforeShow() {
+
+    }
+
     protected void onHide() {
 
     }
@@ -329,4 +339,10 @@ public abstract class BaseDialogFragment extends AbstractDialogFragment {
         this.onDismissListener = onDismissListener;
         return this;
     }
+
+    public BaseDialogFragment setBackgroundDrawable(Drawable drawable) {
+        this.bgDrawable = drawable;
+        return this;
+    }
+
 }

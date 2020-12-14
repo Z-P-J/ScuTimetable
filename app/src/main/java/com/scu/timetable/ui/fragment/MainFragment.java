@@ -3,7 +3,6 @@ package com.scu.timetable.ui.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -18,8 +17,9 @@ import com.scu.timetable.events.RefreshEvent;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.model.SemesterInfo;
 import com.scu.timetable.ui.activity.LoginActivity;
-import com.scu.timetable.ui.popup.RefreshPopup;
-import com.scu.timetable.ui.popup.SubjectDetailPopup2;
+import com.scu.timetable.ui.fragment.base.SkinFragment;
+import com.scu.timetable.ui.fragment.dialog.RefreshDialog;
+import com.scu.timetable.ui.fragment.dialog.SubjectDetailDialog2;
 import com.scu.timetable.utils.TimetableHelper;
 import com.zhuangfei.timetable.TimetableView;
 import com.zhuangfei.timetable.listener.ISchedule;
@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * @author Z-P-J
  */
-public final class MainFragment extends BaseFragment implements View.OnClickListener {
+public final class MainFragment extends SkinFragment implements View.OnClickListener {
 
     private final static String TAG = "MainFragment";
 
@@ -94,31 +94,6 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     }
 
     private void initData() {
-//        LoadingPopup popup = ZPopup.loading(context).setTitle("切换中...").show();
-//        new ObservableTask<>((ObservableOnSubscribe<List<ScuSubject>>) emitter -> {
-//            scuSubjects = TimetableHelper.getSubjects(context);
-//            emitter.onNext(scuSubjects);
-//            emitter.onComplete();
-//        })
-//                .onSuccess(data -> {
-//                    mWeekView.source(scuSubjects).showView();
-//                    mTimetableView.source(scuSubjects)
-//                            .cornerAll(16)
-//                            .isShowWeekends(TimetableHelper.isShowWeekends())
-//                            .isShowNotCurWeek(TimetableHelper.isShowNotCurWeek())
-////                .callback(new ISchedule.OnScrollViewBuildListener() {
-////                    @Override
-////                    public View getScrollView(LayoutInflater mInflate) {
-////                        return mInflate.inflate(R.layout.custom_myscrollview, null, false);
-////                    }
-////                })
-//                            .showView();
-//                    toggleTime(TimetableHelper.isShowTime());
-//                    modifySlideBgColor(Color.TRANSPARENT);
-//                    popup.dismiss();
-//                })
-//                .onError(throwable -> popup.dismiss())
-//                .subscribe();
         long time1 = System.currentTimeMillis();
         scuSubjects = TimetableHelper.getSubjects(context);
         long time2 = System.currentTimeMillis();
@@ -256,7 +231,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     }
 
     private void showSubjectPopupView(final View view, final ScuSubject scuSubject) {
-        new SubjectDetailPopup2()
+        new SubjectDetailDialog2()
                 .setSubject(scuSubject)
                 .show(context);
     }
@@ -290,7 +265,7 @@ public final class MainFragment extends BaseFragment implements View.OnClickList
     }
 
     private void showRefreshDialog() {
-        new RefreshPopup().show(context);
+        new RefreshDialog().show(context);
     }
 
     private void showSettingDialogFragment() {

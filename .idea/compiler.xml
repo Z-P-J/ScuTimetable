@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="app" target="1.8" />
+      <module name="fragmentation" target="1.8" />
       <module name="ScuTimetable.app" target="1.8" />
       <module name="ScuTimetable.fragmentation" target="1.8" />
       <module name="ScuTimetable.fragmentation-dialog" target="1.8" />

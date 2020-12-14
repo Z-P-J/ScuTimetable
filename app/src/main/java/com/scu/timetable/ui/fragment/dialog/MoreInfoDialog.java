@@ -1,4 +1,4 @@
-package com.scu.timetable.ui.popup;
+package com.scu.timetable.ui.fragment.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.scu.timetable.R;
 import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
 
-public class MoreInfoPopup extends CenterDialogFragment {
+public class MoreInfoDialog extends CenterDialogFragment {
 
     private String title;
     private String content;
@@ -31,12 +31,12 @@ public class MoreInfoPopup extends CenterDialogFragment {
         btnClose.setOnClickListener(v -> dismiss());
     }
 
-    public MoreInfoPopup setTitle(String title) {
+    public MoreInfoDialog setTitle(String title) {
         this.title = title;
         return this;
     }
 
-    public MoreInfoPopup setContent(String content) {
+    public MoreInfoDialog setContent(String content) {
         this.content = content;
         return this;
     }

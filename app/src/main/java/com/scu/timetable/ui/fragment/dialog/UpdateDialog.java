@@ -1,13 +1,13 @@
-package com.scu.timetable.ui.popup;
+package com.scu.timetable.ui.fragment.dialog;
 
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.deadline.statebutton.StateButton;
@@ -27,7 +27,7 @@ import com.zpj.utils.PrefsHelper;
 /**
  * @author Z-P-J
  */
-public class UpdatePopup extends CenterDialogFragment
+public class UpdateDialog extends CenterDialogFragment
         implements View.OnClickListener {
 
     //======顶部========//
@@ -73,11 +73,12 @@ public class UpdatePopup extends CenterDialogFragment
 
     private DownloadMission mission;
 
-    public UpdatePopup() {
+    public UpdateDialog() {
         setCancelable(false);
+        setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
-    public UpdatePopup setUpdateInfo(UpdateInfo updateInfo) {
+    public UpdateDialog setUpdateInfo(UpdateInfo updateInfo) {
         this.updateInfo = updateInfo;
         return this;
     }

@@ -2,6 +2,7 @@ package com.zpj.fragmentation.dialog.base;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -73,6 +74,9 @@ public abstract class AttachDialogFragment extends BaseDialogFragment {
 
         contentView = LayoutInflater.from(getContext()).inflate(getContentLayoutId(), attachPopupContainer, false);
         attachPopupContainer.addView(contentView);
+        if (bgDrawable != null) {
+            contentView.setBackground(bgDrawable);
+        }
 
     }
 

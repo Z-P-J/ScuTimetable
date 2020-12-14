@@ -1,5 +1,6 @@
 package com.scu.timetable.ui.fragment;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,7 +12,8 @@ import android.view.View;
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
-import com.scu.timetable.ui.popup.MoreInfoPopup;
+import com.scu.timetable.ui.fragment.base.SkinFragment;
+import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.SuperLinkUtil;
 import com.scu.timetable.utils.TimetableHelper;
@@ -26,7 +28,7 @@ import com.zpj.widget.setting.OnCheckableItemClickListener;
 import com.zpj.widget.setting.OnCommonItemClickListener;
 import com.zpj.widget.setting.SwitchSettingItem;
 
-public class SettingFragment extends BaseFragment
+public class SettingFragment extends SkinFragment
         implements View.OnClickListener,
         OnCheckableItemClickListener,
         OnCommonItemClickListener {
@@ -43,6 +45,11 @@ public class SettingFragment extends BaseFragment
     @Override
     protected boolean supportSwipeBack() {
         return true;
+    }
+
+    @Override
+    public CharSequence getToolbarTitle(Context context) {
+        return "设置";
     }
 
     @Override
@@ -116,7 +123,7 @@ public class SettingFragment extends BaseFragment
     }
 
     private void showInfoPopupView(View view, final String title, final String content) {
-        new MoreInfoPopup()
+        new MoreInfoDialog()
                 .setTitle(title)
                 .setContent(content)
                 .show(context);

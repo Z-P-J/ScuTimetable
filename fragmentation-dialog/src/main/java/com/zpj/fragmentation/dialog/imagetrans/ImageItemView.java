@@ -10,8 +10,10 @@ import android.widget.FrameLayout;
 
 import com.zpj.fragmentation.dialog.imagetrans.listener.OnPullCloseListener;
 import com.zpj.fragmentation.dialog.imagetrans.listener.OnTransformListener;
+import com.zpj.fragmentation.queue.BlockActionQueue;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by liuting on 18/3/19.
@@ -29,12 +31,14 @@ public class ImageItemView<T> extends FrameLayout implements
     private T url;
     private OnTransformListener transformOpenListener;
 
-    private boolean transOpenEnd;
+    private AtomicBoolean transOpenEnd = new AtomicBoolean(false);
     private boolean loadFinish = false;
     private boolean isCached = false;
     private String uniqueStr;
     private boolean needTransOpen;
     private boolean isOpened;
+
+    private Runnable runnable;
 
     public ImageItemView(@NonNull Context context, ImageTransBuild<T> build, int pos, T url) {
         super(context);
@@ -46,6 +50,7 @@ public class ImageItemView<T> extends FrameLayout implements
 
     public void setUrl(T url) {
         this.url = url;
+        uniqueStr = UUID.randomUUID().toString();
     }
 
     void init(boolean opened, boolean isCurrent) {
@@ -82,28 +87,31 @@ public class ImageItemView<T> extends FrameLayout implements
         imageView.setOnPullCloseListener(this);
         imageView.setOnLongClickListener(this);
         imageView.setOnClickListener(this);
-        if (needTransOpen || isOpened) loadImage();
+        if (needTransOpen || isOpened) loadImage(false);
     }
 
     void loadImageWhenTransEnd() {
-        if (!needTransOpen) loadImage();
+        if (!needTransOpen) loadImage(false);
     }
 
-    void loadImage() {
+    void loadImage(boolean isUpdate) {
         if (imageView == null) {
             return;
         }
         isCached = build.imageLoad.isCached(url);
         final boolean needShowThumb = !build.itConfig.noThumb && !(build.itConfig.noThumbWhenCached && build.imageLoad.isCached(url));
-        if (needShowThumb) {
-            imageView.showThumb(needTransOpen);
-        } else if (!needTransOpen) {
-            imageView.setBackgroundAlpha(255);
+        if (!isUpdate) {
+            if (needShowThumb) {
+                imageView.showThumb(needTransOpen);
+            } else if (!needTransOpen) {
+                imageView.setBackgroundAlpha(255);
+            }
         }
+        progressBar.setVisibility(VISIBLE);
         build.imageLoad.loadImage(url, new ImageLoad.LoadCallback() {
             @Override
             public void progress(float progress) {
-                if (transOpenEnd) {
+                if (transOpenEnd.get() || isUpdate) {
                     progressChange(progress);
                 }
             }
@@ -112,7 +120,27 @@ public class ImageItemView<T> extends FrameLayout implements
             public void loadFinish(Drawable drawable) {
                 hideProgress();
                 loadFinish = true;
-                imageView.showImage(drawable, needTransOpen || needShowThumb);
+                if (isUpdate) {
+                    imageView.showImage(drawable, false);
+                } else {
+//                    !build.itConfig.thumbLarge && (needTransOpen || needShowThumb)
+//                    imageView.showImage(drawable, needTransOpen || needShowThumb);
+                    if (needShowThumb) {
+                        if (transOpenEnd.get()) {
+                            runnable = null;
+                            imageView.showImage(drawable, true);
+                        } else {
+                            runnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    imageView.showImage(drawable, true);
+                                }
+                            };
+                        }
+                    } else {
+                        imageView.showImage(drawable, needTransOpen);
+                    }
+                }
             }
         }, imageView, uniqueStr);
     }
@@ -157,11 +185,15 @@ public class ImageItemView<T> extends FrameLayout implements
                 break;
             case THUMB:
             case ORI:
-                if (!transOpenEnd) {
-                    transOpenEnd = true;
+                if (!transOpenEnd.get()) {
+                    transOpenEnd.set(true);
                     if (!isCached)
                         showProgress();
                     if (transformOpenListener != null) transformOpenListener.transformEnd();
+                    if (runnable != null) {
+                        runnable.run();
+                        runnable = null;
+                    }
                 }
                 break;
             case THUMB_TO_CLOSE:

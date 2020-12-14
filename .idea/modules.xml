@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AndroidProjects.ScuTimetable.iml" filepath="$PROJECT_DIR$/.idea/modules/AndroidProjects.ScuTimetable.iml" />
       <module fileurl="file://$PROJECT_DIR$/ScuTimetable.iml" filepath="$PROJECT_DIR$/ScuTimetable.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/TimetableView/ScuTimetable.TimetableView.iml" filepath="$PROJECT_DIR$/.idea/modules/TimetableView/ScuTimetable.TimetableView.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ScuTimetable.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ScuTimetable.app.iml" />

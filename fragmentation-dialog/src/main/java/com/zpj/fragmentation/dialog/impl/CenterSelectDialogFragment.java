@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
 import com.zpj.fragmentation.dialog.R;
+import com.zpj.fragmentation.dialog.utils.DialogThemeUtils;
 import com.zpj.recyclerview.EasyRecyclerView;
 import com.zpj.utils.ScreenUtils;
 import com.zpj.widget.checkbox.SmoothCheckBox;
@@ -63,10 +64,17 @@ public class CenterSelectDialogFragment<T> extends CenterDialogFragment {
     protected void initView(View view, @Nullable Bundle savedInstanceState) {
         super.initView(view, savedInstanceState);
         TextView tvTitle = findViewById(R.id.tv_title);
+        tvTitle.setTextColor(DialogThemeUtils.getMajorTextColor(context));
         tvTitle.setText(title);
         LinearLayout buttons = findViewById(R.id.layout_buttons);
         if (isMultiple) {
             buttons.setVisibility(View.VISIBLE);
+            TextView tvCancel = buttons.findViewById(R.id.tv_cancel);
+            TextView tvOk = buttons.findViewById(R.id.tv_ok);
+            tvCancel.setTextColor(DialogThemeUtils.getNegativeTextColor(context));
+            tvOk.setTextColor(DialogThemeUtils.getPositiveTextColor(context));
+            tvCancel.setOnClickListener(v -> onSelect());
+            tvOk.setOnClickListener(v -> onSelect());
         } else {
             buttons.setVisibility(View.GONE);
         }
@@ -79,7 +87,9 @@ public class CenterSelectDialogFragment<T> extends CenterDialogFragment {
                 .onBindViewHolder((holder, list, position, ppayloads) -> {
                     ImageView iconView = holder.getView(R.id.icon_view);
                     TextView titleView = holder.getView(R.id.title_view);
+                    titleView.setTextColor(DialogThemeUtils.getMajorTextColor(context));
                     TextView contentView = holder.getView(R.id.content_view);
+                    contentView.setTextColor(DialogThemeUtils.getNormalTextColor(context));
                     final SmoothCheckBox checkBox = holder.getView(R.id.check_box);
                     checkBox.setChecked(selectedList.contains(position), true);
                     holder.setOnItemClickListener(v -> {
@@ -97,7 +107,7 @@ public class CenterSelectDialogFragment<T> extends CenterDialogFragment {
                                 onSelected(holder.getAdapterPosition());
                                 easyRecyclerView.notifyItemChanged(holder.getAdapterPosition());
                             }
-                            dismiss();
+                            onSelect();
                         }
                     });
                     if (iconCallback == null) {
@@ -125,11 +135,20 @@ public class CenterSelectDialogFragment<T> extends CenterDialogFragment {
     @Override
     public void onDismiss() {
         super.onDismiss();
+//        if (onSingleSelectListener != null) {
+//            onSingleSelectListener.onSelect(selectedList.get(0), list.get(selectedList.get(0)));
+//        } else if (onMultiSelectListener != null) {
+//            onMultiSelectListener.onSelect(selectedList, list);
+//        }
+    }
+
+    private void onSelect() {
         if (onSingleSelectListener != null) {
             onSingleSelectListener.onSelect(selectedList.get(0), list.get(selectedList.get(0)));
         } else if (onMultiSelectListener != null) {
             onMultiSelectListener.onSelect(selectedList, list);
         }
+        dismiss();
     }
 
     public CenterSelectDialogFragment<T> setTitle(String title) {

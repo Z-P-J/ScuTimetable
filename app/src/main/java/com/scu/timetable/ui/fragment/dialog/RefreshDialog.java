@@ -1,4 +1,4 @@
-package com.scu.timetable.ui.popup;
+package com.scu.timetable.ui.fragment.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,7 +20,7 @@ import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
 
 import org.json.JSONObject;
 
-public class RefreshPopup extends CenterDialogFragment {
+public class RefreshDialog extends CenterDialogFragment {
 
     private static final String TAG = "RefreshPopup";
 

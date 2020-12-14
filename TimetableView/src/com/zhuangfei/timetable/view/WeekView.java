@@ -347,7 +347,7 @@ public class WeekView extends LinearLayout implements WeekViewEnable<WeekView>, 
 
     @Override
     public void onGlobalLayout() {
-        Toast.makeText(getContext(), "onGlobalLayout", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getContext(), "onGlobalLayout", Toast.LENGTH_SHORT).show();
         View itemView = container.getChildAt(curWeek - 1);
         int itemWidth = itemView.getWidth();
         int scrollViewWidth = scrollView.getMeasuredWidth();

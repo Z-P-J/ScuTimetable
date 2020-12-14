@@ -1,8 +1,7 @@
-package com.scu.timetable.ui.popup;
+package com.scu.timetable.ui.fragment.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,21 +10,20 @@ import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.fragment.DetailFragment;
-import com.scu.timetable.ui.widget.DetailLayout;
 import com.zpj.fragmentation.dialog.base.BottomDialogFragment;
 
-public class SubjectDetailPopup extends BottomDialogFragment {
+public class SubjectDetailDialog2 extends BottomDialogFragment {
 
     private ScuSubject subject;
 
-    public SubjectDetailPopup setSubject(ScuSubject subject) {
+    public SubjectDetailDialog2 setSubject(ScuSubject subject) {
         this.subject = subject;
         return this;
     }
 
     @Override
     protected int getContentLayoutId() {
-        return R.layout.layout_subject_detail;
+        return R.layout.layout_subject_detail_2;
     }
 
     @Override
@@ -37,25 +35,21 @@ public class SubjectDetailPopup extends BottomDialogFragment {
             return;
         }
 
-        TextView courseName = findViewById(R.id.course_name);
-        DetailLayout teacherName = findViewById(R.id.teacher_name);
-        DetailLayout classRoom = findViewById(R.id.class_room);
-        DetailLayout classTime = findViewById(R.id.class_time);
+        TextView tvCourseName = findViewById(R.id.tv_course_name);
+        TextView tvCourseRoom = findViewById(R.id.tv_course_room);
+        TextView tvCourseTeacher = findViewById(R.id.tv_course_teacher);
+        TextView tvCourseTime = findViewById(R.id.tv_course_time);
 
-        courseName.setText(subject.getCourseName());
-        teacherName.setContent(subject.getTeacher());
-        classRoom.setContent(subject.getRoom());
-        classTime.setContent(subject.getClassTime());
-
-        if (!TextUtils.isEmpty(subject.getNote())) {
-            DetailLayout noteLayout = findViewById(R.id.layout_note);
-            noteLayout.setVisibility(View.VISIBLE);
-            noteLayout.setContent(subject.getNote());
-        }
+        tvCourseName.setText(subject.getCourseName());
+        tvCourseTeacher.setText(subject.getTeacher());
+        tvCourseRoom.setText(subject.getRoom());
+        tvCourseTime.setText(subject.getWeekDescription() + " | " + subject.getStart() + " - " + subject.getEnd() + "节");
 
         ImageView note = findViewById(R.id.subject_note);
         note.setOnClickListener(v -> {
-            new SubjectNotePopup().setSubject(subject).show(context);
+            new SubjectNoteDialog()
+                    .setSubject(subject)
+                    .show(context);
             dismiss();
         });
         ImageView more = findViewById(R.id.subject_more);
