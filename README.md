@@ -1,53 +1,45 @@
-# scuTimetable
-一个简单的四川大学课程表android客户端（~~由于川大教务系统更新了，可能该软件已不能使用~~）。
+# 川大课程表ScuTimetable
+川大课程表安卓应用，模拟登录四川大学教务系统，获取课程表信息并展示，支持一键评教，课程表桌面插件。
+
 软件已上架手机乐园，[下载地址](https://soft.shouji.com.cn/down/1555815.html)
 
 ## 截图
 <div>
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot5.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot6.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot7.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot8.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot9.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot10.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot11.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot12.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot13.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot14.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot15.jpg" height="330" width="190">
+    <img src="screenshots/screenshot5.jpg" width="24%">
+    <img src="screenshots/screenshot6.jpg" width="24%">
+    <img src="screenshots/screenshot7.jpg" width="24%">
+    <img src="screenshots/screenshot8.jpg" width="24%">
+    <img src="screenshots/screenshot9.jpg" width="24%">
+    <img src="screenshots/screenshot10.jpg" width="24%">
+    <img src="screenshots/screenshot11.jpg" width="24%">
+    <img src="screenshots/screenshot12.jpg" width="24%">
+    <img src="screenshots/screenshot13.jpg" width="24%">
+    <img src="screenshots/screenshot14.jpg" width="24%">
+    <img src="screenshots/screenshot15.jpg" width="24%">
 </div>
 
 
 ## 更新日志
-### v1.0.0
-    ### 川大课表第一个版本
-    ### v1.0.0版本是我初学Android时写的，时隔几月，发现代码又臭又长，惨不忍睹（虽然现在仍然很糟糕），哈哈~
-    ### 居然有人star了该项目，快感动哭了，决定重构软件！
-    
----------------------------------------
-    
-### v1.1.0
-    2019/05/08
-    特别感谢开源项目https://github.com/zfman/TimetableView
-    更新内容：1.重写软件，更换包名为com.scu.timetable
-             2.全新登录界面，全新课表展示界面呢
-             3.修复由于川大教务系统更换后无法登录的问题
-#### v1.1.0截图
-<div>
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot1.png" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot2.png" height="330" width="190">
-</div>
+### v1.5.0
+    2019/06/02
+    更新内容：1.支持查看其他学期的课表信息
+             2.支持一键评教
+             3.增加检查更新功能
 
----------------------------------------
-
-### v1.2.0
-    2019/05/10
-    更新内容：1.增加桌面插件，方便快捷的查看课表
-             2.其他优化
-#### v1.2.0截图
+### v1.4.0
+    2019/05/16
+    更新内容：1.新增桌面插件透明模式
+             2.新增注销登录功能
+             3.新增课表刷新功能
+             4.完善课程详细信息查看
+             5.完善备注功能
+             6.修复一些bug
+#### v1.4.0截图
 <div>
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot4.png" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot3.png" height="330" width="190">
+    <img src="screenshots/screenshot8.jpg" width="24%">
+    <img src="screenshots/screenshot12.jpg" width="24%">
+    <img src="screenshots/screenshot13.jpg" width="24%">
+    <img src="screenshots/screenshot14.jpg" width="24%">
 </div>
 
 ### v1.3.0
@@ -60,39 +52,45 @@
              6.修复点击空白位置显示旗标位置不对的bug
 #### v1.3.0截图
 <div>
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot6.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot7.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot10.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot11.jpg" height="330" width="190">
+    <img src="screenshots/screenshot6.jpg" width="24%">
+    <img src="screenshots/screenshot7.jpg" width="24%">
+    <img src="screenshots/screenshot10.jpg" width="24%">
+    <img src="screenshots/screenshot11.jpg" width="24%">
 </div>
 
-### v1.4.0
-    2019/05/16
-    更新内容：1.新增桌面插件透明模式
-             2.新增注销登录功能
-             3.新增课表刷新功能
-             4.完善课程详细信息查看
-             5.完善备注功能
-             6.修复一些bug
-#### v1.4.0截图
+### v1.2.0
+    2019/05/10
+    更新内容：1.增加桌面插件，方便快捷的查看课表
+             2.其他优化
+#### v1.2.0截图
 <div>
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot8.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot12.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot13.jpg" height="330" width="190">
-    <img src="https://github.com/Z-P-J/ScuTimetable/raw/master/screenshots/screenshot14.jpg" height="330" width="190">
+    <img src="screenshots/screenshot4.png" width="24%">
+    <img src="screenshots/screenshot3.png" width="24%">
 </div>
 
-### v1.5.0
-    2019/06/02
-    更新内容：1.支持查看其他学期的课表信息
-             2.支持一键评教
-             3.增加检查更新功能
+### v1.1.0
+    2019/05/08
+    特别感谢开源项目https://github.com/zfman/TimetableView
+    更新内容：1.重写软件，更换包名为com.scu.timetable
+             2.全新登录界面，全新课表展示界面呢
+             3.修复由于川大教务系统更换后无法登录的问题
+#### v1.1.0截图
+<div>
+    <img src="screenshots/screenshot1.png" width="24%">
+    <img src="screenshots/screenshot2.png" width="24%">
+</div>
+
+### v1.0.0
+    ### 川大课表第一个版本
+    ### v1.0.0版本是我初学Android时写的，时隔几月，发现代码又臭又长，惨不忍睹（虽然现在仍然很糟糕），哈哈~
+    ### 居然有人star了该项目，快感动哭了，决定重构软件！
+
+
+
 
 
 ## 该项目使用或参考了以下开源库
 [ZDownloader](https://github.com/Z-P-J/ZDownloader)
-
-[ZDialog](https://github.com/Z-P-J/ZDialog)
 
 [ZHttp](https://github.com/Z-P-J/ZHttp)
 
@@ -103,8 +101,6 @@
 [TimetableView](https://github.com/zfman/TimetableView)
 
 [Glide](https://github.com/bumptech/glide)
-
-[SwitchButton](https://github.com/zcweng/SwitchButton)
 
 [StateButton](https://github.com/niniloveyou/StateButton)
 
