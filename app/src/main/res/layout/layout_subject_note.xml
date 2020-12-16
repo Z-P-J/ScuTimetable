@@ -71,7 +71,7 @@
 
         </RelativeLayout>
 
-        <com.scu.timetable.ui.view.NoteEditText
+        <com.scu.timetable.ui.widget.NoteEditText
             android:id="@+id/edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

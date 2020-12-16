@@ -10,15 +10,12 @@ import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.scu.timetable.events.UpdateEvent;
 import com.scu.timetable.model.UpdateInfo;
-import com.zpj.utils.PrefsHelper;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.IHttp;
-import com.zpj.http.core.ObservableTask;
-import com.zpj.http.parser.html.nodes.Document;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
+import com.zpj.utils.PrefsHelper;
 
 import java.io.File;
 import java.net.Proxy;
@@ -29,7 +26,7 @@ import java.net.Proxy;
 public final class UpdateUtil {
 
     private final Context context;
-    private IHttp.OnSuccessListener<UpdateEvent> onSuccessListener;
+    private OnUpdateCheckedListener onUpdateCheckedListener;
     private IHttp.OnErrorListener onErrorListener;
 
 
@@ -58,8 +55,8 @@ public final class UpdateUtil {
         return this;
     }
 
-    public UpdateUtil setOnSuccessListener(IHttp.OnSuccessListener<UpdateEvent> onSuccessListener) {
-        this.onSuccessListener = onSuccessListener;
+    public UpdateUtil setOnUpdateCheckedListener(OnUpdateCheckedListener onUpdateCheckedListener) {
+        this.onUpdateCheckedListener = onUpdateCheckedListener;
         return this;
     }
 
@@ -72,78 +69,69 @@ public final class UpdateUtil {
 //                .flatMap((ObservableTask.OnFlatMapListener<Document, UpdateEvent>) (document, emitter) -> {
 //
 //                })
-                .onSuccess(new IHttp.OnSuccessListener<Document>() {
-                    @Override
-                    public void onSuccess(Document document) throws Exception {
-                        String versionName = document.selectFirst("versionname").text();
+                .onSuccess(document -> {
+                    String versionName = document.selectFirst("versionname").text();
 
-                        String newVersionName = versionName.trim();
-                        Log.d("newVersionName", "newVersionName=" + newVersionName);
+                    String newVersionName = versionName.trim();
+                    Log.d("newVersionName", "newVersionName=" + newVersionName);
 
-                        String ignoreVersion = PrefsHelper.with().getString("ignore_version", "");
-                        if (ignoreVersion.equals(newVersionName)) {
-                            return;
-                        }
+                    String ignoreVersion = PrefsHelper.with().getString("ignore_version", "");
+                    if (ignoreVersion.equals(newVersionName)) {
+                        return;
+                    }
 
-                        String baseinfof = document.selectFirst("baseinfof").text();
-                        Log.d("baseinfof", "baseinfof=" + baseinfof);
+                    String baseinfof = document.selectFirst("baseinfof").text();
+                    Log.d("baseinfof", "baseinfof=" + baseinfof);
 
-                        String currentVersionName = getVersionName(context).trim();
-                        Log.d("currentVersionName", "currentVersionName=" + newVersionName);
+                    String currentVersionName = getVersionName(context).trim();
+                    Log.d("currentVersionName", "currentVersionName=" + newVersionName);
 
-                        boolean isNew = compareVersions(currentVersionName, newVersionName);
-                        Log.d("isNew", "isNew=" + isNew);
+                    boolean isNew = compareVersions(currentVersionName, newVersionName);
+                    Log.d("isNew", "isNew=" + isNew);
 
-                        if (isNew) {
-                            String updateContent = "";
-                            String fileSize = "";
-                            String updateTime = "";
-                            Elements elements = document.select("introduce");
-                            for (Element element : elements) {
-                                String title = element.selectFirst("introducetitle").text();
-                                if ("更新内容".equals(title)) {
-                                    updateContent = element.select("introduceContent").get(0).text();
-                                    Log.d("更新内容", "更新内容=" + updateContent);
-                                } else if ("软件信息".equals(title)) {
-                                    String content = element.selectFirst("introduceContent").text();
-                                    fileSize = content.substring(content.indexOf("大小：") + 3, content.indexOf("MB") + 2);
-                                    int index = content.indexOf("更新：");
-                                    updateTime = content.substring(index + 3, index + 13);
-                                }
+                    if (isNew) {
+                        String updateContent = "";
+                        String fileSize = "";
+                        String updateTime = "";
+                        Elements elements = document.select("introduce");
+                        for (Element element : elements) {
+                            String title = element.selectFirst("introducetitle").text();
+                            if ("更新内容".equals(title)) {
+                                updateContent = element.select("introduceContent").get(0).text();
+                                Log.d("更新内容", "更新内容=" + updateContent);
+                            } else if ("软件信息".equals(title)) {
+                                String content = element.selectFirst("introduceContent").text();
+                                fileSize = content.substring(content.indexOf("大小：") + 3, content.indexOf("MB") + 2);
+                                int index = content.indexOf("更新：");
+                                updateTime = content.substring(index + 3, index + 13);
                             }
-                            UpdateInfo bean = new UpdateInfo();
-                            bean.setVersionName(versionName);
-                            bean.setUpdateContent(updateContent);
-                            bean.setFileSize(fileSize);
-                            bean.setUpdateTime(updateTime);
-                            Log.d("bean", "bean=" + bean.toString());
-//                            EventBus.getDefault().post(UpdateEvent.create().setUpdateInfo(bean));
-
-
-
-
-                            ZHttp.get("http://tt.shouji.com.cn/wap/down/cmwap/package?sjly=199&id=1555815&package=" + context.getPackageName())
-                                    .proxy(Proxy.NO_PROXY)
-                                    .referer("https://wap.shouji.com.cn/")
-                                    .ignoreContentType(true)
-                                    .toXml()
-                                    .onSuccess(data -> {
-                                        String url = data.selectFirst("url").text();
-                                        if (TextUtils.isEmpty(url)) {
-                                            onSuccessListener.onSuccess(UpdateEvent.create().setLatestVersion(true));
-                                        } else {
-                                            bean.setDownloadUrl(url);
-                                            onSuccessListener.onSuccess(UpdateEvent.create().setUpdateInfo(bean));
-                                        }
-                                    })
-                                    .onError(onErrorListener)
-                                    .subscribe();
-
-                        } else {
-//                            EventBus.getDefault().post(UpdateEvent.create().setLatestVersion(true));
-//                            emitter.onNext(UpdateEvent.create().setLatestVersion(true));
-                            onSuccessListener.onSuccess(UpdateEvent.create().setLatestVersion(true));
                         }
+                        UpdateInfo bean = new UpdateInfo();
+                        bean.setVersionName(versionName);
+                        bean.setUpdateContent(updateContent);
+                        bean.setFileSize(fileSize);
+                        bean.setUpdateTime(updateTime);
+                        Log.d("bean", "bean=" + bean.toString());
+
+                        ZHttp.get("http://tt.shouji.com.cn/wap/down/cmwap/package?sjly=199&id=1555815&package=" + context.getPackageName())
+                                .proxy(Proxy.NO_PROXY)
+                                .referer("https://wap.shouji.com.cn/")
+                                .ignoreContentType(true)
+                                .toXml()
+                                .onSuccess(data -> {
+                                    String url = data.selectFirst("url").text();
+                                    if (TextUtils.isEmpty(url)) {
+                                        onUpdateCheckedListener.onChecked(null, true);
+                                    } else {
+                                        bean.setDownloadUrl(url);
+                                        onUpdateCheckedListener.onChecked(bean, false);
+                                    }
+                                })
+                                .onError(onErrorListener)
+                                .subscribe();
+
+                    } else {
+                        onUpdateCheckedListener.onChecked(null, true);
                     }
                 })
                 .onError(onErrorListener)
@@ -195,6 +183,10 @@ public final class UpdateUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public interface OnUpdateCheckedListener {
+        void onChecked(UpdateInfo info, boolean isLastedVersion);
     }
 
 }

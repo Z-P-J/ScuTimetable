@@ -10,7 +10,7 @@ import com.zpj.fragmentation.SupportActivity;
  * @author Z-P-J
  * @date 2019
  */
-public final class LoginActivity extends SupportActivity {
+public final class LoginActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,6 @@ public final class LoginActivity extends SupportActivity {
             fragment = new LoginFragment();
         }
         loadRootFragment(R.id.content, fragment);
-
     }
 
 }

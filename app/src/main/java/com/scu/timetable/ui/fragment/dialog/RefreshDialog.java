@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
-import com.scu.timetable.events.RefreshEvent;
+import com.scu.timetable.utils.EventBus;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
@@ -112,8 +112,9 @@ public class RefreshDialog extends CenterDialogFragment {
                         public void onGetTimetableFinished() {
                             Log.d(TAG, "onGetTimetable onGetTimetableFinished");
                             AToast.normal("刷新课表成功！");
+                            EventBus.sendRefreshEvent();
                             dismiss();
-                            new RefreshEvent().post();
+
                         }
 
                         @Override

@@ -15,6 +15,7 @@ import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.base.SkinFragment;
 import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
 import com.scu.timetable.ui.widget.DetailLayout;
+import com.scu.timetable.utils.EventBus;
 import com.scu.timetable.utils.SuperLinkUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
@@ -43,13 +44,13 @@ public class SettingFragment extends SkinFragment
     }
 
     @Override
-    protected boolean supportSwipeBack() {
-        return true;
+    public int getToolbarTitleId() {
+        return R.string.text_title_setting;
     }
 
     @Override
-    public CharSequence getToolbarTitle(Context context) {
-        return "设置";
+    protected boolean supportSwipeBack() {
+        return true;
     }
 
     @Override
@@ -119,6 +120,7 @@ public class SettingFragment extends SkinFragment
         if (onDismissListener != null) {
             onDismissListener.onDismiss(null);
         }
+        EventBus.sendUpdateSettingEvent();
         super.onDestroyView();
     }
 

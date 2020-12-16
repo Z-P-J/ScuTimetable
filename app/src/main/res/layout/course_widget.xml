@@ -46,7 +46,6 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/widget_bottom_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -54,7 +53,6 @@
             >
             <LinearLayout
                 android:orientation="horizontal"
-                android:id="@+id/widget_bottom_control"
                 android:paddingStart="10dp"
                 android:paddingEnd="2.5dp"
                 android:layout_width="match_parent"
@@ -91,25 +89,21 @@
                     <TextView
                         android:textSize="9sp"
                         android:textColor="@color/general_light_black"
-                        android:id="@+id/course_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/tip_display" />
                 </LinearLayout>
                 <LinearLayout
                     android:orientation="horizontal"
-                    android:id="@+id/course_widget_4_4_change_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/widget_pre_pager"
                         android:background="@drawable/btn_back_selector"
                         android:layout_width="36dp"
                         android:layout_height="36dp"/>
 
                     <ImageView
-                        android:id="@+id/widget_next_pager"
                         android:background="@drawable/btn_next_selector"
                         android:layout_width="36dp"
                         android:layout_height="36dp"/>

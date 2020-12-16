@@ -9,7 +9,7 @@
     android:layout_gravity="center"
     >
 
-    <com.scu.timetable.ui.view.ResizableImageView
+    <com.scu.timetable.ui.widget.ResizableImageView
         android:id="@+id/iv_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
             tools:visibility="visible"
             />
 
-        <com.scu.timetable.ui.view.NumberProgressBar
+        <com.scu.timetable.ui.widget.NumberProgressBar
             android:id="@+id/npb_progress"
             style="@style/XUpdate_ProgressBar_Red"
             android:paddingTop="10dp"
@@ -157,7 +157,6 @@
         >
 
         <View
-            android:id="@+id/line"
             android:layout_width="1dp"
             android:layout_height="20dp"
             android:background="#d8d8d8"

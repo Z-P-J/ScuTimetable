@@ -1,12 +1,8 @@
 package com.scu.timetable.utils;
 
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-import com.scu.timetable.events.EvaluationEvent;
 import com.scu.timetable.model.EvaluationInfo;
-import com.zpj.utils.PrefsHelper;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.Connection;
 import com.zpj.http.core.IHttp;
@@ -14,16 +10,10 @@ import com.zpj.http.core.ObservableTask;
 import com.zpj.http.parser.html.nodes.Document;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
+import com.zpj.utils.PrefsHelper;
 
-import org.greenrobot.eventbus.EventBus;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-
-import io.reactivex.ObservableEmitter;
 
 /**
  * @author Z-P-J
@@ -280,14 +270,7 @@ public final class EvaluationUtil {
                             count++;
                         }
                         Log.d("map", "map.size=" + map.size());
-//                            EventBus.getDefault().post(
-//                                    EvaluationEvent.create()
-//                                            .setConnection(connection)
-//                                            .setEvaluationBean(bean)
-//                            );
-                        emitter.onNext(EvaluationEvent.create()
-                                .setConnection(connection)
-                                .setEvaluationBean(bean));
+                        emitter.onNext(new EvaluationEvent(bean, connection));
                     }
                 })
                 .onSuccess(onSuccessListener)
@@ -320,6 +303,25 @@ public final class EvaluationUtil {
         int size = isAssistantEvaluation ? ASSISTANT_SUBJECTIVE_EVALUATIONS.length : TEACHER_SUBJECTIVE_EVALUATIONS.length;
         int random = (int) (Math.random() * size);
         return isAssistantEvaluation ? ASSISTANT_SUBJECTIVE_EVALUATIONS[random] : TEACHER_SUBJECTIVE_EVALUATIONS[random];
+    }
+
+    public static class EvaluationEvent {
+
+        private final EvaluationInfo bean;
+        private final Connection connection;
+
+        private EvaluationEvent(EvaluationInfo bean, Connection connection) {
+            this.bean = bean;
+            this.connection = connection;
+        }
+
+        public EvaluationInfo getEvaluationBean() {
+            return bean;
+        }
+
+        public Connection getConnection() {
+            return connection;
+        }
     }
 
 }

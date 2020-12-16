@@ -23,5 +23,5 @@
 <!--            android:interpolator="@android:anim/accelerate_interpolator"-->
 <!--            android:duration="360"/>-->
     <alpha android:fromAlpha="1.0" android:toAlpha="1.0"
-        android:duration="0"/>
+        android:duration="360"/>
 </set>

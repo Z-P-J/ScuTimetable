@@ -45,7 +45,6 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/id_more"
         android:text="功能"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"

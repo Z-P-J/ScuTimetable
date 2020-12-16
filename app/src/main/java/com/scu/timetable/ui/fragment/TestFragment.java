@@ -8,12 +8,11 @@ import android.view.View;
 import com.scu.timetable.R;
 import com.scu.timetable.model.SemesterInfo;
 import com.scu.timetable.ui.fragment.base.SkinFragment;
-import com.scu.timetable.ui.view.BaseWeatherPanelView;
-import com.scu.timetable.ui.view.WeatherPanelView;
+import com.scu.timetable.ui.widget.BaseWeatherPanelView;
+import com.scu.timetable.ui.widget.WeatherPanelView;
 import com.scu.timetable.utils.TimetableHelper;
 import com.xw.repo.supl.ISlidingUpPanel;
 import com.xw.repo.supl.SlidingUpPanelLayout;
-import com.zpj.fragmentation.BaseFragment;
 import com.zpj.utils.ScreenUtils;
 
 import java.util.ArrayList;

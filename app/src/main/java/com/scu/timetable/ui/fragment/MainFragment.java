@@ -1,5 +1,6 @@
 package com.scu.timetable.ui.fragment;
 
+import android.arch.lifecycle.LifecycleObserver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 
 import com.github.zagum.expandicon.ExpandIconView;
 import com.scu.timetable.R;
-import com.scu.timetable.events.RefreshEvent;
+import com.scu.timetable.utils.EventBus;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.model.SemesterInfo;
 import com.scu.timetable.ui.activity.LoginActivity;
@@ -27,16 +28,14 @@ import com.zhuangfei.timetable.listener.IWeekView;
 import com.zhuangfei.timetable.listener.OnSlideBuildAdapter;
 import com.zhuangfei.timetable.model.Schedule;
 import com.zhuangfei.timetable.view.WeekView;
-import com.zpj.fragmentation.BaseFragment;
+import com.zpj.fragmentation.dialog.IDialog;
 import com.zpj.fragmentation.dialog.impl.AttachListDialogFragment;
 import com.zpj.fragmentation.dialog.impl.BottomListDialogFragment;
 import com.zpj.utils.PrefsHelper;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * @author Z-P-J
@@ -52,7 +51,6 @@ public final class MainFragment extends SkinFragment implements View.OnClickList
 
     private LinearLayout layout;
     private TextView titleTextView;
-    private List<ScuSubject> scuSubjects = new ArrayList<>();
 
     private int currentWeek;
 
@@ -67,9 +65,16 @@ public final class MainFragment extends SkinFragment implements View.OnClickList
     }
 
     @Override
-    protected void initView(View view, @Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.onRefresh(this, s -> {
+            initTimetableView();
+            initData();
+        });
+    }
 
-        EventBus.getDefault().register(this);
+    @Override
+    protected void initView(View view, @Nullable Bundle savedInstanceState) {
 
         currentWeek = TimetableHelper.getCurrentWeek();
 
@@ -87,15 +92,9 @@ public final class MainFragment extends SkinFragment implements View.OnClickList
         initData();
     }
 
-    @Override
-    public void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
-
     private void initData() {
         long time1 = System.currentTimeMillis();
-        scuSubjects = TimetableHelper.getSubjects(context);
+        List<ScuSubject> scuSubjects = TimetableHelper.getSubjects(context);
         long time2 = System.currentTimeMillis();
 
         mWeekView.source(scuSubjects).showView();
@@ -213,7 +212,7 @@ public final class MainFragment extends SkinFragment implements View.OnClickList
                             showChooseSemesterDialog();
                             break;
                         case 2:
-                            showRefreshDialog();
+                            new RefreshDialog().show(context);
                             break;
                         case 3:
                             start(new EvaluationFragment());
@@ -255,46 +254,43 @@ public final class MainFragment extends SkinFragment implements View.OnClickList
                     }
                     TimetableHelper.setCurrentSemester(item.getSemesterCode(), item.getSemesterName());
 //                    ShowLoadingEvent.post("切换中");
-                    popup.dismiss();
-                })
-                .setOnDismissListener(() -> {
+                    EventBus.showLoading("切换中");
                     initData();
-//                    HideLoadingEvent.postEvent();
+//                    popup.dismiss();
+                    EventBus.hideLoading(popup::dismiss, 1000);
                 })
+//                .setOnDismissListener(() -> {
+//                    initData();
+////                    HideLoadingEvent.postEvent();
+//                })
                 .show(context);
-    }
-
-    private void showRefreshDialog() {
-        new RefreshDialog().show(context);
     }
 
     private void showSettingDialogFragment() {
         SettingFragment settingFragment = new SettingFragment();
-        settingFragment.setOnDismissListener(new SettingFragment.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (!TimetableHelper.isVisitorMode() && !PrefsHelper.with().getBoolean("logined", false)) {
-                    startActivity(new Intent(getContext(), LoginActivity.class));
-                    _mActivity.finish();
-                    return;
-                }
-                boolean sundayIsFirstDay = TimetableHelper.sundayIsFirstDay();
-                boolean showWeekends = TimetableHelper.isShowWeekends();
-                boolean showNotCurWeek = TimetableHelper.isShowNotCurWeek();
-                boolean showTime = TimetableHelper.isShowTime();
-                int currentWeek = TimetableHelper.getCurrentWeek();
-                if (sundayIsFirstDay != mTimetableView.getSundayIsFirstDay()
-                        || showWeekends != mTimetableView.isShowWeekends()
-                        || showNotCurWeek != mTimetableView.isShowNotCurWeek()
-                        || currentWeek != mTimetableView.curWeek()) {
-                    mTimetableView.curWeek(currentWeek)
-                            .setSundayIsFirstDay(sundayIsFirstDay)
-                            .isShowWeekends(showWeekends)
-                            .isShowNotCurWeek(showNotCurWeek)
-                            .updateView();
-                }
-                toggleTime(showTime);
+        EventBus.onUpdateSetting(settingFragment, s -> {
+//            EventBus.unSubscribeUpdateSettingEvent();
+            if (!TimetableHelper.isVisitorMode() && !PrefsHelper.with().getBoolean("logined", false)) {
+                startActivity(new Intent(getContext(), LoginActivity.class));
+                _mActivity.finish();
+                return;
             }
+            boolean sundayIsFirstDay = TimetableHelper.sundayIsFirstDay();
+            boolean showWeekends = TimetableHelper.isShowWeekends();
+            boolean showNotCurWeek = TimetableHelper.isShowNotCurWeek();
+            boolean showTime = TimetableHelper.isShowTime();
+            int currentWeek = TimetableHelper.getCurrentWeek();
+            if (sundayIsFirstDay != mTimetableView.getSundayIsFirstDay()
+                    || showWeekends != mTimetableView.isShowWeekends()
+                    || showNotCurWeek != mTimetableView.isShowNotCurWeek()
+                    || currentWeek != mTimetableView.curWeek()) {
+                mTimetableView.curWeek(currentWeek)
+                        .setSundayIsFirstDay(sundayIsFirstDay)
+                        .isShowWeekends(showWeekends)
+                        .isShowNotCurWeek(showNotCurWeek)
+                        .updateView();
+            }
+            toggleTime(showTime);
         });
         start(settingFragment);
     }
@@ -375,12 +371,6 @@ public final class MainFragment extends SkinFragment implements View.OnClickList
     public void showWeekView() {
         mWeekView.isShow(true);
         expandIconView.switchState();
-    }
-
-    @Subscribe
-    public void onRefreshEvent(RefreshEvent event) {
-        initTimetableView();
-        initData();
     }
 
 }

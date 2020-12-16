@@ -1,6 +1,5 @@
-<resources>
-    <string name="app_name">川大课表</string>
-    <string name="appwidget_text">EXAMPLE</string>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name" >川大课表</string>
     <string name="english_week_display"></string>
     <string name="week_display">初始化</string>
     <string name="tip_display"></string>
@@ -15,5 +14,7 @@
     <string name="text_login_failed">登录失败！</string>
     <string name="text_getting_data">获取课表数据中…</string>
     <string name="text_getting_data_successfully">获取课表数据中…</string>
+    <string name="text_title_evaluate">一键评教</string>
+    <string name="text_title_setting">设置</string>
 
 </resources>

@@ -14,7 +14,7 @@ import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.model.UpdateInfo;
-import com.scu.timetable.ui.view.NumberProgressBar;
+import com.scu.timetable.ui.widget.NumberProgressBar;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.config.MissionConfig;

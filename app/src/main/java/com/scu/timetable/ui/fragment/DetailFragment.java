@@ -3,14 +3,12 @@ package com.scu.timetable.ui.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.TextView;
 
 import com.scu.timetable.R;
-import com.scu.timetable.events.StartFragmentEvent;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.fragment.base.SkinFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.zpj.fragmentation.BaseFragment;
+import com.zpj.rxbus.RxSubscriber;
 
 public class DetailFragment extends SkinFragment {
 
@@ -25,7 +23,7 @@ public class DetailFragment extends SkinFragment {
     }
 
     public static void start(ScuSubject subject) {
-        StartFragmentEvent.start(newInstance(subject));
+        RxSubscriber.post(newInstance(subject));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.scu.timetable.ui.fragment;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -19,15 +20,13 @@ import android.widget.TextView;
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
-import com.scu.timetable.events.EvaluationEvent;
 import com.scu.timetable.model.EvaluationInfo;
 import com.scu.timetable.ui.fragment.base.SkinFragment;
 import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
-import com.scu.timetable.ui.view.ElasticScrollView;
+import com.scu.timetable.ui.widget.ElasticScrollView;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
 import com.scu.timetable.utils.LoginUtil;
-import com.zpj.fragmentation.BaseFragment;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 
 import org.json.JSONArray;
@@ -68,7 +67,7 @@ public class EvaluationFragment extends SkinFragment
 
     private boolean isEvaluating;
 
-    private EvaluationEvent currentEvent;
+    private EvaluationUtil.EvaluationEvent currentEvent;
 
     private final CountDownTimer timer = new CountDownTimer(10 * 1000, 1000) {
         @Override
@@ -93,16 +92,14 @@ public class EvaluationFragment extends SkinFragment
         }
     };
 
-
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        EventBus.getDefault().register(this);
-//    }
-
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_evaluation;
+    }
+
+    @Override
+    public int getToolbarTitleId() {
+        return R.string.text_title_evaluate;
     }
 
     @Override
@@ -143,12 +140,6 @@ public class EvaluationFragment extends SkinFragment
             }
         });
     }
-
-    //    @Override
-//    public void onDestroyView() {
-//        EventBus.getDefault().unregister(this);
-//        super.onDestroyView();
-//    }
 
     @Override
     public boolean onBackPressedSupport() {

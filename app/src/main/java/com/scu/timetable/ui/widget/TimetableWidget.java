@@ -20,11 +20,11 @@ public class TimetableWidget extends AppWidgetProvider {
     public void onEnabled(Context context) {
         super.onEnabled(context);
         Log.d("TimetableWidget", "onEnabled");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(new Intent(context, WidgetService.class));
-        } else {
-            context.startService(new Intent(context, WidgetService.class));
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            context.startForegroundService(new Intent(context, WidgetService.class));
+//        } else {
+//            context.startService(new Intent(context, WidgetService.class));
+//        }
     }
 
     @Override
@@ -60,14 +60,14 @@ public class TimetableWidget extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
         Log.d("TimetableWidget", "onDeleted");
-        context.stopService(new Intent(context, WidgetService.class));
+//        context.stopService(new Intent(context, WidgetService.class));
     }
 
     @Override
     public void onDisabled(Context context) {
         super.onDisabled(context);
         Log.d("TimetableWidget", "onDisabled");
-        context.stopService(new Intent(context, WidgetService.class));
+//        context.stopService(new Intent(context, WidgetService.class));
     }
 
     @Override

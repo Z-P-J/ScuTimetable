@@ -100,8 +100,6 @@
 
 [TimetableView](https://github.com/zfman/TimetableView)
 
-[Glide](https://github.com/bumptech/glide)
-
 [StateButton](https://github.com/niniloveyou/StateButton)
 
 [AVLoadingIndicatorView](https://github.com/81813780/AVLoadingIndicatorView)

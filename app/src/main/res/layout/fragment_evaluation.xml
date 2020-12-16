@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.scu.timetable.ui.view.ElasticScrollView
+            <com.scu.timetable.ui.widget.ElasticScrollView
                 android:id="@+id/scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -49,7 +49,7 @@
 
                 </LinearLayout>
 
-            </com.scu.timetable.ui.view.ElasticScrollView>
+            </com.scu.timetable.ui.widget.ElasticScrollView>
 
 
             <LinearLayout

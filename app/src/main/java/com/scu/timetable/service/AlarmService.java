@@ -28,12 +28,10 @@ import android.widget.Toast;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.IAlarmAidlInterface;
-import com.scu.timetable.ui.activity.MainActivity;
 import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
+import com.scu.timetable.ui.activity.MainActivity;
 import com.scu.timetable.utils.TimetableHelper;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -165,7 +163,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     public void onCreate() {
         super.onCreate();
         Log.d("AlarmService", "onCreate");
-//        EventBus.getDefault().register(this);
         isCreate = true;
         init();
     }
@@ -228,7 +225,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
             unregisterReceiver(alarmReceiver);
         }
         super.onDestroy();
-//        EventBus.getDefault().unregister(this);
         timer = null;
 
         start(this);

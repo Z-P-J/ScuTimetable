@@ -4,11 +4,9 @@
     <bytecodeTargetLevel>
       <module name="app" target="1.8" />
       <module name="fragmentation" target="1.8" />
-      <module name="ScuTimetable.app" target="1.8" />
-      <module name="ScuTimetable.fragmentation" target="1.8" />
-      <module name="ScuTimetable.fragmentation-dialog" target="1.8" />
-      <module name="ScuTimetable.TimetableView" target="1.8" />
-      <module name="ScuTimetable.zdownloader" target="1.8" />
+      <module name="fragmentation-dialog" target="1.8" />
+      <module name="TimetableView" target="1.8" />
+      <module name="zdownloader" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -62,7 +62,7 @@ public class BottomListDialogFragment<T> extends BottomDialogFragment
             }
         }
 
-        EasyRecyclerView<T> recyclerView = new EasyRecyclerView<>(findViewById(R.id.recyclerView));
+        recyclerView = new EasyRecyclerView<>(findViewById(R.id.recyclerView));
         recyclerView.setData(list)
                 .setItemRes(R.layout._dialog_item_text)
                 .onBindViewHolder(this)

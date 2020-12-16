@@ -53,7 +53,7 @@
 
     </RelativeLayout>
 
-    <com.scu.timetable.ui.view.LineTextView
+    <com.scu.timetable.ui.widget.LineTextView
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

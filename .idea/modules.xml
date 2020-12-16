@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AndroidProjects.ScuTimetable.iml" filepath="$PROJECT_DIR$/.idea/modules/AndroidProjects.ScuTimetable.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TimetableView/ScuTimetable.TimetableView.iml" filepath="$PROJECT_DIR$/.idea/modules/TimetableView/ScuTimetable.TimetableView.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ScuTimetable.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ScuTimetable.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fragmentation/ScuTimetable.fragmentation.iml" filepath="$PROJECT_DIR$/.idea/modules/fragmentation/ScuTimetable.fragmentation.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fragmentation-dialog/ScuTimetable.fragmentation-dialog.iml" filepath="$PROJECT_DIR$/.idea/modules/fragmentation-dialog/ScuTimetable.fragmentation-dialog.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/zdownloader/ScuTimetable.zdownloader.iml" filepath="$PROJECT_DIR$/.idea/modules/zdownloader/ScuTimetable.zdownloader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ScuTimetable.iml" filepath="$PROJECT_DIR$/.idea/modules/ScuTimetable.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TimetableView/TimetableView.iml" filepath="$PROJECT_DIR$/.idea/modules/TimetableView/TimetableView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fragmentation/fragmentation.iml" filepath="$PROJECT_DIR$/.idea/modules/fragmentation/fragmentation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fragmentation-dialog/fragmentation-dialog.iml" filepath="$PROJECT_DIR$/.idea/modules/fragmentation-dialog/fragmentation-dialog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/zdownloader/zdownloader.iml" filepath="$PROJECT_DIR$/.idea/modules/zdownloader/zdownloader.iml" />
       <module fileurl="file://$PROJECT_DIR$/zdownloader/zdownloader.iml" filepath="$PROJECT_DIR$/zdownloader/zdownloader.iml" group="ScuTimetable/zdownloader" />
     </modules>
   </component>
