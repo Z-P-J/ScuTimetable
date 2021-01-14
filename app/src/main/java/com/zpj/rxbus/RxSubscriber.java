@@ -49,7 +49,7 @@ public class RxSubscriber {
         RxBus.get().postSticky(key, o);
     }
 
-     static class KeyMessage {
+    static class KeyMessage {
         private final String key;
         private final Object o;
 

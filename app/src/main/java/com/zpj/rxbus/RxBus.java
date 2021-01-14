@@ -29,7 +29,7 @@ final class RxBus {
     //    private final Map<Class<?>, Object> mStickyEventMap;
     private final Map<Object, Object> mStickyEventMap;
 
-    public static RxBus get() {
+    static RxBus get() {
         if (INSTANCE == null) {
             synchronized (RxBus.class) {
                 if (INSTANCE == null) {

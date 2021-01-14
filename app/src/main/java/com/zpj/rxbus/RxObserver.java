@@ -1,14 +1,18 @@
 package com.zpj.rxbus;
 
+import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
 import android.text.TextUtils;
+import android.view.View;
 
-import com.dhh.rxlife2.LifecycleTransformer;
-import com.dhh.rxlife2.RxLife;
+import com.zpj.rxlife.LifecycleTransformer;
+import com.zpj.rxlife.RxLife;
+
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableTransformer;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -24,7 +28,8 @@ public class RxObserver<T> {
     private final Observable<T> observable;
     private Scheduler subscribeScheduler = Schedulers.io();
     private Scheduler observeScheduler = AndroidSchedulers.mainThread();
-    private ObservableTransformer<? super T, ? extends T> composer;
+//    private LifecycleTransformer<T> composer;
+    private final WeakHashMap<Object, LifecycleTransformer<T>> composerMap = new WeakHashMap<>();
 
     private RxObserver(Object o, Class<T> type) {
         this(o, null, type);
@@ -64,7 +69,7 @@ public class RxObserver<T> {
     }
 
     public static <S, T> RxPairObserver<S, T> with(@NonNull Object o, @NonNull String key, @NonNull Class<S> type1, @NonNull Class<T> type2) {
-        return new RxPairObserver<>(new RxObserver<>(o, key, RxBus.get().toObservable(key, type1, type2)));
+        return new RxPairObserver<S, T>(new RxObserver<>(o, key, RxBus.get().toObservable(key, type1, type2)));
     }
 
     public static <T> RxObserver<T> withSticky(@NonNull Object o, @NonNull Class<T> type) {
@@ -110,25 +115,29 @@ public class RxObserver<T> {
 //        return this;
 //    }
 
+    public RxObserver<T> bindTag(String tag) {
+        composerMap.put(tag, RxLife.bindTag(tag));
+        return this;
+    }
+
+    public void removeByTag(String tag) {
+        RxLife.removeTag(tag);
+    }
+
+    public RxObserver<T> bindView(View view) {
+        composerMap.put(view, RxLife.bindView(view));
+        return this;
+    }
+
     public RxObserver<T> bindToLife(LifecycleOwner lifecycleOwner) {
-        this.composer = RxLife.with(lifecycleOwner).bindToLifecycle();
-//        this.observable = this.observable.compose(RxLife.with(lifecycleOwner).bindToLifecycle());
+        composerMap.put(lifecycleOwner, RxLife.bindLifeOwner(lifecycleOwner));
         return this;
     }
 
     public RxObserver<T> bindToLife(LifecycleOwner lifecycleOwner, Lifecycle.Event event) {
-        this.composer = RxLife.with(lifecycleOwner).bindUntilEvent(event);
-//        this.observable = this.observable.compose(RxLife.with(lifecycleOwner).bindUntilEvent(event));
+        composerMap.put(lifecycleOwner, RxLife.bindLifeOwner(lifecycleOwner, event));
         return this;
     }
-
-    public RxObserver<T> bindOnDestroy(LifecycleOwner lifecycleOwner) {
-        return bindToLife(lifecycleOwner, Lifecycle.Event.ON_DESTROY);
-    }
-
-//    public void subscribe() {
-//        RxBus2.get().addSubscription(o, observable.subscribe());
-//    }
 
     public void subscribe(Consumer<T> next) {
 //        RxBus2.get().addSubscription(o, wrapObservable().subscribe(next));
@@ -136,62 +145,49 @@ public class RxObserver<T> {
     }
 
     public void subscribe(Consumer<T> next, Consumer<Throwable> error) {
-//        RxBus2.get().addSubscription(o, wrapObservable().subscribe(next, error));
-
-
-        Observable<T> observable;
-        if (composer == null && o instanceof LifecycleOwner) {
-            composer = RxLife.with((LifecycleOwner) o).bindToLifecycle();
-        }
-        if (composer != null) {
-            observable = this.observable.compose(composer);
-        } else {
-            observable = this.observable;
-        }
         if (subscribeScheduler == null) {
             subscribeScheduler = Schedulers.io();
         }
         if (observeScheduler == null) {
             observeScheduler = AndroidSchedulers.mainThread();
         }
-        Disposable disposable = observable
+
+        Observable<T> observable = this.observable
                 .subscribeOn(subscribeScheduler)
-                .observeOn(observeScheduler)
-                .subscribe(next, error);
-        if (!(composer instanceof LifecycleTransformer)) {
+                .observeOn(observeScheduler);
+
+        if (!composerMap.containsKey(o)) {
+            if (o instanceof LifecycleOwner) {
+                composerMap.put(o, RxLife.bindLifeOwner((LifecycleOwner) o));
+            } else if (o instanceof View) {
+                composerMap.put(o, RxLife.bindView((View) o));
+            } else if (o instanceof Activity) {
+                composerMap.put(o, RxLife.bindActivity((Activity) o));
+            }
+        }
+
+        if (!composerMap.isEmpty()) {
+            for (Map.Entry<Object, LifecycleTransformer<T>> entry : composerMap.entrySet()) {
+                observable = observable.compose(entry.getValue());
+            }
+        }
+
+//        if (composerMap.isEmpty() && o instanceof LifecycleOwner) {
+//            observable = this.observable.compose(RxLife.bindLifeOwner((LifecycleOwner) o));
+//        } else if (!composerMap.isEmpty()) {
+//            for (Map.Entry<Object, LifecycleTransformer<T>> entry : composerMap.entrySet()) {
+//                observable = observable.compose(entry.getValue());
+//            }
+//        }
+
+        Disposable disposable = observable.subscribe(next, error);
+        if (composerMap.isEmpty()) {
             RxBus.get().addSubscription(o, disposable);
         }
+//        if (!(composer instanceof LifecycleTransformer)) {
+//            RxBus.get().addSubscription(o, disposable);
+//        }
     }
-
-//    public static class RxEmptyObserver extends RxObserver<String> {
-//
-//        private RxEmptyObserver(@NonNull Object o, @NonNull String key, @NonNull Observable<String> observable) {
-//            super(o, key, observable);
-//        }
-//
-//        @Override
-//        public void subscribe(Consumer<String> next) {
-//            super.subscribe(next);
-//        }
-//    }
-
-//    private Observable<T> wrapObservable() {
-//        Observable<T> observable;
-//        if (composer != null) {
-//            observable = this.observable.compose(composer);
-//        } else {
-//            observable = this.observable;
-//        }
-//        if (subscribeScheduler == null) {
-//            subscribeScheduler = Schedulers.io();
-//        }
-//        if (observeScheduler == null) {
-//            observeScheduler = AndroidSchedulers.mainThread();
-//        }
-//        return observable
-//                .subscribeOn(subscribeScheduler)
-//                .observeOn(observeScheduler);
-//    }
 
     public static void unSubscribe(Object o) {
         RxBus.get().unSubscribe(o);
