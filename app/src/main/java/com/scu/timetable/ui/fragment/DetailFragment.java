@@ -8,7 +8,6 @@ import com.scu.timetable.R;
 import com.scu.timetable.model.ScuSubject;
 import com.scu.timetable.ui.fragment.base.SkinFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.zpj.rxbus.RxSubscriber;
 
 public class DetailFragment extends SkinFragment {
 
@@ -23,7 +22,7 @@ public class DetailFragment extends SkinFragment {
     }
 
     public static void start(ScuSubject subject) {
-        RxSubscriber.post(newInstance(subject));
+        start(newInstance(subject));
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.zpj.fragmentation.SupportActivity;
 import com.zpj.fragmentation.SupportFragment;
 import com.zpj.fragmentation.dialog.IDialog;
 import com.zpj.fragmentation.dialog.impl.LoadingDialogFragment;
-import com.zpj.rxbus.RxObserver;
+import com.zpj.rxbus.RxBus;
 
 import io.reactivex.functions.Consumer;
 
@@ -20,26 +20,30 @@ public class BaseActivity extends SupportActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        EventSender.onStartFragmentEvent(this, this::start);
-        RxObserver.with(this, SupportFragment.class)
+        RxBus.observe(this, SupportFragment.class)
                 .bindToLife(this)
-                .subscribe(this::start);
+                .doOnNext(this::start)
+                .subscribe();
 
-        EventBus.onShowLoading(this, (title, isUpdate) -> {
-            if (loadingDialogFragment != null) {
-                if (isUpdate) {
-                    loadingDialogFragment.setTitle(title);
-                    return;
+        EventBus.onShowLoading(this, new RxBus.PairConsumer<String, Boolean>() {
+            @Override
+            public void onAccept(String title, Boolean isUpdate) throws Exception {
+                if (loadingDialogFragment != null) {
+                    if (isUpdate) {
+                        loadingDialogFragment.setTitle(title);
+                        return;
+                    }
+                    loadingDialogFragment.dismiss();
                 }
-                loadingDialogFragment.dismiss();
+                loadingDialogFragment = null;
+                loadingDialogFragment = new LoadingDialogFragment().setTitle(title);
+                loadingDialogFragment.show(BaseActivity.this);
             }
-            loadingDialogFragment = null;
-            loadingDialogFragment = new LoadingDialogFragment().setTitle(title);
-            loadingDialogFragment.show(BaseActivity.this);
         });
 
-        EventBus.onHideLoading(this, new Consumer<IDialog.OnDismissListener>() {
+        EventBus.onHideLoading(this, new RxBus.SingleConsumer<IDialog.OnDismissListener>() {
             @Override
-            public void accept(IDialog.OnDismissListener listener) throws Exception {
+            public void onAccept(IDialog.OnDismissListener listener) throws Exception {
                 if (loadingDialogFragment != null) {
                     loadingDialogFragment.setOnDismissListener(listener);
                     loadingDialogFragment.dismiss();

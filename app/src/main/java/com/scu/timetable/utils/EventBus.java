@@ -1,11 +1,7 @@
 package com.scu.timetable.utils;
 
-import com.scu.timetable.model.EvaluationInfo;
 import com.zpj.fragmentation.dialog.IDialog;
-import com.zpj.http.core.Connection;
-import com.zpj.rxbus.RxObserver;
-import com.zpj.rxbus.RxPairObserver;
-import com.zpj.rxbus.RxSubscriber;
+import com.zpj.rxbus.RxBus;
 
 import io.reactivex.functions.Consumer;
 
@@ -27,25 +23,27 @@ public class EventBus {
 //    }
 
     public static void sendRefreshEvent() {
-        RxSubscriber.post(EVENT_REFRESH);
+        RxBus.post(EVENT_REFRESH);
     }
 
     public static void onRefresh(Object o, Consumer<String> next) {
-        RxObserver.with(o, EVENT_REFRESH)
-                .subscribe(next);
+        RxBus.observe(o, EVENT_REFRESH)
+                .doOnNext(next)
+                .subscribe();
     }
 
     public static void sendUpdateSettingEvent() {
-        RxSubscriber.post(EVENT_UPDATE_SETTING);
+        RxBus.post(EVENT_UPDATE_SETTING);
     }
 
     public static void unSubscribeUpdateSettingEvent() {
-        RxObserver.unSubscribe(EVENT_UPDATE_SETTING);
+        RxBus.removeObservers(EVENT_UPDATE_SETTING);
     }
 
     public static void onUpdateSetting(Object o, Consumer<String> next) {
-        RxObserver.with(o, EVENT_UPDATE_SETTING)
-                .subscribe(next);
+        RxBus.observe(o, EVENT_UPDATE_SETTING)
+                .doOnNext(next)
+                .subscribe();
     }
 
     public static void showLoading(String text) {
@@ -53,25 +51,27 @@ public class EventBus {
     }
 
     public static void showLoading(String text, boolean isUpdate) {
-        RxSubscriber.post(EVENT_SHOW_LOADING, text, isUpdate);
+        RxBus.post(EVENT_SHOW_LOADING, text, isUpdate);
     }
 
-    public static void onShowLoading(Object o, RxPairObserver.PairConsumer<String, Boolean> next) {
-        RxObserver.with(o, EVENT_SHOW_LOADING, String.class, Boolean.class)
-                .subscribe(next);
+    public static void onShowLoading(Object o, RxBus.PairConsumer<String, Boolean> next) {
+        RxBus.observe(o, EVENT_SHOW_LOADING, String.class, Boolean.class)
+                .doOnNext(next)
+                .subscribe();
     }
 
     public static void hideLoading(IDialog.OnDismissListener listener) {
-        RxSubscriber.post(EVENT_HIDE_LOADING, listener);
+        RxBus.post(EVENT_HIDE_LOADING, listener);
     }
 
     public static void hideLoading(IDialog.OnDismissListener listener, long delay) {
-        RxSubscriber.post(EVENT_HIDE_LOADING, listener, delay);
+        RxBus.post(EVENT_HIDE_LOADING, listener, delay);
     }
 
-    public static void onHideLoading(Object o, Consumer<IDialog.OnDismissListener> next) {
-        RxObserver.with(o, EVENT_HIDE_LOADING, IDialog.OnDismissListener.class)
-                .subscribe(next);
+    public static void onHideLoading(Object o, RxBus.SingleConsumer<IDialog.OnDismissListener> next) {
+        RxBus.observe(o, EVENT_HIDE_LOADING, IDialog.OnDismissListener.class)
+                .doOnNext(next)
+                .subscribe();
     }
 
 //    public static void onStartFragmentEvent(Object o, Consumer<SupportFragment> next) {
