@@ -8,8 +8,8 @@ import android.util.Log;
 import com.maning.librarycrashmonitor.MCrashMonitor;
 import com.scu.timetable.utils.EncryptionUtils;
 import com.zpj.downloader.ZDownloader;
-import com.zpj.downloader.config.DownloaderConfig;
-import com.zpj.toast.ZToast;
+import com.zpj.http.ZHttp;
+import com.zpj.http.core.IHttp;
 import com.zpj.utils.FileUtils;
 
 /**
@@ -29,10 +29,25 @@ public final class BaseApplication extends Application {
         });
 //        ZUtils.init(this);
 //        ZToast.init(this);
-        DownloaderConfig config = DownloaderConfig.with(this)
-                .setDownloadPath(FileUtils.getDiskCacheDir(this));
-        Log.d("cachePath", "cachePath=" + FileUtils.getDiskCacheDir(this));
-        ZDownloader.init(config);
+
+        ZHttp.config()
+                .allowAllSSL(true)
+                .onRedirect(new IHttp.OnRedirectListener() {
+                    @Override
+                    public boolean onRedirect(int redirectCount, String redirectUrl) {
+                        Log.d("connect", "onRedirect redirectUrl=" + redirectUrl);
+                        return true;
+                    }
+                })
+                .ignoreContentType(true)
+                .baseUrl("http://202.115.47.141") // http://zhjw.scu.edu.cn
+                .connectTimeout(10000)
+                .readTimeout(10000)
+                .init();
+
+        ZDownloader.config(this)
+                .setDownloadPath(FileUtils.getCacheDir(this))
+                .init();
 
         String test = "kseugrbfjkhdlf";
         Log.d("Application", "test=" + test);

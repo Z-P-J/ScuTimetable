@@ -5,16 +5,12 @@ import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
 import com.zpj.http.ZHttp;
-import com.zpj.http.core.Connection;
+import com.zpj.http.core.HttpObserver;
 import com.zpj.http.core.IHttp;
 import com.zpj.utils.PrefsHelper;
 
-import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -22,7 +18,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public final class CaptchaFetcher {
 
-    private static final String LINK = "http://202.115.47.141/img/captcha.jpg?";
+    private static final String LINK = "img/captcha.jpg?";
 
     private static final String REFERER = "http://202.115.47.141/login";
 
@@ -37,12 +33,13 @@ public final class CaptchaFetcher {
                 .userAgent(TimetableHelper.UA)
                 .ignoreHttpErrors(true)
                 .execute()
-                .onSuccess(new IHttp.OnSuccessListener<Connection.Response>() {
-                    @Override
-                    public void onSuccess(Connection.Response data) throws Exception {
-                        imageView.setImageBitmap(BitmapFactory.decodeStream(data.bodyStream()));
-                    }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap((HttpObserver.OnFlatMapListener<IHttp.Response, Bitmap>) (data, emitter) -> {
+                    emitter.onNext(BitmapFactory.decodeStream(data.bodyStream()));
+                    emitter.onComplete();
                 })
+                .onSuccess(imageView::setImageBitmap)
                 .subscribe();
     }
 

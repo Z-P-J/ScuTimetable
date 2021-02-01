@@ -7,8 +7,9 @@ import android.util.Log;
 
 import com.scu.timetable.bean.SemesterInfo;
 import com.zpj.http.ZHttp;
-import com.zpj.http.core.Connection;
-import com.zpj.http.core.ObservableTask;
+import com.zpj.http.core.HttpObserver;
+import com.zpj.http.core.IHttp;
+import com.zpj.http.parser.DocumentParser;
 import com.zpj.http.parser.html.nodes.Document;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
@@ -203,8 +204,8 @@ public final class LoginUtil {
     }
 
     public void checkCaptcha(final String captcha) {
-        new ObservableTask<>(
-                (ObservableOnSubscribe<Connection.Response>) emitter -> {
+        new HttpObserver<>(
+                (ObservableOnSubscribe<IHttp.Response>) emitter -> {
                     emitter.onNext(securityCheck(captcha));
                     emitter.onComplete();
                 })
@@ -212,7 +213,7 @@ public final class LoginUtil {
                 .subscribe();
     }
 
-    private Connection.Response securityCheck(final String captcha) throws Exception {
+    private IHttp.Response securityCheck(final String captcha) throws Exception {
         String userName = EncryptionUtils.decryptByAES(PrefsHelper.with().getString("user_name", ""));
         String password = CipherUtils.md5Encrypt(EncryptionUtils.decryptByAES(PrefsHelper.with().getString("password", "")));
         if (userName.isEmpty() || password.isEmpty()) {
@@ -223,8 +224,7 @@ public final class LoginUtil {
             throw new Exception("You have to get the cookie first.");
         }
 
-        Connection.Response response = ZHttp.post("http://202.115.47.141/j_spring_security_check")
-                .onRedirect(redirectUrl -> true)
+        IHttp.Response response = ZHttp.post("j_spring_security_check")
                 .cookie(cookie)
                 .userAgent(TimetableHelper.UA)
                 .referer("http://202.115.47.141/login")
@@ -255,9 +255,9 @@ public final class LoginUtil {
         }
     }
 
-    private List<SemesterInfo> getSemesters() throws IOException, JSONException {
+    private List<SemesterInfo> getSemesters() throws Exception {
         List<SemesterInfo> semesterInfoList = new ArrayList<>();
-        Document document = ZHttp.get("http://zhjw.scu.edu.cn/student/courseSelect/calendarSemesterCurriculum/index")
+        Document document = ZHttp.get("student/courseSelect/calendarSemesterCurriculum/index")
                 .header("cookie", PrefsHelper.with().getString("cookie", ""))
                 .header("Referer", "http://zhjw.scu.edu.cn/")
                 .syncToHtml();
@@ -290,7 +290,7 @@ public final class LoginUtil {
 //        http://zhjw.scu.edu.cn/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/past/callback
         // 当前课表
         // http://zhjw.scu.edu.cn/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/curr/callback
-        JSONObject jsonObject = ZHttp.post("http://zhjw.scu.edu.cn/student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/past/callback")
+        JSONObject jsonObject = ZHttp.post("student/courseSelect/thisSemesterCurriculum/ajaxStudentSchedule/past/callback")
                 .userAgent(TimetableHelper.UA)
                 .ignoreContentType(true)
                 .cookie(PrefsHelper.with().getString("cookie", ""))
@@ -362,7 +362,7 @@ public final class LoginUtil {
                     currentWeek = -DateUtil.computeWeek(new Date(), DateUtil.parse(year + monthStr + firstDay));
                 }
                 System.out.println("currentWeek=" + currentWeek);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 currentWeek = 1;
             }
@@ -378,13 +378,13 @@ public final class LoginUtil {
 
     private void login(final String captcha) {
         Log.d("captcha", "captcha=" + captcha);
-        new ObservableTask<>(
-                (ObservableOnSubscribe<Connection.Response>) emitter -> {
+        new HttpObserver<>(
+                (ObservableOnSubscribe<IHttp.Response>) emitter -> {
                     emitter.onNext(securityCheck(captcha));
                     emitter.onComplete();
                 })
-                .flatMap((ObservableTask.OnFlatMapListener<Connection.Response, JSONObject>) (res, emitter) -> {
-                    getCurrentWeek(res.parse());
+                .flatMap((HttpObserver.OnFlatMapListener<IHttp.Response, JSONObject>) (res, emitter) -> {
+                    getCurrentWeek(DocumentParser.parse(res.body()));
                     for (SemesterInfo semester : getSemesters()) {
                         emitter.onNext(getTimetable(semester.getSemesterCode()));
                     }
@@ -397,11 +397,11 @@ public final class LoginUtil {
 
     public void login(final String captcha, final String semesterCode) {
         Log.d("captcha", "captcha=" + captcha);
-        new ObservableTask<>((ObservableOnSubscribe<Connection.Response>) emitter -> {
+        new HttpObserver<>((ObservableOnSubscribe<IHttp.Response>) emitter -> {
             emitter.onNext(securityCheck(captcha));
             emitter.onComplete();
         })
-                .flatMap((ObservableTask.OnFlatMapListener<Connection.Response, JSONObject>) (data, emitter) -> {
+                .flatMap((HttpObserver.OnFlatMapListener<IHttp.Response, JSONObject>) (data, emitter) -> {
                     emitter.onNext(getTimetable(semesterCode));
                 })
                 .onSuccess(this::onGetTimetable)
@@ -416,8 +416,8 @@ public final class LoginUtil {
     }
 
     public void getCookie() {
-        ZHttp.get("http://202.115.47.141/login")
-                .onRedirect(redirectUrl -> false)
+        ZHttp.get("login")
+                .onRedirect((redirectCount, redirectUrl) -> false)
                 .userAgent(TimetableHelper.UA)
                 .ignoreContentType(true)
                 .execute()

@@ -13,13 +13,12 @@ import android.widget.TextView;
 import com.deadline.statebutton.StateButton;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.UpdateInfo;
-import com.scu.timetable.ui.widget.NumberProgressBar;
 import com.scu.timetable.ui.widget.DetailLayout;
+import com.scu.timetable.ui.widget.NumberProgressBar;
+import com.zpj.downloader.BaseMission;
+import com.zpj.downloader.DownloadMission;
 import com.zpj.downloader.ZDownloader;
-import com.zpj.downloader.config.MissionConfig;
 import com.zpj.downloader.constant.Error;
-import com.zpj.downloader.core.DownloadMission;
-import com.zpj.downloader.util.FileUtil;
 import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
 import com.zpj.toast.ZToast;
 import com.zpj.utils.PrefsHelper;
@@ -162,9 +161,12 @@ public class UpdateDialog extends CenterDialogFragment
 //            } else {
 //                installApp();
 //            }
-            mission = DownloadMission.create(updateInfo.getDownloadUrl(), null, MissionConfig.with());
-            mission.addListener(missionListener);
-            mission.start();
+            mission = ZDownloader.download(updateInfo.getDownloadUrl())
+                    .addListener(missionListener)
+                    .start();
+//            mission = DownloadMission.create(updateInfo.getDownloadUrl(), null, MissionConfig.with());
+//            mission.addListener(missionListener);
+//            mission.start();
         } else if (i == R.id.btn_background_update) {
             //点击后台更新按钮
             ZToast.normal("后台更新");
@@ -224,7 +226,7 @@ public class UpdateDialog extends CenterDialogFragment
         }
 
         @Override
-        public void onProgress(DownloadMission.UpdateInfo update) {
+        public void onProgress(BaseMission.ProgressInfo update) {
             Log.d("progress", "progress=" + update.getProgress());
             if (isSupportVisible()) {
                 mNumberProgressBar.setProgress(Math.round(update.getProgress()));
@@ -238,7 +240,7 @@ public class UpdateDialog extends CenterDialogFragment
                 mBtnBackgroundUpdate.setVisibility(View.GONE);
                 dismiss();
             }
-            FileUtil.openFile(getContext(), mission.getFile());
+            mission.openFile(getContext());
         }
 
         @Override

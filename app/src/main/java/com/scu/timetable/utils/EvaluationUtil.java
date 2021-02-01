@@ -4,9 +4,9 @@ import android.util.Log;
 
 import com.scu.timetable.bean.EvaluationInfo;
 import com.zpj.http.ZHttp;
-import com.zpj.http.core.Connection;
+import com.zpj.http.core.HttpConfig;
+import com.zpj.http.core.HttpObserver;
 import com.zpj.http.core.IHttp;
-import com.zpj.http.core.ObservableTask;
 import com.zpj.http.parser.html.nodes.Document;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
@@ -106,7 +106,7 @@ public final class EvaluationUtil {
 
     public void getEvaluationSubjects() {
         ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
-                .onRedirect(redirectUrl -> false)
+                .onRedirect((redirectCount, redirectUrl) -> false)
                 .cookie(PrefsHelper.with().getString("cookie", ""))
                 .referer("http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
                 .userAgent(TimetableHelper.UA)
@@ -217,9 +217,8 @@ public final class EvaluationUtil {
 
     public void getEvaluationPage(EvaluationInfo bean, IHttp.OnSuccessListener<EvaluationEvent> onSuccessListener) {
 
-        ZHttp.post("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
-                .method(Connection.Method.POST)
-                .onRedirect(redirectUrl -> true)
+        ZHttp.post("student/teachingEvaluation/teachingEvaluation/evaluationPage")
+                .onRedirect((redirectCount, redirectUrl) -> true)
                 .header("cookie", PrefsHelper.with().getString("cookie", ""))
                 .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
                 .userAgent(TimetableHelper.UA)
@@ -230,7 +229,7 @@ public final class EvaluationUtil {
                 .data("evaluationContentNumber", bean.getEvaluationContentNumber())
                 .data("evaluationContentContent", "")
                 .toHtml()
-                .flatMap((ObservableTask.OnFlatMapListener<Document, EvaluationEvent>) (doc, emitter) -> {
+                .flatMap((HttpObserver.OnFlatMapListener<Document, EvaluationEvent>) (doc, emitter) -> {
                     Log.d("getEvaluationPage", "body=" + doc.body());
                     Element element = doc.getElementById("tokenValue");
                     final String tokenValue = element.val();
@@ -241,9 +240,9 @@ public final class EvaluationUtil {
                     Log.d("inputs", "inputs=" + inputs.toString());
 
                     if (!tokenValue.isEmpty()) {
-                        Connection connection = ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluation")
-                                .method(Connection.Method.POST)
-                                .onRedirect(redirectUrl -> false)
+                        HttpConfig connection = ZHttp.post("student/teachingEvaluation/teachingEvaluation/evaluation")
+//                                .method(Connection.Method.POST)
+                                .onRedirect((redirectCount, redirectUrl) -> false)
                                 .cookie(PrefsHelper.with().getString("cookie", ""))
                                 .referer("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
                                 .data("tokenValue", tokenValue)
@@ -280,7 +279,7 @@ public final class EvaluationUtil {
                 .subscribe();
     }
 
-    public void evaluation(EvaluationInfo bean, Connection connection) {
+    public void evaluation(EvaluationInfo bean, HttpConfig connection) {
         connection.toJsonObject()
                 .onSuccess(jsonObject -> {
                     Log.d("getEvaluationPage", "result1=" + jsonObject.toString());
@@ -308,9 +307,9 @@ public final class EvaluationUtil {
     public static class EvaluationEvent {
 
         private final EvaluationInfo bean;
-        private final Connection connection;
+        private final HttpConfig connection;
 
-        private EvaluationEvent(EvaluationInfo bean, Connection connection) {
+        private EvaluationEvent(EvaluationInfo bean, HttpConfig connection) {
             this.bean = bean;
             this.connection = connection;
         }
@@ -319,7 +318,7 @@ public final class EvaluationUtil {
             return bean;
         }
 
-        public Connection getConnection() {
+        public HttpConfig getConnection() {
             return connection;
         }
     }
