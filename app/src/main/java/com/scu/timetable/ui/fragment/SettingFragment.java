@@ -1,6 +1,5 @@
 package com.scu.timetable.ui.fragment;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,7 +11,7 @@ import android.view.View;
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
-import com.scu.timetable.ui.fragment.base.SkinFragment;
+import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
 import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.utils.EventBus;
@@ -20,7 +19,6 @@ import com.scu.timetable.utils.SuperLinkUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.scu.timetable.utils.UpdateUtil;
-import com.zpj.fragmentation.BaseFragment;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.utils.PrefsHelper;
 import com.zpj.widget.setting.CheckableSettingItem;
@@ -29,7 +27,7 @@ import com.zpj.widget.setting.OnCheckableItemClickListener;
 import com.zpj.widget.setting.OnCommonItemClickListener;
 import com.zpj.widget.setting.SwitchSettingItem;
 
-public class SettingFragment extends SkinFragment
+public class SettingFragment extends SkinChangeFragment
         implements View.OnClickListener,
         OnCheckableItemClickListener,
         OnCommonItemClickListener {

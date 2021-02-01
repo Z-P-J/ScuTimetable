@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
-import com.scu.timetable.model.ScuSubject;
-import com.scu.timetable.model.SemesterInfo;
+import com.scu.timetable.bean.ScuSubject;
+import com.scu.timetable.bean.SemesterInfo;
 import com.scu.timetable.utils.TimetableHelper;
 import com.xw.repo.supl.ISlidingUpPanel;
 import com.xw.repo.supl.SlidingUpPanelLayout;

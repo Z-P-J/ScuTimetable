@@ -2,7 +2,7 @@ package com.scu.timetable.utils;
 
 import android.util.Log;
 
-import com.scu.timetable.model.EvaluationInfo;
+import com.scu.timetable.bean.EvaluationInfo;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.Connection;
 import com.zpj.http.core.IHttp;

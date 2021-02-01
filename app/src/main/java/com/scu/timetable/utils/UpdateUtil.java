@@ -10,7 +10,7 @@ import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.scu.timetable.model.UpdateInfo;
+import com.scu.timetable.bean.UpdateInfo;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.IHttp;
 import com.zpj.http.parser.html.nodes.Element;

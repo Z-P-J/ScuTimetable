@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
-import com.scu.timetable.model.ScuSubject;
+import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.ui.fragment.DetailFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.zpj.fragmentation.dialog.base.BottomDialogFragment;

@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.scu.timetable.R;
-import com.scu.timetable.model.SemesterInfo;
-import com.scu.timetable.ui.fragment.base.SkinFragment;
+import com.scu.timetable.bean.SemesterInfo;
+import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
 import com.scu.timetable.ui.widget.BaseWeatherPanelView;
 import com.scu.timetable.ui.widget.WeatherPanelView;
 import com.scu.timetable.utils.TimetableHelper;
@@ -22,7 +22,7 @@ import static com.xw.repo.supl.SlidingUpPanelLayout.COLLAPSED;
 import static com.xw.repo.supl.SlidingUpPanelLayout.EXPANDED;
 import static com.xw.repo.supl.SlidingUpPanelLayout.HIDDEN;
 
-public class TestFragment extends SkinFragment {
+public class TestFragment extends SkinChangeFragment {
 
     private final List<SemesterInfo> mSemesterList = new ArrayList<>();
 

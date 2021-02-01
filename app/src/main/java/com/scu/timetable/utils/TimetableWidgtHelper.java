@@ -18,7 +18,7 @@ import android.widget.RemoteViews;
 import com.scu.timetable.ui.activity.LoginActivity;
 import com.scu.timetable.ui.activity.MainActivity;
 import com.scu.timetable.R;
-import com.scu.timetable.model.ScuSubject;
+import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.ui.widget.TimetableWidget;
 import com.zpj.utils.PrefsHelper;
 import com.zhuangfei.timetable.model.ScheduleColorPool;

@@ -6,8 +6,8 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.felix.atoast.library.AToast;
-import com.scu.timetable.model.ScuSubject;
-import com.scu.timetable.model.SemesterInfo;
+import com.scu.timetable.bean.ScuSubject;
+import com.scu.timetable.bean.SemesterInfo;
 import com.zpj.utils.FileUtils;
 import com.zpj.utils.PrefsHelper;
 

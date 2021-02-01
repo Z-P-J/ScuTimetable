@@ -15,7 +15,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.WindowManager;
 
-import com.scu.timetable.model.SemesterInfo;
+import com.scu.timetable.bean.SemesterInfo;
 import com.xw.repo.supl.ISlidingUpPanel;
 import com.xw.repo.supl.SlidingUpPanelLayout;
 

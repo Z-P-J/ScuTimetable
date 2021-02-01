@@ -5,15 +5,14 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.scu.timetable.model.SemesterInfo;
-import com.zpj.utils.CipherUtils;
-import com.zpj.utils.PrefsHelper;
+import com.scu.timetable.bean.SemesterInfo;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.Connection;
 import com.zpj.http.core.ObservableTask;
 import com.zpj.http.parser.html.nodes.Document;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
+import com.zpj.utils.CipherUtils;
 import com.zpj.utils.PrefsHelper;
 
 import org.json.JSONArray;
@@ -24,7 +23,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +34,19 @@ import io.reactivex.ObservableOnSubscribe;
  * @date 2019/5/16 10:26
  */
 public final class LoginUtil {
+
+    public static String getUserName() {
+        return EncryptionUtils.decryptByAES(PrefsHelper.with().getString("user_name", ""));
+    }
+
+    public static String getPassword() {
+        return EncryptionUtils.decryptByAES(PrefsHelper.with().getString("password", ""));
+    }
+
+    public static void saveAccount(String userName, String password) {
+        PrefsHelper.with().putString("user_name", EncryptionUtils.encryptByAES(userName));
+        PrefsHelper.with().putString("password", EncryptionUtils.encryptByAES(password));
+    }
 
     public void onGetCookie(String cookie) {
         PrefsHelper.with().putString("cookie", cookie);
@@ -192,24 +203,20 @@ public final class LoginUtil {
     }
 
     public void checkCaptcha(final String captcha) {
-        new ObservableTask<>((ObservableOnSubscribe<Connection.Response>) emitter -> {
-            emitter.onNext(securityCheck(captcha));
-            emitter.onComplete();
-        })
+        new ObservableTask<>(
+                (ObservableOnSubscribe<Connection.Response>) emitter -> {
+                    emitter.onNext(securityCheck(captcha));
+                    emitter.onComplete();
+                })
                 .onError(e -> onLoginError(e.getMessage()))
                 .subscribe();
-//        ObservableTask<Document> task = securityCheck(captcha);
-//        if (task != null) {
-//            task.onError(e -> onLoginError(e.getMessage())).subscribe();
-//        }
     }
 
     private Connection.Response securityCheck(final String captcha) throws Exception {
-
         String userName = EncryptionUtils.decryptByAES(PrefsHelper.with().getString("user_name", ""));
         String password = CipherUtils.md5Encrypt(EncryptionUtils.decryptByAES(PrefsHelper.with().getString("password", "")));
         if (userName.isEmpty() || password.isEmpty()) {
-            throw new Exception("You have to log in first.");
+            throw new Exception("You have to login first.");
         }
         final String cookie = PrefsHelper.with().getString("cookie", "");
         if (cookie.isEmpty()) {
@@ -295,65 +302,6 @@ public final class LoginUtil {
         return jsonObject;
     }
 
-//    public static void main(String[] args) {
-//        Calendar calendar = Calendar.getInstance();
-//        int year = calendar.get(Calendar.YEAR);
-//        int month = calendar.get(Calendar.MONTH) + 1;
-//        int day = calendar.get(Calendar.DATE);
-//        System.out.println("year=" + year + " month=" + month + " day=" + day );
-//        ZHttp.get(String.format(Locale.CHINA, "http://jwc.scu.edu.cn/scdx/xl%d.html", year))
-//                .userAgent(TimetableHelper.UA)
-//                .ignoreContentType(true)
-//                .toHtml()
-//                .onSuccess(doc -> {
-//                    int currentWeek;
-//                    String firstDay = "";
-//                    String monthStr = "";
-//                    if (month == 1 || month == 2 || month == 3) {
-//                        firstDay = doc.select("table").get(1).select("tr").get(2).select("td").get(3).text().trim();
-//                        int first = Integer.parseInt(firstDay);
-//                        String info = doc.select("table").get(1).select("tr").get(2).select("td").get(10).select("p").get(1).select("strong").text();
-//                        System.out.println("info1=" + info);
-//                        if (first < 10) {
-//                            firstDay = "0" + firstDay;
-//                        }
-//
-//                        if (info.contains("3月") || first <= 10) {
-//                            //3
-//                            monthStr = "-03-";
-//                        } else {
-//                            //2
-//                            monthStr = "-02-";
-//                        }
-//
-//                    } else if (month == 7 || month == 8 || month == 9) {
-//                        firstDay = doc.select("table").get(0).select("tr").get(2).select("td").get(3).text().trim();
-//                        int first = Integer.parseInt(firstDay);
-//                        String info = doc.select("table").get(0).select("tr").get(2).select("td").get(10).select("p").get(1).select("strong").text();
-//                        System.out.println("info2=" + info);
-//                        if (first < 10) {
-//                            firstDay = "0" + firstDay;
-//                        }
-//                        if (info.contains("9月") || first <= 10) {
-//                            //9
-//                            monthStr = "-09-";
-//                        } else {
-//                            //8
-//                            monthStr = "-08-";
-//                        }
-//                    }
-//                    if (monthStr.equals("")) {
-//                        System.out.println("empty");
-//                        currentWeek = 1;
-//                    } else {
-//                        System.out.println(year + monthStr + firstDay);
-//                        currentWeek = -DateUtil.computeWeek(DateUtil.parse("2019-08-30"), DateUtil.parse(year + monthStr + firstDay));
-//                    }
-//                    System.out.println("currentWeek=" + currentWeek);
-//                })
-//                .subscribe();
-//    }
-
     private void getCurrentWeek(Document document) {
 //        Document document = ZHttp.parse(response.body());
 //        Elements elements = document.select("li");
@@ -430,10 +378,11 @@ public final class LoginUtil {
 
     private void login(final String captcha) {
         Log.d("captcha", "captcha=" + captcha);
-        new ObservableTask<>((ObservableOnSubscribe<Connection.Response>) emitter -> {
-            emitter.onNext(securityCheck(captcha));
-            emitter.onComplete();
-        })
+        new ObservableTask<>(
+                (ObservableOnSubscribe<Connection.Response>) emitter -> {
+                    emitter.onNext(securityCheck(captcha));
+                    emitter.onComplete();
+                })
                 .flatMap((ObservableTask.OnFlatMapListener<Connection.Response, JSONObject>) (res, emitter) -> {
                     getCurrentWeek(res.parse());
                     for (SemesterInfo semester : getSemesters()) {
@@ -462,8 +411,7 @@ public final class LoginUtil {
     }
 
     public void login(final String userName, final String password, final String captcha) {
-        PrefsHelper.with().putString("user_name", EncryptionUtils.encryptByAES(userName));
-        PrefsHelper.with().putString("password", EncryptionUtils.encryptByAES(password));
+        saveAccount(userName, password);
         login(captcha);
     }
 

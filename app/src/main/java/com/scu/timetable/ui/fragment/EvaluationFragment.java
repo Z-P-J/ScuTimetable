@@ -1,6 +1,5 @@
 package com.scu.timetable.ui.fragment;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -20,8 +19,8 @@ import android.widget.TextView;
 import com.deadline.statebutton.StateButton;
 import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
-import com.scu.timetable.model.EvaluationInfo;
-import com.scu.timetable.ui.fragment.base.SkinFragment;
+import com.scu.timetable.bean.EvaluationInfo;
+import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
 import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
 import com.scu.timetable.ui.widget.ElasticScrollView;
 import com.scu.timetable.utils.CaptchaFetcher;
@@ -38,7 +37,7 @@ import java.util.Locale;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class EvaluationFragment extends SkinFragment
+public class EvaluationFragment extends SkinChangeFragment
         implements View.OnClickListener,
         LoginUtil.LoginCallback,
         EvaluationUtil.EvaluationCallback {

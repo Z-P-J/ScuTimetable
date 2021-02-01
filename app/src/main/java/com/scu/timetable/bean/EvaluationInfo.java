@@ -1,4 +1,4 @@
-package com.scu.timetable.model;
+package com.scu.timetable.bean;
 
 /**
  * @author Z-P-J

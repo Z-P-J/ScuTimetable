@@ -5,11 +5,11 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.scu.timetable.R;
-import com.scu.timetable.model.ScuSubject;
-import com.scu.timetable.ui.fragment.base.SkinFragment;
+import com.scu.timetable.bean.ScuSubject;
+import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 
-public class DetailFragment extends SkinFragment {
+public class DetailFragment extends SkinChangeFragment {
 
     private ScuSubject subject;
 

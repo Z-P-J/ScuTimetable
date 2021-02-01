@@ -1,6 +1,5 @@
 package com.scu.timetable.ui.fragment;
 
-import android.arch.lifecycle.LifecycleObserver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,10 +14,10 @@ import android.widget.TextView;
 import com.github.zagum.expandicon.ExpandIconView;
 import com.scu.timetable.R;
 import com.scu.timetable.utils.EventBus;
-import com.scu.timetable.model.ScuSubject;
-import com.scu.timetable.model.SemesterInfo;
+import com.scu.timetable.bean.ScuSubject;
+import com.scu.timetable.bean.SemesterInfo;
 import com.scu.timetable.ui.activity.LoginActivity;
-import com.scu.timetable.ui.fragment.base.SkinFragment;
+import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
 import com.scu.timetable.ui.fragment.dialog.RefreshDialog;
 import com.scu.timetable.ui.fragment.dialog.SubjectDetailDialog2;
 import com.scu.timetable.utils.TimetableHelper;
@@ -28,19 +27,16 @@ import com.zhuangfei.timetable.listener.IWeekView;
 import com.zhuangfei.timetable.listener.OnSlideBuildAdapter;
 import com.zhuangfei.timetable.model.Schedule;
 import com.zhuangfei.timetable.view.WeekView;
-import com.zpj.fragmentation.dialog.IDialog;
 import com.zpj.fragmentation.dialog.impl.AttachListDialogFragment;
 import com.zpj.fragmentation.dialog.impl.BottomListDialogFragment;
 import com.zpj.utils.PrefsHelper;
 
 import java.util.List;
 
-import io.reactivex.functions.Consumer;
-
 /**
  * @author Z-P-J
  */
-public final class MainFragment extends SkinFragment implements View.OnClickListener {
+public final class MainFragment extends SkinChangeFragment implements View.OnClickListener {
 
     private final static String TAG = "MainFragment";
 

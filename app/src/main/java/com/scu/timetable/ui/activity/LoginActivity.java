@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.LoginFragment;
-import com.zpj.fragmentation.SupportActivity;
 
 /**
  * @author Z-P-J

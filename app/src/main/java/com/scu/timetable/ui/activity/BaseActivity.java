@@ -10,8 +10,6 @@ import com.zpj.fragmentation.dialog.IDialog;
 import com.zpj.fragmentation.dialog.impl.LoadingDialogFragment;
 import com.zpj.rxbus.RxBus;
 
-import io.reactivex.functions.Consumer;
-
 public class BaseActivity extends SupportActivity {
 
     private LoadingDialogFragment loadingDialogFragment;
@@ -19,7 +17,6 @@ public class BaseActivity extends SupportActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        EventSender.onStartFragmentEvent(this, this::start);
         RxBus.observe(this, SupportFragment.class)
                 .bindToLife(this)
                 .doOnNext(this::start)

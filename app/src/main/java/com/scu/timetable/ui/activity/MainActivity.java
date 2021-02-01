@@ -10,7 +10,6 @@ import com.scu.timetable.ui.fragment.MainFragment;
 import com.scu.timetable.ui.fragment.dialog.UpdateDialog;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.UpdateUtil;
-import com.zpj.fragmentation.anim.DefaultHorizontalAnimator;
 import com.zpj.fragmentation.anim.DefaultVerticalAnimator;
 import com.zpj.fragmentation.anim.FragmentAnimator;
 
@@ -34,11 +33,6 @@ public final class MainActivity extends BaseActivity {
         }
         loadRootFragment(R.id.content, mainFragment);
 
-//        TestFragment mainFragment = findFragment(TestFragment.class);
-//        if (mainFragment == null) {
-//            mainFragment = new TestFragment();
-//        }
-//        loadRootFragment(R.id.content, mainFragment);
 
         UpdateUtil.with(this)
                 .setOnErrorListener(throwable -> AToast.error("检查更新出错 errorMsg:" + throwable.getMessage()))
@@ -79,47 +73,5 @@ public final class MainActivity extends BaseActivity {
     public FragmentAnimator onCreateFragmentAnimator() {
         return new DefaultVerticalAnimator();
     }
-
-
-    //    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onUpdateEvent(UpdateEvent event) {
-//        if (event.getUpdateInfo() != null) {
-//            AToast.normal("开始更新！");
-////        http://tt.shouji.com.cn/wap/down/soft?id=1555815
-//            UpdateDialogFragment.newInstance(event.getUpdateInfo()).show(getSupportFragmentManager());
-//        } else if (event.isLatestVersion()) {
-//            AToast.normal("软件已是最新版");
-//        } else if (TextUtils.isEmpty(event.getErrorMsg())) {
-//            AToast.error("检查更新出错 errorMsg:" + event.getErrorMsg());
-//        }
-//    }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onStartFragmentEvent(StartFragmentEvent event) {
-//        start(event.getFragment());
-//    }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onShowLoadingEvent(ShowLoadingEvent event) {
-//        if (loadingDialogFragment != null) {
-//            if (event.isUpdate()) {
-//                loadingDialogFragment.setTitle(event.getText());
-//                return;
-//            }
-//            loadingDialogFragment.dismiss();
-//        }
-//        loadingDialogFragment = null;
-//        loadingDialogFragment = new LoadingDialogFragment().setTitle(event.getText());
-//        loadingDialogFragment.show(MainActivity.this);
-//    }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onHideLoadingEvent(HideLoadingEvent event) {
-//        if (loadingDialogFragment != null) {
-//            loadingDialogFragment.setOnDismissListener(event.getOnDismissListener());
-//            loadingDialogFragment.dismiss();
-//            loadingDialogFragment = null;
-//        }
-//    }
 
 }

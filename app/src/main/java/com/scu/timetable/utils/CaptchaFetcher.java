@@ -6,6 +6,7 @@ import android.widget.ImageView;
 
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.Connection;
+import com.zpj.http.core.IHttp;
 import com.zpj.utils.PrefsHelper;
 
 import io.reactivex.Observable;
@@ -30,22 +31,18 @@ public final class CaptchaFetcher {
     }
 
     public static void fetchCaptcha(String cookie, ImageView imageView) {
-        Observable.create(
-                (ObservableOnSubscribe<Bitmap>) emitter -> {
-                    Connection.Response response = ZHttp.get(LINK + Math.floor(Math.random() * 100))
-                            .validateTLSCertificates(true)
-                            .cookie(cookie)
-                            .referer(REFERER)
-                            .userAgent(TimetableHelper.UA)
-                            .ignoreContentType(true)
-                            .ignoreHttpErrors(true)
-                            .syncExecute();
-                    emitter.onNext(BitmapFactory.decodeStream(response.bodyStream()));
-                    emitter.onComplete();
+        ZHttp.get(LINK + Math.floor(Math.random() * 100))
+                .cookie(cookie)
+                .referer(REFERER)
+                .userAgent(TimetableHelper.UA)
+                .ignoreHttpErrors(true)
+                .execute()
+                .onSuccess(new IHttp.OnSuccessListener<Connection.Response>() {
+                    @Override
+                    public void onSuccess(Connection.Response data) throws Exception {
+                        imageView.setImageBitmap(BitmapFactory.decodeStream(data.bodyStream()));
+                    }
                 })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(imageView::setImageBitmap)
                 .subscribe();
     }
 

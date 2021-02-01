@@ -27,13 +27,11 @@ import com.lxj.xpermission.PermissionConstants;
 import com.lxj.xpermission.XPermission;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.activity.MainActivity;
-import com.scu.timetable.ui.fragment.base.SkinFragment;
+import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
 import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
 import com.scu.timetable.utils.CaptchaFetcher;
-import com.scu.timetable.utils.EncryptionUtils;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
-import com.zpj.fragmentation.BaseFragment;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.utils.AnimatorUtils;
 import com.zpj.utils.PrefsHelper;
@@ -45,7 +43,7 @@ import org.json.JSONObject;
  * @author Z-P-J
  * @date 2019
  */
-public final class LoginFragment extends SkinFragment
+public final class LoginFragment extends SkinChangeFragment
         implements View.OnClickListener, LoginUtil.LoginCallback {
 
     private EditText userName;
@@ -121,8 +119,8 @@ public final class LoginFragment extends SkinFragment
 
         //http://202.115.47.141/img/captcha.jpg?60
 
-        userName.setText(EncryptionUtils.decryptByAES(PrefsHelper.with().getString("user_name", "")));
-        password.setText(EncryptionUtils.decryptByAES(PrefsHelper.with().getString("password", "")));
+        userName.setText(LoginUtil.getUserName());
+        password.setText(LoginUtil.getPassword());
 
     }
 
@@ -222,8 +220,7 @@ public final class LoginFragment extends SkinFragment
     public void onLoginSuccess() {
 //        Toast.makeText(LoginActivity.this, "登录成功!获取课表信息中。。。", Toast.LENGTH_SHORT).show();
         msgText.setText(R.string.text_getting_data);
-        PrefsHelper.with().putString("user_name", EncryptionUtils.encryptByAES(userName.getText().toString()));
-        PrefsHelper.with().putString("password", EncryptionUtils.encryptByAES(password.getText().toString()));
+        LoginUtil.saveAccount(userName.getText().toString(), password.getText().toString());
     }
 
     @Override

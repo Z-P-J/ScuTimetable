@@ -4,7 +4,7 @@ import com.zpj.fragmentation.BaseFragment;
 import com.zpj.fragmentation.SupportFragment;
 import com.zpj.rxbus.RxBus;
 
-public abstract class SkinFragment extends BaseFragment {
+public abstract class SkinChangeFragment extends BaseFragment {
 
     @Override
     public void onSupportVisible() {

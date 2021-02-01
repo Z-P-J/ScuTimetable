@@ -8,8 +8,6 @@ public class BootCompletedReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-//        Intent service = new Intent(context, AlarmService.class);
-//        context.startService(service);
         AlarmService.start(context);
     }
 
