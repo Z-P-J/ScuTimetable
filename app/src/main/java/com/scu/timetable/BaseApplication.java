@@ -5,11 +5,11 @@ import android.os.Build;
 import android.os.StrictMode;
 import android.util.Log;
 
-import com.felix.atoast.library.AToast;
 import com.maning.librarycrashmonitor.MCrashMonitor;
 import com.scu.timetable.utils.EncryptionUtils;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.config.DownloaderConfig;
+import com.zpj.toast.ZToast;
 import com.zpj.utils.FileUtils;
 
 /**
@@ -28,7 +28,7 @@ public final class BaseApplication extends Application {
 //                MCrashMonitor.startCrashShowPage(getContext());
         });
 //        ZUtils.init(this);
-        AToast.onInit(this);
+//        ZToast.init(this);
         DownloaderConfig config = DownloaderConfig.with(this)
                 .setDownloadPath(FileUtils.getDiskCacheDir(this));
         Log.d("cachePath", "cachePath=" + FileUtils.getDiskCacheDir(this));

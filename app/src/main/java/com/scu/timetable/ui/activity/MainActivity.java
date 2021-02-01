@@ -3,7 +3,6 @@ package com.scu.timetable.ui.activity;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 
-import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.service.AlarmService;
 import com.scu.timetable.ui.fragment.MainFragment;
@@ -12,6 +11,7 @@ import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.fragmentation.anim.DefaultVerticalAnimator;
 import com.zpj.fragmentation.anim.FragmentAnimator;
+import com.zpj.toast.ZToast;
 
 /**
  * @author Z-P-J
@@ -35,15 +35,15 @@ public final class MainActivity extends BaseActivity {
 
 
         UpdateUtil.with(this)
-                .setOnErrorListener(throwable -> AToast.error("检查更新出错 errorMsg:" + throwable.getMessage()))
+                .setOnErrorListener(throwable -> ZToast.error("检查更新出错 errorMsg:" + throwable.getMessage()))
                 .setOnUpdateCheckedListener((info, isLastedVersion) -> {
                     if (info != null) {
-                        AToast.normal("开始更新！");
+                        ZToast.normal("开始更新！");
                         new UpdateDialog()
                                 .setUpdateInfo(info)
                                 .show(MainActivity.this);
                     } else if (isLastedVersion) {
-                        AToast.normal("软件已是最新版");
+                        ZToast.normal("软件已是最新版");
                     }
                 })
                 .checkUpdate();
@@ -61,7 +61,7 @@ public final class MainActivity extends BaseActivity {
             return;
         }
         if (System.currentTimeMillis() - firstTime > 2000) {
-            AToast.normal("再次点击退出！");
+            ZToast.normal("再次点击退出！");
             firstTime = System.currentTimeMillis();
         } else {
             TimetableHelper.closeVisitorMode();

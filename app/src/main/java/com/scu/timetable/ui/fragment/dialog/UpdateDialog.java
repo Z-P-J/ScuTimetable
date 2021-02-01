@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.deadline.statebutton.StateButton;
-import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.UpdateInfo;
 import com.scu.timetable.ui.widget.NumberProgressBar;
@@ -22,6 +21,7 @@ import com.zpj.downloader.constant.Error;
 import com.zpj.downloader.core.DownloadMission;
 import com.zpj.downloader.util.FileUtil;
 import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
+import com.zpj.toast.ZToast;
 import com.zpj.utils.PrefsHelper;
 
 /**
@@ -167,15 +167,15 @@ public class UpdateDialog extends CenterDialogFragment
             mission.start();
         } else if (i == R.id.btn_background_update) {
             //点击后台更新按钮
-            AToast.normal("后台更新");
+            ZToast.normal("后台更新");
             dismiss();
         } else if (i == R.id.iv_close) {
             //点击关闭按钮
-            AToast.normal("关闭");
+            ZToast.normal("关闭");
             dismiss();
         } else if (i == R.id.tv_ignore) {
             //点击忽略按钮
-            AToast.normal("忽略更新");
+            ZToast.normal("忽略更新");
             PrefsHelper.with().putString("ignore_version", appVersion.getContentTextView().getText().toString());
             dismiss();
         }
@@ -245,7 +245,7 @@ public class UpdateDialog extends CenterDialogFragment
         public void onError(Error e) {
             Log.d("errCode", "errCode=" + e);
             if (isSupportVisible()) {
-                AToast.normal(e.getErrorMsg());
+                ZToast.normal(e.getErrorMsg());
                 dismiss();
             }
         }

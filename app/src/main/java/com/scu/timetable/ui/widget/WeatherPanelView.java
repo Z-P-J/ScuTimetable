@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.bean.SemesterInfo;
@@ -21,6 +20,7 @@ import com.zhuangfei.timetable.TimetableView;
 import com.zhuangfei.timetable.listener.ISchedule;
 import com.zhuangfei.timetable.listener.OnSlideBuildAdapter;
 import com.zhuangfei.timetable.model.Schedule;
+import com.zpj.toast.ZToast;
 import com.zpj.utils.StatusBarUtils;
 
 import java.util.List;
@@ -76,7 +76,7 @@ public class WeatherPanelView extends BaseWeatherPanelView
                     @Override
                     public void onItemClick(View view, List<Schedule> scheduleList) {
                         ScuSubject scuSubject = (ScuSubject) scheduleList.get(0).getScheduleEnable();
-                        AToast.normal(scuSubject.getCourseName());
+                        ZToast.normal(scuSubject.getCourseName());
                     }
                 })
                 .callback(new ISchedule.OnItemLongClickListener() {

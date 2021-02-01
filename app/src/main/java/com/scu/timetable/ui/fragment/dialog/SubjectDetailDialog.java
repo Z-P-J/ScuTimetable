@@ -7,12 +7,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.ui.fragment.DetailFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.zpj.fragmentation.dialog.base.BottomDialogFragment;
+import com.zpj.toast.ZToast;
 
 public class SubjectDetailDialog extends BottomDialogFragment {
 
@@ -67,7 +67,7 @@ public class SubjectDetailDialog extends BottomDialogFragment {
         ImageView alarm = findViewById(R.id.subject_alarm);
         alarm.setOnClickListener(v -> {
             //todo alarm
-            AToast.normal("提醒功能未实现！");
+            ZToast.normal("提醒功能未实现！");
         });
     }
 

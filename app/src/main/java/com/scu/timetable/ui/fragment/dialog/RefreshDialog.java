@@ -10,13 +10,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.utils.EventBus;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
+import com.zpj.toast.ZToast;
 
 import org.json.JSONObject;
 
@@ -48,11 +48,11 @@ public class RefreshDialog extends CenterDialogFragment {
         btnRefresh.setOnClickListener(v -> {
             String captcha = captchaEdit.getText().toString();
             if (TextUtils.isEmpty(captcha)) {
-                AToast.normal("验证码为空！");
+                ZToast.normal("验证码为空！");
                 return;
             }
             if (TimetableHelper.isVisitorMode()) {
-                AToast.normal("您当前正处于游客模式，无法刷新课表！");
+                ZToast.normal("您当前正处于游客模式，无法刷新课表！");
                 return;
             }
 //            if (dialog instanceof ZDialog) {
@@ -67,7 +67,7 @@ public class RefreshDialog extends CenterDialogFragment {
                         private void onError() {
                             loadingDialogText.setText("登录失败！");
                             statusLayout.setVisibility(View.GONE);
-                            AToast.normal("登录失败，请重试！");
+                            ZToast.normal("登录失败，请重试！");
                             CaptchaFetcher.fetchCaptcha(imgCatpcha);
                             captchaEdit.setText("");
 //                            if (dialog instanceof ZDialog) {
@@ -111,7 +111,7 @@ public class RefreshDialog extends CenterDialogFragment {
                         @Override
                         public void onGetTimetableFinished() {
                             Log.d(TAG, "onGetTimetable onGetTimetableFinished");
-                            AToast.normal("刷新课表成功！");
+                            ZToast.normal("刷新课表成功！");
                             EventBus.sendRefreshEvent();
                             dismiss();
 

@@ -26,12 +26,12 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.felix.atoast.library.AToast;
 import com.scu.timetable.IAlarmAidlInterface;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.ui.activity.MainActivity;
 import com.scu.timetable.utils.TimetableHelper;
+import com.zpj.toast.ZToast;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -243,7 +243,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
             Log.d("onInit", "result=" + result);
             if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                AToast.normal("数据丢失或不支持");
+                ZToast.normal("数据丢失或不支持");
             }
         }
     }

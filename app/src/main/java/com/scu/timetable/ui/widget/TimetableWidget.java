@@ -5,14 +5,12 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.felix.atoast.library.AToast;
-import com.scu.timetable.service.WidgetService;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
+import com.zpj.toast.ZToast;
 
 public class TimetableWidget extends AppWidgetProvider {
 
@@ -39,7 +37,7 @@ public class TimetableWidget extends AppWidgetProvider {
             if ("android.appwidget.action.APPWIDGET_UPDATE".equals(action)) {
                 if (intent.getBooleanExtra("visitor_mode", false)) {
                     TimetableHelper.startVisitorMode(context);
-                    AToast.normal("游客模式！");
+                    ZToast.normal("游客模式！");
                 }
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                 int [] appIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, TimetableWidget.class));

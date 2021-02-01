@@ -7,11 +7,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.utils.TimetableHelper;
 import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
+import com.zpj.toast.ZToast;
 
 public class SubjectNoteDialog extends CenterDialogFragment {
     
@@ -48,15 +48,15 @@ public class SubjectNoteDialog extends CenterDialogFragment {
         btnSave.setOnClickListener(v -> {
             String note = editText.getText().toString();
             if (subject.getNote().isEmpty() && editText.getText().toString().isEmpty()) {
-                AToast.normal("请输入备注！");
+                ZToast.normal("请输入备注！");
                 return;
             }
             if (TimetableHelper.saveNote(getContext(), subject, note)) {
                 dismiss();
-                AToast.normal("保存成功！");
+                ZToast.normal("保存成功！");
                 subject.setNote(note);
             } else {
-                AToast.normal("保存失败，请重试！");
+                ZToast.normal("保存失败，请重试！");
             }
         });
     }

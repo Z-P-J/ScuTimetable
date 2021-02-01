@@ -17,7 +17,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.deadline.statebutton.StateButton;
-import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.EvaluationInfo;
 import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
@@ -27,6 +26,7 @@ import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
 import com.scu.timetable.utils.LoginUtil;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
+import com.zpj.toast.ZToast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -171,7 +171,7 @@ public class EvaluationFragment extends SkinChangeFragment
         if (id == R.id.btn_evaluation) {
             String captcha = captchaEdit.getText().toString();
             if (TextUtils.isEmpty(captcha)) {
-                AToast.normal("验证码为空！");
+                ZToast.normal("验证码为空！");
                 return;
             }
             isEvaluating = true;

@@ -22,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.felix.atoast.library.AToast;
 import com.lxj.xpermission.PermissionConstants;
 import com.lxj.xpermission.XPermission;
 import com.scu.timetable.R;
@@ -33,6 +32,7 @@ import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
+import com.zpj.toast.ZToast;
 import com.zpj.utils.AnimatorUtils;
 import com.zpj.utils.PrefsHelper;
 import com.zpj.utils.StatusBarUtils;
@@ -151,7 +151,7 @@ public final class LoginFragment extends SkinChangeFragment
             return;
         }
         if (userName.getText().toString().isEmpty() || password.getText().toString().isEmpty() || captcha.getText().toString().isEmpty()) {
-            AToast.normal("请输入正确的信息");
+            ZToast.normal("请输入正确的信息");
         } else {
             AnimatorUtils.hideViewAnimator(middleLayout, 500, new AnimatorListener() {
                 @Override
@@ -225,13 +225,13 @@ public final class LoginFragment extends SkinChangeFragment
 
     @Override
     public void onLoginFailed() {
-        AToast.normal(R.string.text_login_failed);
+        ZToast.normal(R.string.text_login_failed);
         onError();
     }
 
     @Override
     public void onLoginError(String errorMsg) {
-        AToast.normal("错误信息:" + errorMsg);
+        ZToast.normal("错误信息:" + errorMsg);
         onError();
     }
 

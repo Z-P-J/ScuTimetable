@@ -5,9 +5,9 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
-import com.felix.atoast.library.AToast;
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.bean.SemesterInfo;
+import com.zpj.toast.ZToast;
 import com.zpj.utils.FileUtils;
 import com.zpj.utils.PrefsHelper;
 
@@ -363,7 +363,7 @@ public final class TimetableHelper {
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
-                AToast.normal("启用游客模式失败！");
+                ZToast.normal("启用游客模式失败！");
                 return false;
             }
         }

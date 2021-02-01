@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.deadline.statebutton.StateButton;
-import com.felix.atoast.library.AToast;
 import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
 import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
@@ -20,6 +19,7 @@ import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
+import com.zpj.toast.ZToast;
 import com.zpj.utils.PrefsHelper;
 import com.zpj.widget.setting.CheckableSettingItem;
 import com.zpj.widget.setting.CommonSettingItem;
@@ -138,7 +138,7 @@ public class SettingFragment extends SkinChangeFragment
                     .setContent("注销后需重新登录才能查看课表，确认注销？")
                     .setPositiveButton(popup -> {
                         if (TimetableHelper.isVisitorMode()) {
-                            AToast.normal("您当前正处于游客模式，无法注销登录！");
+                            ZToast.normal("您当前正处于游客模式，无法注销登录！");
                             return;
                         }
                         PrefsHelper.with().putBoolean("logined", false);
@@ -184,7 +184,7 @@ public class SettingFragment extends SkinChangeFragment
             TimetableHelper.toggleShowNotCurWeek();
         } else if (id == R.id.item_show_weekends) {
             if (TimetableHelper.isSmartShowWeekends()) {
-                AToast.normal("关闭智能显示周末后启用！");
+                ZToast.normal("关闭智能显示周末后启用！");
             } else {
                 TimetableHelper.toggleShowWeekends();
             }
