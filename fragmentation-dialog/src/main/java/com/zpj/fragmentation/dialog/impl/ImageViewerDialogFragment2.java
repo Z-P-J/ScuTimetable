@@ -35,7 +35,7 @@ import com.zpj.fragmentation.dialog.imagetrans.TileBitmapDrawable;
 import com.zpj.fragmentation.dialog.imagetrans.listener.ProgressViewGet;
 import com.zpj.fragmentation.dialog.imagetrans.listener.SourceImageViewGet;
 import com.zpj.fragmentation.dialog.utils.Utility;
-import com.zpj.http.core.ObservableTask;
+import com.zpj.http.core.HttpObserver;
 import com.zpj.utils.ContextUtils;
 import com.zpj.utils.FileUtils;
 import com.zpj.utils.ScreenUtils;
@@ -275,7 +275,7 @@ public class ImageViewerDialogFragment2<T> extends FullScreenDialogFragment {
                         if (build.imageLoad.isCached(url)) {
                             Utility.saveBmpToAlbum(getContext(), newFile);
                         } else {
-                            new ObservableTask<File>(
+                            new HttpObserver<File>(
                                     emitter -> {
                                         File file = Glide.with(ContextUtils.getApplicationContext())
                                                 .asFile()

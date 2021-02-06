@@ -2,21 +2,14 @@ package com.zpj.fragmentation.dialog.imagetrans;
 
 import android.graphics.BitmapFactory;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.bumptech.glide.Glide;
-import com.zpj.http.ZHttp;
-import com.zpj.http.core.Connection;
+import com.zpj.http.core.HttpObserver;
 import com.zpj.http.core.IHttp;
-import com.zpj.http.core.ObservableTask;
 import com.zpj.utils.ContextUtils;
 import com.zpj.utils.FileUtils;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -24,10 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.Executor;
 
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 
 
@@ -217,7 +207,7 @@ public class OkHttpImageLoad {
             isStarted = true;
             currentState = State.DOWNLOADING;
 
-            disposable = new ObservableTask<File>(
+            disposable = new HttpObserver<File>(
                     emitter -> {
                         File file = Glide.with(ContextUtils.getApplicationContext())
                                 .asFile()
@@ -245,7 +235,7 @@ public class OkHttpImageLoad {
                             downloadFail(throwable);
                         }
                     })
-                    .subscribe();
+                    .subscribeWithDisposable();
 
 //            disposable = ZHttp.get(url)
 //                    .onRedirect(redirectUrl -> true)

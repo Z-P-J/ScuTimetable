@@ -166,6 +166,8 @@
             android:id="@+id/iv_close"
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:padding="6dp"
+            android:translationY="-6dp"
             android:src="@drawable/xupdate_icon_app_close" />
 
     </LinearLayout>

@@ -20,15 +20,15 @@ public final class CaptchaFetcher {
 
     private static final String LINK = "img/captcha.jpg?";
 
-    private static final String REFERER = "http://202.115.47.141/login";
+    private static final String REFERER = "http://zhjw.scu.edu.cn/login";
 
     private CaptchaFetcher() {
 
     }
 
-    public static void fetchCaptcha(String cookie, ImageView imageView) {
+    public static void fetchCaptcha(ImageView imageView) {
         ZHttp.get(LINK + Math.floor(Math.random() * 100))
-                .cookie(cookie)
+//                .cookie(cookie)
                 .referer(REFERER)
                 .userAgent(TimetableHelper.UA)
                 .ignoreHttpErrors(true)
@@ -43,8 +43,8 @@ public final class CaptchaFetcher {
                 .subscribe();
     }
 
-    public static void fetchCaptcha(ImageView imageView) {
-        fetchCaptcha(PrefsHelper.with().getString("cookie", ""), imageView);
-    }
+//    public static void fetchCaptcha(ImageView imageView) {
+//        fetchCaptcha(PrefsHelper.with().getString("cookie", ""), imageView);
+//    }
 
 }

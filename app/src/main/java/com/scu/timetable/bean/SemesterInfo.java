@@ -10,6 +10,7 @@ public class SemesterInfo {
 
     private String semesterCode;
     private String semesterName;
+    private boolean isCurrent;
 
     public String getSemesterCode() {
         return semesterCode;
@@ -25,6 +26,14 @@ public class SemesterInfo {
 
     public void setSemesterName(String semesterName) {
         this.semesterName = semesterName;
+    }
+
+    public boolean isCurrent() {
+        return isCurrent;
+    }
+
+    public void setCurrent(boolean current) {
+        isCurrent = current;
     }
 
     @NonNull

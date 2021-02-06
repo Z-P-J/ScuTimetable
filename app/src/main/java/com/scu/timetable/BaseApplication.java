@@ -3,14 +3,21 @@ package com.scu.timetable;
 import android.app.Application;
 import android.os.Build;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.maning.librarycrashmonitor.MCrashMonitor;
 import com.scu.timetable.utils.EncryptionUtils;
+import com.scu.timetable.utils.TimetableHelper;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.http.ZHttp;
+import com.zpj.http.core.DefaultCookieJar;
 import com.zpj.http.core.IHttp;
 import com.zpj.utils.FileUtils;
+
+import java.util.Map;
 
 /**
  * @author Z-P-J
@@ -39,10 +46,11 @@ public final class BaseApplication extends Application {
                         return true;
                     }
                 })
+                .userAgent(TimetableHelper.UA)
                 .ignoreContentType(true)
-                .baseUrl("http://202.115.47.141") // http://zhjw.scu.edu.cn
-                .connectTimeout(10000)
-                .readTimeout(10000)
+                .baseUrl("http://zhjw.scu.edu.cn") // http://zhjw.scu.edu.cn  202.115.47.141
+                .connectTimeout(15000)
+                .readTimeout(50000)
                 .init();
 
         ZDownloader.config(this)

@@ -99,16 +99,6 @@ public class RefreshDialog extends CenterDialogFragment {
                         }
 
                         @Override
-                        public void onGetTimetable(JSONObject jsonObject) {
-                            Log.d(TAG, "onGetTimetable jsonObject=" + jsonObject);
-                            try {
-                                TimetableHelper.writeToJson(getContext(), jsonObject);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
                         public void onGetTimetableFinished() {
                             Log.d(TAG, "onGetTimetable onGetTimetableFinished");
                             ZToast.normal("刷新课表成功！");
@@ -117,15 +107,6 @@ public class RefreshDialog extends CenterDialogFragment {
 
                         }
 
-                        @Override
-                        public void onGetSemesters(String json) {
-                            Log.d(TAG, "onGetTimetable onGetSemesters json=" + json);
-                            try {
-                                TimetableHelper.writeSemesterFile(getContext(), json);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
                     })
                     .login(captcha, TimetableHelper.getCurrentSemesterCode());
         });

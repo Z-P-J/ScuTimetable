@@ -8,6 +8,7 @@ import android.util.Log;
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.bean.SemesterInfo;
 import com.zpj.toast.ZToast;
+import com.zpj.utils.ContextUtils;
 import com.zpj.utils.FileUtils;
 import com.zpj.utils.PrefsHelper;
 
@@ -48,7 +49,7 @@ public final class TimetableHelper {
             "17:50", "19:30", "20:25", "21:20"
     };
 
-    static final String UA = "Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/8.9 Mobile Safari/537.36";
+    public static final String UA = "Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 MQQBrowser/8.9 Mobile Safari/537.36";
 
     private static final String FILE_NAME = "timetable_%s.json";
     private static final String VISITOR_FILE_NAME = "timetable_visitor.json";
@@ -160,8 +161,12 @@ public final class TimetableHelper {
         return scuSubjectList;
     }
 
-    public static void writeToJson(Context context, JSONObject jsonObject) throws Exception {
-        JsonUtil.writeToJson(context, String.format(FILE_NAME, jsonObject.getString("semester_code")), jsonObject.toString());
+    public static void writeToJson(JSONObject jsonObject) throws Exception {
+        JsonUtil.writeToJson(
+                ContextUtils.getApplicationContext(),
+                String.format(FILE_NAME, jsonObject.getString("semester_code")),
+                jsonObject.toString()
+        );
     }
 
     private static List<Integer> getWeekList(String weeksString) {
@@ -396,8 +401,9 @@ public final class TimetableHelper {
         return semesterInfoList;
     }
 
-    public static void writeSemesterFile(Context context, String json) throws Exception {
-        JsonUtil.writeToJson(context, SEMESTER_FILE_NAME, json);
+    public static void writeSemesterFile(String json) throws Exception {
+        Log.d("SEMESTER_FILE_NAME", "writeSemesterFile json=" + json);
+        JsonUtil.writeToJson(ContextUtils.getApplicationContext(), SEMESTER_FILE_NAME, json);
     }
 
     public static String getCurrentSemesterCode() {

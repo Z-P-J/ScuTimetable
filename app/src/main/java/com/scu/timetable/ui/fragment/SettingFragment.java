@@ -142,7 +142,7 @@ public class SettingFragment extends SkinChangeFragment
                             return;
                         }
                         PrefsHelper.with().putBoolean("logined", false);
-                        pop();
+                        SettingFragment.this.pop();
                     })
                     .show(context);
         }

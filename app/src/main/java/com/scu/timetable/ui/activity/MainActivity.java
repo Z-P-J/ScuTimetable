@@ -30,8 +30,8 @@ public final class MainActivity extends BaseActivity {
         MainFragment mainFragment = findFragment(MainFragment.class);
         if (mainFragment == null) {
             mainFragment = new MainFragment();
+            loadRootFragment(R.id.content, mainFragment);
         }
-        loadRootFragment(R.id.content, mainFragment);
 
 
         UpdateUtil.with(this)

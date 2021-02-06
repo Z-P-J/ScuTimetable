@@ -105,9 +105,9 @@ public final class EvaluationUtil {
     }
 
     public void getEvaluationSubjects() {
-        ZHttp.get("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/search")
+        ZHttp.get("student/teachingEvaluation/teachingEvaluation/search")
                 .onRedirect((redirectCount, redirectUrl) -> false)
-                .cookie(PrefsHelper.with().getString("cookie", ""))
+//                .cookie(PrefsHelper.with().getString("cookie", ""))
                 .referer("http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
                 .userAgent(TimetableHelper.UA)
                 .ignoreHttpErrors(true)
@@ -219,7 +219,7 @@ public final class EvaluationUtil {
 
         ZHttp.post("student/teachingEvaluation/teachingEvaluation/evaluationPage")
                 .onRedirect((redirectCount, redirectUrl) -> true)
-                .header("cookie", PrefsHelper.with().getString("cookie", ""))
+//                .header("cookie", PrefsHelper.with().getString("cookie", ""))
                 .header("Referer", "http://zhjw.scu.edu.cn/student/teachingEvaluation/evaluation/index")
                 .userAgent(TimetableHelper.UA)
                 .data("evaluatedPeople", bean.getEvaluatedPeople())
@@ -243,7 +243,7 @@ public final class EvaluationUtil {
                         HttpConfig connection = ZHttp.post("student/teachingEvaluation/teachingEvaluation/evaluation")
 //                                .method(Connection.Method.POST)
                                 .onRedirect((redirectCount, redirectUrl) -> false)
-                                .cookie(PrefsHelper.with().getString("cookie", ""))
+//                                .cookie(PrefsHelper.with().getString("cookie", ""))
                                 .referer("http://zhjw.scu.edu.cn/student/teachingEvaluation/teachingEvaluation/evaluationPage")
                                 .data("tokenValue", tokenValue)
                                 .data("evaluatedPeopleNumber", bean.getEvaluatedPeopleNum())

@@ -27,8 +27,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.zpj.http.core.HttpObserver;
 import com.zpj.http.core.IHttp;
-import com.zpj.http.core.ObservableTask;
 import com.zpj.utils.ContextUtils;
 import com.zpj.utils.FileUtils;
 import com.zpj.utils.MathUtils;
@@ -142,7 +142,7 @@ public class TileBitmapDrawable extends Drawable {
             });
             return;
         }
-        new ObservableTask<TileBitmapDrawable>(
+        new HttpObserver<TileBitmapDrawable>(
                 emitter -> {
                     BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(path, false);
 

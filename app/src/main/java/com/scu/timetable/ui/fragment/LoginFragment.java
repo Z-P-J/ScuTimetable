@@ -50,7 +50,6 @@ public final class LoginFragment extends SkinChangeFragment
     private EditText password;
     private EditText captcha;
     private ImageView captchaImg;
-    private String cookie;
 
     private View progress;
 
@@ -135,7 +134,7 @@ public final class LoginFragment extends SkinChangeFragment
                 AnimatorUtils.showViewAnimator(middleLayout, 500);
                 visitorLayout.setVisibility(View.VISIBLE);
                 captcha.setText("");
-                CaptchaFetcher.fetchCaptcha(cookie, captchaImg);
+                CaptchaFetcher.fetchCaptcha(captchaImg);
             }
 
             @Override
@@ -187,9 +186,7 @@ public final class LoginFragment extends SkinChangeFragment
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.change_captcha || id == R.id.img_captcha) {
-            if (!TextUtils.isEmpty(cookie)) {
-                CaptchaFetcher.fetchCaptcha(cookie, captchaImg);
-            }
+            CaptchaFetcher.fetchCaptcha(captchaImg);
         } else if (id == R.id.main_btn_login) {
             login();
         } else if (id == R.id.visitor_mode){
@@ -211,9 +208,7 @@ public final class LoginFragment extends SkinChangeFragment
 
     @Override
     public void onGetCookie(String cookie) {
-        this.cookie = cookie;
-//        Toast.makeText(LoginActivity.this, "cookie=" + cookie, Toast.LENGTH_SHORT).show();
-        CaptchaFetcher.fetchCaptcha(cookie, captchaImg);
+        CaptchaFetcher.fetchCaptcha(captchaImg);
     }
 
     @Override
@@ -236,16 +231,6 @@ public final class LoginFragment extends SkinChangeFragment
     }
 
     @Override
-    public void onGetTimetable(JSONObject jsonObject) {
-        try {
-            TimetableHelper.writeToJson(context, jsonObject);
-        } catch (Exception e) {
-            e.printStackTrace();
-            onError();
-        }
-    }
-
-    @Override
     public void onGetTimetableFinished() {
         msgText.setText(R.string.text_getting_data_successfully);
         PrefsHelper.with().putBoolean("logined", true);
@@ -254,15 +239,6 @@ public final class LoginFragment extends SkinChangeFragment
         //发送广播。更新桌面插件
         updateWidget(true);
         _mActivity.finish();
-    }
-
-    @Override
-    public void onGetSemesters(String json) {
-        try {
-            TimetableHelper.writeSemesterFile(context, json);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void showRequestPermissionPopup() {

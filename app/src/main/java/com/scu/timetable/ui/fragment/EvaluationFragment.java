@@ -219,13 +219,7 @@ public class EvaluationFragment extends SkinChangeFragment
     }
 
     @Override
-    public void onGetTimetable(JSONObject jsonObject) { }
-
-    @Override
     public void onGetTimetableFinished() { }
-
-    @Override
-    public void onGetSemesters(String json) { }
 
     @Override
     public void onGetEvaluationSubjects(String json) {
