@@ -1,12 +1,9 @@
 package com.zpj.fragmentation.dialog.impl;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +11,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.lxj.xpermission.PermissionConstants;
 import com.lxj.xpermission.XPermission;
-import com.zpj.fragmentation.SupportActivity;
-import com.zpj.fragmentation.SupportFragment;
 import com.zpj.fragmentation.dialog.R;
 import com.zpj.fragmentation.dialog.animator.EmptyAnimator;
 import com.zpj.fragmentation.dialog.animator.PopupAnimator;
-import com.zpj.fragmentation.dialog.base.BaseDialogFragment;
 import com.zpj.fragmentation.dialog.imagetrans.DialogView;
 import com.zpj.fragmentation.dialog.imagetrans.ITConfig;
 import com.zpj.fragmentation.dialog.imagetrans.ImageLoad;
@@ -35,7 +27,6 @@ import com.zpj.fragmentation.dialog.imagetrans.TileBitmapDrawable;
 import com.zpj.fragmentation.dialog.imagetrans.listener.ProgressViewGet;
 import com.zpj.fragmentation.dialog.imagetrans.listener.SourceImageViewGet;
 import com.zpj.fragmentation.dialog.utils.Utility;
-import com.zpj.http.core.HttpObserver;
 import com.zpj.utils.ContextUtils;
 import com.zpj.utils.FileUtils;
 import com.zpj.utils.ScreenUtils;
@@ -55,6 +46,13 @@ public class ImageViewerDialogFragment2<T> extends FullScreenDialogFragment {
     protected DialogView<T> dialogView;
 
     protected View customView;
+
+//    public DialogView2.OnGetImageViewCallback callback;
+//
+//    public ImageViewerDialogFragment2<T> setCallback(DialogView2.OnGetImageViewCallback callback) {
+//        this.callback = callback;
+//        return this;
+//    }
 
     @Override
     protected int getContentLayoutId() {
@@ -82,6 +80,7 @@ public class ImageViewerDialogFragment2<T> extends FullScreenDialogFragment {
         super.initView(view, savedInstanceState);
 
         dialogView = findViewById(R.id._dialog_view);
+//        dialogView.callback = callback;
 
 
         build.imageTransAdapter = new ImageTransAdapter() {
@@ -145,15 +144,15 @@ public class ImageViewerDialogFragment2<T> extends FullScreenDialogFragment {
             getImplView().addView(customView);
         }
 
-
+        build.offset = ScreenUtils.getScreenHeight(context) - getRootView().getMeasuredHeight();
+        dialogView.onCreate(build, this);
 
 
     }
 
     @Override
     public void doShowAnimation() {
-        build.offset = ScreenUtils.getScreenHeight(context) - getRootView().getMeasuredHeight();
-        dialogView.onCreate(build, this);
+
     }
 
 //    @Override
@@ -275,22 +274,58 @@ public class ImageViewerDialogFragment2<T> extends FullScreenDialogFragment {
                         if (build.imageLoad.isCached(url)) {
                             Utility.saveBmpToAlbum(getContext(), newFile);
                         } else {
-                            new HttpObserver<File>(
-                                    emitter -> {
-                                        File file = Glide.with(ContextUtils.getApplicationContext())
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    File file = null;
+                                    try {
+                                        file = Glide.with(ContextUtils.getApplicationContext())
                                                 .asFile()
                                                 .load(url)
                                                 .submit()
                                                 .get();
-
                                         FileUtils.copyFileFast(file, newFile);
-                                        emitter.onNext(newFile);
-                                        emitter.onComplete();
-                                    })
-                                    .onSuccess(data -> {
-                                        Utility.saveBmpToAlbum(getContext(), data);
-                                    })
-                                    .subscribe();
+                                        Utility.saveBmpToAlbum(getContext(), newFile);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }).start();
+//                            Observable.create(
+//                                    (ObservableOnSubscribe<File>) emitter -> {
+//                                        File file = Glide.with(ContextUtils.getApplicationContext())
+//                                                .asFile()
+//                                                .load(url)
+//                                                .submit()
+//                                                .get();
+//
+//                                        FileUtils.copyFileFast(file, newFile);
+//                                        emitter.onNext(newFile);
+//                                        emitter.onComplete();
+//                                    })
+//                                    .subscribeOn(Schedulers.io())
+//                                    .observeOn(AndroidSchedulers.mainThread())
+//                                    .subscribe(new Observer<File>() {
+//                                        @Override
+//                                        public void onSubscribe(@NonNull Disposable d) {
+//
+//                                        }
+//
+//                                        @Override
+//                                        public void onNext(@NonNull File file) {
+//                                            Utility.saveBmpToAlbum(getContext(), file);
+//                                        }
+//
+//                                        @Override
+//                                        public void onError(@NonNull Throwable e) {
+//
+//                                        }
+//
+//                                        @Override
+//                                        public void onComplete() {
+//
+//                                        }
+//                                    });
                         }
                     }
 

@@ -26,7 +26,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -35,6 +34,7 @@ import android.widget.Toast;
 
 import com.lxj.xpermission.PermissionConstants;
 import com.lxj.xpermission.XPermission;
+import com.zpj.fragmentation.dialog.R;
 import com.zpj.fragmentation.dialog.animator.PopupAnimator;
 import com.zpj.fragmentation.dialog.base.BaseDialogFragment;
 import com.zpj.fragmentation.dialog.enums.PopupStatus;
@@ -45,7 +45,6 @@ import com.zpj.fragmentation.dialog.utils.Utility;
 import com.zpj.fragmentation.dialog.widget.BlankView;
 import com.zpj.fragmentation.dialog.widget.HackyViewPager;
 import com.zpj.fragmentation.dialog.widget.PhotoViewContainer;
-import com.zpj.fragmentation.dialog.R;
 import com.zpj.utils.ScreenUtils;
 
 import java.util.ArrayList;
@@ -81,6 +80,13 @@ public class ImageViewerDialogFragment<T> extends BaseDialogFragment
     protected int bgColor = Color.rgb(32, 36, 46);//弹窗的背景颜色，可以自定义
 
     public PopupStatus popupStatus = PopupStatus.Dismiss;
+
+//    public DialogView2.OnGetImageViewCallback callback;
+//
+//    public ImageViewerDialogFragment<T> setCallback(DialogView2.OnGetImageViewCallback callback) {
+//        this.callback = callback;
+//        return this;
+//    }
 
     public interface OnSrcViewUpdateListener<T> {
         void onSrcViewUpdate(@NonNull ImageViewerDialogFragment<T> popup, int position);
@@ -193,7 +199,6 @@ public class ImageViewerDialogFragment<T> extends BaseDialogFragment
         snapshotView.post(new Runnable() {
             @Override
             public void run() {
-//                XPopup.getAnimationDuration()
                 TransitionManager.beginDelayedTransition((ViewGroup) snapshotView.getParent(), new TransitionSet()
                         .setDuration(DEFAULT_ANIM_DURATION)
                         .addTransition(new ChangeBounds())
@@ -298,7 +303,7 @@ public class ImageViewerDialogFragment<T> extends BaseDialogFragment
         pager.setVisibility(View.INVISIBLE);
         snapshotView.setVisibility(View.VISIBLE);
         photoViewContainer.isReleasing = true;
-        Log.d("ImageViewerPopup", "snapshotView.getParent()=" + snapshotView.getParent());
+        Log.d("ImageViewerPopup", "snapshotView.getImageMatrix()=" + snapshotView.getImageMatrix());
 //        XPopup.getAnimationDuration()
         TransitionManager.beginDelayedTransition((ViewGroup) snapshotView.getParent(), new TransitionSet()
                 .setDuration(DEFAULT_ANIM_DURATION)

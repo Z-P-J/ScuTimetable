@@ -9,6 +9,7 @@ import com.scu.timetable.ui.fragment.MainFragment;
 import com.scu.timetable.ui.fragment.dialog.UpdateDialog;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.UpdateUtil;
+import com.zpj.fragmentation.anim.DefaultHorizontalAnimator;
 import com.zpj.fragmentation.anim.DefaultVerticalAnimator;
 import com.zpj.fragmentation.anim.FragmentAnimator;
 import com.zpj.toast.ZToast;
@@ -71,7 +72,8 @@ public final class MainActivity extends BaseActivity {
 
     @Override
     public FragmentAnimator onCreateFragmentAnimator() {
-        return new DefaultVerticalAnimator();
+//        return new DefaultVerticalAnimator();
+        return new DefaultHorizontalAnimator();
     }
 
 }

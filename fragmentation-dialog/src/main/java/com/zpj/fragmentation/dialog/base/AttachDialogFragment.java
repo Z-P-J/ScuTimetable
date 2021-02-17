@@ -2,7 +2,6 @@ package com.zpj.fragmentation.dialog.base;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,13 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import com.zpj.fragmentation.dialog.R;
 import com.zpj.fragmentation.dialog.animator.PopupAnimator;
 import com.zpj.fragmentation.dialog.animator.ScrollScaleAnimator;
 import com.zpj.fragmentation.dialog.enums.PopupAnimation;
 import com.zpj.fragmentation.dialog.enums.PopupPosition;
-import com.zpj.fragmentation.dialog.impl.AttachListDialogFragment;
 import com.zpj.fragmentation.dialog.widget.PartShadowContainer;
-import com.zpj.fragmentation.dialog.R;
 import com.zpj.utils.ScreenUtils;
 
 
@@ -327,6 +325,13 @@ public abstract class AttachDialogFragment extends BaseDialogFragment {
     public AttachDialogFragment setAttachView(View attachView) {
         this.attachView = attachView;
         return this;
+    }
+
+    public AttachDialogFragment attachViewCenter(View attachView) {
+        int[] locations = new int[2];
+        attachView.getLocationOnScreen(locations);
+        return setTouchPoint(locations[0] + attachView.getMeasuredWidth() / 2f,
+                locations[1] + attachView.getMeasuredHeight() / 2f);
     }
 
     public AttachDialogFragment setTouchPoint(PointF touchPoint) {

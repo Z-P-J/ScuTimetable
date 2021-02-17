@@ -2,14 +2,18 @@ package com.zpj.fragmentation.dialog.impl;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zpj.fragmentation.dialog.R;
 import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
 import com.zpj.fragmentation.dialog.interfaces.OnSelectListener;
-import com.zpj.fragmentation.dialog.R;
 import com.zpj.fragmentation.dialog.utils.DialogThemeUtils;
 import com.zpj.recyclerview.EasyRecyclerView;
 import com.zpj.recyclerview.EasyViewHolder;
@@ -24,8 +28,6 @@ public class CenterListDialogFragment<T> extends CenterDialogFragment
 
     protected final List<T> data = new ArrayList<>();
 
-
-    protected EasyRecyclerView<T> recyclerView;
     protected String title;
     protected TextView tvTitle;
 
@@ -61,26 +63,33 @@ public class CenterListDialogFragment<T> extends CenterDialogFragment
             }
         }
 
-        recyclerView = new EasyRecyclerView<>(findViewById(R.id.recyclerView));
-        recyclerView.setData(data)
-                .setItemRes(getItemRes())
-                .onBindViewHolder(this)
-                .onItemClick(this)
-                .build();
+        FrameLayout flContainer = findViewById(R.id._fl_container);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) flContainer.getLayoutParams();
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        params.weight = 0;
 
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        initRecyclerView(recyclerView, data);
 
-        recyclerView.getRecyclerView()
-                .getViewTreeObserver()
+        recyclerView.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
                     @Override
                     public void onGlobalLayout() {
-                        recyclerView.getRecyclerView()
-                                .getViewTreeObserver()
+                        recyclerView.getViewTreeObserver()
                                 .removeOnGlobalLayoutListener(this);
                         CenterListDialogFragment.super.doShowAnimation();
                     }
                 });
+    }
+
+    protected void initRecyclerView(RecyclerView recyclerView, List<T> list) {
+        new EasyRecyclerView<T>(recyclerView)
+                .setData(list)
+                .setItemRes(getItemRes())
+                .onBindViewHolder(this)
+                .onItemClick(this)
+                .build();
     }
 
     @Override

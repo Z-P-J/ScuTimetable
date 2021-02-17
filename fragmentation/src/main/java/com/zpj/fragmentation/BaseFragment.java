@@ -4,9 +4,6 @@ package com.zpj.fragmentation;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,45 +14,32 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.zpj.fragmentation.queue.Action;
-import com.zpj.fragmentation.queue.ActionQueue;
-import com.zpj.fragmentation.queue.BlockActionQueue;
 import com.zpj.fragmentation.swipeback.SwipeBackFragment;
 import com.zpj.fragmentation.swipeback.SwipeBackLayout;
-import com.zpj.utils.StatusBarUtils;
 import com.zpj.widget.toolbar.ZToolBar;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.zpj.fragmentation.R;
 
 public abstract class BaseFragment extends SwipeBackFragment {
 
-
-//    private final BlockActionQueue mSupportVisibleActionQueue;
-//    private final BlockActionQueue mEnterAnimationEndActionQueue;
-
-
     protected ZToolBar toolbar;
-
-//    public BaseFragment() {
-//        Handler handler = new Handler(Looper.getMainLooper());
-//        mSupportVisibleActionQueue = new BlockActionQueue(handler);
-//        mEnterAnimationEndActionQueue = new BlockActionQueue(handler);
-//    }
 
     @SuppressLint("ResourceType")
     @Nullable
     @Override
-    public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (context == null) {
             context = getContext();
         }
         if (getLayoutId() > 0) {
             view = inflater.inflate(getLayoutId(), container, false);
             toolbar = view.findViewById(R.id.tool_bar);
-            setToolbarTitle(getToolbarTitle(context));
-            setToolbarSubTitle(getToolbarSubTitle(context));
+            CharSequence title = getToolbarTitle(context);
+            if (title != null) {
+                setToolbarTitle(title);
+            }
+            CharSequence subTitle = getToolbarSubTitle(context);
+            if (title != null) {
+                setToolbarSubTitle(subTitle);
+            }
             initView(view, savedInstanceState);
             if (toolbar != null) {
                 if (toolbar.getLeftImageButton() != null) {

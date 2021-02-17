@@ -10,7 +10,6 @@ import android.widget.FrameLayout;
 
 import com.zpj.fragmentation.dialog.imagetrans.listener.OnPullCloseListener;
 import com.zpj.fragmentation.dialog.imagetrans.listener.OnTransformListener;
-import com.zpj.fragmentation.queue.BlockActionQueue;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -68,7 +67,11 @@ public class ImageItemView<T> extends FrameLayout implements
 //        imageView.setOnClickListener(this);
 //        if (needTransOpen || opened) loadImage();
 
-        build.sourceImageViewGet.updateImageView(this, pos, isCurrent);
+        if (build.sourceImageViewGet == null) {
+            update(null);
+        } else {
+            build.sourceImageViewGet.updateImageView(this, pos, isCurrent);
+        }
     }
 
     public void update(View view) {

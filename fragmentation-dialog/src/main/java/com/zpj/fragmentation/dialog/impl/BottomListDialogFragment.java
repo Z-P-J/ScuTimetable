@@ -2,15 +2,18 @@ package com.zpj.fragmentation.dialog.impl;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.zpj.fragmentation.dialog.R;
 import com.zpj.fragmentation.dialog.base.BottomDialogFragment;
 import com.zpj.fragmentation.dialog.utils.DialogThemeUtils;
 import com.zpj.fragmentation.dialog.widget.CheckView;
-import com.zpj.fragmentation.dialog.R;
 import com.zpj.recyclerview.EasyRecyclerView;
 import com.zpj.recyclerview.EasyViewHolder;
 import com.zpj.recyclerview.IEasy;
@@ -62,8 +65,17 @@ public class BottomListDialogFragment<T> extends BottomDialogFragment
             }
         }
 
-        recyclerView = new EasyRecyclerView<>(findViewById(R.id.recyclerView));
-        recyclerView.setData(list)
+        FrameLayout flContainer = findViewById(R.id._fl_container);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) flContainer.getLayoutParams();
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        params.weight = 0;
+
+        initRecyclerView(findViewById(R.id.recyclerView), list);
+    }
+
+    protected void initRecyclerView(RecyclerView recyclerView, List<T> list) {
+        new EasyRecyclerView<T>(recyclerView)
+                .setData(list)
                 .setItemRes(R.layout._dialog_item_text)
                 .onBindViewHolder(this)
                 .onItemClick(this)

@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zpj.fragmentation.SupportFragment;
-import com.zpj.fragmentation.anim.DefaultNoAnimator;
 import com.zpj.fragmentation.anim.DialogFragmentAnimator;
 import com.zpj.fragmentation.anim.FragmentAnimator;
 
@@ -61,7 +60,10 @@ public abstract class AbstractDialogFragment extends SupportFragment {
         if (onBackPressed()) {
             return true;
         }
-        pop();
+        dismiss();
         return true;
     }
+
+    public abstract void dismiss();
+
 }

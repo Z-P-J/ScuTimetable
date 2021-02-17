@@ -2,6 +2,7 @@ package com.zpj.fragmentation.dialog.impl;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.Nullable;
 import android.support.v7.view.menu.MenuBuilder;
 import android.view.View;
@@ -13,15 +14,18 @@ import com.zpj.fragmentation.dialog.model.OptionMenu;
 import com.zpj.fragmentation.dialog.widget.OptionMenuView;
 import com.zpj.fragmentation.dialog.widget.PopHorizontalScrollView;
 import com.zpj.fragmentation.dialog.widget.PopVerticalScrollView;
+import com.zpj.utils.ContextUtils;
 import com.zpj.utils.ScreenUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ArrowMenuDialogFragment extends ArrowDialogFragment {
 
     private int menuRes = 0;
 
-    private List<OptionMenu> optionMenus;
+    private final List<OptionMenu> optionMenus = new ArrayList<>();
 
     private int mOrientation = LinearLayout.VERTICAL;
 
@@ -39,16 +43,16 @@ public class ArrowMenuDialogFragment extends ArrowDialogFragment {
 
         OptionMenuView mOptionMenuView = new OptionMenuView(context);
         if (mOrientation == LinearLayout.VERTICAL) {
-            mOptionMenuView.setMinimumWidth((int) (ScreenUtils.getScreenWidth(context) / 2.8));
+            mOptionMenuView.setMinimumWidth((int) (ScreenUtils.getScreenWidth(context) / 2.5));
         }
         mOptionMenuView.setOrientation(mOrientation);
         mOptionMenuView.setOnOptionMenuClickListener(new OptionMenuView.OnOptionMenuClickListener() {
             @Override
             public boolean onOptionMenuClick(int position, OptionMenu menu) {
-                dismiss();
                 if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(position, menu);
                 }
+                dismiss();
                 return true;
             }
         });
@@ -91,7 +95,43 @@ public class ArrowMenuDialogFragment extends ArrowDialogFragment {
     }
 
     public ArrowMenuDialogFragment setOptionMenus(List<OptionMenu> optionMenus) {
-        this.optionMenus = optionMenus;
+        this.optionMenus.addAll(optionMenus);
+        return this;
+    }
+
+    public ArrowMenuDialogFragment setOptionMenus(@ArrayRes int strArrayIds) {
+        return setOptionMenus(ContextUtils.getApplicationContext().getResources().getStringArray(strArrayIds));
+    }
+
+    public ArrowMenuDialogFragment setOptionMenus(String ... titles) {
+        this.optionMenus.clear();
+        for (String title : titles) {
+            addOptionMenus(title);
+        }
+        return this;
+    }
+
+    public ArrowMenuDialogFragment addOptionMenus(OptionMenu optionMenu) {
+        this.optionMenus.add(optionMenu);
+        return this;
+    }
+
+    public ArrowMenuDialogFragment addOptionMenus(String title) {
+        this.optionMenus.add(new OptionMenu(title));
+        return this;
+    }
+
+    public ArrowMenuDialogFragment addOptionMenus(String...titles) {
+        for (String title : titles) {
+            addOptionMenus(title);
+        }
+        return this;
+    }
+
+    public ArrowMenuDialogFragment addOptionMenuIf(boolean flag, String item) {
+        if (flag) {
+            addOptionMenus(item);
+        }
         return this;
     }
 

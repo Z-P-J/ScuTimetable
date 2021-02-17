@@ -9,14 +9,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -82,7 +78,7 @@ public abstract class BaseDialogFragment extends AbstractDialogFragment {
                 if (!cancelable || !cancelableInTouchOutside) {
                     return;
                 }
-                pop();
+                dismiss();
             }
         });
 
@@ -241,23 +237,32 @@ public abstract class BaseDialogFragment extends AbstractDialogFragment {
 //    }
 
     public void dismiss() {
-        if (!isDismissing) {
-            isDismissing = true;
-            doDismissAnimation();
-            super.popThis();
-            onDismiss();
-//            postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    onDismiss();
-//                }
-//            }, 250);
+        postOnEnterAnimationEnd(() -> {
+            if (!isDismissing) {
+                isDismissing = true;
+                doDismissAnimation();
+                BaseDialogFragment.super.popThis();
+                onDismiss();
+            }
+        });
 
-//            postDelayed(() -> {
-//                BaseDialogFragment.super.popThis();
-//                onDismiss();
-//            }, XPopup.getAnimationDuration());
-        }
+//        if (!isDismissing) {
+//            isDismissing = true;
+//            doDismissAnimation();
+//            super.popThis();
+//            onDismiss();
+////            postDelayed(new Runnable() {
+////                @Override
+////                public void run() {
+////                    onDismiss();
+////                }
+////            }, 250);
+//
+////            postDelayed(() -> {
+////                BaseDialogFragment.super.popThis();
+////                onDismiss();
+////            }, XPopup.getAnimationDuration());
+//        }
     }
 
 //    public void dismissWithStart(ISupportFragment fragment) {
@@ -308,7 +313,7 @@ public abstract class BaseDialogFragment extends AbstractDialogFragment {
     }
 
     protected void onBeforeShow() {
-
+        isDismissing = false;
     }
 
     protected void onHide() {
