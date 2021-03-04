@@ -11,10 +11,10 @@ import com.scu.timetable.R;
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.ui.fragment.DetailFragment;
 import com.scu.timetable.ui.widget.DetailLayout;
-import com.zpj.fragmentation.dialog.base.BottomDialogFragment;
+import com.zpj.fragmentation.dialog.base.BottomDragDialogFragment;
 import com.zpj.toast.ZToast;
 
-public class SubjectDetailDialog extends BottomDialogFragment {
+public class SubjectDetailDialog extends BottomDragDialogFragment {
 
     private ScuSubject subject;
 

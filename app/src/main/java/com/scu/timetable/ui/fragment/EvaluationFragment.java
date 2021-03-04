@@ -25,6 +25,7 @@ import com.scu.timetable.ui.widget.ElasticScrollView;
 import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
 import com.scu.timetable.utils.LoginUtil;
+import com.zpj.fragmentation.dialog.IDialog;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.toast.ZToast;
 
@@ -146,7 +147,7 @@ public class EvaluationFragment extends SkinChangeFragment
             new AlertDialogFragment()
                     .setTitle("确认返回！")
                     .setContent("返回后将终止评教，确认返回？")
-                    .setPositiveButton(popup -> {
+                    .setPositiveButton((fragment, which) -> {
                         timer.cancel();
                         setSwipeBackEnable(true);
                         pop();

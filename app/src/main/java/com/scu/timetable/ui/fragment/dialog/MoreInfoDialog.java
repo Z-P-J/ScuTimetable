@@ -7,9 +7,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.scu.timetable.R;
-import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
+import com.zpj.fragmentation.dialog.base.CardDialogFragment;
 
-public class MoreInfoDialog extends CenterDialogFragment {
+public class MoreInfoDialog extends CardDialogFragment {
 
     private String title;
     private String content;

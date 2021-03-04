@@ -18,6 +18,7 @@ import com.scu.timetable.utils.SuperLinkUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.scu.timetable.utils.UpdateUtil;
+import com.zpj.fragmentation.dialog.IDialog;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.toast.ZToast;
 import com.zpj.utils.PrefsHelper;
@@ -136,7 +137,7 @@ public class SettingFragment extends SkinChangeFragment
             new AlertDialogFragment()
                     .setTitle("注销登录！")
                     .setContent("注销后需重新登录才能查看课表，确认注销？")
-                    .setPositiveButton(popup -> {
+                    .setPositiveButton((fragment, which) -> {
                         if (TimetableHelper.isVisitorMode()) {
                             ZToast.normal("您当前正处于游客模式，无法注销登录！");
                             return;

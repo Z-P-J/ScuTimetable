@@ -1,9 +1,9 @@
 package com.scu.timetable.ui.fragment.dialog;
 
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,14 +19,14 @@ import com.zpj.downloader.BaseMission;
 import com.zpj.downloader.DownloadMission;
 import com.zpj.downloader.ZDownloader;
 import com.zpj.downloader.constant.Error;
-import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
+import com.zpj.fragmentation.dialog.base.CardDialogFragment;
 import com.zpj.toast.ZToast;
 import com.zpj.utils.PrefsHelper;
 
 /**
  * @author Z-P-J
  */
-public class UpdateDialog extends CenterDialogFragment
+public class UpdateDialog extends CardDialogFragment
         implements View.OnClickListener {
 
     //======顶部========//
@@ -74,7 +74,8 @@ public class UpdateDialog extends CenterDialogFragment
 
     public UpdateDialog() {
         setCancelable(false);
-        setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        setTransparentBackground(true);
+//        setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
     public UpdateDialog setUpdateInfo(UpdateInfo updateInfo) {
@@ -91,6 +92,12 @@ public class UpdateDialog extends CenterDialogFragment
     protected void initView(View view, @Nullable Bundle savedInstanceState) {
         super.initView(view, savedInstanceState);
         ZDownloader.clearAll();
+
+//        CardView cardView = findViewById(R.id.centerPopupContainer);
+//        cardView.setCardElevation(0);
+//        cardView.setUseCompatPadding(false);
+//        cardView.setCardBackgroundColor(Color.TRANSPARENT);
+
 
         //顶部图片
         mIvTop = findViewById(R.id.iv_top);

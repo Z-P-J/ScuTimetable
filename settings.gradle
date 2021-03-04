@@ -1,5 +1,3 @@
 include ':app',
         ':TimetableView',
-        ':zdownloader',
-        ':fragmentation',
-        ':fragmentation-dialog'
+        ':zdownloader'

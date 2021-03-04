@@ -9,10 +9,10 @@ import android.widget.TextView;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.ui.fragment.DetailFragment;
-import com.zpj.fragmentation.dialog.base.BottomDialogFragment;
+import com.zpj.fragmentation.dialog.base.BottomDragDialogFragment;
 import com.zpj.toast.ZToast;
 
-public class SubjectDetailDialog2 extends BottomDialogFragment {
+public class SubjectDetailDialog2 extends BottomDragDialogFragment {
 
     private ScuSubject subject;
 

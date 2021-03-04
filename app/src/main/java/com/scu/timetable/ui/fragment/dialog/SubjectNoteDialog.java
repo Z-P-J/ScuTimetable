@@ -10,10 +10,10 @@ import android.widget.TextView;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.utils.TimetableHelper;
-import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
+import com.zpj.fragmentation.dialog.base.CardDialogFragment;
 import com.zpj.toast.ZToast;
 
-public class SubjectNoteDialog extends CenterDialogFragment {
+public class SubjectNoteDialog extends CardDialogFragment {
     
     private ScuSubject subject;
 

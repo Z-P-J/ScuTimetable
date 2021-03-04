@@ -11,16 +11,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.scu.timetable.R;
-import com.scu.timetable.utils.EventBus;
 import com.scu.timetable.utils.CaptchaFetcher;
+import com.scu.timetable.utils.EventBus;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
-import com.zpj.fragmentation.dialog.base.CenterDialogFragment;
+import com.zpj.fragmentation.dialog.base.CardDialogFragment;
 import com.zpj.toast.ZToast;
 
-import org.json.JSONObject;
-
-public class RefreshDialog extends CenterDialogFragment {
+public class RefreshDialog extends CardDialogFragment {
 
     private static final String TAG = "RefreshPopup";
 
