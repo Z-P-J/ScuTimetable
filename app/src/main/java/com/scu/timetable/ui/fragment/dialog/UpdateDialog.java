@@ -159,31 +159,17 @@ public class UpdateDialog extends CardDialogFragment
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        //点击版本升级按钮【下载apk】
         if (i == R.id.btn_update) {
-            //权限判断是否有访问外部存储空间权限
-//            int flag = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-//            if (flag != PackageManager.PERMISSION_GRANTED) {
-//                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_REQUEST_PERMISSIONS);
-//            } else {
-//                installApp();
-//            }
             mission = ZDownloader.download(updateInfo.getDownloadUrl())
-                    .addListener(missionListener)
-                    .start();
-//            mission = DownloadMission.create(updateInfo.getDownloadUrl(), null, MissionConfig.with());
-//            mission.addListener(missionListener);
-//            mission.start();
+                    .addListener(missionListener);
+            mission.start();
         } else if (i == R.id.btn_background_update) {
-            //点击后台更新按钮
             ZToast.normal("后台更新");
             dismiss();
         } else if (i == R.id.iv_close) {
-            //点击关闭按钮
             ZToast.normal("关闭");
             dismiss();
         } else if (i == R.id.tv_ignore) {
-            //点击忽略按钮
             ZToast.normal("忽略更新");
             PrefsHelper.with().putString("ignore_version", appVersion.getContentTextView().getText().toString());
             dismiss();

@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ScuTimetable.iml" filepath="$PROJECT_DIR$/.idea/modules/ScuTimetable.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/TimetableView/ScuTimetable.TimetableView.iml" filepath="$PROJECT_DIR$/.idea/modules/TimetableView/ScuTimetable.TimetableView.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ScuTimetable.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ScuTimetable.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/zdownloader/ScuTimetable.zdownloader.iml" filepath="$PROJECT_DIR$/.idea/modules/zdownloader/ScuTimetable.zdownloader.iml" />
     </modules>
   </component>
 </project>

@@ -46,6 +46,7 @@
             </intent-filter>
 
         </activity>
+
         <activity
             android:name=".ui.activity.MainActivity"
             android:theme="@style/AppThemeTransparent"
