@@ -199,7 +199,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 stopSelf();
             } else if (Objects.equals(action, ACTION_START)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    NotificationChannel channel = new NotificationChannel(CHANNEL_FOREGROUND_SERVICE, "Foreground service", NotificationManager.IMPORTANCE_LOW);
+                    NotificationChannel channel = new NotificationChannel(CHANNEL_FOREGROUND_SERVICE, "Foreground service", NotificationManager.IMPORTANCE_HIGH);
                     channel.setShowBadge(false);
                     notificationManager.createNotificationChannel(channel);
                 }
@@ -321,10 +321,10 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 Log.d("onAlarm2", "nextSubject=" + nextSubject);
                 String[] arr = TimetableHelper.TIMES_1[nextSubject.getStart() - 1].split(":");
                 String[] arr2 = TimetableHelper.TIMES_END_1[nextSubject.getEnd() - 1].split(":");
-                int hourOfSubject = Integer.valueOf(arr[0]);
-                int minuteOfSubject = Integer.valueOf(arr[1]);
-                int hourOfEnd = Integer.valueOf(arr2[0]);
-                int minOfEnd = Integer.valueOf(arr2[1]);
+                int hourOfSubject = Integer.parseInt(arr[0]);
+                int minuteOfSubject = Integer.parseInt(arr[1]);
+                int hourOfEnd = Integer.parseInt(arr2[0]);
+                int minOfEnd = Integer.parseInt(arr2[1]);
 
                 if (currentHour < hourOfEnd || (currentHour == hourOfEnd && currentMinute < minOfEnd)) {
                     break;
@@ -397,8 +397,8 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         int currentDay = calendar.get(Calendar.DAY_OF_WEEK);
         String[] arr = TimetableHelper.TIMES_1[nextSubject.getStart() - 1].split(":");
         int subjectDay = nextSubject.getDay();
-        int subjectHour = Integer.valueOf(arr[0]);
-        int subjectMin = Integer.valueOf(arr[1]);
+        int subjectHour = Integer.parseInt(arr[0]);
+        int subjectMin = Integer.parseInt(arr[1]);
         Alarm alarm = new Alarm();
         alarm.setAlarmType(alarmType);
         calendar.set(Calendar.DAY_OF_WEEK, subjectDay);
@@ -495,10 +495,14 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 }
                 break;
             case Alarm.TYPE_CLASS_BEGAIN:
+//                updateNotification(nextSubject.getCourseName() + "课程上课中",
+//                        "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
+//                        "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd() - 1],
+//                        "任课老师：" + nextSubject.getTeacher());
                 updateNotification(nextSubject.getCourseName() + "课程上课中",
-                        "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
-                        "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd() - 1],
-                        "任课老师：" + nextSubject.getTeacher());
+                        nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
+                        TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd() - 1],
+                        nextSubject.getTeacher());
                 break;
             case Alarm.TYPE_CLASS_BREAK:
                 updateNotification(nextSubject.getCourseName() + "课间休息时间", "休息一会儿吧！");
@@ -598,10 +602,14 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setColor(ContextCompat.getColor(this, R.color.colorAccent))
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
-                .setPriority(NotificationCompat.PRIORITY_MAX)
+//                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOngoing(true)
 //                .addAction(new NotificationCompat.Action(R.drawable.ic_close_black_24dp, "停止服务", PendingIntent.getService(this, 1, new Intent(this, AlarmService.class).setAction(ACTION_STOP), PendingIntent.FLAG_UPDATE_CURRENT)))
                 .setContentIntent(PendingIntent.getActivity(this, 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(CHANNEL_FOREGROUND_SERVICE);
+        }
         notifications[0] =  builder.build();
         return notifications[0];
     }
@@ -610,15 +618,15 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_FOREGROUND_SERVICE);
         RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.layout_notification);
         remoteViews.setTextViewText(R.id.text_title, title);
-        remoteViews.setTextViewText(R.id.text_classroom, classRoom);
-        remoteViews.setTextViewText(R.id.text_time, time);
-        remoteViews.setTextViewText(R.id.text_teacher, teacher);
+        remoteViews.setTextViewText(R.id.text_classroom, "上课地点：" + classRoom);
+        remoteViews.setTextViewText(R.id.text_time, "上课时间：" + time);
+        remoteViews.setTextViewText(R.id.text_teacher, "任课老师：" + teacher);
         builder.setShowWhen(false)
                 .setContentTitle(title)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setContentText(classRoom + " " + time)
+                .setContentText(time + " " + classRoom)
                 .setCustomBigContentView(remoteViews)
-                .setCustomContentView(remoteViews)
+//                .setCustomContentView(remoteViews)
                 .setCategory(Notification.CATEGORY_SERVICE)
                 .setGroup(CHANNEL_FOREGROUND_SERVICE)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -628,6 +636,9 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 .setOngoing(true)
 //                .addAction(new NotificationCompat.Action(R.drawable.ic_close_black_24dp, "停止服务", PendingIntent.getService(this, 1, new Intent(this, AlarmService.class).setAction(ACTION_STOP), PendingIntent.FLAG_UPDATE_CURRENT)))
                 .setContentIntent(PendingIntent.getActivity(this, 1, new Intent(this, MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId(CHANNEL_FOREGROUND_SERVICE);
+        }
         notifications[0] =  builder.build();
         return notifications[0];
     }

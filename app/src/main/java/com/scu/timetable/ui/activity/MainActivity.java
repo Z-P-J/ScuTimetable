@@ -13,6 +13,7 @@ import com.zpj.fragmentation.anim.DefaultHorizontalAnimator;
 import com.zpj.fragmentation.anim.DefaultVerticalAnimator;
 import com.zpj.fragmentation.anim.FragmentAnimator;
 import com.zpj.toast.ZToast;
+import com.zpj.utils.StatusBarUtils;
 
 /**
  * @author Z-P-J
@@ -25,6 +26,8 @@ public final class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        StatusBarUtils.transparentStatusBar(this);
 
         AlarmService.start(this);
 
