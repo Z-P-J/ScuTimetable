@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.deadline.statebutton.StateButton;
 import com.scu.timetable.R;
@@ -21,6 +22,7 @@ import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.fragmentation.dialog.IDialog;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.toast.ZToast;
+import com.zpj.utils.AnimatorUtils;
 import com.zpj.utils.PrefsHelper;
 import com.zpj.widget.setting.CheckableSettingItem;
 import com.zpj.widget.setting.CommonSettingItem;
@@ -50,6 +52,12 @@ public class SettingFragment extends SkinChangeFragment
     @Override
     protected boolean supportSwipeBack() {
         return true;
+    }
+
+    @Override
+    public void onSupportVisible() {
+        super.onSupportVisible();
+        darkStatusBar();
     }
 
     @Override
@@ -96,22 +104,26 @@ public class SettingFragment extends SkinChangeFragment
         itemWidgetTransparentMode.setChecked(TimetableWidgtHelper.isTransparentMode());
         itemWidgetTransparentMode.setOnItemClickListener(this);
 
+
+        CommonSettingItem aboutMeItem = view.findViewById(R.id.item_about_me);
+        aboutMeItem.setOnItemClickListener(this);
+
+        CommonSettingItem openSourceItem = view.findViewById(R.id.item_open_source);
+        openSourceItem.setOnItemClickListener(this);
+
+        CommonSettingItem checkUpdateItem = view.findViewById(R.id.item_check_update);
+        checkUpdateItem.setRightText("V" + UpdateUtil.getVersionName(getContext()));
+        checkUpdateItem.setOnItemClickListener(this);
+
         StateButton btnLogout = view.findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(this);
 
-        DetailLayout appVersion = view.findViewById(R.id.app_version);
-        appVersion.setContent("V" + UpdateUtil.getVersionName(getContext()));
-
-        String link2 = "https://github.com/Z-P-J/ScuTimetable";
-        DetailLayout linkOpenSource = view.findViewById(R.id.link_open_source);
-        SuperLinkUtil.setSuperLink(linkOpenSource.getContentTextView(), link2, link2);
-
-        String link = "https://github.com/Z-P-J";
-        DetailLayout linkGithub = view.findViewById(R.id.link_github);
-        SuperLinkUtil.setSuperLink(linkGithub.getContentTextView(), link, link);
-
-        DetailLayout linkSjly = view.findViewById(R.id.link_sjly);
-        SuperLinkUtil.setSuperLink(linkSjly.getContentTextView(), "天蓝蓝的", "https://www.shouji.com.cn/user/5544802/home.html");
+        LinearLayout llContainer = findViewById(R.id.ll_container);
+        View[] views = new View[llContainer.getChildCount()];
+        for (int i = 0; i < llContainer.getChildCount(); i++) {
+            views[i] = llContainer.getChildAt(i);
+        }
+        AnimatorUtils.doDelayShowAnim(500, 50, views);
     }
 
     @Override
@@ -194,9 +206,9 @@ public class SettingFragment extends SkinChangeFragment
         } else if (id == R.id.item_speech) {
             TimetableHelper.toggleSpeech();
         } else if (id == R.id.item_widget_smart_show_weekends) {
-            TimetableWidgtHelper.toggleSmartShowWeekends(getContext());
+            TimetableWidgtHelper.toggleSmartShowWeekends(context);
         } else if (id == R.id.item_widget_transparent_mode) {
-            TimetableWidgtHelper.toggleTransparentMode(getContext());
+            TimetableWidgtHelper.toggleTransparentMode(context);
         }
     }
 
@@ -204,9 +216,20 @@ public class SettingFragment extends SkinChangeFragment
     public void onItemClick(CommonSettingItem item) {
         int id = item.getId();
         if (id == R.id.item_change_current_week) {
-            TimetableHelper.openChangeCurrentWeekDialog(getContext(), null);
+            TimetableHelper.openChangeCurrentWeekDialog(context, null);
         } else if (id == R.id.item_notification) {
             goSetting();
+        } else if (id == R.id.item_about_me) {
+            new AboutMeFragment()
+                    .setOnDismissListener(this::darkStatusBar)
+                    .show(context);
+        } else if (id == R.id.item_open_source) {
+            Uri uri = Uri.parse(item.getInfoText());
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(intent);
+        } else if (id == R.id.item_check_update) {
+//            item.setInfoIcon(getResources().getDrawable(R.drawable.ic_new));
+            item.setInfoIcon(null);
         }
     }
 

@@ -20,8 +20,8 @@ public final class LoginActivity extends BaseActivity {
         LoginFragment fragment = findFragment(LoginFragment.class);
         if (fragment == null) {
             fragment = new LoginFragment();
+            loadRootFragment(R.id.content, fragment);
         }
-        loadRootFragment(R.id.content, fragment);
     }
 
 }

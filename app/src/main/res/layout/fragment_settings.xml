@@ -25,6 +25,7 @@
             >
 
             <LinearLayout
+                android:id="@+id/ll_container"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -34,9 +35,8 @@
                     android:layout_height="wrap_content"
                     android:text="应用设置"
                     android:gravity="center_vertical"
-                    android:padding="5dp"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
+                    android:paddingVertical="@dimen/dp8"
+                    android:paddingHorizontal="@dimen/dp16"
                     android:textColor="@color/colorPrimary"
                     />
 
@@ -121,9 +121,8 @@
                     android:layout_height="wrap_content"
                     android:text="桌面插件设置"
                     android:gravity="center_vertical"
-                    android:padding="5dp"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
+                    android:paddingVertical="@dimen/dp8"
+                    android:paddingHorizontal="@dimen/dp16"
                     android:textColor="@color/colorPrimary"
                     />
 
@@ -156,9 +155,8 @@
                     android:layout_height="wrap_content"
                     android:text="关于"
                     android:gravity="center_vertical"
-                    android:padding="5dp"
-                    android:paddingStart="15dp"
-                    android:paddingEnd="15dp"
+                    android:paddingVertical="@dimen/dp8"
+                    android:paddingHorizontal="@dimen/dp16"
                     android:textColor="@color/colorPrimary"
                     />
 
@@ -169,44 +167,97 @@
                     android:layout_marginEnd="15dp"
                     android:background="#eeeeee"/>
 
-                <com.scu.timetable.ui.widget.DetailLayout
-                    android:id="@+id/app_version"
+                <com.zpj.widget.setting.CommonSettingItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:left_text="软件版本"
-                    app:right_text="V 1.3.0"
+                    android:id="@+id/item_about_me"
+                    app:z_setting_titleText="开发者"
+                    app:z_setting_rightText="Z-P-J"
+                    app:z_setting_leftIcon="@drawable/ic_friend_white_24dp"
+                    app:z_setting_leftIconTint="@color/black"
                     />
 
-                <com.scu.timetable.ui.widget.DetailLayout
+                <com.zpj.widget.setting.CommonSettingItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:left_text="软件作者"
-                    app:right_text="Z-P-J"
+                    android:id="@+id/item_open_source"
+                    app:z_setting_titleText="开源地址"
+                    app:z_setting_infoText="https://github.com/Z-P-J/ScuTimetable"
+                    app:z_setting_leftIcon="@drawable/ic_github"
+                    app:z_setting_leftIconTint="@color/black"
                     />
 
-                <com.scu.timetable.ui.widget.DetailLayout
-                    android:id="@+id/link_open_source"
+<!--                <com.zpj.widget.setting.CommonSettingItem-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:id="@+id/item_sjly"-->
+<!--                    app:z_setting_titleText="手机乐园"-->
+<!--                    app:z_setting_rightText="天蓝蓝的"-->
+<!--                    />-->
+
+<!--                <com.zpj.widget.setting.CommonSettingItem-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:id="@+id/item_user_agreement"-->
+<!--                    app:z_setting_titleText="用户协议"-->
+<!--                    />-->
+
+<!--                <com.zpj.widget.setting.CommonSettingItem-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:id="@+id/item_privacy_agreement"-->
+<!--                    app:z_setting_titleText="隐私协议"-->
+<!--                    />-->
+
+                <com.zpj.widget.setting.CommonSettingItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:left_text="软件开源"
-                    app:right_text="https://github.com/Z-P-J/ScuTimetable"
+                    android:id="@+id/item_check_update"
+                    app:z_setting_titleText="检查更新"
+                    app:z_setting_rightText="v1.0.0"
+                    app:z_setting_showInfoBtn="true"
+                    app:z_setting_leftIcon="@drawable/ic_next_week_black_24dp"
+                    app:z_setting_leftIconTint="@color/black"
                     />
 
-                <com.scu.timetable.ui.widget.DetailLayout
-                    android:id="@+id/link_github"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:left_text="Github主页"
-                    app:right_text="https://github.com/Z-P-J"
-                    />
+<!--                <com.scu.timetable.ui.widget.DetailLayout-->
+<!--                    android:id="@+id/app_version"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:left_text="软件版本"-->
+<!--                    app:right_text="V 1.3.0"-->
+<!--                    />-->
 
-                <com.scu.timetable.ui.widget.DetailLayout
-                    android:id="@+id/link_sjly"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:left_text="手机乐园主页"
-                    app:right_text="https://www.shouji.com.cn/user/5544802/home.html"
-                    />
+<!--                <com.scu.timetable.ui.widget.DetailLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:left_text="软件作者"-->
+<!--                    app:right_text="Z-P-J"-->
+<!--                    />-->
+
+<!--                <com.scu.timetable.ui.widget.DetailLayout-->
+<!--                    android:id="@+id/link_open_source"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:left_text="软件开源"-->
+<!--                    app:right_text="https://github.com/Z-P-J/ScuTimetable"-->
+<!--                    />-->
+
+<!--                <com.scu.timetable.ui.widget.DetailLayout-->
+<!--                    android:id="@+id/link_github"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:left_text="Github主页"-->
+<!--                    app:right_text="https://github.com/Z-P-J"-->
+<!--                    />-->
+
+<!--                <com.scu.timetable.ui.widget.DetailLayout-->
+<!--                    android:id="@+id/link_sjly"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    app:left_text="手机乐园主页"-->
+<!--                    app:right_text="https://www.shouji.com.cn/user/5544802/home.html"-->
+<!--                    />-->
 
                 <com.deadline.statebutton.StateButton
                     android:id="@+id/btn_logout"

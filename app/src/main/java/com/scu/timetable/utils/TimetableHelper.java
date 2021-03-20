@@ -7,10 +7,13 @@ import android.util.Log;
 
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.bean.SemesterInfo;
+import com.zpj.fragmentation.dialog.impl.BottomDragSelectDialogFragment;
+import com.zpj.fragmentation.dialog.impl.SelectDialogFragment;
 import com.zpj.toast.ZToast;
 import com.zpj.utils.ContextUtils;
 import com.zpj.utils.FileUtils;
 import com.zpj.utils.PrefsHelper;
+import com.zpj.utils.ScreenUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -251,34 +254,22 @@ public final class TimetableHelper {
         return false;
     }
 
-    public static void openChangeCurrentWeekDialog(Context context, DialogInterface.OnClickListener onClickListener) {
-        final String[] items = new String[20];
+    public static void openChangeCurrentWeekDialog(Context context, SelectDialogFragment.OnSingleSelectListener<String> onSingleSelectListener) {
+        final List<String> items = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            items[i] = "第" + (i + 1) + "周";
+            items.add("第" + (i + 1) + "周");
         }
-        final int[] target = {-1};
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("设置当前周");
-        builder.setSingleChoiceItems(items, TimetableHelper.getCurrentWeek() - 1,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        target[0] = i;
-                    }
-                });
-        builder.setPositiveButton("设置为当前周", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (target[0] != -1) {
-                    TimetableHelper.setCurrentWeek(target[0] + 1);
-                    if (onClickListener != null) {
-                        onClickListener.onClick(dialog, target[0] + 1);
-                    }
-                }
-            }
-        });
-        builder.setNegativeButton("取消", null);
-        builder.create().show();
+        new BottomDragSelectDialogFragment<String>()
+                .onBindTitle((titleView, item, position) -> titleView.setText(item))
+                .onSingleSelect(onSingleSelectListener)
+                .setSelected(TimetableHelper.getCurrentWeek() - 1)
+                .setData(items)
+                .setTitle("选择当前周")
+                .setShowButtons(true)
+                .setPositiveText("设置为当前周")
+                .setMarginTop(3 * ScreenUtils.dp2pxInt(56))
+                .show(context);
+
     }
 
     public static void setCurrentWeek(int week) {

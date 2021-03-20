@@ -311,34 +311,16 @@ public final class MainFragment extends SkinChangeFragment implements View.OnCli
      * 对话框修改当前周次
      */
     protected void onWeekLeftLayoutClicked() {
-//        TimetableHelper.openChangeCurrentWeekDialog(getContext(), new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                mWeekView.curWeek(which).updateView();
-//                mTimetableView.changeWeekForce(which);
-//                TimetableHelper.setCurrentWeek(which);
-//            }
-//        });
-        final List<String> items = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            items.add("第" + (i + 1) + "周");
-        }
-        new BottomDragSelectDialogFragment<String>()
-                .onBindTitle((titleView, item, position) -> titleView.setText(item))
-                .onSingleSelect((dialog, position, item) -> {
-                    int week = position + 1;
-                    TimetableHelper.setCurrentWeek(week);
-                    mWeekView.curWeek(week).updateView();
-                    mTimetableView.changeWeekForce(week);
-                    TimetableHelper.setCurrentWeek(week);
-                })
-                .setSelected(TimetableHelper.getCurrentWeek() - 1)
-                .setData(items)
-                .setTitle("选择当前周")
-                .setShowButtons(true)
-                .setPositiveText("设置为当前周")
-                .setMarginTop(ScreenUtils.dp2pxInt(56))
-                .show(context);
+        TimetableHelper.openChangeCurrentWeekDialog(getContext(), new SelectDialogFragment.OnSingleSelectListener<String>() {
+            @Override
+            public void onSelect(SelectDialogFragment<String> dialog, int position, String item) {
+                int week = position + 1;
+                TimetableHelper.setCurrentWeek(week);
+                mWeekView.curWeek(week).updateView();
+                mTimetableView.changeWeekForce(week);
+                TimetableHelper.setCurrentWeek(week);
+            }
+        });
     }
 
     /**

@@ -54,7 +54,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     private static final String ACTION_STOP = AlarmService.class.getName() + ".STOP";
     private static final String ACTION_ALARM = AlarmService.class.getName() + ".alarm_receive";
 
-    private final HandlerThread serviceThread = new HandlerThread("aria2app notification service");
     private final LinkedList<ScuSubject> scuSubjectLinkedList = new LinkedList<>();
     private final LinkedList<Alarm> alarmQueue = new LinkedList<>();
     private final Notification[] notifications = new Notification[1];
