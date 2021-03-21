@@ -7,15 +7,13 @@
     >
 <!--    android:background="#79cdcd"-->
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="川大课表"
         android:layout_centerVertical="true"
-        android:textColor="@color/black"
-        android:textSize="18sp"
         android:layout_marginStart="10dp"
-        android:textStyle="bold"
+        android:src="@drawable/ic_app_name"
         />
 
     <LinearLayout
@@ -32,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="课程表"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="14sp"
             />
 
         <com.github.zagum.expandicon.ExpandIconView

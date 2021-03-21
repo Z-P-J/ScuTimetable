@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.deadline.statebutton.StateButton;
@@ -22,6 +23,7 @@ import com.zpj.downloader.constant.Error;
 import com.zpj.fragmentation.dialog.base.CardDialogFragment;
 import com.zpj.toast.ZToast;
 import com.zpj.utils.PrefsHelper;
+import com.zpj.utils.ScreenUtils;
 
 /**
  * @author Z-P-J
@@ -29,44 +31,16 @@ import com.zpj.utils.PrefsHelper;
 public class UpdateDialog extends CardDialogFragment
         implements View.OnClickListener {
 
-    //======顶部========//
-    /**
-     * 顶部图片
-     */
-    private ImageView mIvTop;
-    /**
-     * 标题
-     */
     private TextView mTvTitle;
-    //======更新内容========//
-    /**
-     * 版本更新内容
-     */
-    private DetailLayout appVersion;
-    private DetailLayout appSize;
-    private DetailLayout appUpdateTime;
-    private DetailLayout appUpdateInfo;
-    /**
-     * 版本更新
-     */
-    private StateButton mBtnUpdate;
-    /**
-     * 后台更新
-     */
-    private Button mBtnBackgroundUpdate;
-    /**
-     * 忽略版本
-     */
-    private TextView mTvIgnore;
-    /**
-     * 进度条
-     */
-    private NumberProgressBar mNumberProgressBar;
-    //======底部========//
-    /**
-     * 底部关闭
-     */
     private ImageView mIvClose;
+
+    private StateButton mBtnUpdate;
+    private StateButton mTvIgnore;
+    private StateButton mBtnBackgroundUpdate;
+
+    private NumberProgressBar mNumberProgressBar;
+
+    private LinearLayout llContainer;
 
     private UpdateInfo updateInfo;
 
@@ -74,7 +48,11 @@ public class UpdateDialog extends CardDialogFragment
 
     public UpdateDialog() {
         setCancelable(false);
-        setTransparentBackground(true);
+//        setTransparentBackground(true);
+        setMarginHorizontal((int) (ScreenUtils.getScreenWidth() * 0.08f));
+        int marginVertical = (int) (ScreenUtils.getScreenHeight() * 0.16f);
+        setMarginTop(marginVertical);
+        setMarginBottom(marginVertical);
 //        setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
@@ -85,7 +63,7 @@ public class UpdateDialog extends CardDialogFragment
 
     @Override
     protected int getContentLayoutId() {
-        return R.layout.layout_dialog_update;
+        return R.layout.fragment_dialog_update;
     }
 
     @Override
@@ -93,63 +71,22 @@ public class UpdateDialog extends CardDialogFragment
         super.initView(view, savedInstanceState);
         ZDownloader.clearAll();
 
-//        CardView cardView = findViewById(R.id.centerPopupContainer);
-//        cardView.setCardElevation(0);
-//        cardView.setUseCompatPadding(false);
-//        cardView.setCardBackgroundColor(Color.TRANSPARENT);
-
-
-        //顶部图片
-        mIvTop = findViewById(R.id.iv_top);
-        //标题
         mTvTitle = findViewById(R.id.tv_title);
-        //提示内容
-        appVersion = findViewById(R.id.app_version);
-        appSize = findViewById(R.id.app_size);
-        appUpdateTime = findViewById(R.id.app_update_time);
-        appUpdateInfo = findViewById(R.id.app_update_content);
-        //更新按钮
-        mBtnUpdate = findViewById(R.id.btn_update);
-        //后台更新按钮
-        mBtnBackgroundUpdate = findViewById(R.id.btn_background_update);
-        //忽略
-        mTvIgnore = findViewById(R.id.tv_ignore);
-        //进度条
-        mNumberProgressBar = findViewById(R.id.npb_progress);
-
-        //关闭按钮
         mIvClose = findViewById(R.id.iv_close);
 
-        setDialogTheme(Color.parseColor("#FFE94339"), R.drawable.xupdate_bg_app_top);
-        initUpdateInfo();
-        initListeners();
-    }
+        mTvIgnore = findViewById(R.id.btn_ignore);
+        mBtnUpdate = findViewById(R.id.btn_update);
+        mBtnBackgroundUpdate = findViewById(R.id.btn_background_update);
 
-    private void setDialogTheme(int color, int topResId) {
-        mIvTop.setImageResource(topResId);
-//        mBtnUpdate.setBackgroundColor(color);
-        mBtnBackgroundUpdate.setBackgroundColor(color);
-//        mBtnUpdate.setBackgroundDrawable(DrawableUtils.getDrawable(UpdateUtils.dip2px(4, getActivity()), color));
-//        mBtnBackgroundUpdate.setBackgroundDrawable(DrawableUtils.getDrawable(UpdateUtils.dip2px(4, getActivity()), color));
-        mNumberProgressBar.setProgressTextColor(color);
-        mNumberProgressBar.setReachedBarColor(color);
-        //随背景颜色变化
-        mBtnUpdate.setTextColor(Color.WHITE);
-    }
+        mNumberProgressBar = findViewById(R.id.npb_progress);
 
-    private void initUpdateInfo() {
-        //弹出对话框
-        final String newVersion = updateInfo.getVersionName();
-        appVersion.setContent(newVersion);
-        appSize.setContent(updateInfo.getFileSize());
-        appUpdateTime.setContent(updateInfo.getUpdateTime());
-        appUpdateInfo.setContent(updateInfo.getUpdateContent());
-        mTvTitle.setText(String.format("是否升级到%s版本？", newVersion));
+        llContainer = findViewById(R.id.ll_container);
 
-        mTvIgnore.setVisibility(View.VISIBLE);
-    }
+        TextView tvContent = findViewById(R.id.tv_update);
+        tvContent.setText("最新版本：" + updateInfo.getVersionName() + "\n软件大小："
+                + updateInfo.getFileSize() + "\n更新时间：" + updateInfo.getUpdateTime()
+                + "\n" + updateInfo.getUpdateContent());
 
-    private void initListeners() {
         mBtnUpdate.setOnClickListener(this);
         mBtnBackgroundUpdate.setOnClickListener(this);
         mIvClose.setOnClickListener(this);
@@ -164,14 +101,14 @@ public class UpdateDialog extends CardDialogFragment
                     .addListener(missionListener);
             mission.start();
         } else if (i == R.id.btn_background_update) {
-            ZToast.normal("后台更新");
-            dismiss();
+            ZToast.normal("TODO 后台更新");
+//            dismiss();
         } else if (i == R.id.iv_close) {
-            ZToast.normal("关闭");
+//            ZToast.normal("关闭");
             dismiss();
-        } else if (i == R.id.tv_ignore) {
-            ZToast.normal("忽略更新");
-            PrefsHelper.with().putString("ignore_version", appVersion.getContentTextView().getText().toString());
+        } else if (i == R.id.btn_ignore) {
+//            ZToast.normal("忽略更新");
+            PrefsHelper.with().putString("ignore_version", updateInfo.getVersionName());
             dismiss();
         }
     }
@@ -194,7 +131,10 @@ public class UpdateDialog extends CardDialogFragment
                 mNumberProgressBar.setVisibility(View.VISIBLE);
                 mNumberProgressBar.setProgress(0);
                 mNumberProgressBar.setMax(100);
-                mBtnUpdate.setVisibility(View.GONE);
+                llContainer.setVisibility(View.GONE);
+                mBtnBackgroundUpdate.setVisibility(View.VISIBLE);
+//                mBtnUpdate.setVisibility(View.GONE);
+//                mBtnBackgroundUpdate.setVisibility(View.VISIBLE);
 //                if (mPromptEntity.isSupportBackgroundUpdate()) {
 //                    mBtnBackgroundUpdate.setVisibility(View.VISIBLE);
 //                } else {

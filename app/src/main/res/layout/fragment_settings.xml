@@ -215,7 +215,16 @@
                     android:id="@+id/item_check_update"
                     app:z_setting_titleText="检查更新"
                     app:z_setting_rightText="v1.0.0"
-                    app:z_setting_showInfoBtn="true"
+                    app:z_setting_leftIcon="@drawable/ic_next_week_black_24dp"
+                    app:z_setting_leftIconTint="@color/black"
+                    app:z_setting_showRightBtn="true"
+                    app:z_setting_rightIcon="@drawable/ic_new"
+                    />
+
+                <com.scu.timetable.ui.widget.UpdateSettingItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:z_setting_titleText="检查更新"
                     app:z_setting_leftIcon="@drawable/ic_next_week_black_24dp"
                     app:z_setting_leftIconTint="@color/black"
                     />

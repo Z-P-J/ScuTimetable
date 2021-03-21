@@ -229,7 +229,7 @@ public class SettingFragment extends SkinChangeFragment
             startActivity(intent);
         } else if (id == R.id.item_check_update) {
 //            item.setInfoIcon(getResources().getDrawable(R.drawable.ic_new));
-            item.setInfoIcon(null);
+            item.setRightIcon(null);
         }
     }
 

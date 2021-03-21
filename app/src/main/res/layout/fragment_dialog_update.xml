@@ -1,167 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_gravity="center"
-    >
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        tools:text="是否升级到1.4.0版本？"
-        android:padding="16dp"
-        android:background="@color/white"
+        android:paddingTop="@dimen/dp8">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:textColor="#E74737"
+            android:padding="@dimen/dp16"
+            android:paddingStart="32dp"
+            android:paddingEnd="0dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="发现新版本"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            />
+
+        <ImageButton
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="?attr/actionBarItemBackground"
+            android:src="@drawable/ic_close_black_24dp"
+            android:paddingHorizontal="16dp"
+            android:layout_marginEnd="@dimen/dp8"
+            android:tint="#dddddd"
+            />
+
+
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_update"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1、xxxxxxxx\n2、ooooooooo\n3、sdfrgh"
+            android:paddingHorizontal="32dp"
+            android:paddingVertical="@dimen/dp16"
+            android:textColor="@color/color_text_major"
+            android:lineSpacingExtra="@dimen/dp8"
+            />
+
+    </ScrollView>
+
+    <com.scu.timetable.ui.widget.NumberProgressBar
+        android:id="@+id/npb_progress"
+        style="@style/XUpdate_ProgressBar_Red"
+        android:paddingVertical="@dimen/dp8"
+        android:paddingHorizontal="32dp"
+        android:visibility="gone"
+        tools:visibility="visible"
         />
 
-
-    <com.scu.timetable.ui.widget.ElasticScrollView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/tv_title"
-        android:layout_above="@id/ll_update"
-        android:background="@color/white"
-        android:scrollbars="none"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:paddingHorizontal="32dp"
+        android:paddingTop="@dimen/dp16"
+        android:paddingBottom="24dp"
         >
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/ll_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             >
 
-            <com.scu.timetable.ui.widget.DetailLayout
-                android:id="@+id/app_version"
+            <com.deadline.statebutton.StateButton
+                android:id="@+id/btn_ignore"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:left_text="软件版本"
-                app:right_text="1.4.0"
+                android:layout_height="36dp"
+                android:layout_weight="3"
+                android:layout_marginEnd="@dimen/dp8"
+                app:radius="4dp"
+                android:text="忽略此版本"
+                app:normalBackgroundColor="@color/white"
+                app:pressedBackgroundColor="@color/white"
+                android:layout_gravity="center"
+                android:textSize="12sp"
+                app:normalTextColor="#bbbbbb"
+                app:normalStrokeColor="#bbbbbb"
+                app:normalStrokeWidth="0.5dp"
+                app:pressedStrokeColor="#bbbbbb"
+                app:pressedStrokeWidth="0.5dp"
                 />
 
-            <com.scu.timetable.ui.widget.DetailLayout
-                android:id="@+id/app_size"
+            <com.deadline.statebutton.StateButton
+                android:id="@+id/btn_update"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:left_text="软件大小"
-                app:right_text="4.51 MB"
-                />
-
-            <com.scu.timetable.ui.widget.DetailLayout
-                android:id="@+id/app_update_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:left_text="更新时间"
-                app:right_text="2019-05-20"
-                />
-
-            <com.scu.timetable.ui.widget.DetailLayout
-                android:id="@+id/app_update_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:left_text="更新内容"
-                app:right_text="1、xxxxxxxx\n2、ooooooooo"
-                app:right_text_maxLines="10"
+                android:layout_height="36dp"
+                android:layout_weight="2"
+                android:layout_marginStart="@dimen/dp8"
+                app:radius="4dp"
+                android:text="立即更新"
+                app:normalBackgroundColor="#E74737"
+                app:pressedBackgroundColor="#eef60707"
+                android:layout_gravity="center"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                app:normalTextColor="@color/white"
+                app:pressedTextColor="#aaffffff"
                 />
 
         </LinearLayout>
 
-    </com.scu.timetable.ui.widget.ElasticScrollView>
-
-    <LinearLayout
-        android:id="@+id/ll_update"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_above="@id/ll_close"
-        android:background="@drawable/xupdate_bg_app_info"
-        android:padding="16dp"
-        >
-
         <com.deadline.statebutton.StateButton
-            android:id="@+id/btn_update"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:radius="5dp"
-            android:text="升级"
-            app:round="true"
-            app:normalBackgroundColor="#aaf60707"
-            app:pressedBackgroundColor="#eef60707"
-            android:layout_gravity="center"
-            android:textSize="14sp"
-            android:textColor="@color/white"
-            app:normalTextColor="@color/white"
-            app:pressedTextColor="#aaffffff"
-            />
-
-        <TextView
-            android:id="@+id/tv_ignore"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:minHeight="40dp"
-            android:text="忽略更新"
-            android:textColor="#666"
-            android:textSize="15sp"
-            android:visibility="gone"
-            tools:visibility="visible"
-            />
-
-        <com.scu.timetable.ui.widget.NumberProgressBar
-            android:id="@+id/npb_progress"
-            style="@style/XUpdate_ProgressBar_Red"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:visibility="gone"
-            tools:visibility="visible"
-            />
-
-        <Button
             android:id="@+id/btn_background_update"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:minHeight="48dp"
+            android:layout_height="36dp"
             android:text="后台更新"
-            android:textColor="@android:color/white"
-            android:textSize="13sp"
+            android:layout_gravity="center"
+            android:textSize="14sp"
             android:visibility="gone"
-            tools:visibility="visible"
+            app:radius="4dp"
+            app:normalTextColor="@color/white"
+            app:normalBackgroundColor="#cccccc"
+            tools:visibility="invisible"
             />
 
-    </LinearLayout>
+    </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        >
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="20dp"
-            android:background="#d8d8d8"
-            android:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/iv_close"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="6dp"
-            android:translationY="-6dp"
-            android:src="@drawable/xupdate_icon_app_close" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

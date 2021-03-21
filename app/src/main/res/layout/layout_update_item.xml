@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="56dp">
+
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="新版本V1.2.0"
+        android:layout_marginEnd="@dimen/dp8"
+        />
+
+    <ImageView
+        android:id="@+id/iv_new"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_new"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <ImageButton
+        android:id="@+id/iv_right_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_enter_bak"
+        android:background="@null"
+        android:layout_gravity="center_vertical"
+        />
+
+</LinearLayout>
