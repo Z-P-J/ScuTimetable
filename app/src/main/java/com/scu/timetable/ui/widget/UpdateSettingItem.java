@@ -1,20 +1,26 @@
 package com.scu.timetable.ui.widget;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.scu.timetable.R;
-import com.zpj.utils.ScreenUtils;
+import com.scu.timetable.ui.fragment.dialog.UpdateDialog;
+import com.scu.timetable.utils.UpdateUtil;
+import com.zpj.toast.ZToast;
+import com.zpj.utils.AppUtils;
+import com.zpj.utils.ContextUtils;
 import com.zpj.widget.setting.CommonSettingItem;
 
-public class UpdateSettingItem extends CommonSettingItem {
+public class UpdateSettingItem extends CommonSettingItem
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private ImageView rightIcon;
+    private TextView tvVersion;
+    private ImageView ivNew;
 
     public UpdateSettingItem(Context context) {
         this(context, null);
@@ -26,36 +32,61 @@ public class UpdateSettingItem extends CommonSettingItem {
 
     public UpdateSettingItem(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setInfoText("V" + AppUtils.getAppVersionName(context, context.getPackageName()));
     }
 
     @Override
     public void inflateRightContainer(ViewStub viewStub) {
         viewStub.setLayoutResource(R.layout.layout_update_item);
-//        viewStub.setInflatedId(R.id.iv_right_icon);
         View view = viewStub.inflate();
-        TextView tvVersion = view.findViewById(R.id.tv_version);
-        ImageView ivNew = view.findViewById(R.id.iv_new);
-//        ViewGroup.LayoutParams params = rightIcon.getLayoutParams();
-//        int maxSize = ScreenUtils.dp2pxInt(rightIcon.getContext(), 36);
-//        params.height = maxSize;
-//        params.width = maxSize;
-//        rightIcon.setMaxHeight(maxSize);
-//        rightIcon.setMaxWidth(maxSize);
-////        rightIcon.setBorderWidth(0);
-////        rightIcon.setCornerRadius(4);
-//        if (mRightIcon != null) {
-//            rightIcon.setImageDrawable(mRightIcon);
-//        }
+        tvVersion = view.findViewById(R.id.tv_version);
+        ivNew = view.findViewById(R.id.iv_new);
+        initItem(UpdateUtil.getPrefs().getSharedPreferences());
     }
 
     @Override
-    public void inflateInfoButton(ViewStub viewStub) {
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        UpdateUtil.getPrefs().registerOnChangeListener(this);
+    }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        UpdateUtil.getPrefs().unregisterOnChangeListener(this);
     }
 
     @Override
     public void onItemClick() {
-        super.onItemClick();
+        if (UpdateUtil.hasChecked()) {
+            if (UpdateUtil.hasUpdate()) {
+                new UpdateDialog().show(getContext());
+            } else {
+                ZToast.normal("已是最新版");
+            }
+        } else {
+            UpdateUtil.checkUpdate(ContextUtils.getActivity(getContext()));
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if ("has_checked".equals(key)) {
+            initItem(sharedPreferences);
+        }
+    }
+
+    private void initItem(SharedPreferences sharedPreferences) {
+        boolean hasChecked = UpdateUtil.hasChecked();
+        ivNew.setVisibility(GONE);
+        tvVersion.setText("已是最新版");
+        if (hasChecked) {
+            if (sharedPreferences.getBoolean("has_update", false)) {
+                ivNew.setVisibility(VISIBLE);
+                tvVersion.setText("新版本V" + sharedPreferences.getString("version_name",
+                        AppUtils.getAppVersionName(getContext(), getContext().getPackageName())));
+            }
+        }
     }
 
 }

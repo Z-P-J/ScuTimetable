@@ -209,24 +209,24 @@
 <!--                    app:z_setting_titleText="隐私协议"-->
 <!--                    />-->
 
-                <com.zpj.widget.setting.CommonSettingItem
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/item_check_update"
-                    app:z_setting_titleText="检查更新"
-                    app:z_setting_rightText="v1.0.0"
-                    app:z_setting_leftIcon="@drawable/ic_next_week_black_24dp"
-                    app:z_setting_leftIconTint="@color/black"
-                    app:z_setting_showRightBtn="true"
-                    app:z_setting_rightIcon="@drawable/ic_new"
-                    />
+<!--                <com.zpj.widget.setting.CommonSettingItem-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:id="@+id/item_version_name"-->
+<!--                    app:z_setting_titleText="版本号"-->
+<!--                    app:z_setting_rightText="v1.0.0"-->
+<!--                    app:z_setting_leftIcon="@drawable/ic_next_week_black_24dp"-->
+<!--                    app:z_setting_leftIconTint="@color/black"-->
+<!--                    />-->
 
                 <com.scu.timetable.ui.widget.UpdateSettingItem
+                    android:id="@+id/item_check_update"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:z_setting_titleText="检查更新"
-                    app:z_setting_leftIcon="@drawable/ic_next_week_black_24dp"
+                    app:z_setting_titleText="版本号"
+                    app:z_setting_leftIcon="@drawable/ic_system_update_24"
                     app:z_setting_leftIconTint="@color/black"
+                    app:z_setting_infoText="V1.3.0"
                     />
 
 <!--                <com.scu.timetable.ui.widget.DetailLayout-->
@@ -283,8 +283,8 @@
                     android:textStyle="bold"
                     app:normalTextColor="@color/white"
                     app:pressedTextColor="#aaffffff"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="32dp"
                     android:layout_marginStart="56dp"
                     android:layout_marginEnd="56dp"
                     />

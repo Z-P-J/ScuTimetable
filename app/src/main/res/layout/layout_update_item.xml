@@ -22,6 +22,7 @@
         android:layout_gravity="center_vertical"
         android:visibility="gone"
         tools:visibility="visible"
+        android:tint="#E74737"
         />
 
     <ImageButton
@@ -31,6 +32,7 @@
         android:src="@drawable/ic_enter_bak"
         android:background="@null"
         android:layout_gravity="center_vertical"
+        android:tint="#cccccc"
         />
 
 </LinearLayout>

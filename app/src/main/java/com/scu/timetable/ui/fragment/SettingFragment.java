@@ -14,6 +14,7 @@ import com.scu.timetable.R;
 import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
 import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
 import com.scu.timetable.ui.widget.DetailLayout;
+import com.scu.timetable.ui.widget.UpdateSettingItem;
 import com.scu.timetable.utils.EventBus;
 import com.scu.timetable.utils.SuperLinkUtil;
 import com.scu.timetable.utils.TimetableHelper;
@@ -23,6 +24,7 @@ import com.zpj.fragmentation.dialog.IDialog;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.toast.ZToast;
 import com.zpj.utils.AnimatorUtils;
+import com.zpj.utils.AppUtils;
 import com.zpj.utils.PrefsHelper;
 import com.zpj.widget.setting.CheckableSettingItem;
 import com.zpj.widget.setting.CommonSettingItem;
@@ -63,59 +65,58 @@ public class SettingFragment extends SkinChangeFragment
     @Override
     protected void initView(View view, @Nullable Bundle savedInstanceState) {
 
-        SwitchSettingItem smartShowWeekends = view.findViewById(R.id.item_smart_show_weekends);
+        SwitchSettingItem smartShowWeekends = findViewById(R.id.item_smart_show_weekends);
         smartShowWeekends.setChecked(TimetableHelper.isSmartShowWeekends());
         smartShowWeekends.setOnItemClickListener(this);
 
-        SwitchSettingItem itemMondayIsFirstDay = view.findViewById(R.id.item_monday_is_first_day);
+        SwitchSettingItem itemMondayIsFirstDay = findViewById(R.id.item_monday_is_first_day);
         itemMondayIsFirstDay.setChecked(!TimetableHelper.sundayIsFirstDay());
         itemMondayIsFirstDay.setOnItemClickListener(this);
 
-        itemShowWeekends = view.findViewById(R.id.item_show_weekends);
+        itemShowWeekends = findViewById(R.id.item_show_weekends);
         itemShowWeekends.setChecked(TimetableHelper.isShowWeekendsOrin());
         if (TimetableHelper.isSmartShowWeekends()) {
             itemShowWeekends.setEnabled(false);
         }
         itemShowWeekends.setOnItemClickListener(this);
 
-        SwitchSettingItem itemShowNonThisWeek = view.findViewById(R.id.item_show_non_this_week);
+        SwitchSettingItem itemShowNonThisWeek = findViewById(R.id.item_show_non_this_week);
         itemShowNonThisWeek.setChecked(TimetableHelper.isShowNotCurWeek());
         itemShowNonThisWeek.setOnItemClickListener(this);
 
-        SwitchSettingItem itemShowTime = view.findViewById(R.id.item_show_time);
+        SwitchSettingItem itemShowTime = findViewById(R.id.item_show_time);
         itemShowTime.setChecked(TimetableHelper.isShowTime());
         itemShowTime.setOnItemClickListener(this);
 
-        SwitchSettingItem itemSpeech = view.findViewById(R.id.item_speech);
+        SwitchSettingItem itemSpeech = findViewById(R.id.item_speech);
         itemSpeech.setChecked(TimetableHelper.isSpeech());
         itemSpeech.setOnItemClickListener(this);
 
-        CommonSettingItem itemChangeCurrentWeek = view.findViewById(R.id.item_change_current_week);
+        CommonSettingItem itemChangeCurrentWeek = findViewById(R.id.item_change_current_week);
         itemChangeCurrentWeek.setOnItemClickListener(this);
 
-        CommonSettingItem itemNotification = view.findViewById(R.id.item_notification);
+        CommonSettingItem itemNotification = findViewById(R.id.item_notification);
         itemNotification.setOnItemClickListener(this);
 
-        SwitchSettingItem itemWidgetSmartShowWeekends = view.findViewById(R.id.item_widget_smart_show_weekends);
+        SwitchSettingItem itemWidgetSmartShowWeekends = findViewById(R.id.item_widget_smart_show_weekends);
         itemWidgetSmartShowWeekends.setChecked(TimetableWidgtHelper.isSmartShowWeekends());
         itemWidgetSmartShowWeekends.setOnItemClickListener(this);
 
-        SwitchSettingItem itemWidgetTransparentMode = view.findViewById(R.id.item_widget_transparent_mode);
+        SwitchSettingItem itemWidgetTransparentMode = findViewById(R.id.item_widget_transparent_mode);
         itemWidgetTransparentMode.setChecked(TimetableWidgtHelper.isTransparentMode());
         itemWidgetTransparentMode.setOnItemClickListener(this);
 
 
-        CommonSettingItem aboutMeItem = view.findViewById(R.id.item_about_me);
+        CommonSettingItem aboutMeItem = findViewById(R.id.item_about_me);
         aboutMeItem.setOnItemClickListener(this);
 
-        CommonSettingItem openSourceItem = view.findViewById(R.id.item_open_source);
+        CommonSettingItem openSourceItem = findViewById(R.id.item_open_source);
         openSourceItem.setOnItemClickListener(this);
 
-        CommonSettingItem checkUpdateItem = view.findViewById(R.id.item_check_update);
-        checkUpdateItem.setRightText("V" + UpdateUtil.getVersionName(getContext()));
-        checkUpdateItem.setOnItemClickListener(this);
+//        CommonSettingItem checkUpdateItem = findViewById(R.id.item_version_name);
+//        checkUpdateItem.setRightText("V" + AppUtils.getAppVersionName(context, context.getPackageName()));
 
-        StateButton btnLogout = view.findViewById(R.id.btn_logout);
+        StateButton btnLogout = findViewById(R.id.btn_logout);
         btnLogout.setOnClickListener(this);
 
         LinearLayout llContainer = findViewById(R.id.ll_container);
@@ -227,9 +228,6 @@ public class SettingFragment extends SkinChangeFragment
             Uri uri = Uri.parse(item.getInfoText());
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
-        } else if (id == R.id.item_check_update) {
-//            item.setInfoIcon(getResources().getDrawable(R.drawable.ic_new));
-            item.setRightIcon(null);
         }
     }
 

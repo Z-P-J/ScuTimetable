@@ -16,6 +16,7 @@ import com.scu.timetable.R;
 import com.scu.timetable.bean.UpdateInfo;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.ui.widget.NumberProgressBar;
+import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.downloader.BaseMission;
 import com.zpj.downloader.DownloadMission;
 import com.zpj.downloader.ZDownloader;
@@ -42,8 +43,6 @@ public class UpdateDialog extends CardDialogFragment
 
     private LinearLayout llContainer;
 
-    private UpdateInfo updateInfo;
-
     private DownloadMission mission;
 
     public UpdateDialog() {
@@ -54,11 +53,6 @@ public class UpdateDialog extends CardDialogFragment
         setMarginTop(marginVertical);
         setMarginBottom(marginVertical);
 //        setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-    }
-
-    public UpdateDialog setUpdateInfo(UpdateInfo updateInfo) {
-        this.updateInfo = updateInfo;
-        return this;
     }
 
     @Override
@@ -83,9 +77,9 @@ public class UpdateDialog extends CardDialogFragment
         llContainer = findViewById(R.id.ll_container);
 
         TextView tvContent = findViewById(R.id.tv_update);
-        tvContent.setText("最新版本：" + updateInfo.getVersionName() + "\n软件大小："
-                + updateInfo.getFileSize() + "\n更新时间：" + updateInfo.getUpdateTime()
-                + "\n" + updateInfo.getUpdateContent());
+        tvContent.setText("最新版本：" + UpdateUtil.getVersionName() + "\n软件大小："
+                + UpdateUtil.getFileSize() + "\n更新时间：" + UpdateUtil.getUpdateTime()
+                + "\n" + UpdateUtil.getUpdateContent());
 
         mBtnUpdate.setOnClickListener(this);
         mBtnBackgroundUpdate.setOnClickListener(this);
@@ -97,7 +91,7 @@ public class UpdateDialog extends CardDialogFragment
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.btn_update) {
-            mission = ZDownloader.download(updateInfo.getDownloadUrl())
+            mission = ZDownloader.download(UpdateUtil.getDownloadUrl())
                     .addListener(missionListener);
             mission.start();
         } else if (i == R.id.btn_background_update) {
@@ -108,7 +102,7 @@ public class UpdateDialog extends CardDialogFragment
             dismiss();
         } else if (i == R.id.btn_ignore) {
 //            ZToast.normal("忽略更新");
-            PrefsHelper.with().putString("ignore_version", updateInfo.getVersionName());
+            UpdateUtil.ignoreVersion(UpdateUtil.getVersionName());
             dismiss();
         }
     }

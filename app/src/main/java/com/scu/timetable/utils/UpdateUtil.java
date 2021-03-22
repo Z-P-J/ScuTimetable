@@ -1,7 +1,9 @@
 package com.scu.timetable.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -11,10 +13,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.scu.timetable.bean.UpdateInfo;
+import com.scu.timetable.ui.activity.MainActivity;
+import com.scu.timetable.ui.fragment.dialog.UpdateDialog;
 import com.zpj.http.ZHttp;
 import com.zpj.http.core.IHttp;
 import com.zpj.http.parser.html.nodes.Element;
 import com.zpj.http.parser.html.select.Elements;
+import com.zpj.toast.ZToast;
+import com.zpj.utils.AppUtils;
 import com.zpj.utils.PrefsHelper;
 
 import java.io.File;
@@ -25,70 +31,80 @@ import java.net.Proxy;
  */
 public final class UpdateUtil {
 
-    private final Context context;
-    private OnUpdateCheckedListener onUpdateCheckedListener;
-    private IHttp.OnErrorListener onErrorListener;
+    private static final String KEY_HAS_CHECKED = "has_checked";
+    private static final String KEY_HAS_UPDATE = "has_update";
+    private static final String KEY_DOWNLOAD = "download_url";
+    private static final String KEY_VERSION_NAME = "version_name";
+    private static final String KEY_FILE_SIZE = "file_size";
+    private static final String KEY_UPDATE_TIME = "update_time";
+    private static final String KEY_UPDATE_CONTENT = "update_content";
 
-
-    private UpdateUtil(Context context) {
-        this.context = context;
+    public static PrefsHelper getPrefs() {
+        return PrefsHelper.with("update_manager");
     }
 
-    public static UpdateUtil with(Context context) {
-        return new UpdateUtil(context);
+    public static boolean hasChecked() {
+        return getPrefs().getBoolean(KEY_HAS_CHECKED, false);
     }
 
-    public static synchronized String getVersionName(Context context){
-        String versionName = "1.4.0";
-        try {
-            PackageManager packageManager = context.getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
-            versionName = packageInfo.versionName;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return versionName;
+    public static boolean hasUpdate() {
+        return getPrefs().getBoolean(KEY_HAS_UPDATE, false);
     }
 
-    public UpdateUtil setOnErrorListener(IHttp.OnErrorListener onErrorListener) {
-        this.onErrorListener = onErrorListener;
-        return this;
+    public static void ignoreVersion(String versionName) {
+        getPrefs().putString("ignore_version", versionName);
     }
 
-    public UpdateUtil setOnUpdateCheckedListener(OnUpdateCheckedListener onUpdateCheckedListener) {
-        this.onUpdateCheckedListener = onUpdateCheckedListener;
-        return this;
+    public static String getDownloadUrl() {
+        return getPrefs().getString(KEY_DOWNLOAD);
     }
 
-    public void checkUpdate() {
+    public static String getVersionName() {
+        return getPrefs().getString(KEY_VERSION_NAME);
+    }
+
+    public static String getFileSize() {
+        return getPrefs().getString(KEY_FILE_SIZE);
+    }
+
+    public static String getUpdateTime() {
+        return getPrefs().getString(KEY_UPDATE_TIME);
+    }
+
+    public static String getUpdateContent() {
+        return getPrefs().getString(KEY_UPDATE_CONTENT);
+    }
+
+    public static void checkUpdate(Activity context) {
+        getPrefs().putBoolean(KEY_HAS_CHECKED, false);
         ZHttp.get("http://tt.shouji.com.cn/androidv3/soft_show.jsp?id=1555815")
                 .proxy(Proxy.NO_PROXY)
                 .referer("https://wap.shouji.com.cn/")
                 .ignoreContentType(true)
                 .toHtml()
-//                .flatMap((ObservableTask.OnFlatMapListener<Document, UpdateEvent>) (document, emitter) -> {
-//
-//                })
+                .bindActivity(context)
                 .onSuccess(document -> {
                     String versionName = document.selectFirst("versionname").text();
 
                     String newVersionName = versionName.trim();
                     Log.d("newVersionName", "newVersionName=" + newVersionName);
 
-                    String ignoreVersion = PrefsHelper.with().getString("ignore_version", "");
-                    if (ignoreVersion.equals(newVersionName)) {
+                    String ignoreVersion = getPrefs().getString("ignore_version", "");
+                    if (TextUtils.equals(ignoreVersion, newVersionName)) {
                         return;
                     }
 
                     String baseinfof = document.selectFirst("baseinfof").text();
                     Log.d("baseinfof", "baseinfof=" + baseinfof);
 
-                    String currentVersionName = getVersionName(context).trim();
+
+                    String currentVersionName = AppUtils.getAppVersionName(context, context.getPackageName()).trim();
                     Log.d("currentVersionName", "currentVersionName=" + newVersionName);
 
                     boolean isNew = compareVersions(currentVersionName, newVersionName);
                     Log.d("isNew", "isNew=" + isNew);
 
+                    getPrefs().putBoolean(KEY_HAS_UPDATE, isNew);
                     if (isNew) {
                         String updateContent = "";
                         String fileSize = "";
@@ -112,33 +128,59 @@ public final class UpdateUtil {
                         bean.setFileSize(fileSize);
                         bean.setUpdateTime(updateTime);
                         Log.d("bean", "bean=" + bean.toString());
+                        getPrefs().putString(KEY_VERSION_NAME, versionName);
+                        getPrefs().putString(KEY_UPDATE_CONTENT, updateContent);
+                        getPrefs().putString(KEY_UPDATE_TIME, updateTime);
+                        getPrefs().putString(KEY_FILE_SIZE, fileSize);
+                        getPrefs().registerOnChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+                            @Override
+                            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+                            }
+                        });
 
                         ZHttp.get("http://tt.shouji.com.cn/wap/down/cmwap/package?sjly=199&id=1555815&package=" + context.getPackageName())
                                 .proxy(Proxy.NO_PROXY)
                                 .referer("https://wap.shouji.com.cn/")
                                 .ignoreContentType(true)
                                 .toXml()
+                                .bindActivity(context)
                                 .onSuccess(data -> {
                                     String url = data.selectFirst("url").text();
                                     if (TextUtils.isEmpty(url)) {
-                                        onUpdateCheckedListener.onChecked(null, true);
+//                                        onUpdateCheckedListener.onChecked(null, true);
                                     } else {
                                         bean.setDownloadUrl(url);
-                                        onUpdateCheckedListener.onChecked(bean, false);
+                                        getPrefs().putString(KEY_DOWNLOAD, url);
+                                        getPrefs().putBoolean(KEY_HAS_CHECKED, true);
+//                                        onUpdateCheckedListener.onChecked(bean, false);
+//                                        ZToast.normal("开始更新！");
+                                        new UpdateDialog().show(context);
                                     }
                                 })
-                                .onError(onErrorListener)
+                                .onError(new IHttp.OnErrorListener() {
+                                    @Override
+                                    public void onError(Throwable throwable) {
+                                        ZToast.error("检查更新出错!" + throwable.getMessage());
+                                    }
+                                })
                                 .subscribe();
 
                     } else {
-                        onUpdateCheckedListener.onChecked(null, true);
+//                        onUpdateCheckedListener.onChecked(null, true);
+                        getPrefs().putBoolean(KEY_HAS_CHECKED, true);
                     }
                 })
-                .onError(onErrorListener)
+                .onError(new IHttp.OnErrorListener() {
+                    @Override
+                    public void onError(Throwable throwable) {
+                        ZToast.error("检查更新出错!" + throwable.getMessage());
+                    }
+                })
                 .subscribe();
     }
 
-    public boolean compareVersions(String oldVersion, String newVersion) {
+    private static boolean compareVersions(String oldVersion, String newVersion) {
         //返回结果: -2 错误,-1 ,0 ,1
         int result = 0;
         String matchStr = "[0-9]+(\\.[0-9]+)*";
@@ -164,25 +206,6 @@ public final class UpdateUtil {
             }
         }
         return false;
-    }
-
-    public static Intent getInstallAppIntent(Context context, File appFile) {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                //区别于 FLAG_GRANT_READ_URI_PERMISSION 跟 FLAG_GRANT_WRITE_URI_PERMISSION， URI权限会持久存在即使重启，直到明确的用 revokeUriPermission(Uri, int) 撤销。 这个flag只提供可能持久授权。但是接收的应用必须调用ContentResolver的takePersistableUriPermission(Uri, int)方法实现
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-                Uri fileUri = FileProvider.getUriForFile(context, "com.zpj.qxdownloader.fileprovider", appFile);
-                intent.setDataAndType(fileUri, "application/vnd.android.package-archive");
-            } else {
-                intent.setDataAndType(Uri.fromFile(appFile), "application/vnd.android.package-archive");
-            }
-            return intent;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public interface OnUpdateCheckedListener {

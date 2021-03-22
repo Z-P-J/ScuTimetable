@@ -13,6 +13,7 @@ import com.zpj.fragmentation.anim.DefaultHorizontalAnimator;
 import com.zpj.fragmentation.anim.DefaultVerticalAnimator;
 import com.zpj.fragmentation.anim.FragmentAnimator;
 import com.zpj.toast.ZToast;
+import com.zpj.utils.PrefsHelper;
 import com.zpj.utils.StatusBarUtils;
 
 /**
@@ -38,19 +39,7 @@ public final class MainActivity extends BaseActivity {
         }
 
 
-        UpdateUtil.with(this)
-                .setOnErrorListener(throwable -> ZToast.error("检查更新出错 errorMsg:" + throwable.getMessage()))
-                .setOnUpdateCheckedListener((info, isLastedVersion) -> {
-                    if (info != null) {
-                        ZToast.normal("开始更新！");
-                        new UpdateDialog()
-                                .setUpdateInfo(info)
-                                .show(MainActivity.this);
-                    } else if (isLastedVersion) {
-                        ZToast.normal("软件已是最新版");
-                    }
-                })
-                .checkUpdate();
+        UpdateUtil.checkUpdate(this);
     }
 
     @Override
