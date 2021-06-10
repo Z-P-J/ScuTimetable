@@ -32,6 +32,7 @@ import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.LoginUtil;
 import com.scu.timetable.utils.TimetableHelper;
 import com.zpj.fragmentation.dialog.IDialog;
+import com.zpj.fragmentation.dialog.ZDialog;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.toast.ZToast;
 import com.zpj.utils.AnimatorUtils;
@@ -246,21 +247,11 @@ public final class LoginFragment extends SkinChangeFragment
         if (hasStoragePermissions(context)) {
             requestPermission();
         } else {
-            new AlertDialogFragment()
+            ZDialog.alert()
                     .setTitle(R.string.title_permission)
                     .setContent(getString(R.string.content_permission))
-                    .setPositiveButton(R.string.text_apply, new IDialog.OnButtonClickListener<AlertDialogFragment>() {
-                        @Override
-                        public void onClick(AlertDialogFragment fragment, int which) {
-                            requestPermission();
-                        }
-                    })
-                    .setNegativeButton(R.string.text_decline, new IDialog.OnButtonClickListener<AlertDialogFragment>() {
-                        @Override
-                        public void onClick(AlertDialogFragment fragment, int which) {
-                            ActivityCompat.finishAfterTransition(_mActivity);
-                        }
-                    })
+                    .setPositiveButton(R.string.text_apply, (fragment, which) -> requestPermission())
+                    .setNegativeButton(R.string.text_decline, (fragment, which) -> ActivityCompat.finishAfterTransition(_mActivity))
                     .show(this);
         }
     }

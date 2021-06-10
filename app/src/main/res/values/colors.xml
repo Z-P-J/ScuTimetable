@@ -11,7 +11,6 @@
 
 
     <color name="black">#000000</color>
-    <color name="black_transparent_50">#7f000000</color>
     <color name="design_bottom_navigation_shadow_color">#14000000</color>
     <color name="design_fab_shadow_mid_color">#14000000</color>
     <color name="design_fab_shadow_start_color">#44000000</color>
@@ -25,6 +24,24 @@
     <color name="grey">#666666</color>
     <color name="transparent">#00000000</color>
     <color name="white">#ffffff</color>
+
+    <color name="color_1">#AAA3DB</color>
+    <color name="color_2">#86ACE9</color>
+    <color name="color_3">#92D261</color>
+    <color name="color_4">#80D8A3</color>
+    <color name="color_5">#F1C672</color>
+    <color name="color_6">#FDAD8B</color>
+    <color name="color_7">#ADBEFF</color>
+    <color name="color_8">#94D6FA</color>
+    <color name="color_9">#C3B5F6</color>
+    <color name="color_10">#99CCFF</color>
+    <color name="color_11">#FBA6ED</color>
+
+    <color name="color_31">#EE6363</color>
+    <color name="color_32">#EEB4B4</color>
+    <color name="color_33">#D2B48C</color>
+    <color name="color_34">#CD9B9B</color>
+    <color name="color_35">#5F9EA0</color>
 
 
 </resources>

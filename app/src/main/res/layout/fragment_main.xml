@@ -14,19 +14,18 @@
 
         <include layout="@layout/header_base_func" />
 
-        <com.zhuangfei.timetable.view.WeekView
+        <com.scu.timetable.ui.widget.WeekView
             android:id="@+id/id_weekview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
 
-        <com.zhuangfei.timetable.TimetableView
-            android:id="@+id/id_timetableView"
+        <com.scu.timetable.ui.widget.TimetableView
+            android:id="@+id/timetable_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff">
-
-        </com.zhuangfei.timetable.TimetableView>
+            android:background="@color/white"
+            />
 
     </LinearLayout>
 

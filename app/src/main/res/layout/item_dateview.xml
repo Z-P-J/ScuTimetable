@@ -2,9 +2,8 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/id_week_layout"
-    android:layout_width="0dp"
-    android:layout_height="@dimen/headHeight"
-    android:layout_weight="1.5"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:gravity="center_horizontal|center_vertical"
     android:orientation="vertical">
 

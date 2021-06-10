@@ -91,4 +91,16 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="PerWeekView">
+        <!--圆点半径-->
+        <attr name="radius" format="dimension"/>
+
+        <!--亮色-->
+        <attr name="light_color" format="color"/>
+
+        <!--暗色-->
+        <attr name="gray_color" format="color"/>
+
+    </declare-styleable>
+
 </resources>

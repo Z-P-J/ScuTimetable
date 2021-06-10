@@ -1,4 +1,4 @@
-package com.zhuangfei.timetable.view;
+package com.scu.timetable.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -6,16 +6,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 
-import com.zhuangfei.android_timetableview.sample.R;
-import com.zhuangfei.timetable.listener.ISchedule;
-import com.zhuangfei.timetable.model.Schedule;
-import com.zhuangfei.timetable.model.ScheduleEnable;
-import com.zhuangfei.timetable.model.ScheduleSupport;
-import com.zhuangfei.timetable.utils.ScreenUtils;
+import com.scu.timetable.R;
+import com.scu.timetable.bean.ScuSubject;
+import com.zpj.utils.ScreenUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +48,7 @@ public class PerWeekView extends View {
     private int grayColor;
 
     //数据源
-    private List<Schedule> dataSource;
+    private List<ScuSubject> dataSource;
 
     /**
      * 获取亮色的画笔
@@ -97,7 +92,7 @@ public class PerWeekView extends View {
      * 获取数据源
      * @return
      */
-    public List<Schedule> getDataSource() {
+    public List<ScuSubject> getDataSource() {
         if(dataSource==null) dataSource=new ArrayList<>();
         return dataSource;
     }
@@ -108,24 +103,12 @@ public class PerWeekView extends View {
      * @param curWeek
      * @return
      */
-    public PerWeekView setSource(List<? extends ScheduleEnable> list,int curWeek) {
-        if(list==null) return this;
-        setData(ScheduleSupport.transform(list),curWeek);
-        return this;
-    }
-
-    /**
-     * 设置数据源
-     * @param list
-     * @param curWeek
-     * @return
-     */
-    public PerWeekView setData(List<Schedule> list,int curWeek) {
+    public PerWeekView setData(List<ScuSubject> list,int curWeek) {
         if(list==null) return this;
         getDataSource().clear();
         for(int i=0;i<list.size();i++){
-            Schedule schedule=list.get(i);
-            if(ScheduleSupport.isThisWeek(schedule,curWeek)&&schedule.getStart()<=10&&schedule.getDay()<=5){
+            ScuSubject schedule=list.get(i);
+            if(schedule.getWeekList().contains(curWeek) &&schedule.getStart()<=10&&schedule.getDay()<=5){
                 getDataSource().add(schedule);
             }
         }
@@ -149,7 +132,7 @@ public class PerWeekView extends View {
      * @return
      */
     public PerWeekView setRadiusInDp(int radiusDp) {
-        setRadiusInPx(ScreenUtils.dip2px(getContext(),radiusDp));
+        setRadiusInPx(ScreenUtils.dp2pxInt(getContext(),radiusDp));
         return this;
     }
 
@@ -173,7 +156,7 @@ public class PerWeekView extends View {
     }
 
     private void initAttr(AttributeSet attrs) {
-        int defRadius=ScreenUtils.dip2px(getContext(),2);
+        int defRadius=ScreenUtils.dp2pxInt(getContext(),2);
         TypedArray ta=getContext().obtainStyledAttributes(attrs, R.styleable.PerWeekView);
         grayColor=ta.getColor(R.styleable.PerWeekView_gray_color,Color.rgb(207,219,219));
         lightColor=ta.getColor(R.styleable.PerWeekView_light_color,Color.parseColor("#3FCAB8"));
@@ -227,7 +210,7 @@ public class PerWeekView extends View {
         // 遍历课程集合，将在某课程的上课区间的位置都标记上
         int start,end;
         for(int i=0;i<getDataSource().size();i++){
-            Schedule schedule=getDataSource().get(i);
+            ScuSubject schedule=getDataSource().get(i);
             start=schedule.getStart();
             end=schedule.getStart()+schedule.getStep()-1;
             if (end>10) end=10;

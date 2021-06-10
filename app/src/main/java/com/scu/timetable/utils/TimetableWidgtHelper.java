@@ -15,13 +15,13 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.scu.timetable.ui.activity.LoginActivity;
-import com.scu.timetable.ui.activity.MainActivity;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.ScuSubject;
+import com.scu.timetable.ui.activity.LoginActivity;
+import com.scu.timetable.ui.activity.MainActivity;
+import com.scu.timetable.ui.widget.ColorPool;
 import com.scu.timetable.ui.widget.TimetableWidget;
 import com.zpj.utils.PrefsHelper;
-import com.zhuangfei.timetable.model.ScheduleColorPool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -309,7 +309,7 @@ public final class TimetableWidgtHelper {
 
     //初始化课程显示的每列
     private void initColumns(Context context) {
-        ScheduleColorPool colorPool = new ScheduleColorPool(context);
+        ColorPool colorPool = new ColorPool();
         for (int i = 1; i <= 7; i++) {
             if (!showWeekends) {
                 if (i == 1 || i == 7) {
@@ -330,11 +330,11 @@ public final class TimetableWidgtHelper {
                     remoteViews1.setInt(R.id.course_widget_4_4_course_view_img, "setBackgroundColor", Color.TRANSPARENT);
                     remoteViews1.setTextViewText(R.id.course_widget_4_4_course_view_text, "");
                 } else {
-                    int color = colorPool.getColorAutoWithAlpha(scuSubject.getColorRandom(), isTransparentMode() ? 0.6f : 0.8f);
+                    int color = colorPool.getColor(scuSubject.getCourseName(), isTransparentMode() ? 0.6f : 0.8f);
                     remoteViews1.setInt(R.id.course_widget_4_4_course_view_img, "setBackgroundColor", color);
                     if (isTransparentMode()) {
                         remoteViews1.setViewVisibility(R.id.title, View.VISIBLE);
-                        remoteViews1.setTextColor(R.id.title, colorPool.getColorAuto(scuSubject.getColorRandom()));
+                        remoteViews1.setTextColor(R.id.title, colorPool.getColor(scuSubject.getCourseName()));
 
                         if (showWeekends && canHideRows.size() < 2) {
                             String weekStr = DateUtil.dayOfWeekStr(scuSubject.getDay() - 1).replace("周", "");

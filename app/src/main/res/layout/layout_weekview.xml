@@ -11,7 +11,7 @@
         android:layout_width="60dp"
         android:layout_height="90dp"
         android:gravity="center"
-        android:background="@color/app_course_chooseweek_bg2"
+        android:background="#00ffffff"
         android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"
@@ -24,8 +24,7 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:scrollbars="none"
-        android:background="@color/app_course_chooseweek_bg">
+        android:scrollbars="none">
         <LinearLayout
             android:id="@+id/id_weekview_container"
             android:layout_width="match_parent"

@@ -2,8 +2,10 @@ package com.scu.timetable.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -91,6 +93,45 @@ public final class DateUtil {
             }
         }
         return weeks;
+    }
+
+    /**
+     * 根据需要算的周数和当前周数计算日期,
+     * 用于周次切换时对日期的更新
+     *
+     * @param targetWeek 需要算的周数
+     * @param curWeek    当前周数
+     * @return 当周日期集合，共8个元素，第一个为月份（高亮日期的月份），之后7个为周一至周日的日期
+     */
+    public static List<String> getDateStringFromWeek(int curWeek, int targetWeek, boolean sundayIsFirstDay) {
+        Calendar calendar = Calendar.getInstance();
+        if (targetWeek == curWeek) {
+            return getDateStringFromCalendar(calendar, sundayIsFirstDay);
+        }
+        int amount = targetWeek - curWeek;
+        calendar.add(Calendar.WEEK_OF_YEAR, amount);
+        return getDateStringFromCalendar(calendar, sundayIsFirstDay);
+    }
+
+    /**
+     * 根据周一的时间获取当周的日期
+     *
+     * @param calendar 周一的日期
+     * @return 当周日期数组
+     */
+    private static List<String> getDateStringFromCalendar(Calendar calendar, boolean sundayIsFirstDay) {
+        List<String> dateList = new ArrayList<>();
+        int firstDay = sundayIsFirstDay ? Calendar.SUNDAY : Calendar.MONDAY;
+        while (calendar.get(Calendar.DAY_OF_WEEK) != firstDay) {
+            calendar.add(Calendar.DAY_OF_MONTH, -1);
+        }
+        calendar.setFirstDayOfWeek(firstDay);
+        dateList.add((calendar.get(Calendar.MONTH) + 1) + "");
+        for (int i = 0; i < 7; i++) {
+            dateList.add(calendar.get(Calendar.DAY_OF_MONTH) + "");
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return dateList;
     }
 
 }

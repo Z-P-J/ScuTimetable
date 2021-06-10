@@ -59,7 +59,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     private final Notification[] notifications = new Notification[1];
 
     private NotificationManager notificationManager;
-    private Messenger messenger;
     private LocalBroadcastManager broadcastManager;
     private AlarmReceiver alarmReceiver;
 
@@ -81,7 +80,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
     private AlarmBinder binder;
     private AlarmConn conn;
 
-    public class Alarm{
+    public static class Alarm {
 
         static final int TYPE_BEFORE_CLASS = 0;
         static final int TYPE_BEFORE_CLASS_TEN_MIN = 1;
@@ -134,7 +133,7 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
         }
     }
 
-    class AlarmBinder extends IAlarmAidlInterface.Stub {
+    static class AlarmBinder extends IAlarmAidlInterface.Stub {
         @Override
         public String getServiceName() {
             return AlarmService.class.getSimpleName();
@@ -473,10 +472,10 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                             time = deltaHour + "小时后开始";
                         }
                     }
-                    updateNotification("下一节课：" + nextSubject.getCourseName() + " " + time,
-                            "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
-                            "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd() - 1],
-                            "任课老师：" + nextSubject.getTeacher());
+                    updateNotification("下一节：" + nextSubject.getCourseName() + " " + time,
+                            nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
+                            TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd() - 1],
+                            nextSubject.getTeacher());
                 }
             }, 0, 1000 * 60);
         } else {
@@ -494,10 +493,6 @@ public class AlarmService extends Service implements TextToSpeech.OnInitListener
                 }
                 break;
             case Alarm.TYPE_CLASS_BEGAIN:
-//                updateNotification(nextSubject.getCourseName() + "课程上课中",
-//                        "上课地点：" + nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
-//                        "上课时间：" + TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd() - 1],
-//                        "任课老师：" + nextSubject.getTeacher());
                 updateNotification(nextSubject.getCourseName() + "课程上课中",
                         nextSubject.getCampusName() + nextSubject.getTeachingBuilding() + nextSubject.getClassroom(),
                         TimetableHelper.TIMES_1[nextSubject.getStart() - 1] + "-" + TimetableHelper.TIMES_END_1[nextSubject.getEnd() - 1],

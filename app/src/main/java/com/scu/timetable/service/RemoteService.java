@@ -68,7 +68,7 @@ public class RemoteService extends Service {
     /**
      * 自定义Binder
      */
-    class RemoteBinder extends IAlarmAidlInterface.Stub {
+    static class RemoteBinder extends IAlarmAidlInterface.Stub {
         @Override
         public String getServiceName() {
             return RemoteService.class.getSimpleName();

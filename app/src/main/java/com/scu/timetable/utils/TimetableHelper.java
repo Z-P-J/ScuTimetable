@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.bean.SemesterInfo;
+import com.zpj.fragmentation.dialog.IDialog;
+import com.zpj.fragmentation.dialog.ZDialog;
 import com.zpj.fragmentation.dialog.impl.BottomDragSelectDialogFragment;
 import com.zpj.fragmentation.dialog.impl.SelectDialogFragment;
 import com.zpj.toast.ZToast;
@@ -254,12 +256,12 @@ public final class TimetableHelper {
         return false;
     }
 
-    public static void openChangeCurrentWeekDialog(Context context, SelectDialogFragment.OnSingleSelectListener<String> onSingleSelectListener) {
+    public static void openChangeCurrentWeekDialog(Context context, IDialog.OnSingleSelectListener<String, BottomDragSelectDialogFragment<String>> onSingleSelectListener) {
         final List<String> items = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             items.add("第" + (i + 1) + "周");
         }
-        new BottomDragSelectDialogFragment<String>()
+        ZDialog.bottomSelect()
                 .onBindTitle((titleView, item, position) -> titleView.setText(item))
                 .onSingleSelect(onSingleSelectListener)
                 .setSelected(TimetableHelper.getCurrentWeek() - 1)
@@ -289,14 +291,11 @@ public final class TimetableHelper {
     }
 
     public static boolean isShowWeekends() {
-        boolean showWeekends = PrefsHelper.with().getBoolean("show_weekends", false);
         if (isSmartShowWeekends()) {
             int day = DateUtil.dayOfWeek();
-            if (day == 1 || day == 7) {
-                return true;
-            }
+            return day == 1 || day == 7;
         }
-        return showWeekends;
+        return PrefsHelper.with().getBoolean("show_weekends", false);
     }
 
     public static boolean isShowWeekendsOrin() {

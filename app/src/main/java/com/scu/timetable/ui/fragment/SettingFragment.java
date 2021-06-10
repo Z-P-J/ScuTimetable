@@ -21,6 +21,7 @@ import com.scu.timetable.utils.TimetableHelper;
 import com.scu.timetable.utils.TimetableWidgtHelper;
 import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.fragmentation.dialog.IDialog;
+import com.zpj.fragmentation.dialog.ZDialog;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.toast.ZToast;
 import com.zpj.utils.AnimatorUtils;
@@ -36,8 +37,6 @@ public class SettingFragment extends SkinChangeFragment
         implements View.OnClickListener,
         OnCheckableItemClickListener,
         OnCommonItemClickListener {
-
-    private OnDismissListener onDismissListener;
 
     private SwitchSettingItem itemShowWeekends;
 
@@ -129,9 +128,6 @@ public class SettingFragment extends SkinChangeFragment
 
     @Override
     public void onDestroyView() {
-        if (onDismissListener != null) {
-            onDismissListener.onDismiss(null);
-        }
         EventBus.sendUpdateSettingEvent();
         super.onDestroyView();
     }
@@ -147,7 +143,7 @@ public class SettingFragment extends SkinChangeFragment
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.btn_logout) {
-            new AlertDialogFragment()
+            ZDialog.alert()
                     .setTitle("注销登录！")
                     .setContent("注销后需重新登录才能查看课表，确认注销？")
                     .setPositiveButton((fragment, which) -> {
@@ -180,10 +176,6 @@ public class SettingFragment extends SkinChangeFragment
         }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-    }
-
-    public void setOnDismissListener(OnDismissListener onDismissListener) {
-        this.onDismissListener = onDismissListener;
     }
 
     @Override

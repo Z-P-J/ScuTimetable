@@ -2,17 +2,9 @@ package com.scu.timetable.bean;
 
 import android.support.annotation.NonNull;
 
-import com.zhuangfei.timetable.model.Schedule;
-import com.zhuangfei.timetable.model.ScheduleEnable;
-
 import java.util.List;
 
-/**
- * 自定义实体类需要实现ScheduleEnable接口并实现getSchedule()
- *
- * @see ScheduleEnable#getSchedule()
- */
-public class ScuSubject implements ScheduleEnable {
+public class ScuSubject {
 
     public static final String EXTRAS_ID = "extras_id";
     public static final String EXTRAS_AD_URL = "extras_ad_url";
@@ -196,6 +188,13 @@ public class ScuSubject implements ScheduleEnable {
         return weekList;
     }
 
+    public boolean isThisWeek(int currWeek) {
+        if (weekList == null) {
+            return false;
+        }
+        return weekList.contains(currWeek);
+    }
+
     public int getStart() {
         return start;
     }
@@ -332,23 +331,6 @@ public class ScuSubject implements ScheduleEnable {
 
     public void setStudyMode(String studyMode) {
         this.studyMode = studyMode;
-    }
-
-    @Override
-    public Schedule getSchedule() {
-        Schedule schedule = new Schedule();
-        schedule.setDay(getDay());
-        schedule.setName(getCourseName());
-        schedule.setRoom(getRoom());
-        schedule.setStart(getStart());
-        schedule.setStep(getStep());
-        schedule.setTeacher(getTeacher());
-        schedule.setWeekList(getWeekList());
-        schedule.setColorRandom(2);
-        schedule.putExtras(EXTRAS_ID, getId());
-        schedule.putExtras(EXTRAS_AD_URL, getUrl());
-        schedule.setScheduleEnable(this);
-        return schedule;
     }
 
     public void setId(int id) {
