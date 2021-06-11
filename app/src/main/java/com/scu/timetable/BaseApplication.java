@@ -34,8 +34,6 @@ public final class BaseApplication extends Application {
         MCrashMonitor.init(this, true, file -> {
 //                MCrashMonitor.startCrashShowPage(getContext());
         });
-//        ZUtils.init(this);
-//        ZToast.init(this);
 
         ZHttp.config()
                 .allowAllSSL(true)

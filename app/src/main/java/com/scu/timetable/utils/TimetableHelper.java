@@ -146,7 +146,6 @@ public final class TimetableHelper {
                     scuSubject.setStart(start);
                     scuSubject.setStep(step);
                     scuSubject.setDay(day);
-                    scuSubject.setColorRandom(-1);
                     scuSubject.setTime(null);
                     scuSubject.setCourseProperties(coursePropertiesName);
                     scuSubject.setCampusName(campusName);
@@ -269,7 +268,7 @@ public final class TimetableHelper {
                 .setTitle("选择当前周")
                 .setShowButtons(true)
                 .setPositiveText("设置为当前周")
-                .setMarginTop(3 * ScreenUtils.dp2pxInt(56))
+                .setMarginTop(ScreenUtils.dp2pxInt(56))
                 .show(context);
 
     }

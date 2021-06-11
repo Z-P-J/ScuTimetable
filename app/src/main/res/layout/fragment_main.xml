@@ -8,17 +8,14 @@
     >
 
     <LinearLayout
+        android:id="@+id/ll_container"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        >
 
         <include layout="@layout/header_base_func" />
-
-        <com.scu.timetable.ui.widget.WeekView
-            android:id="@+id/id_weekview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
 
         <com.scu.timetable.ui.widget.TimetableView
             android:id="@+id/timetable_view"

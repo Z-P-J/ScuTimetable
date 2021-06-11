@@ -6,9 +6,6 @@ import java.util.List;
 
 public class ScuSubject {
 
-    public static final String EXTRAS_ID = "extras_id";
-    public static final String EXTRAS_AD_URL = "extras_ad_url";
-
     private int id = 0;
 
     /**
@@ -51,11 +48,6 @@ public class ScuSubject {
 
     private String term;
 
-    /**
-     * 一个随机数，用于对应课程的颜色
-     */
-    private int colorRandom = 0;
-
     private String url;
 
     private String courseProperties;
@@ -85,6 +77,8 @@ public class ScuSubject {
     private String unit;
 
     private String note = "";
+
+    private int index;
 
     public void setNote(String note) {
         this.note = note;
@@ -223,14 +217,6 @@ public class ScuSubject {
         this.day = day;
     }
 
-    public int getColorRandom() {
-        return colorRandom;
-    }
-
-    public void setColorRandom(int colorRandom) {
-        this.colorRandom = colorRandom;
-    }
-
     public String getCourseProperties() {
         return courseProperties;
     }
@@ -339,6 +325,14 @@ public class ScuSubject {
 
     public int getId() {
         return id;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     @NonNull

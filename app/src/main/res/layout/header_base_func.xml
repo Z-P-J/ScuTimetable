@@ -19,10 +19,12 @@
     <LinearLayout
         android:id="@+id/id_layout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:layout_centerInParent="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        >
 
         <TextView
             android:id="@+id/tv_title"
@@ -31,13 +33,14 @@
             android:text="课程表"
             android:textColor="@color/black"
             android:textSize="14sp"
+            android:textStyle="bold"
             />
 
-        <com.github.zagum.expandicon.ExpandIconView
-            android:id="@+id/expand_icon"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            app:eiv_roundedCorners="true"
+        <com.scu.timetable.ui.widget.SolidArrowView
+            android:id="@+id/arrow_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
             />
 
 
@@ -48,7 +51,7 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:padding="6dp"
-        android:src="@drawable/ic_settings_black_24dp"
+        android:src="@drawable/ic_settings"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_margin="7dp"

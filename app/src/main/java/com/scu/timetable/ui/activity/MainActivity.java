@@ -64,8 +64,8 @@ public final class MainActivity extends BaseActivity {
 
     @Override
     public FragmentAnimator onCreateFragmentAnimator() {
-//        return new DefaultVerticalAnimator();
-        return new DefaultHorizontalAnimator();
+        return new DefaultVerticalAnimator();
+//        return new DefaultHorizontalAnimator();
     }
 
 }

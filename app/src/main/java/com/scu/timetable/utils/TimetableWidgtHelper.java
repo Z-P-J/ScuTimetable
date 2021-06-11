@@ -81,7 +81,7 @@ public final class TimetableWidgtHelper {
         }
         //如果可以显示课表
         if (showTimetable(context)) {
-            scuSubjects = getColorReflect(TimetableHelper.getSubjects(context));
+            scuSubjects = TimetableHelper.getSubjects(context);
             initSubjects();
             showTimetable(context, R.id.course_widget_4_4_course_layout);
 
@@ -159,33 +159,6 @@ public final class TimetableWidgtHelper {
         intent.putExtra("visitor_mode", true);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, UUID.randomUUID().hashCode(),intent, PendingIntent.FLAG_UPDATE_CURRENT);
         remoteViews.setOnClickPendingIntent(i, pendingIntent);
-    }
-
-    private List<ScuSubject> getColorReflect(List<ScuSubject> schedules) {
-        if (schedules == null || schedules.size() == 0) {
-            return schedules;
-        }
-
-        //保存课程名、颜色的对应关系
-        Map<String, Integer> colorMap = new HashMap<>();
-        int colorCount = 1;
-
-        //开始转换
-        for (int i = 0; i < schedules.size(); i++) {
-            ScuSubject scuSubject = schedules.get(i);
-            //计算课程颜色
-            int color;
-            if (colorMap.containsKey(scuSubject.getCourseName())) {
-                color = colorMap.get(scuSubject.getCourseName());
-            } else {
-                colorMap.put(scuSubject.getCourseName(), colorCount);
-                color = colorCount;
-                colorCount++;
-            }
-            scuSubject.setColorRandom(color);
-        }
-
-        return schedules;
     }
 
     private void initSubjects() {

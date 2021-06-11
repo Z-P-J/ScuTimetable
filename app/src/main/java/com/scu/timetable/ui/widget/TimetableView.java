@@ -38,9 +38,9 @@ public class TimetableView extends FrameLayout {
     private static final String TAG = "TimetableView";
 
     private final List<ScuSubject> mScheduleList = new ArrayList<>();
+    private int[][] mOccupy;
 
-//    private final ScheduleColorPool mColorPool;
-private final ColorPool mColorPool = new ColorPool();
+    private final ColorPool mColorPool = new ColorPool();
     private VelocityTracker mVelocityTracker;
     private final int mMaxVelocity;
     private final ViewFlinger mViewFlinger;
@@ -52,7 +52,6 @@ private final ColorPool mColorPool = new ColorPool();
     private float mDownY;
     private float mLastY;
     private boolean isMove;
-
 
 
     private float mSubjectHeight;
@@ -70,7 +69,6 @@ private final ColorPool mColorPool = new ColorPool();
     private OnItemClickListener mOnItemClickListener;
 
 
-
     public TimetableView(Context context) {
         this(context, null);
     }
@@ -81,7 +79,7 @@ private final ColorPool mColorPool = new ColorPool();
 
     public TimetableView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mSubjectSpace = 4 * context.getResources().getDisplayMetrics().density;
+        mSubjectSpace = 3 * context.getResources().getDisplayMetrics().density;
 //        mColorPool = new ScheduleColorPool(context);
         mSubjectHeight = 64 * getContext().getResources().getDisplayMetrics().density;
         mSlideWidth = (int) (36 * getContext().getResources().getDisplayMetrics().density);
@@ -92,8 +90,24 @@ private final ColorPool mColorPool = new ColorPool();
 
     public void setScheduleList(List<ScuSubject> list) {
         this.mScheduleList.clear();
-        this.mScheduleList.addAll(getColorReflect(list));
+        this.mScheduleList.addAll(list);
         mChildCount = mScheduleList.size();
+
+        mOccupy = new int[7][12];
+
+        for (ScuSubject subject : mScheduleList) {
+            int x = subject.getDay() - 1;
+            int max = 0;
+            for (int i = 0; i < subject.getStep(); i++) {
+                int y = subject.getStart() - 1 + i;
+                int count = ++mOccupy[x][y];
+                mOccupy[x][y] = count;
+                max = Math.max(max, count);
+            }
+            mOccupy[x][subject.getStart() - 1] = max;
+            subject.setIndex(--max);
+        }
+
         initChildren(true);
         mLastDeltaTop = 0;
         requestLayout();
@@ -144,32 +158,32 @@ private final ColorPool mColorPool = new ColorPool();
         this.mOnItemClickListener = mOnItemClickListener;
     }
 
-    private List<ScuSubject> getColorReflect(List<ScuSubject> schedules) {
-        if (schedules == null || schedules.size() == 0) {
-            return schedules;
-        }
-
-        // 保存课程名、颜色的对应关系
-        Map<String, Integer> colorMap = new HashMap<>();
-        int colorCount = 1;
-
-        //开始转换
-        for (int i = 0; i < schedules.size(); i++) {
-            ScuSubject scuSubject = schedules.get(i);
-            //计算课程颜色
-            int color;
-            if (colorMap.containsKey(scuSubject.getCourseName())) {
-                color = colorMap.get(scuSubject.getCourseName());
-            } else {
-                colorMap.put(scuSubject.getCourseName(), colorCount);
-                color = colorCount;
-                colorCount++;
-            }
-            scuSubject.setColorRandom(color);
-        }
-
-        return schedules;
-    }
+//    private List<ScuSubject> getColorReflect(List<ScuSubject> schedules) {
+//        if (schedules == null || schedules.size() == 0) {
+//            return schedules;
+//        }
+//
+//        // 保存课程名、颜色的对应关系
+//        Map<String, Integer> colorMap = new HashMap<>();
+//        int colorCount = 1;
+//
+//        //开始转换
+//        for (int i = 0; i < schedules.size(); i++) {
+//            ScuSubject scuSubject = schedules.get(i);
+//            //计算课程颜色
+//            int color;
+//            if (colorMap.containsKey(scuSubject.getCourseName())) {
+//                color = colorMap.get(scuSubject.getCourseName());
+//            } else {
+//                colorMap.put(scuSubject.getCourseName(), colorCount);
+//                color = colorCount;
+//                colorCount++;
+//            }
+//            scuSubject.setColorRandom(color);
+//        }
+//
+//        return schedules;
+//    }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -182,7 +196,7 @@ private final ColorPool mColorPool = new ColorPool();
         mLastDeltaTop = deltaTop;
         float childWidth = (float) (getWidth() - mSlideWidth) / mColomun;
         float childHeight = mSubjectHeight;
-        int widthSpec = MeasureSpec.makeMeasureSpec((int) (childWidth - mSubjectSpace), MeasureSpec.EXACTLY);
+//        int widthSpec = MeasureSpec.makeMeasureSpec((int) (childWidth - mSubjectSpace), MeasureSpec.EXACTLY);
         int count = 0;
         for (int i = 0; i < mScheduleList.size(); i++) {
             ScuSubject schedule = mScheduleList.get(i);
@@ -190,17 +204,19 @@ private final ColorPool mColorPool = new ColorPool();
             int day = schedule.getDay();
             if (mShowWeekends) {
                 if (!mSundayIsFirstDay) { // getSundayIsFirstDay
-                day -= 1;
-                if (day == 0) {
-                    day = 7;
+                    day -= 1;
+                    if (day == 0) {
+                        day = 7;
+                    }
                 }
-            }
             } else if (day == 1 || day == 7) {
                 continue;
             } else {
                 day--;
             }
             count++;
+
+            int n = mOccupy[schedule.getDay() - 1][schedule.getStart() - 1];
 
 
             int step = schedule.getStep();
@@ -216,12 +232,16 @@ private final ColorPool mColorPool = new ColorPool();
             }
 
             int heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+            float width = childWidth / n - mSubjectSpace;
+            int widthSpec = MeasureSpec.makeMeasureSpec((int) width, MeasureSpec.EXACTLY);
             child.measure(widthSpec, heightSpec);
 
             int childTop = (int) ((schedule.getStart() - 1) * childHeight + mSubjectSpace / 2f + deltaTop) + mHeaderHeight;
-            int childLeft = (int) (mSlideWidth + (--day) * childWidth + mSubjectSpace / 2f);
-            int childRight = (int) (childLeft + childWidth - mSubjectSpace);
-            int childBottom = (int) (childTop + height - mSubjectSpace);
+//            int childLeft = (int) (mSlideWidth + (--day) * childWidth + mSubjectSpace / 2f);
+//            int childRight = (int) (childLeft + childWidth - mSubjectSpace);
+            int childLeft = (int) (mSlideWidth + (--day) * childWidth + mSubjectSpace / 2f + childWidth / n * schedule.getIndex());
+            int childRight = (int) (childLeft + width);
+            int childBottom = (int) (childTop + height);
 
             child.layout(childLeft, childTop, childRight, childBottom);
         }
@@ -244,18 +264,21 @@ private final ColorPool mColorPool = new ColorPool();
             return;
         }
 
-        int headerHeightSpec = MeasureSpec.makeMeasureSpec(mHeaderHeight, MeasureSpec.EXACTLY);
+        int space = (int) mSubjectSpace;
+        int headerHeight = mHeaderHeight - space;
+        int headerHeightSpec = MeasureSpec.makeMeasureSpec(headerHeight, MeasureSpec.EXACTLY);
+        int widthSpec = MeasureSpec.makeMeasureSpec((int) childWidth, MeasureSpec.EXACTLY);
         for (int i = 0; i < mColomun; i++) {
             View child = getChildAt(mChildCount + 12 + i);
             child.measure(widthSpec, headerHeightSpec);
             int headerLeft = (int) (i * childWidth) + mSlideWidth;
 
-            child.layout(headerLeft, 0, (int) (headerLeft + childWidth), mHeaderHeight);
+            child.layout(headerLeft, 0, (int) (headerLeft + childWidth), headerHeight);
         }
 
         View monthView = getChildAt(getChildCount() - 1);
         monthView.measure(slideWidthSpec, headerHeightSpec);
-        monthView.layout(0, 0, mSlideWidth, mHeaderHeight);
+        monthView.layout(0, 0, mSlideWidth, headerHeight);
     }
 
     @Override
@@ -377,7 +400,7 @@ private final ColorPool mColorPool = new ColorPool();
 
     public String[] getStringArray() {
         if (mSundayIsFirstDay && mShowWeekends) {
-            return  new String[]{"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
+            return new String[]{"周日", "周一", "周二", "周三", "周四", "周五", "周六"};
         }
         return new String[]{"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
     }
@@ -406,7 +429,11 @@ private final ColorPool mColorPool = new ColorPool();
         gd.setColor(bgColor);
 
         TextView textView = new TextView(getContext());
-        textView.setTextSize(12);
+        if (mOccupy[subject.getDay() - 1][subject.getStart() - 1] > 1) {
+            textView.setTextSize(10);
+        } else {
+            textView.setTextSize(12);
+        }
         textView.setGravity(Gravity.CENTER);
 //        View view = LayoutInflater.from(getContext()).inflate(R.layout.item_timetable, null, false);
 //        TextView textView = view.findViewById(R.id.id_course_item_course);
@@ -461,9 +488,6 @@ private final ColorPool mColorPool = new ColorPool();
     }
 
 
-
-
-
     private class ViewFlinger implements Runnable {
 
         private final OverScroller mScroller;
@@ -491,7 +515,7 @@ private final ColorPool mColorPool = new ColorPool();
                 if (firstView.getTop() > mHeaderHeight) {
                     startSpringAnimation(mHeaderHeight - firstView.getTop());
                     return;
-                } else if (lastView.getBottom() < getHeight())  {
+                } else if (lastView.getBottom() < getHeight()) {
                     startSpringAnimation(getHeight() - lastView.getBottom());
                     return;
                 }

@@ -33,10 +33,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:background="?attr/actionBarItemBackground"
-            android:src="@drawable/ic_close_black_24dp"
+            android:src="@drawable/ic_close"
             android:paddingHorizontal="16dp"
             android:layout_marginEnd="@dimen/dp8"
-            android:tint="#dddddd"
             />
 
 

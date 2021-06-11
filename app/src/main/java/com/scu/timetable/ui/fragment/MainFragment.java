@@ -1,5 +1,6 @@
 package com.scu.timetable.ui.fragment;
 
+import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.github.zagum.expandicon.ExpandIconView;
 import com.scu.timetable.R;
 import com.scu.timetable.bean.ScuSubject;
 import com.scu.timetable.bean.SemesterInfo;
@@ -16,6 +16,7 @@ import com.scu.timetable.ui.activity.LoginActivity;
 import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
 import com.scu.timetable.ui.fragment.dialog.RefreshDialog;
 import com.scu.timetable.ui.fragment.dialog.SubjectDetailDialog2;
+import com.scu.timetable.ui.widget.SolidArrowView;
 import com.scu.timetable.ui.widget.TimetableView;
 import com.scu.timetable.ui.widget.WeekView;
 import com.scu.timetable.utils.EventBus;
@@ -33,9 +34,10 @@ public final class MainFragment extends SkinChangeFragment implements View.OnCli
 
     private final static String TAG = "MainFragment";
 
+    private LinearLayout mContaienr;
     private TimetableView timetableView;
     private WeekView mWeekView;
-    private ExpandIconView expandIconView;
+    private SolidArrowView mArrowView;
     private TextView mTvTitle;
 
     private int currentWeek;
@@ -54,7 +56,6 @@ public final class MainFragment extends SkinChangeFragment implements View.OnCli
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.onRefresh(this, s -> {
-            initTimetableView();
             initData();
         });
         EventBus.onUpdateSetting(this, s -> {
@@ -67,7 +68,12 @@ public final class MainFragment extends SkinChangeFragment implements View.OnCli
             boolean showWeekends = TimetableHelper.isShowWeekends();
             boolean showNotCurWeek = TimetableHelper.isShowNotCurWeek();
             boolean showTime = TimetableHelper.isShowTime();
-            int currentWeek = TimetableHelper.getCurrentWeek();
+            currentWeek = TimetableHelper.getCurrentWeek();
+
+            mTvTitle.setText("第" + currentWeek + "周");
+            if (mWeekView != null) {
+                mWeekView.curWeek(currentWeek).updateView();
+            }
 
             timetableView.setSundayIsFirstDay(sundayIsFirstDay);
             timetableView.setShowWeekends(showWeekends);
@@ -84,38 +90,28 @@ public final class MainFragment extends SkinChangeFragment implements View.OnCli
 
         currentWeek = TimetableHelper.getCurrentWeek();
 
+        mContaienr = findViewById(R.id.ll_container);
+
         ImageView settings = view.findViewById(R.id.settins);
         settings.setOnClickListener(this);
         LinearLayout layout = view.findViewById(R.id.id_layout);
         layout.setOnClickListener(this);
 
-        expandIconView = view.findViewById(R.id.expand_icon);
-        mWeekView = view.findViewById(R.id.id_weekview);
+        mArrowView = findViewById(R.id.arrow_view);
         mTvTitle = findViewById(R.id.tv_title);
-        initTimetableView();
 
         initData();
     }
 
-    private void initTimetableView() {
-        //设置周次选择属性
-        mWeekView.curWeek(currentWeek)
-                .hideLeftLayout()
-                .callback(week -> {
-                    mTvTitle.setText("第" + week + "周");
-                    timetableView.setCurrentWeek(week);
-                    timetableView.removeAllViews();
-                    timetableView.requestLayout();
-                })
-                .isShow(false)//设置隐藏，默认显示
-                .showView();
-    }
+    private List<ScuSubject> mSubjects;
 
     private void initData() {
         mTvTitle.setText("第" + currentWeek + "周");
 
-        List<ScuSubject> scuSubjects = TimetableHelper.getSubjects(context);
-        mWeekView.data(scuSubjects).showView();
+        mSubjects = TimetableHelper.getSubjects(context);
+        if (mWeekView != null) {
+            mWeekView.data(mSubjects).showView();
+        }
 
         timetableView = findViewById(R.id.timetable_view);
         timetableView.setOnItemClickListener((view, subject) -> {
@@ -128,7 +124,7 @@ public final class MainFragment extends SkinChangeFragment implements View.OnCli
         timetableView.setShowNotCurrentWeek(TimetableHelper.isShowNotCurWeek());
         timetableView.setShowTime(TimetableHelper.isShowTime());
         timetableView.setCurrentWeek(currentWeek);
-        timetableView.setScheduleList(scuSubjects);
+        timetableView.setScheduleList(mSubjects);
     }
 
     public void showMenu(View view) {
@@ -147,7 +143,9 @@ public final class MainFragment extends SkinChangeFragment implements View.OnCli
                             TimetableHelper.openChangeCurrentWeekDialog(getContext(), (dialog1, pos, item) -> {
                                 currentWeek = pos + 1;
                                 TimetableHelper.setCurrentWeek(currentWeek);
-                                mWeekView.curWeek(currentWeek).updateView();
+                                if (mWeekView != null) {
+                                    mWeekView.curWeek(currentWeek).updateView();
+                                }
 
                                 mTvTitle.setText("第" + currentWeek + "周");
 
@@ -210,16 +208,29 @@ public final class MainFragment extends SkinChangeFragment implements View.OnCli
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.id_layout) {
-            if (mWeekView.isShowing()) {
-                mWeekView.isShow(false);
+            mArrowView.switchState();
+            if (mWeekView == null) {
+                mWeekView = new WeekView(getContext());
+                mContaienr.addView(mWeekView, 1);
+                mWeekView.curWeek(currentWeek)
+                        .data(mSubjects)
+                        .hideLeftLayout()
+                        .callback(week -> {
+                            mTvTitle.setText("第" + week + "周");
+                            timetableView.setCurrentWeek(week);
+                            timetableView.removeAllViews();
+                            timetableView.requestLayout();
+                        })
+                        .isShow(true)
+                        .showView();
+            } else {
+                mContaienr.removeView(mWeekView);
+                mWeekView = null;
+
                 mTvTitle.setText("第" + currentWeek + "周");
-                expandIconView.switchState();
                 timetableView.setCurrentWeek(TimetableHelper.getCurrentWeek());
                 timetableView.removeAllViews();
                 timetableView.requestLayout();
-            } else {
-                mWeekView.isShow(true);
-                expandIconView.switchState();
             }
         } else if (id == R.id.settins) {
             showMenu(view);

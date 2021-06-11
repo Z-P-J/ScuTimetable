@@ -26,6 +26,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 
 import com.scu.timetable.R;
+import com.scu.timetable.utils.AnimUtils;
 import com.zpj.fragmentation.dialog.animator.PopupAnimator;
 import com.zpj.fragmentation.dialog.impl.FullScreenDialogFragment;
 import com.zpj.utils.AnimatorUtils;
@@ -101,8 +102,10 @@ public class AboutMeFragment extends FullScreenDialogFragment implements OnCommo
         CommonSettingItem emailItem = findViewById(R.id.item_email);
         emailItem.setOnItemClickListener(this);
 
-        AnimatorUtils.doDelayShowAnim(getShowAnimDuration(), 100, ivIcon, findViewById(R.id.iv_name),
+        AnimUtils.doDelayShowAnim(getShowAnimDuration(), 50, ivIcon, findViewById(R.id.iv_name),
                 findViewById(R.id.tv_sign), githubItem, sjlyItem, emailItem);
+//        AnimatorUtils.doDelayShowAnim(getShowAnimDuration(), 100, ivIcon, findViewById(R.id.iv_name),
+//                findViewById(R.id.tv_sign), githubItem, sjlyItem, emailItem);
     }
 
     @Override

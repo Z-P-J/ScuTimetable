@@ -1,5 +1,8 @@
 package com.scu.timetable.ui.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -7,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.deadline.statebutton.StateButton;
@@ -15,6 +19,7 @@ import com.scu.timetable.ui.fragment.base.SkinChangeFragment;
 import com.scu.timetable.ui.fragment.dialog.MoreInfoDialog;
 import com.scu.timetable.ui.widget.DetailLayout;
 import com.scu.timetable.ui.widget.UpdateSettingItem;
+import com.scu.timetable.utils.AnimUtils;
 import com.scu.timetable.utils.EventBus;
 import com.scu.timetable.utils.SuperLinkUtil;
 import com.scu.timetable.utils.TimetableHelper;
@@ -23,6 +28,7 @@ import com.scu.timetable.utils.UpdateUtil;
 import com.zpj.fragmentation.dialog.IDialog;
 import com.zpj.fragmentation.dialog.ZDialog;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
+import com.zpj.fragmentation.dialog.impl.BottomDragSelectDialogFragment;
 import com.zpj.toast.ZToast;
 import com.zpj.utils.AnimatorUtils;
 import com.zpj.utils.AppUtils;
@@ -123,7 +129,7 @@ public class SettingFragment extends SkinChangeFragment
         for (int i = 0; i < llContainer.getChildCount(); i++) {
             views[i] = llContainer.getChildAt(i);
         }
-        AnimatorUtils.doDelayShowAnim(500, 50, views);
+        AnimUtils.doDelayShowAnim(360, 20, views);
     }
 
     @Override
@@ -209,7 +215,7 @@ public class SettingFragment extends SkinChangeFragment
     public void onItemClick(CommonSettingItem item) {
         int id = item.getId();
         if (id == R.id.item_change_current_week) {
-            TimetableHelper.openChangeCurrentWeekDialog(context, null);
+            TimetableHelper.openChangeCurrentWeekDialog(context, (dialog, position, item1) -> TimetableHelper.setCurrentWeek(position + 1));
         } else if (id == R.id.item_notification) {
             goSetting();
         } else if (id == R.id.item_about_me) {

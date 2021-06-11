@@ -89,20 +89,22 @@
 
 
 
-## 该项目使用或参考了以下开源库
-[ZDownloader](https://github.com/Z-P-J/ZDownloader)
-
-[ZHttp](https://github.com/Z-P-J/ZHttp)
-
-[ZSettingItem](https://github.com/Z-P-J/ZSettingItem)
-
+## 该项目使用的开源库
 [Fragmentation](https://github.com/Z-P-J/Fragmentation)
 
-[TimetableView](https://github.com/zfman/TimetableView)
+[Fragmentation-Dialog](https://github.com/Z-P-J/Fragmentation-Dialog)
+
+[RxBus](https://github.com/Z-P-J/RxBus)
+
+[ZHttp](https://github.com/Z-P-J/ZHttp)
 
 [StateButton](https://github.com/niniloveyou/StateButton)
 
 [AVLoadingIndicatorView](https://github.com/81813780/AVLoadingIndicatorView)
 
 [AES-NDK](https://github.com/ray-tianfeng/AES-NDK)
+
+[ZDownloader](https://github.com/Z-P-J/ZDownloader)
+
+[ZSettingItem](https://github.com/Z-P-J/ZSettingItem)
 
