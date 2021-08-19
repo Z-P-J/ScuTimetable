@@ -26,6 +26,7 @@ import com.scu.timetable.utils.CaptchaFetcher;
 import com.scu.timetable.utils.EvaluationUtil;
 import com.scu.timetable.utils.LoginUtil;
 import com.zpj.fragmentation.dialog.IDialog;
+import com.zpj.fragmentation.dialog.ZDialog;
 import com.zpj.fragmentation.dialog.impl.AlertDialogFragment;
 import com.zpj.toast.ZToast;
 
@@ -144,12 +145,12 @@ public class EvaluationFragment extends SkinChangeFragment
     @Override
     public boolean onBackPressedSupport() {
         if (isEvaluating) {
-            new AlertDialogFragment()
+            ZDialog.alert()
                     .setTitle("确认返回！")
                     .setContent("返回后将终止评教，确认返回？")
                     .setPositiveButton((fragment, which) -> {
                         timer.cancel();
-                        setSwipeBackEnable(true);
+                        setEnableSwipeBack(true);
                         pop();
                     })
                     .show(context);
@@ -176,7 +177,7 @@ public class EvaluationFragment extends SkinChangeFragment
                 return;
             }
             isEvaluating = true;
-            setSwipeBackEnable(false);
+            setEnableSwipeBack(false);
             evaluationButton.setText("评教中...");
             evaluationButton.setClickable(false);
             consoleLog("\n获取评教教师和助教...");
@@ -348,7 +349,7 @@ public class EvaluationFragment extends SkinChangeFragment
 //            setSwipeable(true);
 //            setCancelable(true);
 //            setCanceledOnTouchOutside(true);
-            setSwipeBackEnable(true);
+            setEnableSwipeBack(true);
             return false;
         }
         return true;

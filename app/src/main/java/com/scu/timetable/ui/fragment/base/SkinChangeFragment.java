@@ -1,6 +1,5 @@
 package com.scu.timetable.ui.fragment.base;
 
-import com.zpj.fragmentation.BaseFragment;
 import com.zpj.fragmentation.SupportFragment;
 import com.zpj.rxbus.RxBus;
 

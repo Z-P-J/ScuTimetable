@@ -27,7 +27,7 @@ import android.widget.ImageView;
 
 import com.scu.timetable.R;
 import com.scu.timetable.utils.AnimUtils;
-import com.zpj.fragmentation.dialog.animator.PopupAnimator;
+import com.zpj.fragmentation.dialog.animator.DialogAnimator;
 import com.zpj.fragmentation.dialog.impl.FullScreenDialogFragment;
 import com.zpj.utils.AnimatorUtils;
 import com.zpj.widget.setting.CommonSettingItem;
@@ -55,7 +55,12 @@ public class AboutMeFragment extends FullScreenDialogFragment implements OnCommo
     }
 
     @Override
-    protected PopupAnimator getDialogAnimator(ViewGroup contentView) {
+    protected boolean enableSwipeBack() {
+        return true;
+    }
+
+    @Override
+    protected DialogAnimator onCreateDialogAnimator(ViewGroup contentView) {
         return null;
     }
 

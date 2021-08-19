@@ -62,7 +62,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
 //    implementation 'com.android.support.constraint:constraint-layout:2.0.2'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
 
@@ -82,8 +82,8 @@ dependencies {
     implementation 'com.github.maning0303:MNCrashMonitor:V1.1.1'
     implementation 'com.lxj:xpermission:1.0.1'
 
-    implementation 'com.github.Z-P-J:Fragmentation:1.1.4'
-    implementation 'com.github.Z-P-J:Fragmentation-Dialog:1.2.3'
+    implementation 'com.github.Z-P-J:ZFragmentation:1.0.1'
+    implementation 'com.github.Z-P-J:ZFragmentation-Dialog:1.0.1'
     implementation 'com.github.Z-P-J:ZHttp:1.0.0'
     implementation 'com.github.Z-P-J:ZToolBar:1.0.0'
     implementation 'com.github.Z-P-J:ZUtils:1.0.0'
